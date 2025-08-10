@@ -120,15 +120,12 @@ export const growthCalculation = ({ before, current }: IGrowthCalProps) => {
 export const growthArrayCalculation = (array: number[] | null[]) => {
   const result: number[] = [0];
   const newArray = array.map((item) => (item === null ? 0 : item));
-  console.log(newArray);
   for (let i = 1; i < newArray.length; i++) {
     const growth_i = growthCalculation({
       before: newArray[i - 1],
       current: newArray[i],
     });
-    console.log(growth_i);
     result.push(growth_i);
   }
-  console.log(result);
   return result;
 };

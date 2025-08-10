@@ -4,6 +4,7 @@ import {
   projectionHistoricalData,
   computationArrays,
   TYPE_COMPUTATION_ARRAY,
+  growthArrayCalculation,
 } from "../utils/formulas";
 import { selectData, TYPE_DATA_SELECT } from "../utils/selectData";
 
@@ -52,12 +53,17 @@ const totalPop = computationArrays(
   projectionPopWomen,
 );
 
+const populationMenGrowth = growthArrayCalculation(projectionPopMen);
+const populationWomanGrowth = growthArrayCalculation(projectionPopWomen);
+
 interface IPopulationFinal {
   name: string;
   unit: string;
   year: number[];
   data: {
     totalPopulation: number[];
+    populationMenGrowth: number[];
+    populationWomanGrowth: number[];
   };
 }
 
@@ -67,5 +73,7 @@ export const populationDataFinal: IPopulationFinal = {
   year: timeFrame,
   data: {
     totalPopulation: totalPop,
+    populationMenGrowth: populationMenGrowth,
+    populationWomanGrowth: populationWomanGrowth,
   },
 };

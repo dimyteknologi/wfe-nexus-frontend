@@ -20,7 +20,20 @@ export type IPopResData = IBaseData<IPopulationData>;
 export type GDPParameters = {
   [key: string]: (number | null)[];
   "A.Pertanian, Kehutanan, dan Perikanan": number[];
-  "B.Pertambangan dan Penggalian": (number | null)[];
+  "B.Pertambangan dan Penggalian": number[];
+  "C.Industri Pengolahan": number[];
+  "D.Pengadaan Listrik dan Gas": number[];
+  "E.Pengadaan Air, Pengelolaan Sampah, Limbah dan Daur Ulang": number[];
+  "F.Konstruksi": number[];
+  "G.Perdagangan Besar dan Eceran; Reparasi Mobil dan Sepeda Motor": number[];
+  "H.Transportasi dan Pergudangan": number[];
+  "I.Penyediaan Akomodasi dan Makan Minum": number[];
+  "J.Informasi dan Komunikasi": number[];
+  "K.Jasa Keuangan dan Asuransi": number[];
+  "L.Real Estate": number[];
+  "M,N.Jasa Perusahaan": number[];
+  "O.Administrasi Pemerintahan, Pertahanan dan Jaminan Sosial Wajib": number[];
+  "P.Jasa Pendidikan": number[];
 };
 
 export type IGDPResData = IBaseData<GDPParameters>;
