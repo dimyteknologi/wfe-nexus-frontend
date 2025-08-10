@@ -29,7 +29,7 @@ export const projectionCalculation = ({
   before,
   growth,
 }: IProjectionCalProps) => {
-  return before * (1 + growth / 100);
+  return Math.round(before * (1 + growth / 100) * 100) / 100;
 };
 
 interface IProjectionHistorical {
@@ -84,4 +84,22 @@ export const adjustTimeFrame = ({
     arrayHasil.push(nextValue);
   }
   return arrayHasil;
+};
+
+export const sumArrays = (...arrays: number[][]) => {
+  if (arrays.length === 0) return [];
+
+  const length = arrays[0].length;
+  if (!arrays.every((arr) => arr.length === length)) {
+    throw new Error("Semua array harus memiliki panjang yang sama");
+  }
+
+  const result: number[] = [];
+  for (let i = 0; i < length; i++) {
+    result.push(
+      Math.round(arrays.reduce((sum, arr) => sum + arr[i], 0) * 100) / 100,
+    );
+  }
+
+  return result;
 };

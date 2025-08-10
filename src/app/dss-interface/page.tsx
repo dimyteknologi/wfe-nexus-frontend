@@ -3,6 +3,7 @@ import { IPopulationData } from "@/lib/types/response";
 import {
   adjustTimeFrame,
   projectionHistoricalData,
+  sumArrays,
 } from "@/lib/utils/formulas";
 import { selectData, TYPE_DATA_SELECT } from "@/lib/utils/selectData";
 
@@ -40,6 +41,14 @@ export default async function DSSPage() {
     finalYear: 2030,
   });
 
+  const projectionPopWomen = projectionHistoricalData({
+    data: getPopMenData.perempuan,
+    growth: 10,
+    finalYear: 2030,
+  });
+
+  const totalPop = sumArrays(projectionPopMen, projectionPopWomen);
+
   return (
     <div className="container mx-auto p-4">
       <div>
@@ -59,6 +68,22 @@ export default async function DSSPage() {
           <p>Men Population</p>
           <ul>
             {projectionPopMen.map((data, idx) => (
+              <li key={idx}>{data}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p>Women Population</p>
+          <ul>
+            {projectionPopWomen.map((data, idx) => (
+              <li key={idx}>{data}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p>Total Population</p>
+          <ul>
+            {totalPop.map((data, idx) => (
               <li key={idx}>{data}</li>
             ))}
           </ul>
