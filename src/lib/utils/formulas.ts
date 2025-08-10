@@ -13,14 +13,6 @@ interface IProjectionCalProps {
   growth: number;
 }
 
-export const addCalculation = ({ param1, param2 }: IFormulaProps) => {
-  return param1 + param2;
-};
-
-export const multiplyCalculation = ({ param1, param2 }: IFormulaProps) => {
-  return param1 * param2;
-};
-
 export const growthCalculation = ({ before, current }: IGrowthCalProps) => {
   return (current / before - 1) * 100;
 };
@@ -86,20 +78,42 @@ export const adjustTimeFrame = ({
   return arrayHasil;
 };
 
-export const sumArrays = (...arrays: number[][]) => {
+export const TYPE_COMPUTATION_ARRAY = {
+  ADD: "ADD",
+  MULTIPLY: "MULTIPLY",
+} as const;
+
+type ComputationType = keyof typeof TYPE_COMPUTATION_ARRAY;
+
+export const computationArrays = (
+  type: ComputationType,
+  ...arrays: number[][]
+): number[] => {
   if (arrays.length === 0) return [];
 
   const length = arrays[0].length;
   if (!arrays.every((arr) => arr.length === length)) {
-    throw new Error("Semua array harus memiliki panjang yang sama");
+    throw new Error("All arrays must have the same length");
   }
 
-  const result: number[] = [];
-  for (let i = 0; i < length; i++) {
-    result.push(
-      Math.round(arrays.reduce((sum, arr) => sum + arr[i], 0) * 100) / 100,
-    );
+  const result: number[] = new Array(length).fill(
+    type === TYPE_COMPUTATION_ARRAY.MULTIPLY ? 1 : 0,
+  );
+
+  for (const arr of arrays) {
+    for (let i = 0; i < length; i++) {
+      switch (type) {
+        case TYPE_COMPUTATION_ARRAY.ADD:
+          result[i] += arr[i];
+          break;
+        case TYPE_COMPUTATION_ARRAY.MULTIPLY:
+          result[i] *= arr[i];
+          break;
+        default:
+          throw new Error("Invalid computation type");
+      }
+    }
   }
 
-  return result;
+  return result.map((num) => Math.round(num * 100) / 100);
 };

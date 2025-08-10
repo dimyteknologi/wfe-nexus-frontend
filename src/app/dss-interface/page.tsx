@@ -1,11 +1,11 @@
 import fetchDashboardData from "@/lib/api/fetchAllData";
-import { IPopulationData } from "@/lib/types/response";
 import {
   adjustTimeFrame,
+  computationArrays,
   projectionHistoricalData,
-  sumArrays,
 } from "@/lib/utils/formulas";
 import { selectData, TYPE_DATA_SELECT } from "@/lib/utils/selectData";
+import { TYPE_COMPUTATION_ARRAY } from "../../lib/utils/formulas";
 
 export default async function DSSPage() {
   const { populationData } = await fetchDashboardData();
@@ -47,7 +47,11 @@ export default async function DSSPage() {
     finalYear: 2030,
   });
 
-  const totalPop = sumArrays(projectionPopMen, projectionPopWomen);
+  const totalPop = computationArrays(
+    TYPE_COMPUTATION_ARRAY.ADD,
+    projectionPopMen,
+    projectionPopWomen,
+  );
 
   return (
     <div className="container mx-auto p-4">
@@ -83,7 +87,7 @@ export default async function DSSPage() {
         <div>
           <p>Total Population</p>
           <ul>
-            {totalPop.map((data, idx) => (
+            {totalPop.map((data: number, idx: number) => (
               <li key={idx}>{data}</li>
             ))}
           </ul>
