@@ -129,3 +129,21 @@ export const growthArrayCalculation = (array: number[] | null[]) => {
   }
   return result;
 };
+
+export const sumArrays = (...arrays: number[][]) => {
+  if (arrays.length === 0) return [];
+
+  const length = arrays[0].length;
+  if (!arrays.every((arr) => arr.length === length)) {
+    throw new Error("Semua array harus memiliki panjang yang sama");
+  }
+
+  const result: number[] = [];
+  for (let i = 0; i < length; i++) {
+    result.push(
+      Math.round(arrays.reduce((sum, arr) => sum + arr[i], 0) * 100) / 100,
+    );
+  }
+
+  return result;
+};
