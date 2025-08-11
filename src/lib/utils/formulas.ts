@@ -1,8 +1,3 @@
-interface IFormulaProps {
-  param1: number;
-  param2: number;
-}
-
 interface IGrowthCalProps {
   before: number;
   current: number;
@@ -12,18 +7,6 @@ interface IProjectionCalProps {
   before: number;
   growth: number;
 }
-
-export const addCalculation = ({ param1, param2 }: IFormulaProps) => {
-  return param1 + param2;
-};
-
-export const multiplyCalculation = ({ param1, param2 }: IFormulaProps) => {
-  return param1 * param2;
-};
-
-export const growthCalculation = ({ before, current }: IGrowthCalProps) => {
-  return (current / before - 1) * 100;
-};
 
 export const projectionCalculation = ({
   before,
@@ -45,12 +28,12 @@ export const projectionHistoricalData = ({
   finalYear,
   initialYear = 2010,
 }: IProjectionHistorical) => {
-  const arrayHasil: number[] = [...data];
+  const result: number[] = [...data];
 
-  let time = initialYear + arrayHasil.length;
+  let time = initialYear + result.length;
 
   while (time <= finalYear) {
-    const lastValue = arrayHasil[arrayHasil.length - 1];
+    const lastValue = result[result.length - 1];
 
     const nextValue = projectionCalculation({
       before: lastValue,
@@ -58,11 +41,11 @@ export const projectionHistoricalData = ({
     });
 
     console.log(time, nextValue);
-    arrayHasil.push(nextValue);
+    result.push(nextValue);
     time += 1;
   }
 
-  return arrayHasil;
+  return result;
 };
 
 interface IAdjustTimeFrame {
@@ -76,14 +59,75 @@ export const adjustTimeFrame = ({
   finalYear,
   initialYear = 2010,
 }: IAdjustTimeFrame) => {
-  const arrayHasil: number[] = [...dataYear];
+  const result: number[] = [...dataYear];
 
-  while (arrayHasil.length <= finalYear - initialYear) {
-    const lastValue = arrayHasil[arrayHasil.length - 1];
+  while (result.length <= finalYear - initialYear) {
+    const lastValue = result[result.length - 1];
     const nextValue = lastValue + 1;
-    arrayHasil.push(nextValue);
+    result.push(nextValue);
   }
-  return arrayHasil;
+  return result;
+};
+
+export const TYPE_COMPUTATION_ARRAY = {
+  ADD: "ADD",
+  MULTIPLY: "MULTIPLY",
+} as const;
+
+type ComputationType = keyof typeof TYPE_COMPUTATION_ARRAY;
+
+export const computationArrays = (
+  type: ComputationType,
+  ...arrays: number[][]
+): number[] => {
+  if (arrays.length === 0) return [];
+
+  const length = arrays[0].length;
+  if (!arrays.every((arr) => arr.length === length)) {
+    throw new Error("All arrays must have the same length");
+  }
+
+  const result: number[] = new Array(length).fill(
+    type === TYPE_COMPUTATION_ARRAY.MULTIPLY ? 1 : 0,
+  );
+
+  for (const arr of arrays) {
+    for (let i = 0; i < length; i++) {
+      switch (type) {
+        case TYPE_COMPUTATION_ARRAY.ADD:
+          result[i] += arr[i];
+          break;
+        case TYPE_COMPUTATION_ARRAY.MULTIPLY:
+          result[i] *= arr[i];
+          break;
+        default:
+          throw new Error("Invalid computation type");
+      }
+    }
+  }
+
+  return result.map((num) => Math.round(num * 100) / 100);
+};
+
+export const growthCalculation = ({ before, current }: IGrowthCalProps) => {
+  if (!before || !current) return 0;
+  if (before && current) {
+    return current / before - 1;
+  }
+  return 0;
+};
+
+export const growthArrayCalculation = (array: number[] | null[]) => {
+  const result: number[] = [0];
+  const newArray = array.map((item) => (item === null ? 0 : item));
+  for (let i = 1; i < newArray.length; i++) {
+    const growth_i = growthCalculation({
+      before: newArray[i - 1],
+      current: newArray[i],
+    });
+    result.push(growth_i);
+  }
+  return result;
 };
 
 export const sumArrays = (...arrays: number[][]) => {
