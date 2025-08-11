@@ -14,7 +14,6 @@ export interface IPopulationData {
   perempuan: number[];
 }
 
-// Using type aliases instead of empty interfaces
 export type IPopResData = IBaseData<IPopulationData>;
 
 export type GDPParameters = {
