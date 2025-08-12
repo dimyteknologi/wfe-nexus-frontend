@@ -1,7 +1,13 @@
+import Footer from "@/components/organisms/Footer";
+import Hero from "@/components/organisms/Hero";
+import Navigation from "@/components/organisms/Navigation";
+
 export default async function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      tes
-    </div>
+    <main className="font-sans h-screen">
+      <Navigation />
+      <Hero />
+      <Footer />
+    </main>
   );
 }
