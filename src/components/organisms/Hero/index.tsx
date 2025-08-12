@@ -20,7 +20,7 @@ const Hero = () => {
           </button>
         </div>
       </div>
-      <div className="flex flex-col justify-between gap-10 w-1/2">
+      <div className="flex flex-col justify-between items-end gap-10 w-1/2">
         <div className="w-96">
           <img src={"./assets/image-demo-1.svg"} alt="image-1" />
         </div>
