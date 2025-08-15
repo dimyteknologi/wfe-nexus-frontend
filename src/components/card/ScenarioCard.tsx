@@ -4,6 +4,7 @@ import SectionCard from "@/components/card/SectionCard";
 import InputGroup from "@/components/basic/input/InputGroup";
 
 interface SectionFactoryProps {
+  id: number;
   title: string;
   inputs: Record<string, string>;
   errors: Record<string, string>;

@@ -1,6 +1,6 @@
 const Navigation = () => {
   return (
-    <div className="h-1/12 flex justify-between items-center px-24 py-4 shadow-[0_8px_6px_-1px_rgba(0,0,0,0.2),0_2px_4px_-1px_rgba(0,0,0,0.06)]">
+    <div className="h-[10dvh] flex justify-between items-center px-24 py-4 shadow-md">
       <div className="p-2 flex justify-between gap-8 ">
         <div className="w-14">
           <img src="./assets/logo-bappenas.svg" alt="Logo" />

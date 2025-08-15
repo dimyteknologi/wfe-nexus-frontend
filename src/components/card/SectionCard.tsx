@@ -1,15 +1,34 @@
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
+
 interface ISectionCardProps {
   title: string;
   children: React.ReactNode;
 }
 
-const SectionCard = ({ title, children }: ISectionCardProps) => (
-  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-md border border-gray-100">
-    <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
-      {title}
-    </h3>
-    <div className="space-y-5">{children}</div>
-  </div>
-);
+const SectionCard = ({ title, children }: ISectionCardProps) => {
+  const [openAccordion, setOpenAccordion] = useState<boolean>(false);
+
+  const toggleAccordion = () => {
+    setOpenAccordion((current) => !current);
+  };
+
+  return (
+    <div className="mb-4 mr-3 overflow-hidden rounded-lg shadow-md bg-white">
+      <button
+        onClick={() => toggleAccordion()}
+        className="flex justify-between items-center w-full p-4 cursor-pointer bg-gray-50 hover:bg-gray-100"
+      >
+        <h2 className="font-semibold text-gray-700">{title}</h2>
+        {openAccordion ? <ChevronUp /> : <ChevronDown />}
+      </button>
+      <div
+        className={`${openAccordion ? "max-h-96" : "max-h-0"} overflow-hidden transition-all duration-200`}
+      >
+        <div className="p-4 space-y-5">{children}</div>
+      </div>
+    </div>
+  );
+};
 
 export default SectionCard;
