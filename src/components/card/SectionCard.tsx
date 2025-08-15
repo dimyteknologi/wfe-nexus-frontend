@@ -14,12 +14,12 @@ const SectionCard = ({ title, children }: ISectionCardProps) => {
   };
 
   return (
-    <div className="mb-4 mr-3 overflow-hidden rounded-lg shadow-md bg-white">
+    <div className=" mr-3 overflow-hidden rounded-lg shadow-md bg-white">
       <button
         onClick={() => toggleAccordion()}
         className="flex justify-between items-center w-full p-4 cursor-pointer bg-gray-50 hover:bg-gray-100"
       >
-        <h2 className="font-semibold text-gray-700">{title}</h2>
+        <h2 className="text-sm font-semibold text-gray-700">{title}</h2>
         {openAccordion ? <ChevronUp /> : <ChevronDown />}
       </button>
       <div
