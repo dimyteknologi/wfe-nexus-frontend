@@ -1,5 +1,5 @@
-export class Computation {
-  private static readonly ARRAY_OPERATION_TYPES = {
+class Computation {
+  public static readonly ARRAY_OPERATION_TYPES = {
     ADD: "ADD",
     MULTIPLY: "MULTIPLY",
   } as const;
@@ -16,16 +16,16 @@ export class Computation {
     return Math.round(before * (1 + growth / 100) * 100) / 100;
   }
 
-  public static calculateHistoricalProjection({
+  public static projection({
     data,
     growth,
     finalYear,
-    initialYear,
+    initialYear = 2010,
   }: {
     data: number[];
     growth: number;
     finalYear: number;
-    initialYear: number;
+    initialYear?: number;
   }): number[] {
     const result: number[] = [...data];
     let time = initialYear + result.length;
@@ -92,7 +92,7 @@ export class Computation {
     return result.map((num) => Math.round(num * 100) / 100);
   }
 
-  public static calculateGrowthRate({
+  private static calculateGrowthRate({
     before,
     current,
   }: {
@@ -117,9 +117,12 @@ export class Computation {
 
     return result;
   }
+
+  public static averageArray = (array: number[]) => {
+    return array.reduce((a, b) => a + b, 0) / array.length;
+  };
 }
 
-// Type exports for external use
 export type GrowthCalculationProps = {
   before: number;
   current: number;
@@ -143,4 +146,31 @@ export type TimeFrameAdjustmentProps = {
   initialYear?: number;
 };
 
-// export type ArrayOperationType = keyof typeof Computation.ARRAY_OPERATION_TYPES;
+export const extendTimeFrame = (data: number[], maxYear: number) =>
+  Computation.adjustTimeFrame({
+    dataYear: data,
+    finalYear: maxYear,
+  });
+
+export const dataProjection = (
+  data: number[],
+  growth: number,
+  finalYear: number,
+) =>
+  Computation.projection({
+    data: data,
+    growth: growth,
+    finalYear: finalYear,
+  });
+
+export const sumData = (data_1: number[], data_2: number[]) =>
+  Computation.computeArrays(
+    Computation.ARRAY_OPERATION_TYPES.ADD,
+    data_1,
+    data_2,
+  );
+
+export const growthRate = (data: number[]) =>
+  Computation.calculateGrowthRates(data);
+
+export const average = (data: number[]) => Computation.averageArray(data);
