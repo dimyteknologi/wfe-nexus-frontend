@@ -6,10 +6,32 @@ import { useState } from "react";
 import Navigation from "@/components/organisms/Navigation";
 import { ChevronDown, FileUp, Play, X } from "lucide-react";
 
+import Chart from "@/components/chart";
+import Table from "@/components/table";
+
+type iTableData = {
+  year: number;
+  baseline_1: number;
+  baseline_2: number;
+};
+
+const dummyData: iTableData[] = Array.from({ length: 42 }).map((_, i) => ({
+  year: new Date().getFullYear() - i,
+  baseline_1: Math.random() + 1,
+  baseline_2: Math.random() + i,
+}));
+
 const DSSPage = () => {
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
+
+
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+
+  const start = (page - 1) * pageSize;
+  const paginatedData = dummyData.slice(start, start + pageSize);
 
   const handleChange = (id: string, value: string) => {
     const newInputs = { ...inputs, [id]: value };
@@ -66,7 +88,7 @@ const DSSPage = () => {
       </div>
 
       {/* dashboard content */}
-      <div className="flex  lg:flex-row justify-between h-[80dvh] bg-gray-600  gap-2 md:gap-4">
+      <div className="flex  lg:flex-row justify-between h-[80dvh]">
         {/* scenario menu */}
         <div
           className={`${
@@ -333,10 +355,11 @@ const DSSPage = () => {
 
         {/* chart content */}
         <div
-          className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-amber-300 min-h-[70vh] lg:min-h-[80dvh] `}
+
+          className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white min-h-[70vh] lg:min-h-[80dvh] `}
         >
           <div
-            className={`w-full bg-amber-600 h-[70vh] sm:h-[80vh] lg:h-[80dvh] p-2 sm:p-3 md:p-4 overflow-auto lg:overflow-visible ${
+            className={`w-full h-[70vh] sm:h-[80vh] lg:h-[80dvh] p-2 sm:p-3 md:p-4 overflow-auto lg:overflow-visible ${
               isScenarioOpen
                 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"
@@ -345,19 +368,61 @@ const DSSPage = () => {
             {[...Array(4)].map((_, index) => (
               <div
                 key={index}
-                className={`w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-blue-400 rounded-lg ${
+                className={`w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg ${
                   isScenarioOpen
                     ? "sm:col-span-1 xl:col-span-3"
                     : "sm:col-span-1  lg:col-span-3"
                 }`}
               >
-                GRAFIK
+
+                <Chart
+                  title="Random Data"
+                  type="line"
+                  content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                  Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                  series={[
+                    { name: "Baseline 1", data: [0, 0, 0, 0, 11, 22, 22, 33] },
+                    { name: "Baseline 2", data: [0, 0, 0, 0, 10, 20, 30, 40] },
+                  ]}
+                  categories={[
+                    "2010",
+                    "2011",
+                    "2012",
+                    "2013",
+                    "2014",
+                    "2015",
+                    "2016",
+                    "2017",
+                    "2018",
+                    "2019",
+                    "2020",
+                    "2021",
+                    "2022",
+                  ]}
+                  height={200}
+                  colors={["#1E90FF", "#33A1E0"]}
+                />
+
               </div>
             ))}
 
             {!isScenarioOpen && (
-              <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-blue-400 rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7">
-                TABEL
+              <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7">
+                <Table<iTableData>
+                  columns={[
+                    { key: "year", label: "Tahun", className: "w-16" },
+                    { key: "baseline_1", label: "Baseline 1" },
+                    { key: "baseline_2", label: "Baseline 2" },
+                  ]}
+                  data={paginatedData}
+                  page={page}
+                  pageSize={pageSize}
+                  total={dummyData.length}
+                  onPageChange={setPage}
+                />
               </div>
             )}
           </div>
