@@ -5,6 +5,7 @@ import InputGroup from "@/components/basic/input/InputGroup";
 import { useState } from "react";
 import Navigation from "@/components/organisms/Navigation";
 import { ChevronDown, FileUp, Play, X } from "lucide-react";
+
 import Chart from "@/components/chart";
 import Table from "@/components/table";
 
@@ -24,6 +25,7 @@ const DSSPage = () => {
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
+
 
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -353,6 +355,7 @@ const DSSPage = () => {
 
         {/* chart content */}
         <div
+
           className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white min-h-[70vh] lg:min-h-[80dvh] `}
         >
           <div
@@ -371,6 +374,7 @@ const DSSPage = () => {
                     : "sm:col-span-1  lg:col-span-3"
                 }`}
               >
+
                 <Chart
                   title="Random Data"
                   type="line"
@@ -401,6 +405,7 @@ const DSSPage = () => {
                   height={200}
                   colors={["#1E90FF", "#33A1E0"]}
                 />
+
               </div>
             ))}
 

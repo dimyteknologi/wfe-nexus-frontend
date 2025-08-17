@@ -1,3 +1,7 @@
+
+import Link from "next/link";
+
+
 const Navigation = () => {
   return (
     <div className="h-[10dvh] flex justify-between items-center px-24 py-4 shadow-md">
@@ -14,9 +18,13 @@ const Navigation = () => {
       </div>
       <nav className="p-2">
         <ul className="flex justify-between gap-10">
-          <li>Home</li>
+          <li>
+            <Link href={"/"}>Home</Link>
+          </li>
           <li>About</li>
-          <li>DSS Interface</li>
+          <li>
+            <Link href={"/dss-interface"}>DSS Interface</Link>
+          </li>
           <li>Account</li>
         </ul>
       </nav>
