@@ -10,3 +10,11 @@ const getGdpUnit = selectData(gdpData.data, TYPE_DATA_SELECT.SELECT_UNIT);
 const getGdpYear = selectData(gdpData.data, TYPE_DATA_SELECT.SELECT_YEAR);
 
 const getGdpData = selectData(gdpData.data, TYPE_DATA_SELECT.SELECT_PARAMETERS);
+
+const inputFormData = [
+  {
+    title: "Agriculture",
+    label: "Growth scenario [%/year]",
+  },
+  {},
+];

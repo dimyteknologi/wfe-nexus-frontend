@@ -26,7 +26,6 @@ const DSSPage = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
 
-
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
@@ -198,156 +197,9 @@ const DSSPage = () => {
             </div>
           </div>
           <div className="w-full">
-            <div className=" pl-2 sm:pl-4 mt-2 relative max-h-[calc(70dvh-100px)] overflow-y-auto w-full">
+            <div className="pl-2 sm:pl-4 mt-2 relative max-h-[calc(70dvh-100px)] overflow-y-auto w-full">
               <div className="grid grid-cols-1 gap-2 sm:gap-3 md:gap-4 pb-8">
-                <SectionCard title="Agriculture">
-                  <InputGroup
-                    label="Growth scenario [%/year]"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={(id, value) => {
-                      handleChange(id, value);
-                      const err = validatePercentage(value);
-                      if (err) setErrors((prev) => ({ ...prev, [id]: err }));
-                    }}
-                    values={inputs}
-                    errors={errors}
-                  />
-                  <InputGroup
-                    label="Agriculture land conversion [%/year]"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={(id, value) => {
-                      handleChange(id, value);
-                      const err = validatePercentage(value);
-                      if (err) setErrors((prev) => ({ ...prev, [id]: err }));
-                    }}
-                    values={inputs}
-                    errors={errors}
-                  />
-                </SectionCard>
-
-                <SectionCard title="Livestock">
-                  <InputGroup
-                    label="Livestock growth: Cattle [%/year]"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={handleChange}
-                    values={inputs}
-                    errors={errors}
-                  />
-                  <InputGroup
-                    label="Livestock growth: Poultry [%/year]"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={handleChange}
-                    values={inputs}
-                    errors={errors}
-                  />
-                  <InputGroup
-                    label="Livestock growth: Goat [%/year]"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={handleChange}
-                    values={inputs}
-                    errors={errors}
-                  />
-                </SectionCard>
-
-                <SectionCard title="Energy">
-                  <InputGroup
-                    label="Solar PV Coverage (%)"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={(id, value) => {
-                      handleChange(id, value);
-                      const err = validatePercentage(value);
-                      if (err) setErrors((prev) => ({ ...prev, [id]: err }));
-                    }}
-                    values={inputs}
-                    errors={errors}
-                  />
-                  <InputGroup
-                    label="Solar PV Area Percentage on Industrial (%)"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={(id, value) => {
-                      handleChange(id, value);
-                      const err = validatePercentage(value);
-                      if (err) setErrors((prev) => ({ ...prev, [id]: err }));
-                    }}
-                    values={inputs}
-                    errors={errors}
-                  />
-                  <InputGroup
-                    label="Solar PV Area Percentage on Housing (%)"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={(id, value) => {
-                      handleChange(id, value);
-                      const err = validatePercentage(value);
-                      if (err) setErrors((prev) => ({ ...prev, [id]: err }));
-                    }}
-                    values={inputs}
-                    errors={errors}
-                  />
-                </SectionCard>
-
-                <SectionCard title="Industry">
-                  <InputGroup
-                    label="Industrial growth scenario [%/year]"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={(id, value) => {
-                      handleChange(id, value);
-                      const err = validatePercentage(value);
-                      if (err) setErrors((prev) => ({ ...prev, [id]: err }));
-                    }}
-                    values={inputs}
-                    errors={errors}
-                  />
-                </SectionCard>
-
-                <SectionCard title="Water Management">
-                  <InputGroup
-                    label="Aquaculture land growth [%/year]"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={(id, value) => {
-                      handleChange(id, value);
-                      const err = validatePercentage(value);
-                      if (err) setErrors((prev) => ({ ...prev, [id]: err }));
-                    }}
-                    values={inputs}
-                    errors={errors}
-                  />
-                  <InputGroup
-                    label="Artificial Pond Percentage in Industrial Area (%)"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={(id, value) => {
-                      handleChange(id, value);
-                      const err = validatePercentage(value);
-                      if (err) setErrors((prev) => ({ ...prev, [id]: err }));
-                    }}
-                    values={inputs}
-                    errors={errors}
-                  />
-                  <InputGroup
-                    label="Artificial Pond Percentage in Housing Area (%)"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={(id, value) => {
-                      handleChange(id, value);
-                      const err = validatePercentage(value);
-                      if (err) setErrors((prev) => ({ ...prev, [id]: err }));
-                    }}
-                    values={inputs}
-                    errors={errors}
-                  />
-                </SectionCard>
-
-                <SectionCard title="Demography">
-                  <InputGroup
-                    label="Population Growth [%/year]"
-                    periods={["1990-1999", "2000-2010", "2011-2020"]}
-                    onChange={(id, value) => {
-                      handleChange(id, value);
-                      const err = validatePercentage(value);
-                      if (err) setErrors((prev) => ({ ...prev, [id]: err }));
-                    }}
-                    values={inputs}
-                    errors={errors}
-                  />
-                </SectionCard>
+                {renderSectionCards()}
               </div>
             </div>
           </div>
@@ -355,7 +207,6 @@ const DSSPage = () => {
 
         {/* chart content */}
         <div
-
           className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white min-h-[70vh] lg:min-h-[80dvh] `}
         >
           <div
@@ -374,7 +225,6 @@ const DSSPage = () => {
                     : "sm:col-span-1  lg:col-span-3"
                 }`}
               >
-
                 <Chart
                   title="Random Data"
                   type="line"
@@ -405,7 +255,6 @@ const DSSPage = () => {
                   height={200}
                   colors={["#1E90FF", "#33A1E0"]}
                 />
-
               </div>
             ))}
 
