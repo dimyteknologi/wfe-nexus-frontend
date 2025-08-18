@@ -119,7 +119,8 @@ class Computation {
   }
 
   public static averageArray = (array: number[]) => {
-    return array.reduce((a, b) => a + b, 0) / array.length;
+    const newArray = array.slice(1);
+    return newArray.reduce((a, b) => a + b, 0) / array.length;
   };
 }
 

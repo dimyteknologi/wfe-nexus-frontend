@@ -1,4 +1,4 @@
-import fetchDashboardData from "../api/fetchAllData";
+import fetchDashboardData from "../api/fetchDashboardData";
 import { selectData, TYPE_DATA_SELECT } from "../utils/selectData";
 
 const { populationData } = await fetchDashboardData();

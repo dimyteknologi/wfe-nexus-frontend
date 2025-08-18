@@ -6,15 +6,15 @@ import InputGroup from "@/components/basic/input/InputGroup";
 interface SectionFactoryProps {
   id: number;
   title: string;
-  inputs: Record<string, string>;
+  inputs: Record<string, number>;
   errors: Record<string, string>;
   fields: {
     label: string;
     periods: string[];
     requiresPercentageValidation?: boolean;
   }[];
-  onChange: (id: string, value: string) => void;
-  validatePercentage: (value: string) => string | undefined;
+  onChange: (id: string, value: number | string) => void;
+  validatePercentage: (value: number) => string | undefined;
 }
 
 const ScenarioCard = ({

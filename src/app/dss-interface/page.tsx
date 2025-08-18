@@ -1,13 +1,16 @@
 "use client";
 
-import SectionCard from "@/components/card/SectionCard";
-import InputGroup from "@/components/basic/input/InputGroup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navigation from "@/components/organisms/Navigation";
 import { ChevronDown, FileUp, Play, X } from "lucide-react";
 
 import Chart from "@/components/chart";
 import Table from "@/components/table";
+import FormContainer from "@/components/organisms/DSSInput/DSSInput";
+import { sections } from "@/lib/data/dataDummies";
+
+import { InitialValues } from "@/lib/types/dss-input.dummy.types";
+import { ProcessedGdpData, processGdpData } from "@/lib/data/economic.data";
 
 type iTableData = {
   year: number;
@@ -22,7 +25,51 @@ const dummyData: iTableData[] = Array.from({ length: 42 }).map((_, i) => ({
 }));
 
 const DSSPage = () => {
-  const [inputs, setInputs] = useState<Record<string, string>>({});
+  // console.log(process.env.NEXT_PUBLIC_API_URL);
+  // const [data, setData] = useState<ProcessedGdpData | null>(null);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
+
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     try {
+  //       const processedData = await processGdpData();
+  //       setData(processedData);
+  //     } catch (err) {
+  //       setError(err instanceof Error ? err.message : "Unknown error");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   loadData();
+  // }, []);
+
+  // if (error) {
+  //   return (
+  //     <div className="alert alert-error">
+  //       <h3>Data tidak dapat dimuat</h3>
+  //       <p>Error: {error}</p>
+  //     </div>
+  //   );
+  // }
+
+  // if (loading) {
+  //   return (
+  //     <div className="">
+  //       <p>Error: {loading}</p>
+  //     </div>
+  //   );
+  // }
+
+  // const average_base_agriculture_growth = data?.averageGdpCategoryA!;
+  // const initialValues: InitialValues = {
+  //   "agriculture-growth-2025-2030": average_base_agriculture_growth,
+  //   "agriculture-growth-2031-2040": average_base_agriculture_growth,
+  //   "agriculture-growth-2041-2045": average_base_agriculture_growth,
+  // };
+
+  const [inputs, setInputs] = useState<Record<string, number>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
 
@@ -32,7 +79,7 @@ const DSSPage = () => {
   const start = (page - 1) * pageSize;
   const paginatedData = dummyData.slice(start, start + pageSize);
 
-  const handleChange = (id: string, value: string) => {
+  const handleChange = (id: string, value: number) => {
     const newInputs = { ...inputs, [id]: value };
     setInputs(newInputs);
 
@@ -52,14 +99,12 @@ const DSSPage = () => {
     setErrors(newErrors);
   };
 
-  const validatePercentage = (value: string) => {
-    const num = Number(value);
-    if (num < 0 || num > 100) {
-      return "Harus antara 0-100";
-    }
-    return;
+  const validatePercentage = (value: number): string | undefined => {
+    const num = value;
+    if (isNaN(num)) return "Must be a number";
+    if (num < -100 || num > 100) return "Must be between -100% and 100%";
+    return undefined;
   };
-
   const handleOpenScenarioTab = () => {
     setIsScenarioOpen((current) => !current);
   };
@@ -196,13 +241,13 @@ const DSSPage = () => {
               </div>
             </div>
           </div>
-          <div className="w-full">
-            <div className="pl-2 sm:pl-4 mt-2 relative max-h-[calc(70dvh-100px)] overflow-y-auto w-full">
-              <div className="grid grid-cols-1 gap-2 sm:gap-3 md:gap-4 pb-8">
-                {renderSectionCards()}
-              </div>
-            </div>
-          </div>
+          <FormContainer
+            inputs={inputs}
+            errors={errors}
+            handleChange={handleChange}
+            validatePercentage={validatePercentage}
+            sections={sections}
+          />
         </div>
 
         {/* chart content */}
