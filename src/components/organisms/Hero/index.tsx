@@ -1,6 +1,6 @@
 const Hero = () => {
   return (
-    <div className="h-10/12 mx-24 flex justify-between items-center">
+    <div className="h-[85dvh] mx-24 flex justify-between items-center">
       <div className="flex flex-col justify-center h-full">
         <div className="flex flex-col gap-4 ">
           <p className="text-4xl">WFE NEXUS</p>

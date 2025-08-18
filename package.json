@@ -13,12 +13,15 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "apexcharts": "^5.3.3",
     "lucide-react": "^0.539.0",
     "next": "15.4.5",
+    "next-redux-wrapper": "^8.1.0",
     "react": "19.1.0",
     "react-apexcharts": "^1.7.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -26,11 +29,14 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-redux": "^7.1.34",
+    "@types/redux-logger": "^3.0.13",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
+    "redux-logger": "^3.0.6",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

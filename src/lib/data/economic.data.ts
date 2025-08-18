@@ -1,5 +1,5 @@
 import fetchDashboardData from "../api/fetchDashboardData";
-import { average, dataProjection } from "../utils/formulas";
+import { average, dataProjection, growthRate } from "../utils/formulas";
 import { selectData, TYPE_DATA_SELECT } from "../utils/selectData";
 
 export interface GdpData {
@@ -12,12 +12,16 @@ export interface GdpData {
 }
 
 export interface ProcessedGdpData {
-  gdpCategoryA: number[];
-  averageGdpCategoryA: number;
   meta: {
     label: string;
     unit: string;
     year: number[];
+  };
+  average: {
+    growth_average_gdp_category_a: number;
+  };
+  baseline: {
+    gdp_kategori_a: number[];
   };
 }
 
@@ -49,13 +53,27 @@ export async function processGdpData(): Promise<ProcessedGdpData> {
     const gdpCategoryA =
       getGdpData["A.Pertanian, Kehutanan, dan Perikanan"] || [];
 
-    return {
+    const growtGdpCategoryA = growthRate(gdpCategoryA);
+
+    const averageGdpCategoryA = average(growtGdpCategoryA);
+
+    const proyeksi_gdp_kategori_a_baseline = dataProjection(
       gdpCategoryA,
-      averageGdpCategoryA: average(gdpCategoryA),
+      averageGdpCategoryA,
+      2045,
+    );
+
+    return {
+      average: {
+        growth_average_gdp_category_a: averageGdpCategoryA,
+      },
       meta: {
         label: getGdpLabel,
         unit: getGdpUnit,
         year: getGdpYear,
+      },
+      baseline: {
+        gdp_kategori_a: proyeksi_gdp_kategori_a_baseline,
       },
     };
   } catch (error) {

@@ -9,8 +9,13 @@ import Table from "@/components/table";
 import FormContainer from "@/components/organisms/DSSInput/DSSInput";
 import { sections } from "@/lib/data/dataDummies";
 
+import { updateNilai } from "@/store/dss-input/dss-input.reducer";
+import { useDispatch } from "react-redux";
+import { processGdpData } from "@/lib/data/economic.data";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import DSSHeader from "@/components/organisms/DSSHeader/DSSHeader";
 import { InitialValues } from "@/lib/types/dss-input.dummy.types";
-import { ProcessedGdpData, processGdpData } from "@/lib/data/economic.data";
 
 type iTableData = {
   year: number;
@@ -25,53 +30,75 @@ const dummyData: iTableData[] = Array.from({ length: 42 }).map((_, i) => ({
 }));
 
 const DSSPage = () => {
-  // console.log(process.env.NEXT_PUBLIC_API_URL);
-  // const [data, setData] = useState<ProcessedGdpData | null>(null);
-  // const [loading, setLoading] = useState<boolean>(true);
-  // const [error, setError] = useState<string | null>(null);
+  const [inputs, setInputs] = useState<Record<string, number>>({
+    "agriculture-growth-2025-2030": 0,
+    "agriculture-growth-2031-2040": 0,
+    "agriculture-growth-2041-2045": 0,
+  });
 
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     try {
-  //       const processedData = await processGdpData();
-  //       setData(processedData);
-  //     } catch (err) {
-  //       setError(err instanceof Error ? err.message : "Unknown error");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  const agricultureData = useSelector((state: RootState) =>
+    state.simulasi.find((sektor) => sektor.sektor === "AGRICULTURE"),
+  );
 
-  //   loadData();
-  // }, []);
+  const baselineSkenario = agricultureData?.skenario.find(
+    (s) => s.nama === "baseline",
+  );
 
-  // if (error) {
-  //   return (
-  //     <div className="alert alert-error">
-  //       <h3>Data tidak dapat dimuat</h3>
-  //       <p>Error: {error}</p>
-  //     </div>
-  //   );
-  // }
+  useEffect(() => {
+    if (baselineSkenario) {
+      const newInputs = { ...inputs };
 
-  // if (loading) {
-  //   return (
-  //     <div className="">
-  //       <p>Error: {loading}</p>
-  //     </div>
-  //   );
-  // }
+      baselineSkenario.data.forEach((data) => {
+        if (data.periode === "2025-2030") {
+          newInputs["agriculture-growth-2025-2030"] = data.nilai;
+        } else if (data.periode === "2031-2040") {
+          newInputs["agriculture-growth-2031-2040"] = data.nilai;
+        } else if (data.periode === "2041-2045") {
+          newInputs["agriculture-growth-2041-2045"] = data.nilai;
+        }
+      });
 
-  // const average_base_agriculture_growth = data?.averageGdpCategoryA!;
-  // const initialValues: InitialValues = {
-  //   "agriculture-growth-2025-2030": average_base_agriculture_growth,
-  //   "agriculture-growth-2031-2040": average_base_agriculture_growth,
-  //   "agriculture-growth-2041-2045": average_base_agriculture_growth,
-  // };
+      setInputs(newInputs);
+    }
+  }, [baselineSkenario]);
 
-  const [inputs, setInputs] = useState<Record<string, number>>({});
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getAgricultureData = async () => {
+      const gdpData = await processGdpData();
+      const initialInputAgriculture =
+        gdpData.average.growth_average_gdp_category_a;
+      dispatch(
+        updateNilai({
+          sektor: "AGRICULTURE",
+          periode: "2025-2030",
+          nilai: initialInputAgriculture,
+          namaSkenario: "baseline",
+        }),
+      );
+      dispatch(
+        updateNilai({
+          sektor: "AGRICULTURE",
+          periode: "2031-2040",
+          nilai: initialInputAgriculture,
+          namaSkenario: "baseline",
+        }),
+      );
+      dispatch(
+        updateNilai({
+          sektor: "AGRICULTURE",
+          periode: "2041-2045",
+          nilai: initialInputAgriculture,
+          namaSkenario: "baseline",
+        }),
+      );
+    };
+    getAgricultureData();
+  });
+
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
+  const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(false);
 
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -110,29 +137,14 @@ const DSSPage = () => {
   };
 
   return (
-    <div className="max-h-[100dvh] w-full overflow-hidden">
-      <Navigation />
-      {/* dashboard menu */}
-      <div className="flex max-h-[5dvh] my-2 sm:my-4 justify-between items-center px-8">
-        <div>
-          <button
-            className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm text-white font-bold ${
-              isScenarioOpen ? "bg-green-700" : "bg-green-600"
-            }`}
-            onClick={handleOpenScenarioTab}
-          >
-            Scenario Menu
-          </button>
-        </div>
-        <div>
-          <button className="cursor-not-allowed" disabled>
-            <FileUp className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
-        </div>
-      </div>
+    <>
+      <DSSHeader
+        isScenarioOpen={isScenarioOpen}
+        handleOpenScenarioTab={handleOpenScenarioTab}
+      />
 
       {/* dashboard content */}
-      <div className="flex  lg:flex-row justify-between h-[80dvh]">
+      <div className="flex lg:flex-row justify-between h-[75dvh]">
         {/* scenario menu */}
         <div
           className={`${
@@ -252,10 +264,10 @@ const DSSPage = () => {
 
         {/* chart content */}
         <div
-          className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white min-h-[70vh] lg:min-h-[80dvh] `}
+          className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white min-h-[70vh]  `}
         >
           <div
-            className={`w-full h-[70vh] sm:h-[80vh] lg:h-[80dvh] p-2 sm:p-3 md:p-4 overflow-auto lg:overflow-visible ${
+            className={`w-full h-[70vh] sm:h-[80vh] p-2 sm:p-3 md:p-4 overflow-auto lg:overflow-visible ${
               isScenarioOpen
                 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"
@@ -322,7 +334,7 @@ const DSSPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
