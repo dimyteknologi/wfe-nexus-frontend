@@ -73,7 +73,6 @@ const DSSPage = () => {
   );
   const projectionData = useAppSelector(selectProjectionData); // Skenario aktif/terbaru
   const savedScenarios = useAppSelector((state) => state.scenarios.scenarios);
-
   const debouncedSimulationState = useDebounce(simulationState, 750);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
@@ -113,7 +112,9 @@ const DSSPage = () => {
   }, [simulationState]);
 
   const derivedMetrics: DerivedMetrics | null = useMemo(() => {
-    if (!projectionData || !historicalPopulationData) return null;
+    if (!projectionData || !historicalGdpData || !historicalPopulationData) {
+      return null;
+    }
 
     const baselineForMenu = {
       ...generateHistoricalProjection(historicalGdpData),
@@ -121,12 +122,50 @@ const DSSPage = () => {
     };
     const allAvailableScenarios = [baselineForMenu, ...savedScenarios];
 
-    const scenarioA_Data = allAvailableScenarios.find(
-      (s) => s.simulationName === simulationState.scenario_a,
+    // const scenarioA_Data = allAvailableScenarios.find(
+    //   (s) => s.simulationName === simulationState.scenario_a,
+    // );
+    // const scenarioB_Data = allAvailableScenarios.find(
+    //   (s) => s.simulationName === simulationState.scenario_b,
+    // );
+
+    const baselineName = "Baseline (Historical Projection)";
+
+    const scenarioA_Recipe = savedScenarios.find(
+      (s: SimulationState) => s.simulationName === simulationState.scenario_a,
     );
-    const scenarioB_Data = allAvailableScenarios.find(
-      (s) => s.simulationName === simulationState.scenario_b,
+    const scenarioB_Recipe = savedScenarios.find(
+      (s: SimulationState) => s.simulationName === simulationState.scenario_b,
     );
+
+    let scenarioA_ProjectionData: IGDPResData | null = null;
+    if (simulationState.scenario_a) {
+      if (simulationState.scenario_a === baselineName) {
+        // Jika yang dipilih adalah baseline, ia sudah "matang"
+        scenarioA_ProjectionData =
+          generateHistoricalProjection(historicalGdpData);
+      } else if (scenarioA_Recipe) {
+        // Jika resep ditemukan, "masak" sekarang
+        scenarioA_ProjectionData = generateScenarioProjection(
+          historicalGdpData,
+          scenarioA_Recipe,
+        );
+      }
+    }
+
+    // Ulangi proses yang sama untuk Skenario B
+    let scenarioB_ProjectionData: IGDPResData | null = null;
+    if (simulationState.scenario_b) {
+      if (simulationState.scenario_b === baselineName) {
+        scenarioB_ProjectionData =
+          generateHistoricalProjection(historicalGdpData);
+      } else if (scenarioB_Recipe) {
+        scenarioB_ProjectionData = generateScenarioProjection(
+          historicalGdpData,
+          scenarioB_Recipe,
+        );
+      }
+    }
 
     const getMetricsFromProjection = (
       scenario: IGDPResData,
@@ -152,16 +191,21 @@ const DSSPage = () => {
         gdrpPerCapita,
       };
     };
-
     const activeMetrics = getMetricsFromProjection(
       projectionData,
       simulationState,
     );
-    const metricsA = scenarioA_Data
-      ? getMetricsFromProjection(scenarioA_Data, scenarioA_Data)
+    const metricsA = scenarioA_ProjectionData
+      ? getMetricsFromProjection(
+          scenarioA_ProjectionData,
+          scenarioA_Recipe || historicalGdpData,
+        )
       : null;
-    const metricsB = scenarioB_Data
-      ? getMetricsFromProjection(scenarioB_Data, scenarioB_Data)
+    const metricsB = scenarioB_ProjectionData
+      ? getMetricsFromProjection(
+          scenarioB_ProjectionData,
+          scenarioB_Recipe || historicalGdpData,
+        )
       : null;
 
     const years = projectionData.tahun.map(String);
