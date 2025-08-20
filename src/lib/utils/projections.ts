@@ -1,4 +1,9 @@
-import { GDPParameters, IGDPResData } from "@/lib/types/response";
+import {
+  GDPParameters,
+  IGDPResData,
+  IPopResData,
+  IPopulationData,
+} from "@/lib/types/response";
 import { Computation } from "./formulas";
 import {
   BaselinePayload,
@@ -97,6 +102,66 @@ const getInputsForCategory = (
   }
 
   return null;
+};
+
+export const generatePopulationProjection = (
+  historicalData: IPopResData | null,
+  simulationState: SimulationState | null,
+  finalYear: number = 2045,
+): number[] => {
+  // Jika data tidak lengkap, kembalikan array kosong
+  if (!historicalData?.parameters || !simulationState?.demography) {
+    return [];
+  }
+
+  // Gabungkan data laki-laki dan perempuan untuk mendapatkan total historis
+  const malePop = historicalData.parameters["laki"] ?? [];
+  const femalePop = historicalData.parameters["perempuan"] ?? [];
+  const totalHistoricalPopulation = Computation.computeArrays(
+    "ADD",
+    malePop.map((p) => p ?? 0),
+    femalePop.map((p) => p ?? 0),
+  );
+
+  // Ambil input skenario pertumbuhan populasi dari pengguna
+  const scenarioInputs = simulationState.demography.populationGrowth;
+
+  // Lakukan proyeksi bertahap
+  const growthRates = Computation.calculateGrowthRates(
+    totalHistoricalPopulation,
+  );
+  const averageGrowth = Computation.averageArray(growthRates);
+  const initialYear = historicalData.tahun[0];
+
+  // Proyeksi tahun kosong (2024) menggunakan rata-rata historis
+  let currentProjection = Computation.projection({
+    data: totalHistoricalPopulation,
+    growth: averageGrowth * 100,
+    finalYear: 2024,
+    initialYear,
+  });
+
+  // Proyeksi selanjutnya menggunakan input dari pengguna
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2025-2030"] ?? 0,
+    finalYear: 2030,
+    initialYear,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2031-2040"] ?? 0,
+    finalYear: 2040,
+    initialYear,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2041-2045"] ?? 0,
+    finalYear: 2045,
+    initialYear,
+  });
+
+  return currentProjection;
 };
 
 export const processAllGdpData = (

@@ -1,11 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
-import {
-  updateValue,
-  saveSimulation,
-  SimulationState,
-} from "@/stores/slicers/dssInputSlicer";
-import { loadScenarios } from "@/stores/slicers/dssScenarioSlicer";
+import { updateValue, SimulationState } from "@/stores/slicers/dssInputSlicer";
+import { addScenario, loadScenarios } from "@/stores/slicers/dssScenarioSlicer";
 import { X, Play, ChevronDown } from "lucide-react";
 
 interface ScenarioMenuProps {
@@ -38,7 +34,8 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
 
   const handleSaveSimulation = () => {
     if (Object.keys(errors).length === 0) {
-      dispatch(saveSimulation());
+      dispatch(addScenario(simulationState));
+      alert("Sukses Menyimpan Data!");
     } else {
       alert("Terdapat error pada input parameter, periksa kembali");
     }

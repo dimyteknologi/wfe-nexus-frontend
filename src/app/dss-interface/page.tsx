@@ -14,6 +14,7 @@ import { validateParameters } from "@/lib/utils/validation";
 import {
   extractAverageGrowthRates,
   generateHistoricalProjection,
+  generatePopulationProjection,
   generateScenarioProjection,
   processAllGdpData,
 } from "@/lib/utils/projections";
@@ -23,7 +24,10 @@ import {
   selectProjectionData,
 } from "@/stores/slicers/dssProjectionSlicer";
 import { Computation } from "@/lib/utils/formulas";
-import { populateInputsWithBaseline } from "@/stores/slicers/dssInputSlicer";
+import {
+  populateInputsWithBaseline,
+  SimulationState,
+} from "@/stores/slicers/dssInputSlicer";
 import { IGDPResData } from "@/lib/types/response";
 
 interface ChartSeries {
@@ -74,7 +78,6 @@ const DSSPage = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
 
-  // form input
   useEffect(() => {
     if (historicalGdpData && !projectionData) {
       const baselineProjection =
@@ -101,8 +104,6 @@ const DSSPage = () => {
     const menuErrors: Record<string, string> = {};
     if (!simulationState.simulationName)
       menuErrors.simulationName = "Nama simulasi wajib diisi.";
-    if (!simulationState.scenario_a)
-      menuErrors.scenario_a = "Skenario A wajib dipilih.";
 
     const parameterErrors = validateParameters(simulationState);
     setErrors({ ...menuErrors, ...parameterErrors });
@@ -111,35 +112,27 @@ const DSSPage = () => {
   const derivedMetrics: DerivedMetrics | null = useMemo(() => {
     if (!projectionData || !historicalPopulationData) return null;
 
-    const allAvailableScenarios = [
-      ...(projectionData.tabel.includes("Baseline") ? [projectionData] : []),
-      ...savedScenarios,
-    ];
+    const baselineForMenu = {
+      ...generateHistoricalProjection(historicalGdpData),
+      simulationName: "Baseline (Historical Projection)",
+    };
+    const allAvailableScenarios = [baselineForMenu, ...savedScenarios];
 
     const scenarioA_Data = allAvailableScenarios.find(
-      (s) => s.tabel === simulationState.scenario_a,
+      (s) => s.simulationName === simulationState.scenario_a,
     );
     const scenarioB_Data = allAvailableScenarios.find(
-      (s) => s.tabel === simulationState.scenario_b,
+      (s) => s.simulationName === simulationState.scenario_b,
     );
 
-    const calculateMetricsForScenario = (scenario: IGDPResData) => {
-      const malePop = historicalPopulationData.parameters["laki"] ?? [];
-      const femalePop = historicalPopulationData.parameters["perempuan"] ?? [];
-      const totalHistoricalPopulation = Computation.computeArrays(
-        "ADD",
-        malePop.map((p: number) => p ?? 0),
-        femalePop.map((p: number) => p ?? 0),
+    const getMetricsFromProjection = (
+      scenario: IGDPResData,
+      simState: SimulationState,
+    ) => {
+      const population = generatePopulationProjection(
+        historicalPopulationData,
+        simState,
       );
-
-      const population = Computation.projection({
-        data: totalHistoricalPopulation,
-        growth: Computation.averageArray(
-          Computation.calculateGrowthRates(totalHistoricalPopulation),
-        ),
-        finalYear: projectionData.tahun[projectionData.tahun.length - 1],
-        initialYear: historicalPopulationData.tahun[0],
-      });
       const gdrpTotal =
         scenario.parameters["Produk Domestik Regional Bruto"] ?? [];
       const gdrpInBillions = gdrpTotal.map((v) => (v ? v / 1000 : 0));
@@ -157,12 +150,15 @@ const DSSPage = () => {
       };
     };
 
-    const activeMetrics = calculateMetricsForScenario(projectionData);
+    const activeMetrics = getMetricsFromProjection(
+      projectionData,
+      simulationState,
+    );
     const metricsA = scenarioA_Data
-      ? calculateMetricsForScenario(scenarioA_Data)
+      ? getMetricsFromProjection(scenarioA_Data, scenarioA_Data)
       : null;
     const metricsB = scenarioB_Data
-      ? calculateMetricsForScenario(scenarioB_Data)
+      ? getMetricsFromProjection(scenarioB_Data, scenarioB_Data)
       : null;
 
     const years = projectionData.tahun.map(String);
@@ -217,7 +213,7 @@ const DSSPage = () => {
       },
       {
         id: "population",
-        title: "Population (People)",
+        title: "Population [people]",
         type: "line",
         series: [
           {
@@ -245,7 +241,7 @@ const DSSPage = () => {
       {
         id: "gdrpPerCapita",
         title: "GDRP Per capita [Milion Rp/cap/year]",
-        type: "line",
+        type: "bar",
         series: [
           { name: projectionData.tabel, data: activeMetrics.gdrpPerCapita },
           ...(metricsA
@@ -272,8 +268,7 @@ const DSSPage = () => {
   }, [
     projectionData,
     historicalPopulationData,
-    simulationState.scenario_a,
-    simulationState.scenario_b,
+    simulationState,
     savedScenarios,
   ]);
 
