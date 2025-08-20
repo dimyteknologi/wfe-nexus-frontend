@@ -109,12 +109,10 @@ export const generatePopulationProjection = (
   simulationState: SimulationState | null,
   finalYear: number = 2045,
 ): number[] => {
-  // Jika data tidak lengkap, kembalikan array kosong
   if (!historicalData?.parameters || !simulationState?.demography) {
     return [];
   }
 
-  // Gabungkan data laki-laki dan perempuan untuk mendapatkan total historis
   const malePop = historicalData.parameters["laki"] ?? [];
   const femalePop = historicalData.parameters["perempuan"] ?? [];
   const totalHistoricalPopulation = Computation.computeArrays(
@@ -123,25 +121,21 @@ export const generatePopulationProjection = (
     femalePop.map((p) => p ?? 0),
   );
 
-  // Ambil input skenario pertumbuhan populasi dari pengguna
   const scenarioInputs = simulationState.demography.populationGrowth;
 
-  // Lakukan proyeksi bertahap
   const growthRates = Computation.calculateGrowthRates(
     totalHistoricalPopulation,
   );
   const averageGrowth = Computation.averageArray(growthRates);
   const initialYear = historicalData.tahun[0];
 
-  // Proyeksi tahun kosong (2024) menggunakan rata-rata historis
   let currentProjection = Computation.projection({
     data: totalHistoricalPopulation,
-    growth: averageGrowth * 100,
+    growth: averageGrowth,
     finalYear: 2024,
     initialYear,
   });
 
-  // Proyeksi selanjutnya menggunakan input dari pengguna
   currentProjection = Computation.projection({
     data: currentProjection,
     growth: scenarioInputs["2025-2030"] ?? 0,

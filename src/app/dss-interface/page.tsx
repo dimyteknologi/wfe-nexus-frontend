@@ -71,13 +71,14 @@ const DSSPage = () => {
   const historicalPopulationData = useAppSelector(
     (state) => state.population.data,
   );
-  const projectionData = useAppSelector(selectProjectionData);
+  const projectionData = useAppSelector(selectProjectionData); // Skenario aktif/terbaru
   const savedScenarios = useAppSelector((state) => state.scenarios.scenarios);
 
   const debouncedSimulationState = useDebounce(simulationState, 750);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
 
+  // Efek untuk kalkulasi baseline awal dan mengisi form
   useEffect(() => {
     if (historicalGdpData && !projectionData) {
       const baselineProjection =
@@ -91,6 +92,7 @@ const DSSPage = () => {
     }
   }, [historicalGdpData, projectionData, dispatch]);
 
+  // Efek untuk kalkulasi ulang proyeksi dinamis berdasarkan input
   useEffect(() => {
     if (!historicalGdpData || !debouncedSimulationState.simulationName) return;
     const scenarioProjection = generateScenarioProjection(
@@ -100,6 +102,7 @@ const DSSPage = () => {
     if (scenarioProjection) dispatch(setProjectionResult(scenarioProjection));
   }, [debouncedSimulationState, historicalGdpData, dispatch]);
 
+  // Efek untuk validasi (dengan perbaikan bug)
   useEffect(() => {
     const menuErrors: Record<string, string> = {};
     if (!simulationState.simulationName)
@@ -189,7 +192,7 @@ const DSSPage = () => {
       },
       {
         id: "economicGrowth",
-        title: "Economic Growth [%/year]",
+        title: "Economic Growth (%/year)",
         type: "line",
         series: [
           { name: projectionData.tabel, data: activeMetrics.economicGrowth },
@@ -213,7 +216,7 @@ const DSSPage = () => {
       },
       {
         id: "population",
-        title: "Population [people]",
+        title: "Population (People)",
         type: "line",
         series: [
           {

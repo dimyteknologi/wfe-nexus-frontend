@@ -40,12 +40,12 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
       alert("Terdapat error pada input parameter, periksa kembali");
     }
   };
-
+  console.log(savedScenarios);
   const scenarioOptions = useMemo(() => {
     const baselineForMenu = baselineProjection
       ? {
           ...baselineProjection,
-          simulationName: "Baseline (Historical Projection)",
+          simulationName: baselineProjection.tabel,
         }
       : null;
 
