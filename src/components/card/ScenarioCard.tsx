@@ -1,7 +1,7 @@
 "use client";
 
 import SectionCard from "@/components/card/SectionCard";
-import InputGroup from "@/components/basic/input/InputGroup";
+import InputGroup from "@/components/basic/input/inputBackupGroup";
 
 interface SectionFactoryProps {
   id: number;

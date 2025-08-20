@@ -29,7 +29,7 @@ export type InitialValues = Record<string, number>;
 
 export type FormContainerProps = {
   initialValues?: InitialValues;
-  inputs: SimulationState;
+  inputs: Record<string, number | null>;
   errors: Record<string, string>;
   handleChange: (id: string, value: number) => void;
   validatePercentage?: (value: number) => string | undefined;
