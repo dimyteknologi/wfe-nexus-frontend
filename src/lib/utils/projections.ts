@@ -233,57 +233,69 @@ export const generateScenarioProjection = (
         categoryName,
       )
     ) {
-      const dataSeries = historicalData.parameters[categoryName];
-      const cleanDataSeries = dataSeries.map((val) => val ?? 0);
+      const originalDataSeries = historicalData.parameters[categoryName];
+      const cleanDataSeries = originalDataSeries.map((val) => val ?? 0);
       const scenarioInputs = getInputsForCategory(
         categoryName,
         simulationState,
       );
-      if (!scenarioInputs) {
+
+      let finalProjectedData: (number | null)[] = [];
+
+      if (scenarioInputs) {
         const growthRates = Computation.calculateGrowthRates(cleanDataSeries);
         const averageGrowth = Computation.averageArray(growthRates);
-        projectedParameters[categoryName] = Computation.projection({
+        let projectionWithUserInputs = Computation.projection({
+          data: cleanDataSeries,
+          growth: averageGrowth * 100,
+          finalYear: 2024,
+          initialYear,
+        });
+        projectionWithUserInputs = Computation.projection({
+          data: projectionWithUserInputs,
+          growth: scenarioInputs["2025-2030"] ?? 0,
+          finalYear: 2030,
+          initialYear,
+        });
+        projectionWithUserInputs = Computation.projection({
+          data: projectionWithUserInputs,
+          growth: scenarioInputs["2031-2040"] ?? 0,
+          finalYear: 2040,
+          initialYear,
+        });
+        projectionWithUserInputs = Computation.projection({
+          data: projectionWithUserInputs,
+          growth: scenarioInputs["2041-2045"] ?? 0,
+          finalYear: 2045,
+          initialYear,
+        });
+        finalProjectedData = projectionWithUserInputs;
+      } else {
+        const growthRates = Computation.calculateGrowthRates(cleanDataSeries);
+        const averageGrowth = Computation.averageArray(growthRates);
+        const baselineProjection = Computation.projection({
           data: cleanDataSeries,
           growth: averageGrowth,
           finalYear,
           initialYear,
         });
-        continue;
+        finalProjectedData = baselineProjection;
       }
-      const growthRates = Computation.calculateGrowthRates(cleanDataSeries);
-      const averageGrowth = Computation.averageArray(growthRates);
-      let currentProjection = Computation.projection({
-        data: cleanDataSeries,
-        growth: averageGrowth,
-        finalYear: 2024,
-        initialYear,
-      });
-      currentProjection = Computation.projection({
-        data: currentProjection,
-        growth: scenarioInputs["2025-2030"] ?? 0,
-        finalYear: 2030,
-        initialYear,
-      });
-      currentProjection = Computation.projection({
-        data: currentProjection,
-        growth: scenarioInputs["2031-2040"] ?? 0,
-        finalYear: 2040,
-        initialYear,
-      });
-      currentProjection = Computation.projection({
-        data: currentProjection,
-        growth: scenarioInputs["2041-2045"] ?? 0,
-        finalYear: 2045,
-        initialYear,
-      });
-      projectedParameters[categoryName] = currentProjection;
+
+      const newYearsData = finalProjectedData.slice(originalDataSeries.length);
+      projectedParameters[categoryName] = [
+        ...originalDataSeries,
+        ...newYearsData,
+      ];
     }
   }
+
   const projectedYears = Computation.adjustTimeFrame({
     dataYear: historicalData.tahun,
     finalYear,
     initialYear,
   });
+
   return {
     tabel: simulationState.simulationName || "User Scenario",
     unit: historicalData.unit,

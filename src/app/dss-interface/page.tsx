@@ -159,10 +159,10 @@ const DSSPage = () => {
     // );
 
     const baselineName = "Baseline (Historical Projection)";
-    const scenarioA_Recipe = savedScenarios.find(
+    const scenarioA_Recipe = allAvailableScenarios.find(
       (s: SimulationState) => s.simulationName === simulationState.scenario_a,
     );
-    const scenarioB_Recipe = savedScenarios.find(
+    const scenarioB_Recipe = allAvailableScenarios.find(
       (s: SimulationState) => s.simulationName === simulationState.scenario_b,
     );
 
