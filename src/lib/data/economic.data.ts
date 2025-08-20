@@ -1,5 +1,5 @@
 import fetchDashboardData from "../api/fetchDashboardData";
-import { average, dataProjection } from "../utils/formulas";
+import { average, growthRate } from "../utils/formulas";
 import { selectData, TYPE_DATA_SELECT } from "../utils/selectData";
 
 export interface GdpData {
@@ -49,9 +49,11 @@ export async function processGdpData(): Promise<ProcessedGdpData> {
     const gdpCategoryA =
       getGdpData["A.Pertanian, Kehutanan, dan Perikanan"] || [];
 
+    const gdpCategoryAGrowth = growthRate(gdpCategoryA);
+
     return {
       gdpCategoryA,
-      averageGdpCategoryA: average(gdpCategoryA),
+      averageGdpCategoryA: average(gdpCategoryAGrowth),
       meta: {
         label: getGdpLabel,
         unit: getGdpUnit,

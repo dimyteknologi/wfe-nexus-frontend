@@ -38,14 +38,21 @@ const ChartComponent: React.FC<iChartProps> = ({
           curve: "straight",
         },
       },
-      xaxis: { categories },
-      colors,
-      markers: {
-        size: 6,
-        hover: {
-          sizeOffset: 1,
+      xaxis: {
+        categories,
+        labels: {
+          style: {
+            fontSize: "6px",
+          },
         },
       },
+      colors,
+      // markers: {
+      //   size: 6,
+      //   hover: {
+      //     sizeOffset: 1,
+      //   },
+      // },
       stroke: { curve: "smooth" },
       dataLabels: { enabled: false },
       legend: { show: true, position: "bottom" },

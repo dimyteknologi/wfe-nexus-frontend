@@ -13,12 +13,16 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "apexcharts": "^5.3.3",
+    "json-server": "^1.0.0-beta.3",
     "lucide-react": "^0.539.0",
     "next": "15.4.5",
     "react": "19.1.0",
     "react-apexcharts": "^1.7.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-redux": "^9.2.0",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

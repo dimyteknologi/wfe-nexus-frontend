@@ -1,4 +1,4 @@
-import { InputGroupProps } from "@/lib/types/dss-input.dummy.types.rtk";
+import { InputGroupProps } from "@/lib/types/dss-input.dummy.types";
 import React from "react";
 
 const InputGroup: React.FC<InputGroupProps> = ({
@@ -7,7 +7,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
   onChange,
   values,
   errors,
-  id,
+  id = label.toLowerCase().replace(/\s+/g, "-"),
 }) => {
   return (
     <div className="mb-4">
@@ -16,22 +16,21 @@ const InputGroup: React.FC<InputGroupProps> = ({
       </label>
       <div className="grid grid-cols-3 gap-2">
         {periods.map((period) => {
-          const uniqueId = `${id}.${period}`;
-
+          const fieldId = `${id}.${period.replace(/\s+/g, "-").toLowerCase()}`;
           return (
-            <div key={uniqueId} className="flex flex-col">
+            <div key={fieldId} className="flex flex-col">
               <span className="text-xs text-gray-500 mb-1">{period}</span>
               <input
-                type="number"
+                type="text"
                 className={`border rounded p-2 ${
-                  errors[uniqueId] ? "border-red-500" : "border-gray-300"
+                  errors[fieldId] ? "border-red-500" : "border-gray-300"
                 }`}
-                value={values[uniqueId] ?? ""}
-                onChange={(e) => onChange(uniqueId, Number(e.target.value))}
+                value={values[fieldId] || ""}
+                onChange={(e) => onChange(fieldId, +e.target.value)}
               />
-              {errors[uniqueId] && (
+              {errors[fieldId] && (
                 <span className="text-red-500 text-xs mt-1">
-                  {errors[uniqueId]}
+                  {errors[fieldId]}
                 </span>
               )}
             </div>

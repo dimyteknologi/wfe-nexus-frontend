@@ -1,18 +1,31 @@
-import { SectionConfig } from "../types/dss-input.dummy.types";
+import { TimePeriod } from "@/stores/slicers/dssInputSlicer";
 
-export const sections: SectionConfig[] = [
+interface FormInput {
+  id: string;
+  label: string;
+  periods: TimePeriod[];
+  withValidation?: boolean;
+}
+
+interface FormSection {
+  title: string;
+  inputs: FormInput[];
+}
+
+const timePeriods: TimePeriod[] = ["2025-2030", "2031-2040", "2041-2045"];
+export const simulationFormConfig: FormSection[] = [
   {
     title: "Agriculture",
     inputs: [
       {
         label: "Growth scenario [%/year]",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         withValidation: true,
         id: "agriculture.growthScenario",
       },
       {
         label: "Agriculture land conversion [%/year]",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         withValidation: true,
         id: "agriculture.landConversion",
       },
@@ -23,17 +36,17 @@ export const sections: SectionConfig[] = [
     inputs: [
       {
         label: "Livestock growth: Cattle [%/year]",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         id: "livestock.cattleGrowth",
       },
       {
         label: "Livestock growth: Poultry [%/year]",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         id: "livestock.poultryGrowth",
       },
       {
         label: "Livestock growth: Goat [%/year]",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         id: "livestock.goatGrowth",
       },
     ],
@@ -43,19 +56,19 @@ export const sections: SectionConfig[] = [
     inputs: [
       {
         label: "Solar PV Coverage (%)",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         withValidation: true,
         id: "energy.solarPvCoverage",
       },
       {
         label: "Solar PV Area Percentage on Industrial (%)",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         withValidation: true,
-        id: "energy.solarPvIndustrial",
+        id: "energy.solarPvAreaIndustrial",
       },
       {
         label: "Solar PV Area Percentage on Housing (%)",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         withValidation: true,
         id: "energy.solarPvAreaHousing",
       },
@@ -66,7 +79,7 @@ export const sections: SectionConfig[] = [
     inputs: [
       {
         label: "Industrial growth scenario [%/year]",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         withValidation: true,
         id: "industry.growth",
       },
@@ -77,19 +90,19 @@ export const sections: SectionConfig[] = [
     inputs: [
       {
         label: "Aquaculture land growth [%/year]",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         withValidation: true,
         id: "water.aquacultureLandGrowth",
       },
       {
         label: "Artificial Pond Percentage in Industrial Area (%)",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         withValidation: true,
         id: "water.artificialPondIndustrial",
       },
       {
         label: "Artificial Pond Percentage in Housing Area (%)",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         withValidation: true,
         id: "water.artificialPondHousing",
       },
@@ -100,9 +113,9 @@ export const sections: SectionConfig[] = [
     inputs: [
       {
         label: "Population Growth [%/year]",
-        periods: ["2025-2030", "2031-2040", "2041-2045"],
+        periods: timePeriods,
         withValidation: true,
-        id: "demography-population-growth",
+        id: "demography.populationGrowth",
       },
     ],
   },

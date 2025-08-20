@@ -1,4 +1,4 @@
-class Computation {
+export class Computation {
   public static readonly ARRAY_OPERATION_TYPES = {
     ADD: "ADD",
     MULTIPLY: "MULTIPLY",
@@ -100,7 +100,7 @@ class Computation {
     current: number;
   }): number {
     if (!before || !current) return 0;
-    return current / before - 1;
+    return (current / before - 1) * 100;
   }
 
   public static calculateGrowthRates(array: (number | null)[]): number[] {

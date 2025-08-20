@@ -1,6 +1,6 @@
 import InputGroup from "@/components/basic/input/InputGroup";
 import SectionCard from "@/components/card/SectionCard";
-import { FormContainerProps } from "@/lib/types/dss-input.dummy.types";
+import { FormContainerProps } from "@/lib/types/dss-input.dummy.types.rtk";
 import React from "react";
 
 const FormContainer: React.FC<FormContainerProps> = ({
