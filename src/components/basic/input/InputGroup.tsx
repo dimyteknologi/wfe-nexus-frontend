@@ -17,7 +17,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
       <div className="grid grid-cols-3 gap-2">
         {periods.map((period) => {
           const uniqueId = `${id}.${period}`;
-
+          const value = values[uniqueId] ?? "";
           return (
             <div key={uniqueId} className="flex flex-col">
               <span className="text-xs text-gray-500 mb-1">{period}</span>
@@ -26,8 +26,8 @@ const InputGroup: React.FC<InputGroupProps> = ({
                 className={`border rounded p-2 ${
                   errors[uniqueId] ? "border-red-500" : "border-gray-300"
                 }`}
-                value={values[uniqueId] ?? ""}
-                onChange={(e) => onChange(uniqueId, Number(e.target.value))}
+                value={value}
+                onChange={(e) => onChange(uniqueId, +e.target.value)}
               />
               {errors[uniqueId] && (
                 <span className="text-red-500 text-xs mt-1">

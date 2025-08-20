@@ -93,8 +93,9 @@ const dssSimulationSlice = createSlice({
     updateValue: (state, action: PayloadAction<UpdatePayload>) => {
       const { path, value } = action.payload;
       let currentState: IRootState = state;
+
       for (let i = 0; i < path.length - 1; i++) {
-        currentState = currentState[path[i]];
+        currentState = currentState[path[i - 1]];
       }
       currentState[path[path.length - 1]] = value;
     },

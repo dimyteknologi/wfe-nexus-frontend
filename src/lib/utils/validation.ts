@@ -35,6 +35,7 @@ export const validateParameters = (
       input.periods.forEach((period) => {
         const uniqueId = `${input.id}.${period}`;
         const path = input.id.split(".");
+
         const valueToValidate = getNestedValue(simulationState, [
           ...path,
           period,

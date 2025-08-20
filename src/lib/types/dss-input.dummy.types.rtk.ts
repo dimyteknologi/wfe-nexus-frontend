@@ -1,5 +1,3 @@
-import { SimulationState } from "@/stores/slicers/dssInputSlicer";
-
 export type InputConfig = {
   label: string;
   periods: string[];
