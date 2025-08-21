@@ -207,8 +207,24 @@ const DSSPage = () => {
         simState,
       );
 
-      const gdrpTotal =
-        scenario.parameters["Produk Domestik Regional Bruto"] ?? [];
+      const parameterKeys = Object.keys(scenario.parameters);
+      const sectorKeys = parameterKeys.filter(
+        (key) =>
+          key !== "Produk Domestik Regional Bruto" &&
+          key !== "PDRB Tanpa Migas" &&
+          key !== "Produk Domestik Regional Bruto Non Pemerintahan",
+      );
+      const calculatedGdrpTotal: number[] = [];
+
+      for (let i = 0; i < scenario.tahun.length; i++) {
+        let sumForYear = 0;
+        for (const key of sectorKeys) {
+          sumForYear += Math.ceil(scenario?.parameters[key][i] ?? 0);
+        }
+        calculatedGdrpTotal.push(sumForYear);
+      }
+
+      const gdrpTotal = calculatedGdrpTotal ?? [];
       const gdrpInBillions = gdrpTotal.map((v) => (v ? v / 1000 : 0));
       const economicGrowth = Computation.calculateGrowthRates(gdrpTotal);
       const gdrpPerCapita = scenario.tahun.map((_, i) => {
@@ -251,21 +267,21 @@ const DSSPage = () => {
         series: [
           {
             name: projectionData.tabel,
-            data: activeMetrics.gdrpInBillions.map(Number),
+            data: activeMetrics.gdrpInBillions || [],
           },
           ...(metricsA
             ? [
                 {
-                  name: simulationState.scenario_a.map(Number),
-                  data: metricsA.gdrpInBillions.map(Number),
+                  name: simulationState.scenario_a,
+                  data: metricsA.gdrpInBillions,
                 },
               ]
             : []),
           ...(metricsB
             ? [
                 {
-                  name: simulationState.scenario_b.map(Number),
-                  data: metricsB.gdrpInBillions.map(Number),
+                  name: simulationState.scenario_b,
+                  data: metricsB.gdrpInBillions,
                 },
               ]
             : []),
