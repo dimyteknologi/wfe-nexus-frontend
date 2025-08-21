@@ -59,35 +59,6 @@ const dummyData: iTableData[] = Array.from({ length: 42 }).map((_, i) => ({
   baseline_2: Math.random() + i,
 }));
 
-const baselineMetrics = {
-  gdrpInBillions: [
-    99641.32, 106174.68, 111424.08, 116673.49, 126748.69, 132453.57, 141125.54,
-    148358.45, 157317.84, 163946.85, 157710.59, 166941.49, 177470.89, 187051.65,
-    196972.85, 207490.83, 218644.43, 230475.43, 243028.81, 256353.06, 270500.47,
-    285527.49, 301495.12, 318469.35, 336521.63, 355729.39, 376176.63, 397954.59,
-    421162.45, 445908.14, 472309.25, 500494.02, 530602.44, 562787.5, 597216.6,
-    634073.05,
-  ],
-  economicGrowth: [
-    6.0, 6.56, 4.94, 4.71, 8.64, 4.5, 6.55, 5.13, 6.04, 4.21, -3.8, 5.85, 6.31,
-    5.4, 5.3, 5.34, 5.38, 5.41, 5.45, 5.48, 5.52, 5.56, 5.59, 5.63, 5.67, 5.71,
-    5.75, 5.79, 5.83, 5.88, 5.92, 5.97, 6.02, 6.07, 6.12, 6.17,
-  ],
-  projectedPopulation: [
-    2172289, 2199394, 2225383, 2250120, 2273579, 2295778, 2316489, 2336009,
-    2353915, 2370488, 2370488, 2370488, 2370488, 2580557, 2615567, 2651053,
-    2687020, 2723474, 2760424, 2797875, 2835834, 2874308, 2913303, 2952828,
-    2992890, 3033494, 3074650, 3116364, 3158644, 3201497, 3244932, 3288956,
-    3333578, 3378804, 3424645, 3471107,
-  ],
-  gdrpPerCapita: [
-    45.87, 48.27, 50.07, 51.85, 55.75, 57.69, 60.92, 63.51, 66.83, 69.16, 66.53,
-    70.42, 74.87, 72.48, 75.31, 78.27, 81.37, 84.63, 88.04, 91.62, 95.39, 99.34,
-    103.49, 107.85, 112.44, 117.27, 122.35, 127.7, 133.34, 139.28, 145.55,
-    152.17, 159.17, 166.56, 174.39, 182.67,
-  ],
-};
-
 const DSSPage = () => {
   useInitializeData();
   const dispatch = useAppDispatch();
@@ -100,13 +71,12 @@ const DSSPage = () => {
   const historicalPopulationData = useAppSelector(
     (state) => state.population.data,
   );
-  const projectionData = useAppSelector(selectProjectionData); // Skenario aktif/terbaru
+  const projectionData = useAppSelector(selectProjectionData);
   const savedScenarios = useAppSelector((state) => state.scenarios.scenarios);
   const debouncedSimulationState = useDebounce(simulationState, 750);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
 
-  // Efek untuk kalkulasi baseline awal dan mengisi form
   useEffect(() => {
     if (historicalGdpData && !projectionData) {
       const baselineProjection =
@@ -120,9 +90,8 @@ const DSSPage = () => {
     }
   }, [historicalGdpData, projectionData, dispatch]);
 
-  // Efek untuk kalkulasi ulang proyeksi dinamis berdasarkan input
   useEffect(() => {
-    if (!historicalGdpData || !debouncedSimulationState.simulationName) return;
+    // if (!historicalGdpData || !debouncedSimulationState.simulationName) return;
     const scenarioProjection = generateScenarioProjection(
       historicalGdpData,
       debouncedSimulationState,
@@ -130,7 +99,6 @@ const DSSPage = () => {
     if (scenarioProjection) dispatch(setProjectionResult(scenarioProjection));
   }, [debouncedSimulationState, historicalGdpData, dispatch]);
 
-  // Efek untuk validasi (dengan perbaikan bug)
   useEffect(() => {
     const menuErrors: Record<string, string> = {};
     if (!simulationState.simulationName)
@@ -151,13 +119,6 @@ const DSSPage = () => {
     };
     const allAvailableScenarios = [baselineForMenu, ...savedScenarios];
 
-    // const scenarioA_Data = allAvailableScenarios.find(
-    //   (s) => s.simulationName === simulationState.scenario_a,
-    // );
-    // const scenarioB_Data = allAvailableScenarios.find(
-    //   (s) => s.simulationName === simulationState.scenario_b,
-    // );
-
     const baselineName = "Baseline (Historical Projection)";
     const scenarioA_Recipe = allAvailableScenarios.find(
       (s: SimulationState) => s.simulationName === simulationState.scenario_a,
@@ -169,11 +130,9 @@ const DSSPage = () => {
     let scenarioA_ProjectionData: IGDPResData | null = null;
     if (simulationState.scenario_a) {
       if (simulationState.scenario_a === baselineName) {
-        // Jika yang dipilih adalah baseline, ia sudah "matang"
         scenarioA_ProjectionData =
           generateHistoricalProjection(historicalGdpData);
       } else if (scenarioA_Recipe) {
-        // Jika resep ditemukan, "masak" sekarang
         scenarioA_ProjectionData = generateScenarioProjection(
           historicalGdpData,
           scenarioA_Recipe,
@@ -181,7 +140,6 @@ const DSSPage = () => {
       }
     }
 
-    // Ulangi proses yang sama untuk Skenario B
     let scenarioB_ProjectionData: IGDPResData | null = null;
     if (simulationState.scenario_b) {
       if (simulationState.scenario_b === baselineName) {
@@ -202,10 +160,27 @@ const DSSPage = () => {
       const population = generatePopulationProjection(
         historicalPopulationData,
         simState,
+        2045,
       );
-      const gdrpTotal =
-        scenario.parameters["Produk Domestik Regional Bruto"] ?? [];
-      const gdrpInBillions = gdrpTotal.map((v) => (v ? v / 1000 : 0));
+      const parameterKeys = Object.keys(scenario.parameters);
+      const sectorKeys = parameterKeys.filter(
+        (key) =>
+          key !== "Produk Domestik Regional Bruto" &&
+          key !== "PDRB Tanpa Migas" &&
+          key !== "Produk Domestik Regional Bruto Non Pemerintahan",
+      );
+      const calculatedGdrpTotal: number[] = [];
+
+      for (let i = 0; i < scenario.tahun.length; i++) {
+        let sumForYear = 0;
+        for (const key of sectorKeys) {
+          sumForYear += Math.ceil(scenario?.parameters[key][i] ?? 0);
+        }
+        calculatedGdrpTotal.push(sumForYear);
+      }
+
+      const gdrpTotal = calculatedGdrpTotal ?? [];
+      const gdrpInBillions = gdrpTotal.map((v) => v.toFixed(2));
       const economicGrowth = Computation.calculateGrowthRates(gdrpTotal);
       const gdrpPerCapita = scenario.tahun.map((_, i) => {
         const gdrp = gdrpTotal[i];
@@ -219,21 +194,18 @@ const DSSPage = () => {
         gdrpPerCapita,
       };
     };
+
     const activeMetrics = getMetricsFromProjection(
       projectionData,
       simulationState,
     );
+
     const metricsA = scenarioA_ProjectionData
-      ? getMetricsFromProjection(
-          scenarioA_ProjectionData,
-          scenarioA_Recipe || baselineMetrics,
-        )
+      ? getMetricsFromProjection(scenarioA_ProjectionData, scenarioA_Recipe)
       : null;
+
     const metricsB = scenarioB_ProjectionData
-      ? getMetricsFromProjection(
-          scenarioB_ProjectionData,
-          scenarioB_Recipe || baselineMetrics,
-        )
+      ? getMetricsFromProjection(scenarioB_ProjectionData, scenarioB_Recipe)
       : null;
 
     const years = projectionData.tahun.map(String);
@@ -243,20 +215,23 @@ const DSSPage = () => {
         title: "GDRP [Bilion Rp/year]",
         type: "bar",
         series: [
-          { name: projectionData.tabel, data: baselineMetrics.gdrpInBillions },
+          {
+            name: projectionData.tabel,
+            data: activeMetrics.gdrpInBillions.map(Number),
+          },
           ...(metricsA
             ? [
                 {
-                  name: simulationState.scenario_a,
-                  data: metricsA.gdrpInBillions,
+                  name: simulationState.scenario_a.map(Number),
+                  data: metricsA.gdrpInBillions.map(Number),
                 },
               ]
             : []),
           ...(metricsB
             ? [
                 {
-                  name: simulationState.scenario_b,
-                  data: metricsB.gdrpInBillions,
+                  name: simulationState.scenario_b.map(Number),
+                  data: metricsB.gdrpInBillions.map(Number),
                 },
               ]
             : []),
@@ -267,7 +242,7 @@ const DSSPage = () => {
         title: "Economic Growth (%/year)",
         type: "line",
         series: [
-          { name: projectionData.tabel, data: baselineMetrics.economicGrowth },
+          { name: projectionData.tabel, data: activeMetrics.economicGrowth },
           ...(metricsA
             ? [
                 {
@@ -293,7 +268,7 @@ const DSSPage = () => {
         series: [
           {
             name: projectionData.tabel,
-            data: baselineMetrics.projectedPopulation,
+            data: activeMetrics.projectedPopulation,
           },
           ...(metricsA
             ? [
@@ -316,9 +291,9 @@ const DSSPage = () => {
       {
         id: "gdrpPerCapita",
         title: "GDRP Per capita [Milion Rp/cap/year]",
-        type: "bar",
+        type: "line",
         series: [
-          { name: projectionData.tabel, data: baselineMetrics.gdrpPerCapita },
+          { name: projectionData.tabel, data: activeMetrics.gdrpPerCapita },
           ...(metricsA
             ? [
                 {
@@ -338,7 +313,6 @@ const DSSPage = () => {
         ],
       },
     ];
-
     return { years, chartConfigs };
   }, [
     projectionData,

@@ -28,11 +28,6 @@ export interface ProcessedGdpResult {
 }
 
 const categoryMap: Record<string, string[]> = {
-  Pertanian: ["agriculture", "growthScenario"],
-  "Industri Pengolahan": ["industry", "growth"],
-  Populasi: ["demography", "populationGrowth"],
-  "Area Perikanan": ["water", "aquacultureLandGrowth"],
-  "Pertanian Luas": ["agriculture", "landConversion"],
   "A.Pertanian, Kehutanan, dan Perikanan": ["agriculture", "growthScenario"],
   "B.Pertambangan dan Penggalian": ["industry", "growth"],
   "C.Industri Pengolahan": ["industry", "growth"],
@@ -63,11 +58,8 @@ const categoryMap: Record<string, string[]> = {
 
 const categoryToStatePathMap: Record<string, string> = {
   "A.Pertanian, Kehutanan, dan Perikanan": "agriculture.growthScenario",
-  "C.Industri Pengolahan": "industry.growth",
-  Populasi: "demography.populationGrowth",
-  area_perikanan_laju_perubahan: "water.aquacultureLandGrowth",
-  pertanian_luas: "agriculture.landConversion",
   "B.Pertambangan dan Penggalian": "industry.growth",
+  "C.Industri Pengolahan": "industry.growth",
   "D.Pengadaan Listrik dan Gas": "energy.solarPvCoverage",
   "E.Pengadaan Air, Pengelolaan Sampah, Limbah dan Daur Ulang":
     "water.artificialPondIndustrial",
@@ -85,6 +77,9 @@ const categoryToStatePathMap: Record<string, string> = {
   "P.Jasa Pendidikan": "industry.growth",
   "Q.Jasa Kesehatan dan Kegiatan Sosial": "industry.growth",
   "R,S,T,U.Jasa lainnya": "industry.growth",
+  "Produk Domestik Regional Bruto": "industry.growth",
+  "PDRB Tanpa Migas": "industry.growth",
+  "Produk Domestik Regional Bruto Non Pemerintahan": "industry.growth",
 };
 
 const getInputsForCategory = (
@@ -126,13 +121,14 @@ export const generatePopulationProjection = (
   const growthRates = Computation.calculateGrowthRates(
     totalHistoricalPopulation,
   );
+
   const averageGrowth = Computation.averageArray(growthRates);
   const initialYear = historicalData.tahun[0];
 
   let currentProjection = Computation.projection({
     data: totalHistoricalPopulation,
     growth: averageGrowth,
-    finalYear: 2024,
+    finalYear: 2025,
     initialYear,
   });
 
@@ -148,6 +144,7 @@ export const generatePopulationProjection = (
     finalYear: 2040,
     initialYear,
   });
+
   currentProjection = Computation.projection({
     data: currentProjection,
     growth: scenarioInputs["2041-2045"] ?? 0,
@@ -223,6 +220,9 @@ export const generateScenarioProjection = (
     "M,N.Jasa Perusahaan": [],
     "O.Administrasi Pemerintahan, Pertahanan dan Jaminan Sosial Wajib": [],
     "P.Jasa Pendidikan": [],
+    "Produk Domestik Regional Bruto": [],
+    "PDRB Tanpa Migas": [],
+    "Produk Domestik Regional Bruto Non Pemerintahan": [],
   };
 
   const initialYear = historicalData.tahun[0];
@@ -247,7 +247,7 @@ export const generateScenarioProjection = (
         const averageGrowth = Computation.averageArray(growthRates);
         let projectionWithUserInputs = Computation.projection({
           data: cleanDataSeries,
-          growth: averageGrowth * 100,
+          growth: averageGrowth,
           finalYear: 2024,
           initialYear,
         });
@@ -329,6 +329,9 @@ export const generateHistoricalProjection = (
     "M,N.Jasa Perusahaan": [],
     "O.Administrasi Pemerintahan, Pertahanan dan Jaminan Sosial Wajib": [],
     "P.Jasa Pendidikan": [],
+    "Produk Domestik Regional Bruto": [],
+    "PDRB Tanpa Migas": [],
+    "Produk Domestik Regional Bruto Non Pemerintahan": [],
   };
 
   const initialYear = historicalData.tahun[0];
