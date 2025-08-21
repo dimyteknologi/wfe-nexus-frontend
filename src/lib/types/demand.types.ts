@@ -10,3 +10,11 @@ export interface IWaterDemand {
 }
 
 export type IWaterDemandData = IBaseData<IWaterDemand>;
+export interface IEnergyDemand {
+  DOMESTIC_DEMANDl: number[];
+  INDUSTRIAL_DEMAND: number[];
+  AQUACULTURE: number[];
+  WATER_GENERATION: number[];
+}
+
+export type IEnergyDemandData = IBaseData<IEnergyDemand>;

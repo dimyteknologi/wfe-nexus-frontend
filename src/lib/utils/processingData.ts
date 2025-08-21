@@ -37,6 +37,28 @@ const generateLivestockWaterDemandProcess = (data: number[]) => {
   );
 };
 
-const generateTotalWaterDemand = (data: number[][]) => {
-  return sumData(...data);
+// ENERGY DEMAND
+const generateDomesticEnergyDemand = (data: number[]) => {
+  const constant = RESOURCE_DEMAND_UNIT.ENERGY.DOMESTIC_DEMAND;
+  const result = constantMultiply(data, constant);
+
+  return result.map((data) => data / 1000000);
+};
+const generateIndustrialEnergyDemand = (data: number[]) => {
+  const constant = RESOURCE_DEMAND_UNIT.ENERGY.INDUSTRIAL_ENERGY_INTENSITY;
+  const result = constantMultiply(data, constant);
+
+  return result.map((data) => data / 1000000);
+};
+const generateAgricultureEnergyDemand = (data: number[]) => {
+  const constant = RESOURCE_DEMAND_UNIT.ENERGY.AGRICULTURE_ENERGY_INTENSITY;
+  const result = constantMultiply(data, constant);
+
+  return result.map((data) => data / 1000000);
+};
+const generateWaterGenerationEnergyDemand = (data: number[]) => {
+  const constant = RESOURCE_DEMAND_UNIT.ENERGY.ENERGY_FOR_WATER;
+  const result = constantMultiply(data, constant);
+
+  return result.map((data) => data / 1000000);
 };
