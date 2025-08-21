@@ -1,10 +1,19 @@
 import {
   GDPParameters,
+  IAgricultureResData,
+  IFisheriesResData,
   IGDPResData,
+  ILivestockResData,
+  ILivestockResponse,
   IPopResData,
   IPopulationData,
 } from "@/lib/types/response";
-import { average, Computation, growthRate } from "./formulas";
+import {
+  average,
+  Computation,
+  growthDataByvalue,
+  growthRate,
+} from "./formulas";
 import {
   BaselinePayload,
   SimulationState,
@@ -12,6 +21,7 @@ import {
 } from "@/stores/slicers/dssInputSlicer";
 import { getNestedValue } from "./validation";
 import { baselineMetrics } from "@/app/dss-interface/page";
+import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
 
 export interface ProcessedGdpParameter {
   rawData: (number | null)[];
@@ -360,4 +370,267 @@ export const generateHistoricalProjection = (
     tahun: projectedYears,
     parameters: projectedParameters,
   };
+};
+
+export const generateAgricultureLandProjection = (
+  historicalData: IAgricultureResData | null,
+  simulationState: SimulationState | null,
+  finalYear: number = 2045,
+): number[] => {
+  if (!historicalData?.parameters || !simulationState?.agriculture) {
+    return [];
+  }
+
+  const agricultureLandHistorical =
+    historicalData.parameters["Lahan Panen Padi"] ?? [];
+
+  const scenarioInputs = simulationState.agriculture.landConversion;
+
+  const growthRates = growthRate(agricultureLandHistorical);
+  const averageGrowth = average(growthRates);
+
+  let currentProjection = Computation.projection({
+    data: agricultureLandHistorical,
+    growth: averageGrowth,
+    finalYear: 2025,
+  });
+
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
+    finalYear: 2030,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
+    finalYear: 2040,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
+    finalYear: 2045,
+  });
+
+  // console.log(averageGrowth);
+  return currentProjection;
+};
+
+export const generateFisheryAreaProjection = (
+  historicalData: IFisheriesResData | null,
+  simulationState: SimulationState | null,
+  finalYear: number = 2045,
+): number[] => {
+  if (
+    !historicalData?.parameters ||
+    !simulationState?.water.aquacultureLandGrowth
+  ) {
+    return [];
+  }
+
+  const fisheryAreaGrowthHistorical =
+    historicalData.parameters["area perikanan"] ?? [];
+
+  const cleanFisheryAreaGrowthHistorical = fisheryAreaGrowthHistorical.map(
+    (data) => (data === null ? 0 : data),
+  );
+
+  const initialData = INITIAL_DATA_CONSTANT.PERIKANAN.LUAS_AREA_PERIKANAN;
+
+  const fisheryAreaHistorical = growthDataByvalue(
+    initialData,
+    cleanFisheryAreaGrowthHistorical,
+  );
+
+  const scenarioInputs = simulationState.water.aquacultureLandGrowth;
+
+  const averageGrowth = average(cleanFisheryAreaGrowthHistorical);
+  // console.log(cleanFisheryAreaGrowthHistorical);
+
+  let currentProjection = Computation.projection({
+    data: fisheryAreaHistorical,
+    growth: averageGrowth,
+    finalYear: 2025,
+  });
+
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
+    finalYear: 2030,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
+    finalYear: 2040,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
+    finalYear: 2045,
+  });
+
+  // console.log(currentProjection);
+  return currentProjection;
+};
+
+export const generateCattleLivestockProjection = (
+  historicalData: ILivestockResData | null,
+  simulationState: SimulationState | null,
+  finalYear: number = 2045,
+): number[] => {
+  if (!historicalData?.parameters || !simulationState?.livestock.cattleGrowth) {
+    return [];
+  }
+
+  const cattleGrowthHistorical = historicalData.parameters["ternak sapi"] ?? [];
+
+  const cleanCattleGrowthHistorical = cattleGrowthHistorical.map((data) =>
+    data === null ? 0 : data,
+  );
+
+  const initialData = INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_SAPI;
+
+  const cattleLiveStockHistorical = growthDataByvalue(
+    initialData,
+    cleanCattleGrowthHistorical,
+  );
+
+  const scenarioInputs = simulationState.livestock.cattleGrowth;
+
+  const averageGrowth = average(cleanCattleGrowthHistorical);
+  // console.log(cleanFisheryAreaGrowthHistorical);
+
+  let currentProjection = Computation.projection({
+    data: cattleLiveStockHistorical,
+    growth: averageGrowth,
+    finalYear: 2025,
+  });
+
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
+    finalYear: 2030,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
+    finalYear: 2040,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
+    finalYear: 2045,
+  });
+
+  // console.log(currentProjection);
+  return currentProjection;
+};
+
+export const generateChickenLivestockProjection = (
+  historicalData: ILivestockResData | null,
+  simulationState: SimulationState | null,
+  finalYear: number = 2045,
+): number[] => {
+  if (
+    !historicalData?.parameters ||
+    !simulationState?.livestock.poultryGrowth
+  ) {
+    return [];
+  }
+
+  const chickenGrowthHistorical =
+    historicalData.parameters["ternak ayam"] ?? [];
+
+  const cleanChikenGrowthHistorical = chickenGrowthHistorical.map((data) =>
+    data === null ? 0 : data,
+  );
+
+  const initialData = INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_AYAM;
+
+  const chickenLivestockHistorical = growthDataByvalue(
+    initialData,
+    cleanChikenGrowthHistorical,
+  );
+
+  const scenarioInputs = simulationState.livestock.poultryGrowth;
+
+  const averageGrowth = average(chickenLivestockHistorical);
+  // console.log(cleanFisheryAreaGrowthHistorical);
+
+  let currentProjection = Computation.projection({
+    data: chickenLivestockHistorical,
+    growth: averageGrowth,
+    finalYear: 2025,
+  });
+
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
+    finalYear: 2030,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
+    finalYear: 2040,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
+    finalYear: 2045,
+  });
+
+  return currentProjection;
+};
+
+export const generateSheepLivestockProjection = (
+  historicalData: ILivestockResData | null,
+  simulationState: SimulationState | null,
+  finalYear: number = 2045,
+): number[] => {
+  if (!historicalData?.parameters || !simulationState?.livestock.goatGrowth) {
+    return [];
+  }
+
+  const goatGrowthHistorical =
+    historicalData.parameters["ternak kambing"] ?? [];
+
+  const cleanGoatGrowthHistorical = goatGrowthHistorical.map((data) =>
+    data === null ? 0 : data,
+  );
+
+  const initialData = INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_KAMBING;
+
+  const goatHistorical = growthDataByvalue(
+    initialData,
+    cleanGoatGrowthHistorical,
+  );
+
+  const scenarioInputs = simulationState.livestock.goatGrowth;
+
+  const averageGrowth = average(cleanGoatGrowthHistorical);
+  // console.log(cleanFisheryAreaGrowthHistorical);
+
+  let currentProjection = Computation.projection({
+    data: goatHistorical,
+    growth: averageGrowth,
+    finalYear: 2025,
+  });
+
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
+    finalYear: 2030,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
+    finalYear: 2040,
+  });
+  currentProjection = Computation.projection({
+    data: currentProjection,
+    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
+    finalYear: 2045,
+  });
+
+  console.log(currentProjection);
+  return currentProjection;
 };

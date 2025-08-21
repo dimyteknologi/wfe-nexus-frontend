@@ -29,8 +29,6 @@ export class Computation {
   }): number[] {
     const result: number[] = [...data];
     let time = initialYear + result.length;
-    // console.log(data);
-    // console.log(result[result.length - 1]);
 
     while (time <= finalYear) {
       const lastValue = result[result.length - 1];
@@ -121,8 +119,21 @@ export class Computation {
   }
 
   public static averageArray = (array: number[]) => {
-    // const newArray = array.slice(1);
     return array.reduce((a, b) => a + b, 0) / array.length;
+  };
+
+  public static growthArrayByValue = (
+    dataInitial: number,
+    dataGrowth: number[],
+  ) => {
+    const result = [dataInitial];
+
+    for (let i = 1; i < dataGrowth.length; i++) {
+      const data = (1 + dataGrowth[i]) * result[i - 1];
+      result.push(data);
+    }
+
+    return result;
   };
 }
 
@@ -180,4 +191,8 @@ export const average = (data: number[]) => {
   }
   return Computation.averageArray(data);
   // console.log("data Growth:", data);
+};
+
+export const growthDataByvalue = (data: number, growthArr: number[]) => {
+  return Computation.growthArrayByValue(data, growthArr);
 };

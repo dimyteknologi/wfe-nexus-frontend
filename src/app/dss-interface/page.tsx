@@ -13,9 +13,13 @@ import { useAppSelector } from "@/stores/root-reducer";
 import { validateParameters } from "@/lib/utils/validation";
 import {
   extractAverageGrowthRates,
+  generateAgricultureLandProjection,
+  generateChickenLivestockProjection,
+  generateFisheryAreaProjection,
   generateHistoricalProjection,
   generatePopulationProjection,
   generateScenarioProjection,
+  generateSheepLivestockProjection,
   processAllGdpData,
 } from "@/lib/utils/projections";
 import { useAppDispatch } from "@/stores/root-reducer";
@@ -29,6 +33,7 @@ import {
   SimulationState,
 } from "@/stores/slicers/dssInputSlicer";
 import { IGDPResData } from "@/lib/types/response";
+import { generateCattleLivestockProjection } from "../../lib/utils/projections";
 
 interface ChartSeries {
   name: string;
@@ -99,10 +104,22 @@ const DSSPage = () => {
   const paginatedData = dummyData.slice(start, start + pageSize);
 
   const simulationState = useAppSelector((state) => state.simulation);
+
+  // Get historical data
   const historicalGdpData = useAppSelector((state) => state.gdp.data);
   const historicalPopulationData = useAppSelector(
     (state) => state.population.data,
   );
+  const historicalAgricultureLandData = useAppSelector(
+    (state) => state.agriculture.data,
+  );
+  const historicalFisheryAreaData = useAppSelector(
+    (state) => state.fishery.data,
+  );
+  const historicalLivestockData = useAppSelector(
+    (state) => state.livestock.data,
+  );
+
   const projectionData = useAppSelector(selectProjectionData); // Skenario aktif/terbaru
   const savedScenarios = useAppSelector((state) => state.scenarios.scenarios);
   const debouncedSimulationState = useDebounce(simulationState, 750);
@@ -206,6 +223,31 @@ const DSSPage = () => {
         historicalPopulationData,
         simState,
       );
+
+      const agricultureLand = generateAgricultureLandProjection(
+        historicalAgricultureLandData,
+        simState,
+      );
+
+      const fisheryAreaGrowth = generateFisheryAreaProjection(
+        historicalFisheryAreaData,
+        simState,
+      );
+
+      const liveStockCattle = generateCattleLivestockProjection(
+        historicalLivestockData,
+        simState,
+      );
+      const liveStockChicken = generateChickenLivestockProjection(
+        historicalLivestockData,
+        simState,
+      );
+
+      const liveStockSheep = generateSheepLivestockProjection(
+        historicalLivestockData,
+        simState,
+      );
+
       const gdrpTotal =
         scenario.parameters["Produk Domestik Regional Bruto"] ?? [];
       const gdrpInBillions = gdrpTotal.map((v) => (v ? v / 1000 : 0));
@@ -220,8 +262,14 @@ const DSSPage = () => {
         economicGrowth,
         projectedPopulation: population,
         gdrpPerCapita,
+        agricultureLand,
+        fisheryAreaGrowth,
+        liveStockCattle,
+        liveStockChicken,
+        liveStockSheep,
       };
     };
+
     const activeMetrics = getMetricsFromProjection(
       projectionData,
       simulationState,
