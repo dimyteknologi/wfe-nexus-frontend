@@ -196,3 +196,7 @@ export const average = (data: number[]) => {
 export const growthDataByvalue = (data: number, growthArr: number[]) => {
   return Computation.growthArrayByValue(data, growthArr);
 };
+
+export const constantMultiply = (data: number[], constant: number) => {
+  return data.map((d) => d * constant);
+};
