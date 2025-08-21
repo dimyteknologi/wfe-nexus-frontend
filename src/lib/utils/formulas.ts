@@ -119,7 +119,8 @@ export class Computation {
   }
 
   public static averageArray = (array: number[]) => {
-    return array.reduce((a, b) => a + b, 0) / array.length;
+    const strResult = array.reduce((a, b) => a + b, 0) / array.length;
+    return parseFloat(strResult.toFixed(2));
   };
 
   public static growthArrayByValue = (
