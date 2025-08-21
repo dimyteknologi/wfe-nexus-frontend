@@ -1,5 +1,4 @@
 import { IFoodDemandData, IWaterDemandData } from "@/lib/types/demand.types";
-import { IAgricultureResData } from "@/lib/types/response";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface FoodDemandSliceState {

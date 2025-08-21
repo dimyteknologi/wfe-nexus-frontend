@@ -16,6 +16,7 @@ import simulationReducer from "@/stores/slicers/dssInputSlicer";
 import projectionReducer from "@/stores/slicers/dssProjectionSlicer";
 import waterDemandReducer from "@/stores/slicers/waterDemandSlicer";
 import energyDemandReducer from "@/stores/slicers/EnergyDemandSlicer";
+import landCoverReducer from "@/stores/slicers/landCoverSlicer";
 
 export const appReducer = combineReducers({
   scenarios: scenarioReducer,
@@ -28,6 +29,7 @@ export const appReducer = combineReducers({
   agriculture: agricultureReducer,
   waterDemand: waterDemandReducer,
   energyDemand: energyDemandReducer,
+  landCover: landCoverReducer,
   [gdpApi.reducerPath]: gdpApi.reducer,
   [agricultureApi.reducerPath]: agricultureApi.reducer,
   [livestockApi.reducerPath]: livestockApi.reducer,
