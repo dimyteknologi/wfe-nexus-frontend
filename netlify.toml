@@ -1,15 +1,11 @@
 [build]
   command = "npm run build"
-  publish = ".next"  # Bukan "build"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "18"
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/json-server/:splat"
-  status = 200
-
+# Hapus semua redirect ke functions, biarkan Next.js handle API routes
 [[redirects]]
   from = "/*"
   to = "/index.html"
