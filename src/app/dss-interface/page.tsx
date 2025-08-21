@@ -59,7 +59,7 @@ const dummyData: iTableData[] = Array.from({ length: 42 }).map((_, i) => ({
   baseline_2: Math.random() + i,
 }));
 
-const baselineMetrics = {
+export const baselineMetrics = {
   gdrpInBillions: [
     99641.32, 106174.68, 111424.08, 116673.49, 126748.69, 132453.57, 141125.54,
     148358.45, 157317.84, 163946.85, 157710.59, 166941.49, 177470.89, 187051.65,
@@ -91,10 +91,13 @@ const baselineMetrics = {
 const DSSPage = () => {
   useInitializeData();
   const dispatch = useAppDispatch();
+
+  // pagiantaion
   const [page, setPage] = useState(1);
   const pageSize = 10;
   const start = (page - 1) * pageSize;
   const paginatedData = dummyData.slice(start, start + pageSize);
+
   const simulationState = useAppSelector((state) => state.simulation);
   const historicalGdpData = useAppSelector((state) => state.gdp.data);
   const historicalPopulationData = useAppSelector(

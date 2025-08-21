@@ -10,29 +10,33 @@ const FormContainer: React.FC<FormContainerProps> = ({
   validatePercentage,
   sections,
 }) => {
+  // console.log(inputs);
   return (
     <div className="w-full">
       <div className="pl-2 sm:pl-4 mt-2 relative max-h-[calc(70dvh-100px)] overflow-y-auto w-full">
         <div className="grid grid-cols-1 gap-2 sm:gap-3 md:gap-4 pb-8">
           {sections.map((section, index) => (
             <SectionCard key={index} title={section.title}>
-              {section.inputs.map((input, i) => (
-                <InputGroup
-                  key={i}
-                  label={input.label}
-                  periods={input.periods}
-                  onChange={(id, value) => {
-                    handleChange(id, value);
-                    if (input.withValidation && validatePercentage) {
-                      const err = validatePercentage(value);
-                      if (err) handleChange(id, value);
-                    }
-                  }}
-                  values={inputs}
-                  errors={errors}
-                  id={input.id}
-                />
-              ))}
+              {section.inputs.map((input, i) => {
+                // console.log(inputs);
+                return (
+                  <InputGroup
+                    key={i}
+                    label={input.label}
+                    periods={input.periods}
+                    onChange={(id, value) => {
+                      handleChange(id, value);
+                      if (input.withValidation && validatePercentage) {
+                        const err = validatePercentage(value);
+                        if (err) handleChange(id, value);
+                      }
+                    }}
+                    values={inputs}
+                    errors={errors}
+                    id={input.id}
+                  />
+                );
+              })}
             </SectionCard>
           ))}
         </div>

@@ -13,7 +13,7 @@ export class Computation {
     before: number;
     growth: number;
   }): number {
-    return Math.round(before * (1 + growth / 100) * 100) / 100;
+    return parseFloat((before * (1 + growth / 100)).toFixed(2));
   }
 
   public static projection({
@@ -29,6 +29,8 @@ export class Computation {
   }): number[] {
     const result: number[] = [...data];
     let time = initialYear + result.length;
+    // console.log(data);
+    // console.log(result[result.length - 1]);
 
     while (time <= finalYear) {
       const lastValue = result[result.length - 1];
@@ -89,7 +91,7 @@ export class Computation {
       }
     }
 
-    return result.map((num) => Math.round(num * 100) / 100);
+    return result.map((num) => parseFloat(((num * 100) / 100).toFixed(2)));
   }
 
   private static calculateGrowthRate({
@@ -100,7 +102,7 @@ export class Computation {
     current: number;
   }): number {
     if (!before || !current) return 0;
-    return (current / before - 1) * 100;
+    return parseFloat(((current / before - 1) * 100).toFixed(2));
   }
 
   public static calculateGrowthRates(array: (number | null)[]): number[] {
@@ -119,8 +121,8 @@ export class Computation {
   }
 
   public static averageArray = (array: number[]) => {
-    const newArray = array.slice(1);
-    return newArray.reduce((a, b) => a + b, 0) / array.length;
+    // const newArray = array.slice(1);
+    return array.reduce((a, b) => a + b, 0) / array.length;
   };
 }
 
@@ -164,14 +166,18 @@ export const dataProjection = (
     finalYear: finalYear,
   });
 
-export const sumData = (data_1: number[], data_2: number[]) =>
-  Computation.computeArrays(
-    Computation.ARRAY_OPERATION_TYPES.ADD,
-    data_1,
-    data_2,
-  );
+export const sumData = (...arrays: number[][]) =>
+  Computation.computeArrays(Computation.ARRAY_OPERATION_TYPES.ADD, ...arrays);
 
-export const growthRate = (data: number[]) =>
-  Computation.calculateGrowthRates(data);
+export const growthRate = (data: number[]) => {
+  return Computation.calculateGrowthRates(data);
+};
 
-export const average = (data: number[]) => Computation.averageArray(data);
+export const average = (data: number[]) => {
+  // console.log(data.slice(1));
+  if (data[0] === 0) {
+    return Computation.averageArray(data.slice(1));
+  }
+  return Computation.averageArray(data);
+  // console.log("data Growth:", data);
+};

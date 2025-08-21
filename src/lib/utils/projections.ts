@@ -4,13 +4,14 @@ import {
   IPopResData,
   IPopulationData,
 } from "@/lib/types/response";
-import { Computation } from "./formulas";
+import { average, Computation, growthRate } from "./formulas";
 import {
   BaselinePayload,
   SimulationState,
   TimePeriodData,
 } from "@/stores/slicers/dssInputSlicer";
 import { getNestedValue } from "./validation";
+import { baselineMetrics } from "@/app/dss-interface/page";
 
 export interface ProcessedGdpParameter {
   rawData: (number | null)[];
@@ -123,37 +124,32 @@ export const generatePopulationProjection = (
 
   const scenarioInputs = simulationState.demography.populationGrowth;
 
-  const growthRates = Computation.calculateGrowthRates(
-    totalHistoricalPopulation,
-  );
-  const averageGrowth = Computation.averageArray(growthRates);
+  const growthRates = growthRate(totalHistoricalPopulation);
+  const averageGrowth = average(growthRates);
   const initialYear = historicalData.tahun[0];
 
   let currentProjection = Computation.projection({
     data: totalHistoricalPopulation,
     growth: averageGrowth,
-    finalYear: 2024,
-    initialYear,
+    finalYear: 2025,
   });
 
   currentProjection = Computation.projection({
     data: currentProjection,
-    growth: scenarioInputs["2025-2030"] ?? 0,
+    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
     finalYear: 2030,
-    initialYear,
   });
   currentProjection = Computation.projection({
     data: currentProjection,
-    growth: scenarioInputs["2031-2040"] ?? 0,
+    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
     finalYear: 2040,
-    initialYear,
   });
   currentProjection = Computation.projection({
     data: currentProjection,
-    growth: scenarioInputs["2041-2045"] ?? 0,
+    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
     finalYear: 2045,
-    initialYear,
   });
+  // console.log(currentProjection);
 
   return currentProjection;
 };
@@ -243,36 +239,35 @@ export const generateScenarioProjection = (
       let finalProjectedData: (number | null)[] = [];
 
       if (scenarioInputs) {
-        const growthRates = Computation.calculateGrowthRates(cleanDataSeries);
-        const averageGrowth = Computation.averageArray(growthRates);
+        const growthRates = growthRate(cleanDataSeries);
+        const averageGrowth = average(growthRates);
         let projectionWithUserInputs = Computation.projection({
           data: cleanDataSeries,
-          growth: averageGrowth * 100,
-          finalYear: 2024,
+          growth: averageGrowth,
+          finalYear: 2025,
           initialYear,
         });
         projectionWithUserInputs = Computation.projection({
           data: projectionWithUserInputs,
-          growth: scenarioInputs["2025-2030"] ?? 0,
+          growth: scenarioInputs["2025-2030"] ?? averageGrowth,
           finalYear: 2030,
           initialYear,
         });
         projectionWithUserInputs = Computation.projection({
           data: projectionWithUserInputs,
-          growth: scenarioInputs["2031-2040"] ?? 0,
+          growth: scenarioInputs["2031-2040"] ?? averageGrowth,
           finalYear: 2040,
           initialYear,
         });
         projectionWithUserInputs = Computation.projection({
           data: projectionWithUserInputs,
-          growth: scenarioInputs["2041-2045"] ?? 0,
+          growth: scenarioInputs["2041-2045"] ?? averageGrowth,
           finalYear: 2045,
-          initialYear,
         });
         finalProjectedData = projectionWithUserInputs;
       } else {
-        const growthRates = Computation.calculateGrowthRates(cleanDataSeries);
-        const averageGrowth = Computation.averageArray(growthRates);
+        const growthRates = growthRate(cleanDataSeries);
+        const averageGrowth = average(growthRates);
         const baselineProjection = Computation.projection({
           data: cleanDataSeries,
           growth: averageGrowth,
@@ -293,7 +288,6 @@ export const generateScenarioProjection = (
   const projectedYears = Computation.adjustTimeFrame({
     dataYear: historicalData.tahun,
     finalYear,
-    initialYear,
   });
 
   return {
@@ -342,14 +336,13 @@ export const generateHistoricalProjection = (
     ) {
       const dataSeries = historicalData.parameters[categoryName];
       const cleanDataSeries = dataSeries.map((val) => val ?? 0);
-      const growthRates = Computation.calculateGrowthRates(cleanDataSeries);
-      const averageGrowth = Computation.averageArray(growthRates);
+      const growthRates = growthRate(cleanDataSeries);
+      const averageGrowth = average(growthRates);
 
       const projectedData = Computation.projection({
         data: cleanDataSeries,
         growth: averageGrowth,
         finalYear: finalYear,
-        initialYear: initialYear,
       });
       projectedParameters[categoryName] = projectedData;
     }

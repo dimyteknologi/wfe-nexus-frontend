@@ -26,9 +26,12 @@ const SimulationForm = () => {
     return flatData;
   }, [simulationState]);
 
+  // console.log(flattenedInputs);
+
   const handleChange = (id: string, value: number) => {
     const numericValue = value === null ? 0 : Number(value);
     const path = id.split(".");
+    // console.log(numericValue);
     dispatch(updateValue({ path, value: numericValue }));
 
     const errorMessage = validatePercentage(numericValue);
