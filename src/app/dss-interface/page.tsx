@@ -13,9 +13,13 @@ import { useAppSelector } from "@/stores/root-reducer";
 import { validateParameters } from "@/lib/utils/validation";
 import {
   extractAverageGrowthRates,
+  generateAgricultureLandProjection,
+  generateChickenLivestockProjection,
+  generateFisheryAreaProjection,
   generateHistoricalProjection,
   generatePopulationProjection,
   generateScenarioProjection,
+  generateSheepLivestockProjection,
   processAllGdpData,
 } from "@/lib/utils/projections";
 import { useAppDispatch } from "@/stores/root-reducer";
@@ -29,6 +33,7 @@ import {
   SimulationState,
 } from "@/stores/slicers/dssInputSlicer";
 import { IGDPResData } from "@/lib/types/response";
+import { generateCattleLivestockProjection } from "../../lib/utils/projections";
 
 interface ChartSeries {
   name: string;
@@ -62,16 +67,31 @@ const dummyData: iTableData[] = Array.from({ length: 42 }).map((_, i) => ({
 const DSSPage = () => {
   useInitializeData();
   const dispatch = useAppDispatch();
+
+  // pagiantaion
   const [page, setPage] = useState(1);
   const pageSize = 10;
   const start = (page - 1) * pageSize;
   const paginatedData = dummyData.slice(start, start + pageSize);
+
   const simulationState = useAppSelector((state) => state.simulation);
+
+  // Get historical data
   const historicalGdpData = useAppSelector((state) => state.gdp.data);
   const historicalPopulationData = useAppSelector(
     (state) => state.population.data,
   );
-  const projectionData = useAppSelector(selectProjectionData);
+  const historicalAgricultureLandData = useAppSelector(
+    (state) => state.agriculture.data,
+  );
+  const historicalFisheryAreaData = useAppSelector(
+    (state) => state.fishery.data,
+  );
+  const historicalLivestockData = useAppSelector(
+    (state) => state.livestock.data,
+  );
+
+  const projectionData = useAppSelector(selectProjectionData); // Skenario aktif/terbaru
   const savedScenarios = useAppSelector((state) => state.scenarios.scenarios);
   const debouncedSimulationState = useDebounce(simulationState, 750);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -162,25 +182,34 @@ const DSSPage = () => {
         simState,
         2045,
       );
-      const parameterKeys = Object.keys(scenario.parameters);
-      const sectorKeys = parameterKeys.filter(
-        (key) =>
-          key !== "Produk Domestik Regional Bruto" &&
-          key !== "PDRB Tanpa Migas" &&
-          key !== "Produk Domestik Regional Bruto Non Pemerintahan",
+
+      const agricultureLand = generateAgricultureLandProjection(
+        historicalAgricultureLandData,
+        simState,
       );
-      const calculatedGdrpTotal: number[] = [];
 
-      for (let i = 0; i < scenario.tahun.length; i++) {
-        let sumForYear = 0;
-        for (const key of sectorKeys) {
-          sumForYear += Math.ceil(scenario?.parameters[key][i] ?? 0);
-        }
-        calculatedGdrpTotal.push(sumForYear);
-      }
+      const fisheryAreaGrowth = generateFisheryAreaProjection(
+        historicalFisheryAreaData,
+        simState,
+      );
 
-      const gdrpTotal = calculatedGdrpTotal ?? [];
-      const gdrpInBillions = gdrpTotal.map((v) => v.toFixed(2));
+      const liveStockCattle = generateCattleLivestockProjection(
+        historicalLivestockData,
+        simState,
+      );
+      const liveStockChicken = generateChickenLivestockProjection(
+        historicalLivestockData,
+        simState,
+      );
+
+      const liveStockSheep = generateSheepLivestockProjection(
+        historicalLivestockData,
+        simState,
+      );
+
+      const gdrpTotal =
+        scenario.parameters["Produk Domestik Regional Bruto"] ?? [];
+      const gdrpInBillions = gdrpTotal.map((v) => (v ? v / 1000 : 0));
       const economicGrowth = Computation.calculateGrowthRates(gdrpTotal);
       const gdrpPerCapita = scenario.tahun.map((_, i) => {
         const gdrp = gdrpTotal[i];
@@ -192,6 +221,11 @@ const DSSPage = () => {
         economicGrowth,
         projectedPopulation: population,
         gdrpPerCapita,
+        agricultureLand,
+        fisheryAreaGrowth,
+        liveStockCattle,
+        liveStockChicken,
+        liveStockSheep,
       };
     };
 
