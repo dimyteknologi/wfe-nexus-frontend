@@ -18,3 +18,10 @@ export interface IEnergyDemand {
 }
 
 export type IEnergyDemandData = IBaseData<IEnergyDemand>;
+
+export interface IFoodDemand {
+  DOMESTIC_FOOD_DEMAND: number[];
+  FOOD_DEMAND: number[];
+}
+
+export type IFoodDemandData = IBaseData<IFoodDemand>;

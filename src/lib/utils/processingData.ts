@@ -62,3 +62,18 @@ const generateWaterGenerationEnergyDemand = (data: number[]) => {
 
   return result.map((data) => data / 1000000);
 };
+
+// FOOD DEMAND
+const generateFoodDemand = (data: number[]) => {
+  const constantStaple = RESOURCE_DEMAND_UNIT.FOOD.STAPLE_PER_CAPITA;
+  const constantNonStaple =
+    RESOURCE_DEMAND_UNIT.FOOD.PERCENTAGE_NON_STAPLE_DEMAND;
+
+  return data.map(
+    (data) => (data * constantStaple * (1 - constantNonStaple)) / 1000000,
+  );
+};
+const generateDomesticFoodDemand = (data: number[]) => {
+  const constantStaple = RESOURCE_DEMAND_UNIT.FOOD.STAPLE_PER_CAPITA;
+  return data.map((data) => (data * constantStaple) / 1000000);
+};
