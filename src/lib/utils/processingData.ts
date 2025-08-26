@@ -101,3 +101,12 @@ const generateAgriculturetArea = (data: number[], finalYear: number) => {
   const growth = 1 - constanta;
   return Computation.projection({ data, growth, finalYear });
 };
+
+//  LAND PORTION
+const generateLandPortion = (data: number[], availableLand: number[]) => {
+  return Computation.computeArrays(
+    Computation.ARRAY_OPERATION_TYPES.DEVIDED,
+    data,
+    availableLand,
+  );
+};

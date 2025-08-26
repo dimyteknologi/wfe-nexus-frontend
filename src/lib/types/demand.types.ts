@@ -38,3 +38,14 @@ export interface ILandCover {
 }
 
 export type ILandCoverData = IBaseData<ILandCover>;
+
+export interface ILandPortion {
+  industrialLand: number[];
+  housingLand: number[];
+  forestArea: number[];
+  agricultureArea: number[];
+  otherLand: number[];
+  availableLand: number[];
+}
+
+export type ILandPortionData = IBaseData<ILandPortion>;
