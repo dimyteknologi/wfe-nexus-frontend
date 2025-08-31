@@ -2,6 +2,7 @@ export class Computation {
   public static readonly ARRAY_OPERATION_TYPES = {
     ADD: "ADD",
     MULTIPLY: "MULTIPLY",
+    DEVIDED: "DEVIDED",
   } as const;
 
   private constructor() {}
@@ -83,6 +84,8 @@ export class Computation {
           case Computation.ARRAY_OPERATION_TYPES.MULTIPLY:
             result[i] *= arr[i];
             break;
+          case Computation.ARRAY_OPERATION_TYPES.DEVIDED:
+            result[i] /= arr[i];
           default:
             throw new Error("Invalid computation type");
         }
@@ -119,7 +122,8 @@ export class Computation {
   }
 
   public static averageArray = (array: number[]) => {
-    return array.reduce((a, b) => a + b, 0) / array.length;
+    const strResult = array.reduce((a, b) => a + b, 0) / array.length;
+    return parseFloat(strResult.toFixed(2));
   };
 
   public static growthArrayByValue = (

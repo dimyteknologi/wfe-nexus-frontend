@@ -1,5 +1,6 @@
+import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
 import { RESOURCE_DEMAND_UNIT } from "../constant/resourceDemandUnit.constant";
-import { constantMultiply, sumData } from "./formulas";
+import { Computation, constantMultiply, sumData } from "./formulas";
 
 //  WATER DEMAND
 const generateDomesticWaterDemandProcess = (data: number[]) => {
@@ -61,4 +62,51 @@ const generateWaterGenerationEnergyDemand = (data: number[]) => {
   const result = constantMultiply(data, constant);
 
   return result.map((data) => data / 1000000);
+};
+
+// FOOD DEMAND
+const generateFoodDemand = (data: number[]) => {
+  const constantStaple = RESOURCE_DEMAND_UNIT.FOOD.STAPLE_PER_CAPITA;
+  const constantNonStaple =
+    RESOURCE_DEMAND_UNIT.FOOD.PERCENTAGE_NON_STAPLE_DEMAND;
+
+  return data.map(
+    (data) => (data * constantStaple * (1 - constantNonStaple)) / 1000000,
+  );
+};
+const generateDomesticFoodDemand = (data: number[]) => {
+  const constantStaple = RESOURCE_DEMAND_UNIT.FOOD.STAPLE_PER_CAPITA;
+  return data.map((data) => (data * constantStaple) / 1000000);
+};
+
+// LAND COVER
+const generateIndustrialLand = (data: number[], finalYear: number) => {
+  const constanta = INITIAL_DATA_CONSTANT.LAND_COVER.INDUSTRIAL_LAND;
+  const growth = constanta + 1;
+  return Computation.projection({ data, growth, finalYear });
+};
+
+const generateHousingLand = (data: number[], finalYear: number) => {
+  const constanta = INITIAL_DATA_CONSTANT.LAND_COVER.HOUSING_LAND;
+  const growth = constanta + 1;
+  return Computation.projection({ data, growth, finalYear });
+};
+const generateForestArea = (data: number[], finalYear: number) => {
+  const constanta = INITIAL_DATA_CONSTANT.LAND_COVER.FOREST_AREA;
+  const growth = constanta + 1;
+  return Computation.projection({ data, growth, finalYear });
+};
+const generateAgriculturetArea = (data: number[], finalYear: number) => {
+  const constanta = INITIAL_DATA_CONSTANT.LAND_COVER.AGRICULTURE_AREA;
+  const growth = 1 - constanta;
+  return Computation.projection({ data, growth, finalYear });
+};
+
+//  LAND PORTION
+const generateLandPortion = (data: number[], availableLand: number[]) => {
+  return Computation.computeArrays(
+    Computation.ARRAY_OPERATION_TYPES.DEVIDED,
+    data,
+    availableLand,
+  );
 };

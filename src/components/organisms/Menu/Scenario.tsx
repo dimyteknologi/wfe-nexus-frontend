@@ -147,14 +147,13 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
                   className="block w-full px-3 py-2 md:px-4 md:py-2.5 text-sm text-gray-700 bg-white/90 border border-gray-300 rounded-lg shadow-xs appearance-none focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 hover:border-gray-400 transition-all duration-200"
                 >
                   <option value="">-- Select an option --</option>
-                  {scenarioOptions.map((scenario: SimulationState) => (
-                    <option
-                      key={scenario.simulationName}
-                      value={scenario.simulationName || ""}
-                    >
-                      {scenario.simulationName}
-                    </option>
-                  ))}
+                  {scenarioOptions.map(
+                    (scenario: SimulationState, idx: number) => (
+                      <option key={idx} value={scenario.simulationName || ""}>
+                        {scenario.simulationName}
+                      </option>
+                    ),
+                  )}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                   <ChevronDown className="w-4 h-4" />
