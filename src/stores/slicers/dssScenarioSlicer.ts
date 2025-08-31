@@ -1,35 +1,71 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { SimulationState } from "./dssInputSlicer";
-
+const STORAGE_KEY = "scenarios";
 interface ScenarioState {
-  scenarios: SimulationState[];
+  data: SimulationState[];
+  error?: string;
+  success?: string;
 }
 
 const initialState: ScenarioState = {
-  scenarios: [],
+  data: [],
+  error: undefined,
+  success: undefined,
 };
 
-const ScenarioSlice = createSlice({
+const scenarioSlice = createSlice({
   name: "scenarios",
   initialState,
   reducers: {
-    loadScenarios: (state) => {
-      const key = "scenarios";
+    addScenario: (state, action: PayloadAction<SimulationState>) => {
+      const data = action.payload;
+
+      if (!data.simulationName || data.simulationName.trim() === "") {
+        state.error = "Fail: required simulation name!";
+        return;
+      }
+
       try {
-        const scenariosRaw = localStorage.getItem(key);
-        if (scenariosRaw) {
-          state.scenarios = JSON.parse(scenariosRaw);
+        const existingScenariosRaw = localStorage.getItem(STORAGE_KEY);
+        const existingScenarios: SimulationState[] = existingScenariosRaw
+          ? JSON.parse(existingScenariosRaw)
+          : [];
+
+        const existingIndex = existingScenarios.findIndex(
+          (s) =>
+            s.simulationName?.toLocaleLowerCase() ===
+            data.simulationName?.toLocaleLowerCase(),
+        );
+
+        if (existingIndex !== -1) {
+          existingScenarios[existingIndex] = data;
+          state.success = "Success: scenario updated!";
+        } else {
+          existingScenarios.push(data);
+          state.success = "Success: scenario saved!";
         }
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(existingScenarios));
+        state.data = existingScenarios;
+        state.error = undefined;
       } catch (error) {
-        console.error("Gagal memuat skenario dari localStorage:", error);
-        state.scenarios = [];
+        state.error = "Fail: " + error;
       }
     },
-    addScenario: (state, action: PayloadAction<SimulationState>) => {
-      state.scenarios.push(action.payload);
+
+    loadScenarios: (state) => {
+      try {
+        const savedScenariosRaw = localStorage.getItem(STORAGE_KEY);
+        const savedScenarios: SimulationState[] = savedScenariosRaw
+          ? JSON.parse(savedScenariosRaw)
+          : [];
+        state.data = savedScenarios;
+      } catch (error) {
+        state.error = "Fail: " + error;
+      }
     },
   },
 });
 
-export const { loadScenarios, addScenario } = ScenarioSlice.actions;
-export default ScenarioSlice.reducer;
+export const { addScenario, loadScenarios } = scenarioSlice.actions;
+export default scenarioSlice.reducer;
