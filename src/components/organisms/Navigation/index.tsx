@@ -1,6 +1,4 @@
-
 import Link from "next/link";
-
 
 const Navigation = () => {
   return (
@@ -21,7 +19,9 @@ const Navigation = () => {
           <li>
             <Link href={"/"}>Home</Link>
           </li>
-          <li>About</li>
+          <li>
+            <Link href={"/about"}>About</Link>
+          </li>
           <li>
             <Link href={"/dss-interface"}>DSS Interface</Link>
           </li>

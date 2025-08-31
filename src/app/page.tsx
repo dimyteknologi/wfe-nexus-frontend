@@ -4,10 +4,8 @@ import Navigation from "@/components/organisms/Navigation";
 
 export default async function Home() {
   return (
-    <main className="font-sans h-screen">
-      <Navigation />
+    <main className="font-sans mx-auto">
       <Hero />
-      <Footer />
     </main>
   );
 }

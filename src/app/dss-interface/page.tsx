@@ -377,9 +377,8 @@ const DSSPage = () => {
 
   return (
     <div className="max-h-[100dvh] w-full overflow-hidden">
-      <Navigation />
       {/* dashboard menu */}
-      <div className="flex max-h-[5dvh] my-2 sm:my-4 justify-between items-center px-8">
+      <div className="flex max-h-[10dvh] my-2 sm:my-4 justify-between items-center px-8">
         <div>
           <button
             className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm text-white font-bold ${
@@ -405,7 +404,7 @@ const DSSPage = () => {
             isScenarioOpen
               ? "w-full lg:w-1/3 bg-white border border-gray-200"
               : "w-0 border-none -translate-x-full"
-          } rounded-lg lg:rounded-2xl py-2 md:py-4 transition-all duration-200 overflow-hidden h-full flex flex-col items-center`}
+          } rounded-lg lg:rounded-2xl py-2 md:py-4 transition-all duration-200 overflow-hidden h-[70vdh] flex flex-col items-center`}
         >
           <ScenarioMenu
             handleOpenScenarioTab={handleOpenScenarioTab}
