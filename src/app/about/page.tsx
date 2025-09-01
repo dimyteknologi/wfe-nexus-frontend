@@ -35,7 +35,7 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pt-24">
+    <div className="min-h-screen bg-gradient-to-r from-green-50 to-blue-50 pt-24">
       {/* Header Section */}
       <section className="container mx-auto px-6 py-12">
         <div className="text-center mb-16">
