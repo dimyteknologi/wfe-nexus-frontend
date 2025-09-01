@@ -29,9 +29,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main className="min-h-screen bg-white w-full">
+        <main className=" bg-white w-full">
           <Navigation />
-          <div className="w-full">
+          <div className=" w-full">
             <ProviderComponent>{children}</ProviderComponent>
           </div>
         </main>

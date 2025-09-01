@@ -376,7 +376,7 @@ const DSSPage = () => {
   };
 
   return (
-    <div className="w-full px-6 pt-28 overflow-hidden bg-gradient-to-r from-green-50 to-blue-50">
+    <div className="w-full px-6 pt-28 overflow-hidden">
       {/* dashboard menu */}
       <div className="flex my-2 sm:my-4 justify-between items-center">
         <div>
