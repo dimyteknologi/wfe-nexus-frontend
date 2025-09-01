@@ -30,9 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main className="max-h-[100dvh] w-full overflow-hidden flex flex-col justify-between">
+        <main className="max-h-[100dvh] w-full overflow-hidden flex gap-2 flex-col justify-between">
           <Navigation />
-          <div className="flex grow  w-full">
+          <div className="flex items-center h-[85dvh] w-full">
             <ProviderComponent>{children}</ProviderComponent>
           </div>
           <Footer />
