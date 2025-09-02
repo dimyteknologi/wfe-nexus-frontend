@@ -385,10 +385,9 @@ const DSSPage = () => {
   };
 
   return (
-    <div className="max-h-[100dvh] w-full overflow-hidden">
-      <Navigation />
+    <div className="w-full px-6 pt-28 overflow-hidden">
       {/* dashboard menu */}
-      <div className="flex max-h-[5dvh] my-2 sm:my-4 justify-between items-center px-8">
+      <div className="flex my-2 sm:my-4 justify-between items-center">
         <div>
           <button
             className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm text-white font-bold ${
@@ -407,14 +406,14 @@ const DSSPage = () => {
       </div>
 
       {/* dashboard content */}
-      <div className="flex  lg:flex-row justify-between h-[80dvh]">
+      <div className="flex lg:flex-row justify-between gap-2">
         {/* scenario menu */}
         <div
           className={`${
             isScenarioOpen
               ? "w-full lg:w-1/3 bg-white border border-gray-200"
               : "w-0 border-none -translate-x-full"
-          } rounded-lg lg:rounded-2xl py-2 md:py-4 transition-all duration-200 overflow-hidden h-full flex flex-col items-center`}
+          } rounded-lg lg:rounded-2xl py-2 md:py-4 transition-all duration-200 overflow-hidden  flex flex-col items-center`}
         >
           <ScenarioMenu
             handleOpenScenarioTab={handleOpenScenarioTab}
@@ -425,10 +424,10 @@ const DSSPage = () => {
 
         {/* chart content */}
         <div
-          className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white min-h-[70vh] lg:min-h-[80dvh] `}
+          className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white h-full lg:min-h-full rounded-2xl`}
         >
           <div
-            className={`w-full h-[70vh] sm:h-[80vh] lg:h-[80dvh] p-2 sm:p-3 md:p-4 overflow-auto lg:overflow-visible ${
+            className={`w-full p-2 sm:p-3 md:p-4 overflow-auto lg:overflow-visible ${
               isScenarioOpen
                 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"
@@ -438,7 +437,7 @@ const DSSPage = () => {
               derivedMetrics.chartConfigs.map((chartConfig) => (
                 <div
                   key={chartConfig.id}
-                  className={`w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg ${
+                  className={`w-full  max-w-full mx-auto bg-white rounded-lg ${
                     isScenarioOpen
                       ? "sm:col-span-1 xl:col-span-3"
                       : "sm:col-span-1  lg:col-span-3"
