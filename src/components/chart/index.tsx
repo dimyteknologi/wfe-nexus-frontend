@@ -47,12 +47,6 @@ const ChartComponent: React.FC<iChartProps> = ({
         },
       },
       colors,
-      // markers: {
-      //   size: 6,
-      //   hover: {
-      //     sizeOffset: 1,
-      //   },
-      // },
       stroke: { curve: "smooth" },
       dataLabels: { enabled: false },
       legend: { show: true, position: "bottom" },

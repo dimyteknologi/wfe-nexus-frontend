@@ -1,8 +1,13 @@
 import React, { useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
-import { updateValue, SimulationState } from "@/stores/slicers/dssInputSlicer";
+import {
+  updateValue,
+  SimulationState,
+  resetSimulation,
+} from "@/stores/slicers/dssInputSlicer";
 import { addScenario, loadScenarios } from "@/stores/slicers/dssScenarioSlicer";
 import { X, Play, ChevronDown } from "lucide-react";
+import { normalizeKey } from "@/lib/utils";
 
 interface ScenarioMenuProps {
   handleOpenScenarioTab: () => void;
@@ -15,7 +20,12 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const simulationState = useAppSelector((state) => state.simulation);
-  const savedScenarios = useAppSelector((state) => state.scenarios.scenarios);
+  const {
+    data: scenarios,
+    success,
+    error,
+  } = useAppSelector((state) => state.scenarios);
+
   const baselineProjection = useAppSelector(
     (state) => state.projectionResult.data,
   );
@@ -35,26 +45,19 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   const handleSaveSimulation = () => {
     if (Object.keys(errors).length === 0) {
       dispatch(addScenario(simulationState));
-      alert("Sukses Menyimpan Data!");
+      dispatch(resetSimulation());
+      alert(success);
     } else {
-      alert("Terdapat error pada input parameter, periksa kembali");
+      alert(error);
     }
   };
+
   const scenarioOptions = useMemo(() => {
-    const baselineForMenu = baselineProjection
-      ? {
-          ...baselineProjection,
-          simulationName: baselineProjection.tabel,
-        }
-      : null;
-
-    const options = [
-      ...(baselineForMenu ? [baselineForMenu] : []),
-      ...savedScenarios,
-    ];
-
-    return options;
-  }, [baselineProjection, savedScenarios]);
+    return scenarios.filter(
+      (s: SimulationState, index: number, arr: SimulationState[]) =>
+        index === arr.findIndex((t) => t.simulationName === s.simulationName),
+    );
+  }, [scenarios]);
 
   const isSaveDisabled =
     Object.keys(errors).length > 0 || !simulationState.simulationName;
@@ -118,8 +121,11 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
                   className="block w-full px-3 py-2 md:px-4 md:py-2.5 text-sm text-gray-700 bg-white/90 border border-gray-300 rounded-lg shadow-xs appearance-none focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 hover:border-gray-400 transition-all duration-200"
                 >
                   <option value="">-- Select an option --</option>
-                  {scenarioOptions.map((scenario: SimulationState, idx) => (
-                    <option key={idx} value={scenario.simulationName || ""}>
+                  {scenarioOptions.map((scenario: SimulationState) => (
+                    <option
+                      key={normalizeKey(scenario?.simulationName || "default")}
+                      value={scenario.simulationName || ""}
+                    >
                       {scenario.simulationName}
                     </option>
                   ))}
@@ -141,11 +147,13 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
                   className="block w-full px-3 py-2 md:px-4 md:py-2.5 text-sm text-gray-700 bg-white/90 border border-gray-300 rounded-lg shadow-xs appearance-none focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 hover:border-gray-400 transition-all duration-200"
                 >
                   <option value="">-- Select an option --</option>
-                  {scenarioOptions.map((scenario: SimulationState, idx) => (
-                    <option key={idx} value={scenario.simulationName || ""}>
-                      {scenario.simulationName}
-                    </option>
-                  ))}
+                  {scenarioOptions.map(
+                    (scenario: SimulationState, idx: number) => (
+                      <option key={idx} value={scenario.simulationName || ""}>
+                        {scenario.simulationName}
+                      </option>
+                    ),
+                  )}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                   <ChevronDown className="w-4 h-4" />

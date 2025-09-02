@@ -42,6 +42,7 @@ interface ChartSeries {
 
 interface ChartConfig {
   id: string;
+  content: string;
   title: string;
   type: "line" | "area" | "bar";
   series: ChartSeries[];
@@ -92,7 +93,7 @@ const DSSPage = () => {
   );
 
   const projectionData = useAppSelector(selectProjectionData); // Skenario aktif/terbaru
-  const savedScenarios = useAppSelector((state) => state.scenarios.scenarios);
+  const savedScenarios = useAppSelector((state) => state.scenarios.data);
   const debouncedSimulationState = useDebounce(simulationState, 750);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
@@ -262,6 +263,8 @@ const DSSPage = () => {
     const chartConfigs: ChartConfig[] = [
       {
         id: "gdrp",
+        content:
+          "GDP adalah nilai total seluruh barang dan jasa yang dihasilkan oleh suatu negara dalam periode tertentu (biasanya satu tahun)Indikator ini menggambarkan ukuran ekonomi suatu negara, semakin tinggi GDP berarti semakin besar aktivitas ekonominya.",
         title: "GDRP [Bilion Rp/year]",
         type: "bar",
         series: [
@@ -290,6 +293,8 @@ const DSSPage = () => {
       {
         id: "economicGrowth",
         title: "Economic Growth (%/year)",
+        content:
+          "Economic growth adalah peningkatan kapasitas suatu negara dalam menghasilkan barang dan jasa dari waktu ke waktu. Pertumbuhan ini biasanya diukur dengan persentase kenaikan GDP riil tahunan. Pertumbuhan ekonomi mencerminkan perkembangan produktivitas, investasi, dan kesejahteraan masyarakat.",
         type: "line",
         series: [
           { name: projectionData.tabel, data: activeMetrics.economicGrowth },
@@ -314,6 +319,8 @@ const DSSPage = () => {
       {
         id: "population",
         title: "Population (People)",
+        content:
+          "Population atau populasi adalah jumlah total penduduk yang tinggal dalam suatu wilayah atau negara pada periode tertentu. Populasi berperan penting dalam analisis ekonomi karena menentukan potensi pasar, ketersediaan tenaga kerja, dan beban pembangunan.",
         type: "line",
         series: [
           {
@@ -341,6 +348,8 @@ const DSSPage = () => {
       {
         id: "gdrpPerCapita",
         title: "GDRP Per capita [Milion Rp/cap/year]",
+        content:
+          "GDP per capita adalah hasil pembagian GDP dengan jumlah penduduk. Indikator ini menunjukkan rata-rata pendapatan atau output ekonomi per orang. GDP per capita sering dipakai untuk mengukur tingkat kemakmuran atau standar hidup masyarakat di suatu negara.",
         type: "line",
         series: [
           { name: projectionData.tabel, data: activeMetrics.gdrpPerCapita },
@@ -436,16 +445,12 @@ const DSSPage = () => {
                 >
                   <Chart
                     title={chartConfig.title}
-                    content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-                  Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                    content={chartConfig.content}
                     type={chartConfig.type}
                     series={chartConfig.series}
                     categories={derivedMetrics.years}
-                    colors={["#1E90FF", "#33A1E0"]}
-                    height={250}
+                    height={200}
+                    colors={["#1E90FF", "#001BB7", "#BBDCE5"]}
                   />
                 </div>
               ))}

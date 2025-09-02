@@ -102,24 +102,6 @@ const dssSimulationSlice = createSlice({
     resetSimulation: () => {
       return initialState;
     },
-    saveSimulation: (state) => {
-      if (!state.simulationName) {
-        alert("Gagal menyimpan: Nama simulasi tidak boleh kosong.");
-        return;
-      }
-      const key = "scenarios";
-      try {
-        const existingScenariosRaw = localStorage.getItem(key);
-        const existingScenarios: SimulationState[] = existingScenariosRaw
-          ? JSON.parse(existingScenariosRaw)
-          : [];
-        existingScenarios.push(state);
-        localStorage.setItem(key, JSON.stringify(existingScenarios));
-        alert("Simulasi berhasil disimpan!");
-      } catch (error) {
-        alert("Gagal menyimpan simulasi ke localStorage:" + error);
-      }
-    },
     populateInputsWithBaseline: (
       state,
       action: PayloadAction<BaselinePayload>,
@@ -140,10 +122,6 @@ const dssSimulationSlice = createSlice({
   },
 });
 
-export const {
-  updateValue,
-  resetSimulation,
-  saveSimulation,
-  populateInputsWithBaseline,
-} = dssSimulationSlice.actions;
+export const { updateValue, resetSimulation, populateInputsWithBaseline } =
+  dssSimulationSlice.actions;
 export default dssSimulationSlice.reducer;
