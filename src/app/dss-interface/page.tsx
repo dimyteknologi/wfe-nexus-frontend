@@ -385,7 +385,7 @@ const DSSPage = () => {
   };
 
   return (
-    <div className="w-full h-[100dvh] px-6 pt-28 ">
+    <div className="w-full px-6 pt-28 overflow-hidden">
       {/* dashboard menu */}
       <div className="flex my-2 sm:my-4 justify-between items-center">
         <div>
@@ -424,7 +424,7 @@ const DSSPage = () => {
 
         {/* chart content */}
         <div
-          className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white h-full rounded-2xl`}
+          className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white overflow-auto h-[70dvh] rounded-2xl`}
         >
           <div
             className={`w-full p-2 overflow-auto lg:overflow-visible ${

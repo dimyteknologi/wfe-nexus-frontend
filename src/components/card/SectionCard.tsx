@@ -23,7 +23,7 @@ const SectionCard = ({ title, children }: ISectionCardProps) => {
         {openAccordion ? <ChevronUp /> : <ChevronDown />}
       </button>
       <div
-        className={`${openAccordion ? "max-h-96" : "max-h-0"} overflow-hidden transition-all duration-200`}
+        className={`${!openAccordion && "max-h-0"} overflow-hidden transition-all duration-200`}
       >
         <div className="p-4 space-y-5">{children}</div>
       </div>
