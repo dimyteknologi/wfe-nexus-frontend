@@ -385,7 +385,7 @@ const DSSPage = () => {
   };
 
   return (
-    <div className="w-full px-6 pt-28 overflow-hidden">
+    <div className="w-full h-[100dvh] px-6 pt-28 ">
       {/* dashboard menu */}
       <div className="flex my-2 sm:my-4 justify-between items-center">
         <div>
@@ -406,14 +406,14 @@ const DSSPage = () => {
       </div>
 
       {/* dashboard content */}
-      <div className="flex lg:flex-row justify-between gap-2">
+      <div className="flex h-full lg:flex-row justify-between gap-2">
         {/* scenario menu */}
         <div
           className={`${
             isScenarioOpen
               ? "w-full lg:w-1/3 bg-white border border-gray-200"
               : "w-0 border-none -translate-x-full"
-          } rounded-lg lg:rounded-2xl py-2 md:py-4 transition-all duration-200 overflow-hidden  flex flex-col items-center`}
+          } rounded-lg lg:rounded-2xl py-2 md:py-4 transition-all duration-200 overflow-hidden h-[70dvh] flex flex-col items-center`}
         >
           <ScenarioMenu
             handleOpenScenarioTab={handleOpenScenarioTab}
@@ -424,10 +424,10 @@ const DSSPage = () => {
 
         {/* chart content */}
         <div
-          className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white h-full lg:min-h-full rounded-2xl`}
+          className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white h-full rounded-2xl`}
         >
           <div
-            className={`w-full p-2 sm:p-3 md:p-4 overflow-auto lg:overflow-visible ${
+            className={`w-full p-2 overflow-auto lg:overflow-visible ${
               isScenarioOpen
                 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"

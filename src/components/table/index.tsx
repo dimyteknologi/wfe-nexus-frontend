@@ -31,7 +31,7 @@ export default function Table<T extends Record<string, unknown>>({
   return (
     <div className="w-full">
       <CollapsibleTitle
-        title="Table Random"
+        title="Sample Table Layout"
         content="Lorem Ipsum"
         onClick={() => {}}
       />
