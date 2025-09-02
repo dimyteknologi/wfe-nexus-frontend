@@ -8,15 +8,15 @@ const AboutPage = () => {
   const [activeMember, setActiveMember] = useState(0);
 
   const tabs = [
-    { id: 0, title: "TENTANG WEF NEXUS" },
-    { id: 1, title: "TENTANG ALAT DSS" },
-    { id: 2, title: "PENGEMBANG" },
+    { id: 0, title: "ABOUT WEF NEXUS" },
+    { id: 1, title: "ABOUT DSS TOOLS" },
+    { id: 2, title: "DEVELOPERS" },
   ];
 
   const teamMembers = [
     {
       name: "Bappenas",
-      role: "Direktorat KKSDA",
+      role: "Directorate of KKSDA",
       contact: "Mr. XYZ (+6221 7888...)",
       logo: "/bappenas-logo.png",
     },
@@ -27,7 +27,7 @@ const AboutPage = () => {
       logo: "/undp-logo.png",
     },
     {
-      name: "PT Dimmy Technology",
+      name: "PT ...",
       role: "Web Developer",
       contact: "Mr. XYZ (+6221 7888...)",
       logo: "/dev-logo.png",
@@ -35,21 +35,36 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-green-50 to-blue-50 pt-24">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pt-24">
       {/* Header Section */}
       <section className="container mx-auto px-6 py-12">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-green-800 mb-6">
-            Tentang WEF Nexus DSS
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Platform inovatif untuk mendukung pengambilan keputusan terintegrasi
-            dalam mengelola sumber daya air, energi, dan pangan
-          </p>
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-5xl font-bold text-green-800 mb-6"
+          >
+            About WEF Nexus DSS
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-xl text-gray-600 max-w-3xl mx-auto"
+          >
+            Innovative platform to support integrated decision-making in
+            managing water, energy, and food resources
+          </motion.p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap justify-center mb-12 border-b border-gray-200">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="flex flex-wrap justify-center mb-12 border-b border-gray-200"
+        >
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -59,7 +74,7 @@ const AboutPage = () => {
               {tab.title}
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Tab Content */}
         <div className="max-w-4xl mx-auto">
@@ -73,18 +88,21 @@ const AboutPage = () => {
             >
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <h2 className="text-3xl font-bold text-green-800 mb-6">
-                  Pendekatan Terintegrasi WEF Nexus
+                  Integrated WEF Nexus Approach
                 </h2>
                 <p className="text-lg text-gray-700 mb-6">
-                  Water-Energy-Food (WEF) Nexus adalah pendekatan terintegrasi
-                  untuk memahami dan mengelola keterkaitan antara sistem air,
-                  energi, dan pangan. Konsep ini pertama kali dibahas dalam
-                  World Economic Forum (WEF) pada tahun 2008 untuk mengatasi
-                  tantangan masa depan di dunia global.
+                  The Water-Energy-Food (WEF) Nexus is an integrated approach to
+                  managing and understanding the interconnectedness between
+                  water, energy, and food systems. First discussed at the World
+                  Economic Forum (WEF) in 2008 to address future global
+                  challenges.
                 </p>
 
                 <div className="grid md:grid-cols-3 gap-6 mb-8">
-                  <div className="bg-green-50 p-6 rounded-xl">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-green-50 p-6 rounded-xl"
+                  >
                     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
                       <svg
                         className="w-8 h-8 text-blue-600"
@@ -104,13 +122,16 @@ const AboutPage = () => {
                       Water Security
                     </h3>
                     <p className="text-gray-600 text-center">
-                      Kapasitas populasi untuk menjaga akses berkelanjutan
-                      terhadap air dalam kuantitas yang memadai dan kualitas
-                      yang dapat diterima (UN-Water, 2013)
+                      The capacity of a population to safeguard sustainable
+                      access to adequate quantities of acceptable quality water
+                      (UN-Water, 2013)
                     </p>
-                  </div>
+                  </motion.div>
 
-                  <div className="bg-yellow-50 p-6 rounded-xl">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-yellow-50 p-6 rounded-xl"
+                  >
                     <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4 mx-auto">
                       <svg
                         className="w-8 h-8 text-yellow-600"
@@ -130,12 +151,15 @@ const AboutPage = () => {
                       Energy Security
                     </h3>
                     <p className="text-gray-600 text-center">
-                      Ketersediaan energi yang tidak terputus dengan harga yang
-                      terjangkau (IEA, 1974)
+                      Uninterrupted availability of energy sources at an
+                      affordable price (IEA, 1974)
                     </p>
-                  </div>
+                  </motion.div>
 
-                  <div className="bg-red-50 p-6 rounded-xl">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-red-50 p-6 rounded-xl"
+                  >
                     <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4 mx-auto">
                       <svg
                         className="w-8 h-8 text-red-600"
@@ -155,27 +179,27 @@ const AboutPage = () => {
                       Food Security
                     </h3>
                     <p className="text-gray-600 text-center">
-                      Ketika semua orang setiap saat memiliki akses fisik dan
-                      ekonomi terhadap pangan yang cukup, aman, dan bergizi (The
-                      WFS, 1996)
+                      When all people at all times have physical and economic
+                      access to sufficient, safe and nutritious food (The WFS,
+                      1996)
                     </p>
-                  </div>
+                  </motion.div>
                 </div>
 
                 <h3 className="text-2xl font-semibold text-green-800 mb-4">
-                  Implementasi di Indonesia
+                  Implementation in Indonesia
                 </h3>
                 <p className="text-lg text-gray-700 mb-6">
-                  Di Indonesia, konsep ini dipromosikan dalam rencana jangka
-                  panjang dan menengah, dengan penekanan pada kedaulatan air,
-                  pangan, dan energi sebagai pintu gerbang kesejahteraan
-                  masyarakat, dengan program nasional untuk mencapai swasembada
-                  Pangan, Energi, dan Air (RPJMN 2025-2029).
+                  In Indonesia, this concept is promoted in our long-term and
+                  mid-term plans, with emphasis on water, food, and energy
+                  sovereignty as a gateway for society&apos;s wellbeing, with a
+                  national program to achieve self-sufficiency in Food, Energy,
+                  and Water (RPJMN 2025-2029).
                 </p>
 
                 <div className="bg-gray-50 p-6 rounded-xl">
                   <h4 className="text-xl font-semibold mb-4">
-                    Indikator Utama:
+                    Key Indicators:
                   </h4>
                   <div className="grid md:grid-cols-2 gap-4">
                     <ul className="space-y-2">
@@ -193,7 +217,7 @@ const AboutPage = () => {
                             d="M5 13l4 4L19 7"
                           />
                         </svg>
-                        <span>Indeks ketahanan pangan</span>
+                        <span>Food security index</span>
                       </li>
                       <li className="flex items-start">
                         <svg
@@ -209,7 +233,7 @@ const AboutPage = () => {
                             d="M5 13l4 4L19 7"
                           />
                         </svg>
-                        <span>Pertumbuhan PDB pertanian</span>
+                        <span>Growth of agriculture GDP</span>
                       </li>
                       <li className="flex items-start">
                         <svg
@@ -225,7 +249,7 @@ const AboutPage = () => {
                             d="M5 13l4 4L19 7"
                           />
                         </svg>
-                        <span>Indeks ketahanan air</span>
+                        <span>Water security index</span>
                       </li>
                     </ul>
                     <ul className="space-y-2">
@@ -243,7 +267,7 @@ const AboutPage = () => {
                             d="M5 13l4 4L19 7"
                           />
                         </svg>
-                        <span>Kapasitas penyimpanan air</span>
+                        <span>Water storage capacity</span>
                       </li>
                       <li className="flex items-start">
                         <svg
@@ -259,7 +283,7 @@ const AboutPage = () => {
                             d="M5 13l4 4L19 7"
                           />
                         </svg>
-                        <span>Akses air minum rumah tangga perkotaan</span>
+                        <span>Urban household access to drinking water</span>
                       </li>
                       <li className="flex items-start">
                         <svg
@@ -275,7 +299,7 @@ const AboutPage = () => {
                             d="M5 13l4 4L19 7"
                           />
                         </svg>
-                        <span>Indeks kualitas air</span>
+                        <span>Water quality index</span>
                       </li>
                     </ul>
                   </div>
@@ -296,31 +320,31 @@ const AboutPage = () => {
                 Decision Support System Tools
               </h2>
               <p className="text-lg text-gray-700 mb-8">
-                DSS Tools dikembangkan untuk memberikan simulasi mengenai
-                kondisi Air, Energi, dan Pangan dalam suatu wilayah dalam
-                kerangka waktu tertentu dengan fleksibilitas pada skenario
-                pembangunan sosial dan ekonomi yang berbeda. Dapat digunakan
-                untuk berbagai pengguna termasuk pemerintah pusat dan daerah,
-                akademisi, mitra pembangunan, LSM, dan masyarakat itu sendiri.
+                DSS Tools are developed to provide simulations of Water, Energy,
+                and Food conditions within an area under a certain timeframe
+                with flexibility on different social and economy development
+                scenarios. It can be used by different users including central
+                and local government, academia, development partners, NGOs, and
+                the public.
               </p>
 
               <div className="flex flex-col md:flex-row gap-8 mb-8">
                 <div className="md:w-1/2">
                   <h3 className="text-2xl font-semibold text-green-800 mb-4">
-                    Pendekatan Sistem
+                    Systems Approach
                   </h3>
                   <p className="text-gray-700 mb-6">
-                    Dengan menggunakan pendekatan berbasis sistem (Systems
-                    Thinking/System Dynamics), WEF Nexus mengakomodasi interaksi
-                    antara sektor air, energi, dan pangan/lahan, bersama dengan
-                    berbagai loop umpan balik yang terbentuk dalam sektor WEF
-                    dan antara sektor sosial-ekonomi, untuk menggambarkan
-                    kompleksitas WEF Nexus.
+                    Using a systems-based approach (Systems Thinking/System
+                    Dynamics), the WEF Nexus accommodates the interactions among
+                    the water, energy, and food/land sectors, along with various
+                    feedback loops formed within the WEF sectors and between
+                    socio-economic sectors, to illustrate the complexity of the
+                    WEF Nexus.
                   </p>
 
                   <div className="bg-blue-50 p-5 rounded-xl">
                     <h4 className="text-xl font-semibold mb-3">
-                      Manfaat Utama:
+                      Key Benefits:
                     </h4>
                     <ul className="space-y-2">
                       <li className="flex items-start">
@@ -337,8 +361,25 @@ const AboutPage = () => {
                             d="M9 5l7 7-7 7"
                           />
                         </svg>
+                        <span>Explore various future development pathways</span>
+                      </li>
+                      <li className="flex items-start">
+                        <svg
+                          className="w-5 h-5 text-blue-600 mt-1 mr-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
                         <span>
-                          Eksplorasi berbagai jalur pembangunan masa depan
+                          Illustrate potential synergies and trade-offs within
+                          WEF sectors
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -356,24 +397,8 @@ const AboutPage = () => {
                           />
                         </svg>
                         <span>
-                          Menggambarkan sinergi dan trade-off dalam sektor WEF
+                          Provide input for regional policy formulation
                         </span>
-                      </li>
-                      <li className="flex items-start">
-                        <svg
-                          className="w-5 h-5 text-blue-600 mt-1 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                        <span>Masukan untuk formulasi kebijakan regional</span>
                       </li>
                     </ul>
                   </div>
@@ -382,15 +407,15 @@ const AboutPage = () => {
                 <div className="md:w-1/2">
                   <div className="bg-green-800 text-white p-6 rounded-xl h-full">
                     <h3 className="text-2xl font-semibold mb-4">
-                      Untuk Siapa DSS Ini?
+                      Who is this DSS for?
                     </h3>
                     <ul className="space-y-4">
                       {[
-                        "Pemerintah Pusat dan Daerah",
-                        "Akademisi dan Peneliti",
-                        "Mitra Pembangunan",
-                        "Lembaga Swadaya Masyarakat (LSM)",
-                        "Masyarakat Umum",
+                        "Central and Local Government",
+                        "Academia and Researchers",
+                        "Development Partners",
+                        "Non-Governmental Organizations (NGOs)",
+                        "General Public",
                       ].map((item, index) => (
                         <li key={index} className="flex items-center">
                           <svg
@@ -425,20 +450,22 @@ const AboutPage = () => {
               className="bg-white rounded-2xl shadow-lg p-8"
             >
               <h2 className="text-3xl font-bold text-green-800 mb-6">
-                Tim Pengembang
+                Development Team
               </h2>
               <p className="text-lg text-gray-700 mb-8">
-                Dikembangkan melalui proses partisipatif yang melibatkan
-                berbagai pemangku kepentingan—di pihak pemerintah—termasuk
-                Kementerian PPN/Bappenas, Kementerian Pertanian, Kementerian
-                ESDM, beberapa perwakilan pemerintah daerah, dan akademisi;
-                semua dikoordinasi oleh UNDP Indonesia.
+                Developed through a participatory process involving a diverse
+                range of stakeholders—on the government side—including the
+                Ministry of National Development Planning (Bappenas), the
+                Ministry of Agriculture, the Ministry of Energy and Mineral
+                Resources (ESDM), several representatives from local
+                governments, and academics; all orchestrated by UNDP Indonesia.
               </p>
 
               <div className="grid md:grid-cols-3 gap-6 mb-8">
                 {teamMembers.map((member, index) => (
-                  <div
+                  <motion.div
                     key={index}
+                    whileHover={{ y: -5 }}
                     className={`border rounded-xl p-6 cursor-pointer transition-all ${activeMember === index ? "border-green-600 bg-green-50 shadow-md" : "border-gray-200 hover:shadow-md"}`}
                     onClick={() => setActiveMember(index)}
                   >
@@ -456,21 +483,20 @@ const AboutPage = () => {
                     <p className="text-gray-700 text-center">
                       {member.contact}
                     </p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
               <div className="bg-gray-50 p-6 rounded-xl">
                 <h3 className="text-2xl font-semibold text-green-800 mb-4">
-                  Proses Kolaboratif
+                  Collaborative Process
                 </h3>
                 <p className="text-gray-700 mb-4">
-                  Pengembangan WEF Nexus DSS melibatkan kolaborasi erat antara
-                  berbagai institusi untuk memastikan alat ini dapat memenuhi
-                  kebutuhan pengguna dan memberikan dampak nyata dalam
-                  perencanaan pembangunan.
+                  The development of WEF Nexus DSS involves close collaboration
+                  between various institutions to ensure this tool can meet user
+                  needs and have a real impact on development planning.
                 </p>
-                <div className="flex items-center justify-between mt-6">
+                <div className="flex flex-col md:flex-row items-center justify-between mt-6 space-y-4 md:space-y-0">
                   <div className="flex items-center">
                     <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                       <svg
@@ -488,7 +514,7 @@ const AboutPage = () => {
                       </svg>
                     </div>
                     <span className="text-gray-700">
-                      Kolaborasi Multi-Pihak
+                      Multi-Stakeholder Collaboration
                     </span>
                   </div>
 
@@ -509,7 +535,7 @@ const AboutPage = () => {
                       </svg>
                     </div>
                     <span className="text-gray-700">
-                      Pendekatan Partisipatif
+                      Participatory Approach
                     </span>
                   </div>
 
@@ -529,7 +555,7 @@ const AboutPage = () => {
                         />
                       </svg>
                     </div>
-                    <span className="text-gray-700">Pengembangan Iteratif</span>
+                    <span className="text-gray-700">Iterative Development</span>
                   </div>
                 </div>
               </div>
