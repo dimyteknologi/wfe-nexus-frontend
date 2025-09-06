@@ -37,16 +37,19 @@ export const simulationFormConfig: FormSection[] = [
       {
         label: "Livestock growth: Cattle [%/year]",
         periods: timePeriods,
+        withValidation: true,
         id: "livestock.cattleGrowth",
       },
       {
         label: "Livestock growth: Poultry [%/year]",
         periods: timePeriods,
+        withValidation: true,
         id: "livestock.poultryGrowth",
       },
       {
         label: "Livestock growth: Goat [%/year]",
         periods: timePeriods,
+        withValidation: true,
         id: "livestock.goatGrowth",
       },
     ],

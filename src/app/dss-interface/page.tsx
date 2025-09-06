@@ -1,384 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import Navigation from "@/components/organisms/Navigation";
 import { FileUp } from "lucide-react";
-import { useDebounce } from "@/hooks/useDebounce";
-import { useInitializeData } from "@/hooks/useInitDummy";
-import Chart from "@/components/chart";
-import Table from "@/components/table";
 import SimulationForm from "@/components/form/simulation";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
-import { useAppSelector } from "@/stores/root-reducer";
-import { validateParameters } from "@/lib/utils/validation";
-import {
-  extractAverageGrowthRates,
-  generateAgricultureLandProjection,
-  generateChickenLivestockProjection,
-  generateFisheryAreaProjection,
-  generateHistoricalProjection,
-  generatePopulationProjection,
-  generateScenarioProjection,
-  generateSheepLivestockProjection,
-  processAllGdpData,
-} from "@/lib/utils/projections";
-import { useAppDispatch } from "@/stores/root-reducer";
-import {
-  setProjectionResult,
-  selectProjectionData,
-} from "@/stores/slicers/dssProjectionSlicer";
-import { Computation } from "@/lib/utils/formulas";
-import {
-  populateInputsWithBaseline,
-  SimulationState,
-} from "@/stores/slicers/dssInputSlicer";
-import { IGDPResData } from "@/lib/types/response";
-import { generateCattleLivestockProjection } from "../../lib/utils/projections";
-
-interface ChartSeries {
-  name: string;
-  data: number[];
-}
-
-interface ChartConfig {
-  id: string;
-  content: string;
-  title: string;
-  type: "line" | "area" | "bar";
-  series: ChartSeries[];
-}
-
-interface DerivedMetrics {
-  years: string[];
-  chartConfigs: ChartConfig[];
-}
-
-type iTableData = {
-  year: number;
-  baseline_1: number;
-  baseline_2: number;
-};
-
-const dummyData: iTableData[] = Array.from({ length: 42 }).map((_, i) => ({
-  year: new Date().getFullYear() - i,
-  baseline_1: Math.random() + 1,
-  baseline_2: Math.random() + i,
-}));
+import ChartWidget from "@/components/chart/widget";
 
 const DSSPage = () => {
-  useInitializeData();
-  const dispatch = useAppDispatch();
-
-  // pagiantaion
-  const [page, setPage] = useState(1);
-  const pageSize = 10;
-  const start = (page - 1) * pageSize;
-  const paginatedData = dummyData.slice(start, start + pageSize);
-
-  const simulationState = useAppSelector((state) => state.simulation);
-
-  // Get historical data
-  const historicalGdpData = useAppSelector((state) => state.gdp.data);
-  const historicalPopulationData = useAppSelector(
-    (state) => state.population.data,
-  );
-  const historicalAgricultureLandData = useAppSelector(
-    (state) => state.agriculture.data,
-  );
-  const historicalFisheryAreaData = useAppSelector(
-    (state) => state.fishery.data,
-  );
-  const historicalLivestockData = useAppSelector(
-    (state) => state.livestock.data,
-  );
-
-  const projectionData = useAppSelector(selectProjectionData); // Skenario aktif/terbaru
-  const savedScenarios = useAppSelector((state) => state.scenarios.data);
-  const debouncedSimulationState = useDebounce(simulationState, 750);
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isScenarioOpen, setIsScenarioOpen] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (historicalGdpData && !projectionData) {
-      const baselineProjection =
-        generateHistoricalProjection(historicalGdpData);
-      if (baselineProjection) dispatch(setProjectionResult(baselineProjection));
-
-      const processedData = processAllGdpData(historicalGdpData);
-      const baselinePayload = extractAverageGrowthRates(processedData);
-      if (Object.keys(baselinePayload).length > 0)
-        dispatch(populateInputsWithBaseline(baselinePayload));
-    }
-  }, [historicalGdpData, projectionData, dispatch]);
-
-  useEffect(() => {
-    // if (!historicalGdpData || !debouncedSimulationState.simulationName) return;
-    const scenarioProjection = generateScenarioProjection(
-      historicalGdpData,
-      debouncedSimulationState,
-    );
-    if (scenarioProjection) dispatch(setProjectionResult(scenarioProjection));
-  }, [debouncedSimulationState, historicalGdpData, dispatch]);
-
-  useEffect(() => {
-    const menuErrors: Record<string, string> = {};
-    if (!simulationState.simulationName)
-      menuErrors.simulationName = "Nama simulasi wajib diisi.";
-
-    const parameterErrors = validateParameters(simulationState);
-    setErrors({ ...menuErrors, ...parameterErrors });
-  }, [simulationState]);
-
-  const derivedMetrics: DerivedMetrics | null = useMemo(() => {
-    if (!projectionData || !historicalGdpData || !historicalPopulationData) {
-      return null;
-    }
-
-    const baselineForMenu = {
-      ...generateHistoricalProjection(historicalGdpData),
-      simulationName: "Baseline (Historical Projection)",
-    };
-    const allAvailableScenarios = [baselineForMenu, ...savedScenarios];
-
-    const baselineName = "Baseline (Historical Projection)";
-    const scenarioA_Recipe = allAvailableScenarios.find(
-      (s: SimulationState) => s.simulationName === simulationState.scenario_a,
-    );
-    const scenarioB_Recipe = allAvailableScenarios.find(
-      (s: SimulationState) => s.simulationName === simulationState.scenario_b,
-    );
-
-    let scenarioA_ProjectionData: IGDPResData | null = null;
-    if (simulationState.scenario_a) {
-      if (simulationState.scenario_a === baselineName) {
-        scenarioA_ProjectionData =
-          generateHistoricalProjection(historicalGdpData);
-      } else if (scenarioA_Recipe) {
-        scenarioA_ProjectionData = generateScenarioProjection(
-          historicalGdpData,
-          scenarioA_Recipe,
-        );
-      }
-    }
-
-    let scenarioB_ProjectionData: IGDPResData | null = null;
-    if (simulationState.scenario_b) {
-      if (simulationState.scenario_b === baselineName) {
-        scenarioB_ProjectionData =
-          generateHistoricalProjection(historicalGdpData);
-      } else if (scenarioB_Recipe) {
-        scenarioB_ProjectionData = generateScenarioProjection(
-          historicalGdpData,
-          scenarioB_Recipe,
-        );
-      }
-    }
-
-    const getMetricsFromProjection = (
-      scenario: IGDPResData,
-      simState: SimulationState,
-    ) => {
-      const population = generatePopulationProjection(
-        historicalPopulationData,
-        simState,
-        2045,
-      );
-
-      const agricultureLand = generateAgricultureLandProjection(
-        historicalAgricultureLandData,
-        simState,
-      );
-
-      const fisheryAreaGrowth = generateFisheryAreaProjection(
-        historicalFisheryAreaData,
-        simState,
-      );
-
-      const liveStockCattle = generateCattleLivestockProjection(
-        historicalLivestockData,
-        simState,
-      );
-      const liveStockChicken = generateChickenLivestockProjection(
-        historicalLivestockData,
-        simState,
-      );
-
-      const liveStockSheep = generateSheepLivestockProjection(
-        historicalLivestockData,
-        simState,
-      );
-
-      const parameterKeys = Object.keys(scenario.parameters);
-      const sectorKeys = parameterKeys.filter(
-        (key) =>
-          key !== "Produk Domestik Regional Bruto" &&
-          key !== "PDRB Tanpa Migas" &&
-          key !== "Produk Domestik Regional Bruto Non Pemerintahan",
-      );
-      const calculatedGdrpTotal: number[] = [];
-
-      for (let i = 0; i < scenario.tahun.length; i++) {
-        let sumForYear = 0;
-        for (const key of sectorKeys) {
-          sumForYear += Math.ceil(scenario?.parameters[key][i] ?? 0);
-        }
-        calculatedGdrpTotal.push(sumForYear);
-      }
-
-      const gdrpTotal = calculatedGdrpTotal ?? [];
-      const gdrpInBillions = gdrpTotal.map((v) => (v ? v / 1000 : 0));
-      const economicGrowth = Computation.calculateGrowthRates(gdrpTotal);
-      const gdrpPerCapita = scenario.tahun.map((_, i) => {
-        const gdrp = gdrpTotal[i];
-        const pop = population[i];
-        return gdrp && pop ? gdrp / pop : 0;
-      });
-      return {
-        gdrpInBillions,
-        economicGrowth,
-        projectedPopulation: population,
-        gdrpPerCapita,
-        agricultureLand,
-        fisheryAreaGrowth,
-        liveStockCattle,
-        liveStockChicken,
-        liveStockSheep,
-      };
-    };
-
-    const activeMetrics = getMetricsFromProjection(
-      projectionData,
-      simulationState,
-    );
-
-    const metricsA = scenarioA_ProjectionData
-      ? getMetricsFromProjection(scenarioA_ProjectionData, scenarioA_Recipe)
-      : null;
-
-    const metricsB = scenarioB_ProjectionData
-      ? getMetricsFromProjection(scenarioB_ProjectionData, scenarioB_Recipe)
-      : null;
-
-    const years = projectionData.tahun.map(String);
-    const chartConfigs: ChartConfig[] = [
-      {
-        id: "gdrp",
-        content:
-          "GDP adalah nilai total seluruh barang dan jasa yang dihasilkan oleh suatu negara dalam periode tertentu (biasanya satu tahun)Indikator ini menggambarkan ukuran ekonomi suatu negara, semakin tinggi GDP berarti semakin besar aktivitas ekonominya.",
-        title: "GDRP [Bilion Rp/year]",
-        type: "bar",
-        series: [
-          {
-            name: projectionData.tabel,
-            data: activeMetrics.gdrpInBillions || [],
-          },
-          ...(metricsA
-            ? [
-                {
-                  name: simulationState.scenario_a,
-                  data: metricsA.gdrpInBillions,
-                },
-              ]
-            : []),
-          ...(metricsB
-            ? [
-                {
-                  name: simulationState.scenario_b,
-                  data: metricsB.gdrpInBillions,
-                },
-              ]
-            : []),
-        ],
-      },
-      {
-        id: "economicGrowth",
-        title: "Economic Growth (%/year)",
-        content:
-          "Economic growth adalah peningkatan kapasitas suatu negara dalam menghasilkan barang dan jasa dari waktu ke waktu. Pertumbuhan ini biasanya diukur dengan persentase kenaikan GDP riil tahunan. Pertumbuhan ekonomi mencerminkan perkembangan produktivitas, investasi, dan kesejahteraan masyarakat.",
-        type: "line",
-        series: [
-          { name: projectionData.tabel, data: activeMetrics.economicGrowth },
-          ...(metricsA
-            ? [
-                {
-                  name: simulationState.scenario_a,
-                  data: metricsA.economicGrowth,
-                },
-              ]
-            : []),
-          ...(metricsB
-            ? [
-                {
-                  name: simulationState.scenario_b,
-                  data: metricsB.economicGrowth,
-                },
-              ]
-            : []),
-        ],
-      },
-      {
-        id: "population",
-        title: "Population (People)",
-        content:
-          "Population atau populasi adalah jumlah total penduduk yang tinggal dalam suatu wilayah atau negara pada periode tertentu. Populasi berperan penting dalam analisis ekonomi karena menentukan potensi pasar, ketersediaan tenaga kerja, dan beban pembangunan.",
-        type: "line",
-        series: [
-          {
-            name: projectionData.tabel,
-            data: activeMetrics.projectedPopulation,
-          },
-          ...(metricsA
-            ? [
-                {
-                  name: simulationState.scenario_a,
-                  data: metricsA.projectedPopulation,
-                },
-              ]
-            : []),
-          ...(metricsB
-            ? [
-                {
-                  name: simulationState.scenario_b,
-                  data: metricsB.projectedPopulation,
-                },
-              ]
-            : []),
-        ],
-      },
-      {
-        id: "gdrpPerCapita",
-        title: "GDRP Per capita [Milion Rp/cap/year]",
-        content:
-          "GDP per capita adalah hasil pembagian GDP dengan jumlah penduduk. Indikator ini menunjukkan rata-rata pendapatan atau output ekonomi per orang. GDP per capita sering dipakai untuk mengukur tingkat kemakmuran atau standar hidup masyarakat di suatu negara.",
-        type: "line",
-        series: [
-          { name: projectionData.tabel, data: activeMetrics.gdrpPerCapita },
-          ...(metricsA
-            ? [
-                {
-                  name: simulationState.scenario_a,
-                  data: metricsA.gdrpPerCapita,
-                },
-              ]
-            : []),
-          ...(metricsB
-            ? [
-                {
-                  name: simulationState.scenario_b,
-                  data: metricsB.gdrpPerCapita,
-                },
-              ]
-            : []),
-        ],
-      },
-    ];
-    return { years, chartConfigs };
-  }, [
-    projectionData,
-    historicalPopulationData,
-    simulationState,
-    savedScenarios,
-  ]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleOpenScenarioTab = () => {
     setIsScenarioOpen((current) => !current);
@@ -434,42 +65,37 @@ const DSSPage = () => {
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"
             } gap-2 sm:gap-3 md:gap-4 lg:gap-6`}
           >
-            {derivedMetrics &&
-              derivedMetrics.chartConfigs.map((chartConfig) => (
-                <div
-                  key={chartConfig.id}
-                  className={`w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg ${
-                    isScenarioOpen
-                      ? "sm:col-span-1 xl:col-span-3"
-                      : "sm:col-span-1  lg:col-span-3"
-                  }`}
-                >
-                  <Chart
-                    title={chartConfig.title}
-                    content={chartConfig.content}
-                    type={chartConfig.type}
-                    series={chartConfig.series}
-                    categories={derivedMetrics.years}
-                    height={200}
-                    colors={["#1E90FF", "#001BB7", "#BBDCE5"]}
-                  />
-                </div>
-              ))}
+            <ChartWidget
+              data={[]}
+              categories={[]}
+              isScenarioOpen={isScenarioOpen}
+            />
+            <ChartWidget
+              data={[]}
+              categories={[]}
+              isScenarioOpen={isScenarioOpen}
+            />
+            <ChartWidget
+              data={[]}
+              categories={[]}
+              isScenarioOpen={isScenarioOpen}
+            />
+            <ChartWidget
+              data={[]}
+              categories={[]}
+              isScenarioOpen={isScenarioOpen}
+            />
 
             {!isScenarioOpen && (
               <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7">
-                <Table<iTableData>
+                {/* <Table<iTableData>
                   columns={[
-                    { key: "year", label: "Tahun", className: "w-16" },
+                    { key: "year", label: "Years", className: "w-16" },
                     { key: "baseline_1", label: "Baseline 1" },
                     { key: "baseline_2", label: "Baseline 2" },
                   ]}
-                  data={paginatedData}
-                  page={page}
-                  pageSize={pageSize}
-                  total={dummyData.length}
-                  onPageChange={setPage}
-                />
+                  data={[]}
+                /> */}
               </div>
             )}
           </div>

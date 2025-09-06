@@ -4,9 +4,9 @@ import {
   IFisheriesResData,
   IGDPResData,
   ILivestockResData,
-  ILivestockResponse,
+  // ILivestockResponse,
   IPopResData,
-  IPopulationData,
+  // IPopulationData,
 } from "@/lib/types/response";
 import {
   average,
@@ -112,7 +112,7 @@ const getInputsForCategory = (
 export const generatePopulationProjection = (
   historicalData: IPopResData | null,
   simulationState: SimulationState | null,
-  finalYear: number = 2045,
+  // finalYear: number = 2045,
 ): number[] => {
   if (!historicalData?.parameters || !simulationState?.demography) {
     return [];
@@ -130,7 +130,7 @@ export const generatePopulationProjection = (
 
   const growthRates = growthRate(totalHistoricalPopulation);
   const averageGrowth = average(growthRates);
-  const initialYear = historicalData.tahun[0];
+  // const initialYear = historicalData.tahun[0];
 
   let currentProjection = Computation.projection({
     data: totalHistoricalPopulation,
@@ -154,7 +154,6 @@ export const generatePopulationProjection = (
     growth: scenarioInputs["2041-2045"] ?? averageGrowth,
     finalYear: 2045,
   });
-  // console.log(currentProjection);
 
   return currentProjection;
 };
@@ -376,7 +375,7 @@ export const generateHistoricalProjection = (
 export const generateAgricultureLandProjection = (
   historicalData: IAgricultureResData | null,
   simulationState: SimulationState | null,
-  finalYear: number = 2045,
+  // finalYear: number = 2045,
 ): number[] => {
   if (!historicalData?.parameters || !simulationState?.agriculture) {
     return [];
@@ -419,7 +418,7 @@ export const generateAgricultureLandProjection = (
 export const generateFisheryAreaProjection = (
   historicalData: IFisheriesResData | null,
   simulationState: SimulationState | null,
-  finalYear: number = 2045,
+  // finalYear: number = 2045,
 ): number[] => {
   if (
     !historicalData?.parameters ||
@@ -476,7 +475,7 @@ export const generateFisheryAreaProjection = (
 export const generateCattleLivestockProjection = (
   historicalData: ILivestockResData | null,
   simulationState: SimulationState | null,
-  finalYear: number = 2045,
+  // finalYear: number = 2045,
 ): number[] => {
   if (!historicalData?.parameters || !simulationState?.livestock.cattleGrowth) {
     return [];
@@ -529,7 +528,7 @@ export const generateCattleLivestockProjection = (
 export const generateChickenLivestockProjection = (
   historicalData: ILivestockResData | null,
   simulationState: SimulationState | null,
-  finalYear: number = 2045,
+  // finalYear: number = 2045,
 ): number[] => {
   if (
     !historicalData?.parameters ||
@@ -585,7 +584,7 @@ export const generateChickenLivestockProjection = (
 export const generateSheepLivestockProjection = (
   historicalData: ILivestockResData | null,
   simulationState: SimulationState | null,
-  finalYear: number = 2045,
+  // finalYear: number = 2045,
 ): number[] => {
   if (!historicalData?.parameters || !simulationState?.livestock.goatGrowth) {
     return [];
@@ -632,6 +631,6 @@ export const generateSheepLivestockProjection = (
     finalYear: 2045,
   });
 
-  console.log(currentProjection);
+  // console.log(currentProjection);
   return currentProjection;
 };

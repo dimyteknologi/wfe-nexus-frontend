@@ -20,8 +20,8 @@ export const validatePercentage = (
 ): string | undefined => {
   if (value === null) return undefined;
   const num = Number(value);
-  if (isNaN(num)) return "Harus angka";
-  if (num < 0 || num > 100) return "Nilai antara 0 & 100";
+  if (isNaN(num)) return "input incorrect (number)";
+  if (num < 0 || num > 100) return "input between 0 - 100";
 
   return undefined;
 };
