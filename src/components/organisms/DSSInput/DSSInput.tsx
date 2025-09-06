@@ -12,8 +12,8 @@ const FormContainer: React.FC<FormContainerProps> = ({
 }) => {
   // console.log(inputs);
   return (
-    <div className="w-full">
-      <div className="pl-2 sm:pl-4 mt-2 relative max-h-[calc(70dvh-100px)] overflow-y-auto w-full">
+    <div className="w-full overflow-y-scroll">
+      <div className="pl-2 sm:pl-4 mt-2 relative w-full">
         <div className="grid grid-cols-1 gap-2 sm:gap-3 md:gap-4 pb-8">
           {sections.map((section, index) => (
             <SectionCard key={index} title={section.title}>
