@@ -17,6 +17,8 @@ import ImportModal from "@/components/importModal";
 import DSSConceptModal from "@/components/dssConceptModal";
 
 const DSSPage = () => {
+  const presetOuput = ["socio economy", "Water", "Food", "Energy"];
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -70,39 +72,53 @@ const DSSPage = () => {
             Scenario Menu
           </button>
         </div>
-        <div
-          className="relative"
-          onMouseEnter={mouseHover}
-          onMouseLeave={mouseHover}
-        >
-          <p className="text-sm">Configuration</p>
-          {isDropdownOpen && (
-            <div className="absolute flex flex-col border border-green-600 p-2 rounded-2xl gap-2 w-42 right-0 top-5 z-50 bg-white shadow-lg">
-              <Link
-                href="https://docs.google.com/spreadsheets/d/1Jb9pmjGoUmvh2Q2npCZscegkp5dpqrs1o-PHWOQoBoI/edit?gid=357400504#gid=357400504"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex gap-2 p-2 hover:bg-green-50 rounded-lg"
-              >
-                <File className="w-4 h-4 sm:w-5 sm:h-5" />
-                <p className="text-sm">Get csv template</p>
-              </Link>
-              <div
-                className="flex gap-2 p-2 cursor-pointer hover:bg-green-50 rounded-lg"
-                onClick={handleOpenImportTab}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    handleOpenImportTab();
-                  }
-                }}
-              >
-                <FileUp className="w-4 h-4 sm:w-5 sm:h-5" />
-                <p className="text-sm">Import csv</p>
+        <div className="flex gap-4 items-center">
+          <div className="flex gap-4">
+            {presetOuput.map((cat, idx) => {
+              return (
+                <div
+                  key={idx}
+                  className="border border-green-700 rounded-2xl py-2 px-4"
+                >
+                  <p className="text-sm">{cat}</p>
+                </div>
+              );
+            })}
+          </div>
+          <div
+            className="relative"
+            onMouseEnter={mouseHover}
+            onMouseLeave={mouseHover}
+          >
+            <p className="text-sm">Configuration</p>
+            {isDropdownOpen && (
+              <div className="absolute flex flex-col border border-green-600 p-2 rounded-2xl gap-2 w-42 right-0 top-5 z-50 bg-white shadow-lg">
+                <Link
+                  href="https://docs.google.com/spreadsheets/d/1Jb9pmjGoUmvh2Q2npCZscegkp5dpqrs1o-PHWOQoBoI/edit?gid=357400504#gid=357400504"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex gap-2 p-2 hover:bg-green-50 rounded-lg"
+                >
+                  <File className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <p className="text-sm">Get csv template</p>
+                </Link>
+                <div
+                  className="flex gap-2 p-2 cursor-pointer hover:bg-green-50 rounded-lg"
+                  onClick={handleOpenImportTab}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      handleOpenImportTab();
+                    }
+                  }}
+                >
+                  <FileUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <p className="text-sm">Import csv</p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
