@@ -53,6 +53,9 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   };
 
   const scenarioOptions = useMemo(() => {
+    if (!scenarios) {
+      return [];
+    }
     return scenarios.filter(
       (s: SimulationState, index: number, arr: SimulationState[]) =>
         index === arr.findIndex((t) => t.simulationName === s.simulationName),

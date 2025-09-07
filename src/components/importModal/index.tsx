@@ -1,42 +1,40 @@
-import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
-import { setImportModal } from "@/stores/slicers/dssModalSlicer";
-import { FileUp, X } from "lucide-react";
-import { useRef, useState } from "react";
+"use client";
 
-const ImportModal = () => {
+import { useState, useRef, useCallback } from "react";
+import { FileUp, X } from "lucide-react";
+
+interface ImportModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
+}
+
+const ImportModal: React.FC<ImportModalProps> = ({
+  isOpen,
+  onClose,
+  fileInputRef,
+}) => {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
   const [uploadMessage, setUploadMessage] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const dispatch = useAppDispatch();
-  const dssModalState = useAppSelector((state) => state.dssModal);
 
-  // Konstanta untuk validasi file
   const maxSizeMB = 10;
   const acceptedFileTypes = ".csv,.xlsx,.xls";
 
-  const handleOpenImportTab = () => {
-    dispatch(setImportModal(!dssModalState.importModal));
-    // Reset status upload ketika modal dibuka
-    setUploadStatus("idle");
-    setUploadMessage("");
-    setSelectedFile(null);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
-  };
+  }, []);
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-  };
+  }, []);
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
 
@@ -48,58 +46,64 @@ const ImportModal = () => {
 
     const file = e.dataTransfer.files[0];
     processFile(file);
-  };
+  }, []);
 
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      if (e.target.files.length > 1) {
+  const handleFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files.length > 0) {
+        if (e.target.files.length > 1) {
+          setUploadStatus("error");
+          setUploadMessage("Hanya satu file yang dapat diupload");
+          return;
+        }
+
+        const file = e.target.files[0];
+        processFile(file);
+      }
+    },
+    [],
+  );
+
+  const processFile = useCallback(
+    (file: File) => {
+      // Check file size
+      if (file.size > maxSizeMB * 1024 * 1024) {
         setUploadStatus("error");
-        setUploadMessage("Hanya satu file yang dapat diupload");
+        setUploadMessage(
+          `File ${file.name} melebihi ukuran maksimum ${maxSizeMB}MB`,
+        );
         return;
       }
 
-      const file = e.target.files[0];
-      processFile(file);
-    }
-  };
+      // Check file type
+      const fileExtension = file.name.split(".").pop()?.toLowerCase();
+      const allowedExtensions = acceptedFileTypes
+        .split(",")
+        .map((ext) => ext.replace(".", ""));
 
-  const processFile = (file: File) => {
-    // Check file size
-    if (file.size > maxSizeMB * 1024 * 1024) {
-      setUploadStatus("error");
-      setUploadMessage(
-        `File ${file.name} melebihi ukuran maksimum ${maxSizeMB}MB`,
-      );
-      return;
-    }
+      if (fileExtension && !allowedExtensions.includes(fileExtension)) {
+        setUploadStatus("error");
+        setUploadMessage(
+          `Tipe file ${fileExtension} tidak didukung. Gunakan file CSV atau Excel.`,
+        );
+        return;
+      }
 
-    // Check file type
-    const fileExtension = file.name.split(".").pop()?.toLowerCase();
-    const allowedExtensions = acceptedFileTypes
-      .split(",")
-      .map((ext) => ext.replace(".", ""));
+      setSelectedFile(file);
+      setUploadStatus("idle");
+      setUploadMessage("");
+    },
+    [maxSizeMB, acceptedFileTypes],
+  );
 
-    if (fileExtension && !allowedExtensions.includes(fileExtension)) {
-      setUploadStatus("error");
-      setUploadMessage(
-        `Tipe file ${fileExtension} tidak didukung. Gunakan file CSV atau Excel.`,
-      );
-      return;
-    }
-
-    setSelectedFile(file);
-    setUploadStatus("idle");
-    setUploadMessage("");
-  };
-
-  const removeFile = () => {
+  const removeFile = useCallback(() => {
     setSelectedFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  };
+  }, [fileInputRef]);
 
-  const handleUpload = async () => {
+  const handleUpload = useCallback(async () => {
     if (!selectedFile) {
       setUploadStatus("error");
       setUploadMessage("Pilih file terlebih dahulu");
@@ -113,47 +117,46 @@ const ImportModal = () => {
       // Simulasi proses upload
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Di sini Anda akan menambahkan kode untuk mengupload file ke server
-      // const formData = new FormData();
-      // formData.append('file', selectedFile);
-      // const response = await fetch('/api/upload', { method: 'POST', body: formData });
-
       setUploadStatus("success");
       setUploadMessage("File berhasil diupload!");
 
       setTimeout(() => {
         setSelectedFile(null);
-        handleOpenImportTab();
+        onClose();
       }, 2000);
     } catch (error) {
       setUploadStatus("error");
       setUploadMessage("Terjadi kesalahan saat mengupload file");
       console.error("Upload error:", error);
     }
-  };
+  }, [selectedFile, onClose]);
 
-  const formatFileSize = (bytes: number) => {
+  const formatFileSize = useCallback((bytes: number) => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
+  }, []);
 
-  const getFileIcon = (fileName: string) => {
+  const getFileIcon = useCallback((fileName: string) => {
     const extension = fileName.split(".").pop()?.toLowerCase();
     if (extension === "csv") return "📊";
     if (["xlsx", "xls"].includes(extension || "")) return "📈";
     return "📁";
-  };
+  }, []);
+
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 xl:w-1/3 rounded-2xl p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-lg">Import CSV File</h3>
           <button
-            onClick={handleOpenImportTab}
+            onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
+            aria-label="Close modal"
           >
             <X size={20} />
           </button>
@@ -170,6 +173,13 @@ const ImportModal = () => {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              fileInputRef.current?.click();
+            }
+          }}
         >
           {!selectedFile ? (
             <>
@@ -206,6 +216,7 @@ const ImportModal = () => {
                     removeFile();
                   }}
                   className="text-red-500 hover:text-red-700"
+                  aria-label="Remove file"
                 >
                   <X size={16} />
                 </button>
@@ -241,7 +252,7 @@ const ImportModal = () => {
         {/* Tombol action */}
         <div className="flex justify-between mt-6">
           <button
-            onClick={handleOpenImportTab}
+            onClick={onClose}
             className="px-4 py-2 rounded-lg text-sm text-green-700 border-2 border-green-700 font-medium hover:bg-green-50"
           >
             Cancel

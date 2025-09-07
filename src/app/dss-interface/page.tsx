@@ -1,59 +1,71 @@
 "use client";
 
-import { useRef, useState } from "react";
-import Navigation from "@/components/organisms/Navigation";
+import { motion } from "framer-motion";
+import { useRef, useState, useCallback } from "react";
 import { FileUp, File, X } from "lucide-react";
 import SimulationForm from "@/components/form/simulation";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
 import ChartWidget from "@/components/chart/widget";
 import { useAppDispatch, useAppSelector } from "../../stores/root-reducer";
 import {
+  setDssConceptModal,
   setImportModal,
   setScenarioModal,
 } from "@/stores/slicers/dssModalSlicer";
 import Link from "next/link";
 import ImportModal from "@/components/importModal";
+import DSSConceptModal from "@/components/dssConceptModal";
 
 const DSSPage = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const [uploadMessage, setUploadMessage] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
 
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
-  const isAssumptionOpen = dssModalState.assumptionModal;
+  const isDssConceptOpen = dssModalState.dssConceptModal;
 
-  // Konstanta untuk validasi file
-  const maxSizeMB = 10;
-  const acceptedFileTypes = ".csv,.xlsx,.xls";
+  const handleOpenScenarioTab = useCallback(() => {
+    dispatch(setScenarioModal(!isScenarioOpen));
+  }, [dispatch, isScenarioOpen]);
 
-  const handleOpenScenarioTab = () => {
-    dispatch(setScenarioModal(!dssModalState.scenarioModal));
-  };
+  const handleOpenDssConceptTab = useCallback(() => {
+    dispatch(setDssConceptModal(!isDssConceptOpen));
+  }, [dispatch, isDssConceptOpen]);
 
-  const handleOpenImportTab = () => {
-    dispatch(setImportModal(!dssModalState.importModal));
+  const handleOpenImportTab = useCallback(() => {
+    dispatch(setImportModal(!isImportOpen));
+  }, [dispatch, isImportOpen]);
 
-    setUploadMessage("");
-  };
-
-  const mouseHover = () => {
+  const mouseHover = useCallback(() => {
     setIsDropdownOpen((current) => !current);
-  };
+  }, []);
 
   return (
     <div className="w-full px-6 pt-28 overflow-hidden">
       {/* dashboard menu */}
       <div className="relative flex my-2 sm:my-4 justify-between items-center">
-        <div>
+        <div className="flex gap-4">
+          <button
+            className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm text-white font-bold ${
+              isDssConceptOpen ? "bg-green-700" : "bg-green-600"
+            }`}
+            onClick={handleOpenDssConceptTab}
+            aria-expanded={isDssConceptOpen}
+            aria-controls="dss-concept-modal"
+          >
+            DSS Concept
+          </button>
           <button
             className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm text-white font-bold ${
               isScenarioOpen ? "bg-green-700" : "bg-green-600"
             }`}
             onClick={handleOpenScenarioTab}
+            aria-expanded={isScenarioOpen}
+            aria-controls="scenario-menu"
           >
             Scenario Menu
           </button>
@@ -65,19 +77,26 @@ const DSSPage = () => {
         >
           <p className="text-sm">Configuration</p>
           {isDropdownOpen && (
-            <div className="absolute flex flex-col border border-green-600 p-2 rounded-2xl gap-2 w-42 right-0 top-5 z-100 bg-white">
+            <div className="absolute flex flex-col border border-green-600 p-2 rounded-2xl gap-2 w-42 right-0 top-5 z-50 bg-white shadow-lg">
               <Link
                 href="https://docs.google.com/spreadsheets/d/1Jb9pmjGoUmvh2Q2npCZscegkp5dpqrs1o-PHWOQoBoI/edit?gid=357400504#gid=357400504"
                 target="_blank"
+                rel="noopener noreferrer"
+                className="flex gap-2 p-2 hover:bg-green-50 rounded-lg"
               >
-                <div className="flex gap-2">
-                  <File className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <p className="text-sm">Get csv template</p>
-                </div>
+                <File className="w-4 h-4 sm:w-5 sm:h-5" />
+                <p className="text-sm">Get csv template</p>
               </Link>
               <div
-                className="flex gap-2 cursor-pointer"
+                className="flex gap-2 p-2 cursor-pointer hover:bg-green-50 rounded-lg"
                 onClick={handleOpenImportTab}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handleOpenImportTab();
+                  }
+                }}
               >
                 <FileUp className="w-4 h-4 sm:w-5 sm:h-5" />
                 <p className="text-sm">Import csv</p>
@@ -87,12 +106,28 @@ const DSSPage = () => {
         </div>
       </div>
 
-      {isImportOpen && <ImportModal />}
+      {/* Import Modal */}
+      {isImportOpen && (
+        <ImportModal
+          isOpen={isImportOpen}
+          onClose={handleOpenImportTab}
+          fileInputRef={fileInputRef}
+        />
+      )}
+
+      {/* DSS Concept Modal */}
+      {isDssConceptOpen && (
+        <DSSConceptModal
+          isOpen={isDssConceptOpen}
+          onClose={handleOpenDssConceptTab}
+        />
+      )}
 
       {/* dashboard content */}
       <div className="flex h-full lg:flex-row justify-between gap-2">
         {/* scenario menu */}
         <div
+          id="scenario-menu"
           className={`${
             isScenarioOpen
               ? "w-full lg:w-1/3 bg-white border border-gray-200"
@@ -140,14 +175,7 @@ const DSSPage = () => {
 
             {!isScenarioOpen && (
               <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7">
-                {/* Table<iTableData>
-                  columns={[
-                    { key: "year", label: "Years", className: "w-16" },
-                    { key: "baseline_1", label: "Baseline 1" },
-                    { key: "baseline_2", label: "Baseline 2" },
-                  ]}
-                  data={[]}
-                /> */}
+                {/* Table content would go here */}
               </div>
             )}
           </div>
