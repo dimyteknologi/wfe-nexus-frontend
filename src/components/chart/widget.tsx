@@ -1,46 +1,52 @@
 "use client";
 
-import { useState } from "react";
-import SelectCollapsible from "@/components/select";
-import { OptionType } from "@/lib/types/select.types";
+import React from "react";
+import SelectCollapsible from "@/components/select/index";
 import ChartComponent from "@/components/chart/index";
+import { useAppSelector, useAppDispatch } from "@/stores/root-reducer";
+import { updateChartMetric } from "@/stores/slicers/dashboardSlicer";
+import { selectAvailableMetrics } from "@/stores/selectors/dssDashboardSelector";
+import { Metric } from "@/lib/constant/metrics";
+import { OptionType } from "@/lib/types/select.types";
 
-interface ChartData {
-  id: string;
-  title: string;
-  content: React.ReactNode;
-  type: "line" | "bar" | "area";
+interface ChartWidgetProps {
+  metric: Metric;
+  chartIndex: number;
+  type: "area" | "line" | "bar" | "pie" | "donut" | "radialBar";
+  categories: string[];
+  isScenarioOpen: boolean;
   series: ApexAxisChartSeries;
 }
 
-interface ChartWidgetProps {
-  data: ChartData[] | [];
-  categories: string[];
-  isScenarioOpen: boolean;
-}
-
 const ChartWidget = ({
-  data,
+  metric,
+  chartIndex,
   categories,
+  type,
   isScenarioOpen,
+  series,
 }: ChartWidgetProps) => {
-  const [activeChart, setActiveChart] = useState<ChartData>(data[0]);
+  const dispatch = useAppDispatch();
 
+  const availableMetrics = useAppSelector(selectAvailableMetrics);
   const handleSelectionChange = (selected: OptionType) => {
-    const newActiveChart = data.find((chart) => chart.title === selected.title);
-    if (newActiveChart) {
-      setActiveChart(newActiveChart);
-    }
+    dispatch(
+      updateChartMetric({
+        chartIndex: chartIndex,
+        newMetricId: selected.id,
+      }),
+    );
   };
 
-  const selectOptions: OptionType[] = data.map((chart) => ({
-    title: chart.title,
-    content: chart.content,
+  const selectOptions = availableMetrics.map((m) => ({
+    id: m.id,
+    title: `${m.title} (${m.unit})`,
+    content: m.content,
   }));
 
   return (
     <div
-      className={`w-full  max-w-full mx-auto bg-white rounded-lg ${
+      className={`w-full max-w-full mx-auto bg-white rounded-lg p-2 shadow-md ${
         isScenarioOpen
           ? "sm:col-span-1 xl:col-span-3"
           : "sm:col-span-1  lg:col-span-3"
@@ -48,13 +54,18 @@ const ChartWidget = ({
     >
       <SelectCollapsible
         options={selectOptions}
-        initialSelected={activeChart}
+        initialSelected={{
+          id: `${metric.id}`,
+          title: `${metric.title} (${metric.unit})`,
+          content: metric.content,
+        }}
+        height={200}
         onSelect={handleSelectionChange}
       />
       <div className="mt-2">
         <ChartComponent
-          type={activeChart?.type}
-          series={activeChart?.series}
+          type={type}
+          series={series}
           categories={categories}
           height={200}
         />

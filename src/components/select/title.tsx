@@ -7,6 +7,7 @@ interface SelectTitleProps {
   title?: string;
   content?: ReactNode;
   isDropdownOpen: boolean;
+  height?: number | string;
   onChevronClick: () => void;
 }
 
@@ -33,7 +34,7 @@ const SelectTitle = ({
           </button>
         </div>
         <div className="flex-grow text-left">
-          <h2 className="text-lg md:text-xl text-gray-800">{title}</h2>
+          <h2 className="text-md md:text-sm text-gray-800">{title}</h2>
         </div>
         <div className="w-[10%] flex justify-end">
           <button
@@ -47,7 +48,7 @@ const SelectTitle = ({
       </div>
       <div
         className={`
-          absolute w-full left-0 transition-all duration-300 ease-in-out z-10
+          absolute w-full left-0 transition-all max-h-20 duration-300 ease-in-out z-10
           ${
             isInfoOpen
               ? "opacity-100 translate-y-0 visible"
@@ -55,7 +56,9 @@ const SelectTitle = ({
           }
         `}
       >
-        <div className="p-4 bg-white text-sm text-justify rounded-b-md shadow-lg h-[200px] overflow-y-auto">
+        <div
+          className={`p-4 bg-white h-[220px] text-sm text-slate-500 text-justify rounded-b-md shadow-lg overflow-y-auto`}
+        >
           {content}
         </div>
       </div>

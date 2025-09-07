@@ -28,9 +28,11 @@ const ChartComponent: React.FC<ChartProps> = ({
       },
       xaxis: {
         categories,
+        tickAmount: 5,
         labels: {
+          rotate: 0,
           style: {
-            fontSize: "10px",
+            fontSize: "8px",
           },
         },
       },

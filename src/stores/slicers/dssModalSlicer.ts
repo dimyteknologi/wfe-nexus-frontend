@@ -8,7 +8,7 @@ interface IModalProps {
 }
 
 const initialModalValue: IModalProps = {
-  scenarioModal: false,
+  scenarioModal: true,
   importModal: false,
   assumptionModal: false,
   dssConceptModal: false,

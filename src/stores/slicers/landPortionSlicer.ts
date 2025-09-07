@@ -1,13 +1,12 @@
-import { ILandPortionData } from "@/lib/types/demand.types";
+import { IApiData } from "@/lib/types/response";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 interface ILandPortionState {
-  data: ILandPortionData | null;
+  baseline: IApiData | null;
   error: string | null;
 }
 
 const initialState: ILandPortionState = {
-  data: null,
+  baseline: null,
   error: null,
 };
 
@@ -15,17 +14,16 @@ const landPortionnSlice = createSlice({
   name: "landProportion",
   initialState,
   reducers: {
-    setData: (state, action: PayloadAction<ILandPortionData>) => {
-      state.data = action.payload;
-      state.error = null;
+    setBaseline: (state, action: PayloadAction<IApiData>) => {
+      state.baseline = action.payload;
     },
     setError: (state, action: PayloadAction<string>) => {
-      state.data = null;
+      state.baseline = null;
       state.error = action.payload;
     },
   },
 });
 
-export const { setData, setError } = landPortionnSlice.actions;
+export const { setBaseline, setError } = landPortionnSlice.actions;
 
 export default landPortionnSlice.reducer;

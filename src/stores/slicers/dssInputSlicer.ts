@@ -8,6 +8,7 @@ export type TimePeriodData = Record<TimePeriod, number | null>;
 export interface AgricultureState {
   growthScenario: TimePeriodData;
   landConversion: TimePeriodData;
+  aquacultureLandGrowth: TimePeriodData;
 }
 export interface LivestockState {
   cattleGrowth: TimePeriodData;
@@ -18,14 +19,19 @@ export interface EnergyState {
   solarPvCoverage: TimePeriodData;
   solarPvAreaIndustrial: TimePeriodData;
   solarPvAreaHousing: TimePeriodData;
+  onGrid: TimePeriodData;
+  offGrid: TimePeriodData;
+  electricitySupply: TimePeriodData;
+  electricityDemand: TimePeriodData;
 }
 export interface IndustryState {
   growth: TimePeriodData;
 }
 export interface WaterState {
-  aquacultureLandGrowth: TimePeriodData;
   artificialPondIndustrial: TimePeriodData;
   artificialPondHousing: TimePeriodData;
+  surfaceWaterCapacity: TimePeriodData;
+  groundWaterCapacity: TimePeriodData;
 }
 
 export interface DemographyState {
@@ -50,18 +56,19 @@ export interface UpdatePayload {
 }
 
 const initialTimePeriodData: TimePeriodData = {
-  "2025-2030": null,
-  "2031-2040": null,
-  "2041-2045": null,
+  "2025-2030": 0,
+  "2031-2040": 0,
+  "2041-2045": 0,
 };
 
 export const initialState: SimulationState = {
-  simulationName: null,
+  simulationName: "User Scenario",
   scenario_a: null,
   scenario_b: null,
   agriculture: {
     growthScenario: { ...initialTimePeriodData },
     landConversion: { ...initialTimePeriodData },
+    aquacultureLandGrowth: { ...initialTimePeriodData },
   },
   livestock: {
     cattleGrowth: { ...initialTimePeriodData },
@@ -72,14 +79,19 @@ export const initialState: SimulationState = {
     solarPvCoverage: { ...initialTimePeriodData },
     solarPvAreaIndustrial: { ...initialTimePeriodData },
     solarPvAreaHousing: { ...initialTimePeriodData },
+    onGrid: { ...initialTimePeriodData },
+    offGrid: { ...initialTimePeriodData },
+    electricitySupply: { ...initialTimePeriodData },
+    electricityDemand: { ...initialTimePeriodData },
   },
   industry: {
     growth: { ...initialTimePeriodData },
   },
   water: {
-    aquacultureLandGrowth: { ...initialTimePeriodData },
     artificialPondIndustrial: { ...initialTimePeriodData },
     artificialPondHousing: { ...initialTimePeriodData },
+    groundWaterCapacity: { ...initialTimePeriodData },
+    surfaceWaterCapacity: { ...initialTimePeriodData },
   },
   demography: {
     populationGrowth: { ...initialTimePeriodData },

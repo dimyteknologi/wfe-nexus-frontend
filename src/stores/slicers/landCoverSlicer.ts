@@ -1,14 +1,13 @@
-import { ILandCover, ILandCoverData } from "@/lib/types/demand.types";
-import { IPopResData } from "@/lib/types/response";
+import { IApiData } from "@/lib/types/response";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface LandCoverSliceState {
-  data: ILandCoverData | null;
+  baseline: IApiData | null;
   error: string | null;
 }
 
 const initialState: LandCoverSliceState = {
-  data: null,
+  baseline: null,
   error: null,
 };
 
@@ -16,16 +15,15 @@ const LandCoverSlice = createSlice({
   name: "landCover",
   initialState,
   reducers: {
-    setData: (state, action: PayloadAction<ILandCoverData>) => {
-      state.data = action.payload;
-      state.error = null;
+    setBaseline: (state, action: PayloadAction<IApiData>) => {
+      state.baseline = action.payload;
     },
     setError: (state, action: PayloadAction<string>) => {
-      state.data = null;
+      state.baseline = null;
       state.error = action.payload;
     },
   },
 });
 
-export const { setData, setError } = LandCoverSlice.actions;
+export const { setBaseline, setError } = LandCoverSlice.actions;
 export default LandCoverSlice.reducer;

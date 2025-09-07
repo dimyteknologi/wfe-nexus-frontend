@@ -7,12 +7,14 @@ import { OptionType } from "@/lib/types/select.types";
 interface SelectCollapsibleProps {
   options: OptionType[];
   initialSelected?: OptionType;
+  height?: number | string;
   onSelect?: (option: OptionType) => void;
 }
 
 const SelectCollapsible = ({
   options,
   initialSelected,
+  height,
   onSelect,
 }: SelectCollapsibleProps) => {
   const [selectedOption, setSelectedOption] = useState<OptionType>(
@@ -36,13 +38,15 @@ const SelectCollapsible = ({
       />
 
       {isDropdownOpen && (
-        <div className="absolute w-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-20">
+        <div
+          className={`absolute w-full h-[${Number(height) + 20}px] left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-20 overflow-y-auto`}
+        >
           <ul>
             {options.map((option, index) => (
               <li key={index}>
                 <button
                   onClick={() => handleSelectOption(option)}
-                  className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-300 transition-colors"
+                  className="w-full text-left text-sm px-4 py-2 text-slate-800 hover:bg-gray-300 transition-colors"
                 >
                   {option.title}
                 </button>

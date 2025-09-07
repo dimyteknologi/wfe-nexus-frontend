@@ -1,14 +1,23 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "@/stores/storage";
+
+import { listenerMiddleware } from "@/stores/listenerMiddleware";
+import { addGdpListeners } from "./listener/gdrpListener";
+import { addPopulationListeners } from "./listener/populationListener";
+import { addAgricultureListener } from "./listener/agricultureListener";
+import { addLivestockListeners } from "./listener/livestockListener";
+import { addFisheryListeners } from "./listener/fisheryListener";
+
 import { gdpApi } from "@/stores/api/gdpApi";
 import { livestockApi } from "@/stores/api/livestockApi";
 import { populationApi } from "@/stores/api/populationApi";
 import { fisheryApi } from "@/stores/api/fisheryApi";
 import { agricultureApi } from "@/stores/api/agricultureApi";
+
 import scenarioReducer from "@/stores/slicers/dssScenarioSlicer";
 import agricultureReducer from "@/stores/slicers/agricultureSlicer";
-import gdpReducer from "@/stores/slicers/gdpSlicer";
+import gdpReducer from "@/stores/slicers/gdrpSlicer";
 import livestockReducer from "@/stores/slicers/livestockSlicer";
 import populationReducer from "@/stores/slicers/populationSlicer";
 import fisheryReducer from "@/stores/slicers/fisherySlicer";
@@ -20,12 +29,20 @@ import landCoverReducer from "@/stores/slicers/landCoverSlicer";
 import landPortionReducer from "@/stores/slicers/landPortionSlicer";
 import alertReducer from "@/stores/slicers/alertSlicer";
 import { dssModalReducer } from "./slicers/dssModalSlicer";
+import dashboardReducer from "@/stores/slicers/dashboardSlicer";
+
+addGdpListeners();
+addPopulationListeners();
+addAgricultureListener();
+addLivestockListeners();
+addFisheryListeners();
 
 export const appReducer = combineReducers({
   scenarios: scenarioReducer,
+  dashboard: dashboardReducer,
   projectionResult: projectionReducer,
   simulation: simulationReducer,
-  gdp: gdpReducer,
+  gdrp: gdpReducer,
   livestock: livestockReducer,
   population: populationReducer,
   fishery: fisheryReducer,
@@ -62,13 +79,15 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(
-      gdpApi.middleware,
-      livestockApi.middleware,
-      populationApi.middleware,
-      agricultureApi.middleware,
-      fisheryApi.middleware,
-    ),
+    })
+      .concat(
+        gdpApi.middleware,
+        livestockApi.middleware,
+        populationApi.middleware,
+        agricultureApi.middleware,
+        fisheryApi.middleware,
+      )
+      .prepend(listenerMiddleware.middleware),
 });
 
 export const persistor = persistStore(store);

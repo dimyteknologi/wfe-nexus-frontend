@@ -47,7 +47,6 @@ const scenarioSlice = createSlice({
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(existingScenarios));
         state.data = existingScenarios;
-        state.error = undefined;
       } catch (error) {
         state.error = "Fail: " + error;
       }

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "@/stores/root-reducer";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { setData as setGdpData } from "@/stores/slicers/gdpSlicer";
+import { setData as setGdpData } from "@/stores/slicers/gdrpSlicer";
 import { setData as setLivestockData } from "@/stores/slicers/livestockSlicer";
 import { setData as setAgricultureData } from "@/stores/slicers/agricultureSlicer";
 import { setData as setPopulationData } from "@/stores/slicers/populationSlicer";
@@ -28,7 +28,7 @@ const useSyncToSlice = <P>(
 
   useEffect(() => {
     if (isSuccess && data) {
-      dispatch(actionCreator(data.data));
+      dispatch(actionCreator(data));
     }
   }, [isSuccess, data, dispatch, actionCreator]);
 };

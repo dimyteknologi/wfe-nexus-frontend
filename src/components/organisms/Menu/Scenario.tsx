@@ -26,10 +26,6 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     error,
   } = useAppSelector((state) => state.scenarios);
 
-  const baselineProjection = useAppSelector(
-    (state) => state.projectionResult.data,
-  );
-
   useEffect(() => {
     dispatch(loadScenarios());
   }, [dispatch]);

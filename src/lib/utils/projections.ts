@@ -1,636 +1,351 @@
-import {
-  GDPParameters,
-  IAgricultureResData,
-  IFisheriesResData,
-  IGDPResData,
-  ILivestockResData,
-  // ILivestockResponse,
-  IPopResData,
-  // IPopulationData,
-} from "@/lib/types/response";
-import {
-  average,
-  Computation,
-  growthDataByvalue,
-  growthRate,
-} from "./formulas";
-import {
-  BaselinePayload,
-  SimulationState,
-  TimePeriodData,
-} from "@/stores/slicers/dssInputSlicer";
-import { getNestedValue } from "./validation";
+import { IApiData, IBaselineData, Params } from "@/lib/types/response";
+import { average, Computation, growthRate } from "@/lib/utils/formulas";
+import { SimulationState } from "@/stores/slicers/dssInputSlicer";
 import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
+import { RESOURCE_DEMAND_UNIT } from "../constant/resourceDemandUnit.constant";
 
-export interface ProcessedGdpParameter {
-  rawData: (number | null)[];
-  growthRates: number[];
-  averageGrowth: number;
-}
-
-export interface ProcessedGdpResult {
-  meta: {
-    label: string;
-    unit: string;
-    year: number[];
-  };
-  processedParameters: Record<string, ProcessedGdpParameter>;
-}
-
-const categoryMap: Record<string, string[]> = {
-  "A.Pertanian, Kehutanan, dan Perikanan": ["agriculture", "growthScenario"],
-  "B.Pertambangan dan Penggalian": ["industry", "growth"],
-  "C.Industri Pengolahan": ["industry", "growth"],
-  "D.Pengadaan Listrik dan Gas": ["energy", "solarPvCoverage"],
-  "E.Pengadaan Air, Pengelolaan Sampah, Limbah dan Daur Ulang": [
-    "water",
-    "artificialPondIndustrial",
-  ],
-  "F.Konstruksi": ["industry", "growth"],
-  "G.Perdagangan Besar dan Eceran; Reparasi Mobil dan Sepeda Motor": [
-    "industry",
-    "growth",
-  ],
-  "H.Transportasi dan Pergudangan": ["industry", "growth"],
-  "I.Penyediaan Akomodasi dan Makan Minum": ["industry", "growth"],
-  "J.Informasi dan Komunikasi": ["industry", "growth"],
-  "K.Jasa Keuangan dan Asuransi": ["industry", "growth"],
-  "L.Real Estate": ["industry", "growth"],
-  "M,N.Jasa Perusahaan": ["industry", "growth"],
-  "O.Administrasi Pemerintahan, Pertahanan dan Jaminan Sosial Wajib": [
-    "industry",
-    "growth",
-  ],
-  "P.Jasa Pendidikan": ["industry", "growth"],
-  "Q.Jasa Kesehatan dan Kegiatan Sosial": ["industry", "growth"],
-  "R,S,T,U.Jasa lainnya": ["industry", "growth"],
-};
-
-const categoryToStatePathMap: Record<string, string> = {
-  "A.Pertanian, Kehutanan, dan Perikanan": "agriculture.growthScenario",
-  "B.Pertambangan dan Penggalian": "industry.growth",
-  "C.Industri Pengolahan": "industry.growth",
-  "D.Pengadaan Listrik dan Gas": "energy.solarPvCoverage",
-  "E.Pengadaan Air, Pengelolaan Sampah, Limbah dan Daur Ulang":
-    "water.artificialPondIndustrial",
-  "F.Konstruksi": "industry.growth",
-  "G.Perdagangan Besar dan Eceran; Reparasi Mobil dan Sepeda Motor":
-    "industry.growth",
-  "H.Transportasi dan Pergudangan": "industry.growth",
-  "I.Penyediaan Akomodasi dan Makan Minum": "industry.growth",
-  "J.Informasi dan Komunikasi": "industry.growth",
-  "K.Jasa Keuangan dan Asuransi": "industry.growth",
-  "L.Real Estate": "industry.growth",
-  "M,N.Jasa Perusahaan": "industry.growth",
-  "O.Administrasi Pemerintahan, Pertahanan dan Jaminan Sosial Wajib":
-    "industry.growth",
-  "P.Jasa Pendidikan": "industry.growth",
-  "Q.Jasa Kesehatan dan Kegiatan Sosial": "industry.growth",
-  "R,S,T,U.Jasa lainnya": "industry.growth",
-  "Produk Domestik Regional Bruto": "industry.growth",
-  "PDRB Tanpa Migas": "industry.growth",
-  "Produk Domestik Regional Bruto Non Pemerintahan": "industry.growth",
-};
-
-const getInputsForCategory = (
-  categoryName: string,
-  simulationState: SimulationState,
-): TimePeriodData | null => {
-  const matchedKey = Object.keys(categoryMap).find((key) =>
-    categoryName.includes(key),
-  );
-
-  if (matchedKey) {
-    const path = categoryMap[matchedKey];
-    const inputData = getNestedValue(simulationState, path) as TimePeriodData;
-    return inputData || null;
+const getInputsByName = (name: string, simulationState: SimulationState) => {
+  switch (name) {
+    case "A.Pertanian, Kehutanan, dan Perikanan":
+      return simulationState.agriculture.growthScenario;
+    case "C.Industri Pengolahan":
+      return simulationState.industry.growth;
+    case "Lahan Panen Padi":
+      return simulationState.agriculture.landConversion;
+    case "total":
+      return simulationState.demography.populationGrowth;
+    default:
+      return null;
   }
-
-  return null;
 };
 
-export const generatePopulationProjection = (
-  historicalData: IPopResData | null,
-  simulationState: SimulationState | null,
-  // finalYear: number = 2045,
+const checkType = (label: string) => {
+  if (label === "PDRB") {
+    return "Economy";
+  }
+  if (label === "populasi") {
+    return "Population";
+  }
+  if (label === "area_perikanan_laju_perubahan") {
+    return "Fishery";
+  }
+  if (label === "peternakan_laju_perubahan") {
+    return "Livestock";
+  }
+  if (label === "pertanian_luas") {
+    return "Agriculture";
+  }
+};
+
+export const generateAvailabillityPerPerson = (
+  populations: number[],
+  localFoods: number[],
 ): number[] => {
-  if (!historicalData?.parameters || !simulationState?.demography) {
+  if (
+    !Array.isArray(populations) ||
+    !Array.isArray(localFoods) ||
+    populations.length !== localFoods.length
+  ) {
     return [];
   }
 
-  const malePop = historicalData.parameters["laki"] ?? [];
-  const femalePop = historicalData.parameters["perempuan"] ?? [];
-  const totalHistoricalPopulation = Computation.computeArrays(
-    "ADD",
-    malePop.map((p) => p ?? 0),
-    femalePop.map((p) => p ?? 0),
-  );
+  const availabilityPerPerson: number[] = [];
 
-  const scenarioInputs = simulationState.demography.populationGrowth;
+  for (let i = 0; i < populations.length; i++) {
+    const population = populations[i];
+    const localFood = localFoods[i];
 
-  const growthRates = growthRate(totalHistoricalPopulation);
-  const averageGrowth = average(growthRates);
-  // const initialYear = historicalData.tahun[0];
-
-  let currentProjection = Computation.projection({
-    data: totalHistoricalPopulation,
-    growth: averageGrowth,
-    finalYear: 2025,
-  });
-
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
-    finalYear: 2030,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
-    finalYear: 2040,
-  });
-
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
-    finalYear: 2045,
-  });
-
-  return currentProjection;
-};
-
-export const processAllGdpData = (
-  gdpData: IGDPResData | null,
-): ProcessedGdpResult | null => {
-  if (!gdpData?.parameters) return null;
-  const processedParameters: Record<string, ProcessedGdpParameter> = {};
-  for (const categoryName in gdpData.parameters) {
     if (
-      Object.prototype.hasOwnProperty.call(gdpData.parameters, categoryName)
+      typeof population === "number" &&
+      typeof localFood === "number" &&
+      population > 0
     ) {
-      const rawData = gdpData.parameters[categoryName];
-      const cleanData = rawData.map((val) => val ?? 0);
-      const growthRates = Computation.calculateGrowthRates(cleanData);
-      const averageGrowth = Computation.averageArray(growthRates);
-      processedParameters[categoryName] = {
-        rawData,
-        growthRates,
-        averageGrowth,
-      };
+      const availability = (localFood / population) * 1000;
+      availabilityPerPerson.push(availability);
+    } else {
+      availabilityPerPerson.push(0);
     }
   }
-  return {
-    meta: { label: gdpData.tabel, unit: gdpData.unit, year: gdpData.tahun },
-    processedParameters,
-  };
+
+  return availabilityPerPerson;
 };
 
-export const extractAverageGrowthRates = (
-  processedData: ProcessedGdpResult | null,
-): BaselinePayload => {
-  const baselineValues: BaselinePayload = {};
-  if (!processedData) return baselineValues;
-  for (const categoryName in processedData.processedParameters) {
-    const statePath = categoryToStatePathMap[categoryName];
-    if (statePath) {
-      baselineValues[statePath] =
-        processedData.processedParameters[categoryName].averageGrowth;
+export const generateLocalFoodProductionYear = (
+  lahanPanenPadi: Params,
+): number[] | [] => {
+  if (!lahanPanenPadi || !Array.isArray(lahanPanenPadi.values)) {
+    return [];
+  }
+
+  const productionValues: number[] = [];
+  const years: number[] = [];
+
+  const startYear = 2010;
+
+  for (let i = 0; i < lahanPanenPadi.values.length; i++) {
+    const historicalValue = lahanPanenPadi.values[i];
+
+    if (typeof historicalValue === "number") {
+      const production =
+        historicalValue *
+        RESOURCE_DEMAND_UNIT.FOOD.PRODUCTIVTY_PADDY_YEAR *
+        RESOURCE_DEMAND_UNIT.FOOD.RASIO_SUSUT_BERAS;
+      productionValues.push(production);
+
+      years.push(startYear + i);
+    } else {
+      productionValues.push(0);
+      years.push(startYear + i);
     }
   }
-  return baselineValues;
+
+  return productionValues ?? [];
 };
 
 export const generateScenarioProjection = (
-  historicalData: IGDPResData | null,
-  simulationState: SimulationState | null,
+  historicalData: IApiData,
+  simulationState: SimulationState,
   finalYear = 2045,
-): IGDPResData | null => {
-  if (!historicalData || !simulationState || !historicalData.parameters)
+): IBaselineData | null => {
+  if (
+    !historicalData ||
+    !simulationState ||
+    !Array.isArray(historicalData.parameters)
+  ) {
     return null;
+  }
 
-  const projectedParameters: GDPParameters = {
-    "A.Pertanian, Kehutanan, dan Perikanan": [],
-    "B.Pertambangan dan Penggalian": [],
-    "C.Industri Pengolahan": [],
-    "D.Pengadaan Listrik dan Gas": [],
-    "E.Pengadaan Air, Pengelolaan Sampah, Limbah dan Daur Ulang": [],
-    "F.Konstruksi": [],
-    "G.Perdagangan Besar dan Eceran; Reparasi Mobil dan Sepeda Motor": [],
-    "H.Transportasi dan Pergudangan": [],
-    "I.Penyediaan Akomodasi dan Makan Minum": [],
-    "J.Informasi dan Komunikasi": [],
-    "K.Jasa Keuangan dan Asuransi": [],
-    "L.Real Estate": [],
-    "M,N.Jasa Perusahaan": [],
-    "O.Administrasi Pemerintahan, Pertahanan dan Jaminan Sosial Wajib": [],
-    "P.Jasa Pendidikan": [],
-    "Produk Domestik Regional Bruto": [],
-    "PDRB Tanpa Migas": [],
-    "Produk Domestik Regional Bruto Non Pemerintahan": [],
-  };
+  const projectedParameters: Params[] = [];
+  const initialYear = historicalData.years[0];
 
-  const initialYear = historicalData.tahun[0];
-  for (const categoryName in historicalData.parameters) {
-    if (
-      Object.prototype.hasOwnProperty.call(
-        historicalData.parameters,
-        categoryName,
-      )
-    ) {
-      const originalDataSeries = historicalData.parameters[categoryName];
-      const cleanDataSeries = originalDataSeries.map((val) => val ?? 0);
-      const scenarioInputs = getInputsForCategory(
-        categoryName,
-        simulationState,
-      );
+  for (const param of historicalData.parameters) {
+    const { name, values: originalDataSeries } = param;
+    const cleanDataSeries = originalDataSeries
+      .map((val) => val ?? 0)
+      .slice(0, 16);
+    const scenarioInputs = getInputsByName(name, simulationState);
+    const averageGrowth = average(growthRate(cleanDataSeries));
 
-      let finalProjectedData: (number | null)[] = [];
+    let finalProjectedData: number[];
+    if (scenarioInputs) {
+      const projectionStage1 = Computation.projection({
+        data: cleanDataSeries,
+        growth: averageGrowth,
+        finalYear: 2024,
+      });
 
-      if (scenarioInputs) {
-        const growthRates = growthRate(cleanDataSeries);
-        const averageGrowth = average(growthRates);
-        let projectionWithUserInputs = Computation.projection({
-          data: cleanDataSeries,
-          growth: averageGrowth,
-          finalYear: 2025,
-          initialYear,
-        });
-        projectionWithUserInputs = Computation.projection({
-          data: projectionWithUserInputs,
-          growth: scenarioInputs["2025-2030"] ?? averageGrowth,
-          finalYear: 2030,
-          initialYear,
-        });
-        projectionWithUserInputs = Computation.projection({
-          data: projectionWithUserInputs,
-          growth: scenarioInputs["2031-2040"] ?? averageGrowth,
-          finalYear: 2040,
-          initialYear,
-        });
-        projectionWithUserInputs = Computation.projection({
-          data: projectionWithUserInputs,
-          growth: scenarioInputs["2041-2045"] ?? averageGrowth,
-          finalYear: 2045,
-        });
-        finalProjectedData = projectionWithUserInputs;
-      } else {
-        const growthRates = growthRate(cleanDataSeries);
-        const averageGrowth = average(growthRates);
-        const baselineProjection = Computation.projection({
-          data: cleanDataSeries,
-          growth: averageGrowth,
-          finalYear,
-          initialYear,
-        });
-        finalProjectedData = baselineProjection;
-      }
+      const projectionStage2 = Computation.projection({
+        data: projectionStage1,
+        growth: scenarioInputs["2025-2030"] ?? averageGrowth,
+        finalYear: 2030,
+      });
 
-      const newYearsData = finalProjectedData.slice(originalDataSeries.length);
-      projectedParameters[categoryName] = [
-        ...originalDataSeries,
-        ...newYearsData,
-      ];
+      const projectionStage3 = Computation.projection({
+        data: projectionStage2,
+        growth: scenarioInputs["2031-2040"] ?? averageGrowth,
+        finalYear: 2040,
+      });
+
+      finalProjectedData = Computation.projection({
+        data: projectionStage3,
+        growth: scenarioInputs["2041-2045"] ?? averageGrowth,
+        finalYear: 2045,
+      });
+    } else {
+      finalProjectedData = Computation.projection({
+        data: cleanDataSeries,
+        growth: averageGrowth,
+        finalYear,
+      });
     }
+
+    projectedParameters.push({
+      name,
+      average: averageGrowth,
+      growth: cleanDataSeries,
+      values: finalProjectedData,
+    });
   }
 
   const projectedYears = Computation.adjustTimeFrame({
-    dataYear: historicalData.tahun,
-    finalYear,
+    dataYear: historicalData.years,
+    finalYear: finalYear,
+    initialYear,
   });
 
   return {
-    tabel: simulationState.simulationName || "User Scenario",
+    label: simulationState.simulationName || "User Scenario",
     unit: historicalData.unit,
-    tahun: projectedYears,
+    years: projectedYears,
     parameters: projectedParameters,
   };
 };
 
-export const generateHistoricalProjection = (
-  historicalData: IGDPResData | null,
+export const generateLandCover = (
+  startYear: number,
+  endYear: number,
+): IApiData => {
+  const {
+    INDUSTRIAL_LAND,
+    HOUSING_LAND,
+    FOREST_AREA,
+    AGRICULTURE_AREA,
+    AVAILABLE_LAND,
+  } = INITIAL_DATA_CONSTANT.LAND_COVER;
+
+  const { LAND_COVER_CHANGES } = RESOURCE_DEMAND_UNIT;
+
+  let industrial = INDUSTRIAL_LAND;
+  let housing = HOUSING_LAND;
+  let forest = FOREST_AREA;
+  let agriculture = AGRICULTURE_AREA;
+
+  const industrialValues: number[] = [];
+  const housingValues: number[] = [];
+  const forestValues: number[] = [];
+  const agricultureValues: number[] = [];
+  const otherValues: number[] = [];
+  const availableValues: number[] = [];
+  const years: number[] = [];
+
+  for (let year = startYear; year <= endYear; year++) {
+    const other =
+      AVAILABLE_LAND - (industrial + housing + forest + agriculture);
+
+    industrialValues.push(Math.round(industrial));
+    housingValues.push(Math.round(housing));
+    forestValues.push(Math.round(forest));
+    agricultureValues.push(Math.round(agriculture));
+    otherValues.push(Math.round(other));
+    availableValues.push(Math.round(AVAILABLE_LAND));
+    years.push(year);
+    industrial *= 1 + LAND_COVER_CHANGES.INDUSTRIAL_LAND;
+    housing *= 1 + LAND_COVER_CHANGES.HOUSING_LAND;
+    forest *= 1 + LAND_COVER_CHANGES.FOREST_LAND;
+    agriculture *= 1 - LAND_COVER_CHANGES.AGRICULTURE_AREA;
+  }
+
+  return {
+    label: "Land Cover",
+    unit: "[ha]",
+    years: years,
+    parameters: [
+      { name: "Industrial Land", values: industrialValues },
+      { name: "Housing Land", values: housingValues },
+      { name: "Forest Area", values: forestValues },
+      { name: "Agriculture Area", values: agricultureValues },
+      { name: "Other Land", values: otherValues },
+      { name: "Available Land", values: availableValues },
+    ],
+  };
+};
+export const generateLandPortion = (landCoverData: IApiData): IApiData => {
+  const { years, parameters } = landCoverData;
+
+  const getValues = (name: string): number[] =>
+    (parameters.find((p) => p.name === name)?.values ?? []).map((v) => v ?? 0);
+
+  const industrialValues = getValues("Industrial Land");
+  const housingValues = getValues("Housing Land");
+  const forestValues = getValues("Forest Area");
+  const agricultureValues = getValues("Agriculture Area");
+  const otherValues = getValues("Other Land");
+  const availableValues = getValues("Available Land");
+
+  const industrialPortion: number[] = [];
+  const housingPortion: number[] = [];
+  const forestPortion: number[] = [];
+  const agriculturePortion: number[] = [];
+  const otherPortion: number[] = [];
+  const availablePortion: number[] = [];
+
+  years.forEach((_, i) => {
+    const total = availableValues[i] ?? 0;
+
+    if (!total) {
+      industrialPortion.push(0);
+      housingPortion.push(0);
+      forestPortion.push(0);
+      agriculturePortion.push(0);
+      otherPortion.push(0);
+      availablePortion.push(0);
+      return;
+    }
+
+    const industrialVal = industrialValues[i] ?? 0;
+    const housingVal = housingValues[i] ?? 0;
+    const forestVal = forestValues[i] ?? 0;
+    const agricultureVal = agricultureValues[i] ?? 0;
+    const otherVal = otherValues[i] ?? 0;
+
+    const toPercent = (val: number, total: number) =>
+      Math.round((val / total) * 100) / 100;
+
+    industrialPortion.push(toPercent(industrialVal, total));
+    housingPortion.push(toPercent(housingVal, total));
+    forestPortion.push(toPercent(forestVal, total));
+    agriculturePortion.push(toPercent(agricultureVal, total));
+    otherPortion.push(toPercent(otherVal, total));
+    availablePortion.push(1.0); // selalu 100% dari total
+  });
+
+  return {
+    label: "Land Portion",
+    unit: "%",
+    years,
+    parameters: [
+      { name: "Industrial Land", values: industrialPortion },
+      { name: "Housing Land", values: housingPortion },
+      { name: "Forest Area", values: forestPortion },
+      { name: "Agriculture Area", values: agriculturePortion },
+      { name: "Other Land", values: otherPortion },
+      { name: "Available Land", values: availablePortion },
+    ],
+  };
+};
+
+export const generateBaseline = (
+  baseData: IApiData | null,
   finalYear: number = 2045,
-): IGDPResData | null => {
-  if (!historicalData || !historicalData.parameters || !historicalData.tahun) {
-    console.error("invalid historical");
+): IBaselineData | null => {
+  if (!baseData || !baseData.parameters || !Array.isArray(baseData.years)) {
     return null;
   }
 
-  const projectedParameters: GDPParameters = {
-    "A.Pertanian, Kehutanan, dan Perikanan": [],
-    "B.Pertambangan dan Penggalian": [],
-    "C.Industri Pengolahan": [],
-    "D.Pengadaan Listrik dan Gas": [],
-    "E.Pengadaan Air, Pengelolaan Sampah, Limbah dan Daur Ulang": [],
-    "F.Konstruksi": [],
-    "G.Perdagangan Besar dan Eceran; Reparasi Mobil dan Sepeda Motor": [],
-    "H.Transportasi dan Pergudangan": [],
-    "I.Penyediaan Akomodasi dan Makan Minum": [],
-    "J.Informasi dan Komunikasi": [],
-    "K.Jasa Keuangan dan Asuransi": [],
-    "L.Real Estate": [],
-    "M,N.Jasa Perusahaan": [],
-    "O.Administrasi Pemerintahan, Pertahanan dan Jaminan Sosial Wajib": [],
-    "P.Jasa Pendidikan": [],
-    "Produk Domestik Regional Bruto": [],
-    "PDRB Tanpa Migas": [],
-    "Produk Domestik Regional Bruto Non Pemerintahan": [],
-  };
+  const projectedParameters: Params[] = [];
+  const initialYear = baseData.years[0];
 
-  const initialYear = historicalData.tahun[0];
+  for (const param of baseData.parameters) {
+    const cleanDataSeries = param.values.map((val) => val ?? 0);
+    const growthRates = growthRate(cleanDataSeries);
+    const averageGrowth = average(growthRates);
 
-  for (const categoryName in historicalData.parameters) {
-    if (
-      Object.prototype.hasOwnProperty.call(
-        historicalData.parameters,
-        categoryName,
-      )
-    ) {
-      const dataSeries = historicalData.parameters[categoryName];
-      const cleanDataSeries = dataSeries.map((val) => val ?? 0);
-      const growthRates = growthRate(cleanDataSeries);
-      const averageGrowth = average(growthRates);
+    const projectedData = Computation.projection({
+      data: cleanDataSeries,
+      growth: averageGrowth,
+      finalYear: finalYear,
+    });
 
-      const projectedData = Computation.projection({
-        data: cleanDataSeries,
-        growth: averageGrowth,
-        finalYear: finalYear,
-      });
-      projectedParameters[categoryName] = projectedData;
-    }
+    // push result to baseline parameters data
+    projectedParameters.push({
+      name: param.name,
+      values: projectedData,
+      average: averageGrowth,
+      growth: growthRates,
+    });
   }
 
   const projectedYears = Computation.adjustTimeFrame({
-    dataYear: historicalData.tahun,
+    dataYear: baseData.years,
     finalYear: finalYear,
     initialYear: initialYear,
   });
 
+  // return baseline data
   return {
-    tabel: `${historicalData.tabel} (Historical Projection)`,
-    unit: historicalData.unit,
-    tahun: projectedYears,
+    label: `${baseData.label} (${checkType(baseData.label)} Baseline)`,
+    unit: baseData.unit,
+    years: projectedYears,
     parameters: projectedParameters,
   };
-};
-
-export const generateAgricultureLandProjection = (
-  historicalData: IAgricultureResData | null,
-  simulationState: SimulationState | null,
-  // finalYear: number = 2045,
-): number[] => {
-  if (!historicalData?.parameters || !simulationState?.agriculture) {
-    return [];
-  }
-
-  const agricultureLandHistorical =
-    historicalData.parameters["Lahan Panen Padi"] ?? [];
-
-  const scenarioInputs = simulationState.agriculture.landConversion;
-
-  const growthRates = growthRate(agricultureLandHistorical);
-  const averageGrowth = average(growthRates);
-
-  let currentProjection = Computation.projection({
-    data: agricultureLandHistorical,
-    growth: averageGrowth,
-    finalYear: 2025,
-  });
-
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
-    finalYear: 2030,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
-    finalYear: 2040,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
-    finalYear: 2045,
-  });
-
-  // console.log(averageGrowth);
-  return currentProjection;
-};
-
-export const generateFisheryAreaProjection = (
-  historicalData: IFisheriesResData | null,
-  simulationState: SimulationState | null,
-  // finalYear: number = 2045,
-): number[] => {
-  if (
-    !historicalData?.parameters ||
-    !simulationState?.water.aquacultureLandGrowth
-  ) {
-    return [];
-  }
-
-  const fisheryAreaGrowthHistorical =
-    historicalData.parameters["area perikanan"] ?? [];
-
-  const cleanFisheryAreaGrowthHistorical = fisheryAreaGrowthHistorical.map(
-    (data) => (data === null ? 0 : data),
-  );
-
-  const initialData = INITIAL_DATA_CONSTANT.PERIKANAN.LUAS_AREA_PERIKANAN;
-
-  const fisheryAreaHistorical = growthDataByvalue(
-    initialData,
-    cleanFisheryAreaGrowthHistorical,
-  );
-
-  const scenarioInputs = simulationState.water.aquacultureLandGrowth;
-
-  const averageGrowth = average(cleanFisheryAreaGrowthHistorical);
-  // console.log(cleanFisheryAreaGrowthHistorical);
-
-  let currentProjection = Computation.projection({
-    data: fisheryAreaHistorical,
-    growth: averageGrowth,
-    finalYear: 2025,
-  });
-
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
-    finalYear: 2030,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
-    finalYear: 2040,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
-    finalYear: 2045,
-  });
-
-  // console.log(currentProjection);
-  return currentProjection;
-};
-
-export const generateCattleLivestockProjection = (
-  historicalData: ILivestockResData | null,
-  simulationState: SimulationState | null,
-  // finalYear: number = 2045,
-): number[] => {
-  if (!historicalData?.parameters || !simulationState?.livestock.cattleGrowth) {
-    return [];
-  }
-
-  const cattleGrowthHistorical = historicalData.parameters["ternak sapi"] ?? [];
-
-  const cleanCattleGrowthHistorical = cattleGrowthHistorical.map((data) =>
-    data === null ? 0 : data,
-  );
-
-  const initialData = INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_SAPI;
-
-  const cattleLiveStockHistorical = growthDataByvalue(
-    initialData,
-    cleanCattleGrowthHistorical,
-  );
-
-  const scenarioInputs = simulationState.livestock.cattleGrowth;
-
-  const averageGrowth = average(cleanCattleGrowthHistorical);
-  // console.log(cleanFisheryAreaGrowthHistorical);
-
-  let currentProjection = Computation.projection({
-    data: cattleLiveStockHistorical,
-    growth: averageGrowth,
-    finalYear: 2025,
-  });
-
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
-    finalYear: 2030,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
-    finalYear: 2040,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
-    finalYear: 2045,
-  });
-
-  // console.log(currentProjection);
-  return currentProjection;
-};
-
-export const generateChickenLivestockProjection = (
-  historicalData: ILivestockResData | null,
-  simulationState: SimulationState | null,
-  // finalYear: number = 2045,
-): number[] => {
-  if (
-    !historicalData?.parameters ||
-    !simulationState?.livestock.poultryGrowth
-  ) {
-    return [];
-  }
-
-  const chickenGrowthHistorical =
-    historicalData.parameters["ternak ayam"] ?? [];
-
-  const cleanChikenGrowthHistorical = chickenGrowthHistorical.map((data) =>
-    data === null ? 0 : data,
-  );
-
-  const initialData = INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_AYAM;
-
-  const chickenLivestockHistorical = growthDataByvalue(
-    initialData,
-    cleanChikenGrowthHistorical,
-  );
-
-  const scenarioInputs = simulationState.livestock.poultryGrowth;
-
-  const averageGrowth = average(chickenLivestockHistorical);
-  // console.log(cleanFisheryAreaGrowthHistorical);
-
-  let currentProjection = Computation.projection({
-    data: chickenLivestockHistorical,
-    growth: averageGrowth,
-    finalYear: 2025,
-  });
-
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
-    finalYear: 2030,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
-    finalYear: 2040,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
-    finalYear: 2045,
-  });
-
-  return currentProjection;
-};
-
-export const generateSheepLivestockProjection = (
-  historicalData: ILivestockResData | null,
-  simulationState: SimulationState | null,
-  // finalYear: number = 2045,
-): number[] => {
-  if (!historicalData?.parameters || !simulationState?.livestock.goatGrowth) {
-    return [];
-  }
-
-  const goatGrowthHistorical =
-    historicalData.parameters["ternak kambing"] ?? [];
-
-  const cleanGoatGrowthHistorical = goatGrowthHistorical.map((data) =>
-    data === null ? 0 : data,
-  );
-
-  const initialData = INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_KAMBING;
-
-  const goatHistorical = growthDataByvalue(
-    initialData,
-    cleanGoatGrowthHistorical,
-  );
-
-  const scenarioInputs = simulationState.livestock.goatGrowth;
-
-  const averageGrowth = average(cleanGoatGrowthHistorical);
-  // console.log(cleanFisheryAreaGrowthHistorical);
-
-  let currentProjection = Computation.projection({
-    data: goatHistorical,
-    growth: averageGrowth,
-    finalYear: 2025,
-  });
-
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2025-2030"] ?? averageGrowth,
-    finalYear: 2030,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2031-2040"] ?? averageGrowth,
-    finalYear: 2040,
-  });
-  currentProjection = Computation.projection({
-    data: currentProjection,
-    growth: scenarioInputs["2041-2045"] ?? averageGrowth,
-    finalYear: 2045,
-  });
-
-  // console.log(currentProjection);
-  return currentProjection;
 };

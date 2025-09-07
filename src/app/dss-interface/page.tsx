@@ -1,12 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import { useRef, useState, useCallback } from "react";
 import { FileUp, File, X } from "lucide-react";
+import { useInitializeData } from "@/hooks/useInitDummy";
 import SimulationForm from "@/components/form/simulation";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
 import ChartWidget from "@/components/chart/widget";
+import { selectFinalSocioEconomicData } from "@/stores/selectors/dssDashboardCalcSelectors";
 import { useAppDispatch, useAppSelector } from "../../stores/root-reducer";
+import { selectDisplayedMetrics } from "@/stores/selectors/dssDashboardSelector";
 import {
   setDssConceptModal,
   setImportModal,
@@ -16,7 +19,16 @@ import Link from "next/link";
 import ImportModal from "@/components/importModal";
 import DSSConceptModal from "@/components/dssConceptModal";
 
+type Metrics = {
+  gdrp: string[];
+  economicGrowth: number[];
+  gdrpPerCapita: number[];
+  population: (number | null)[];
+};
+
 const DSSPage = () => {
+  // init data
+  useInitializeData();
   const presetOuput = ["socio economy", "Water", "Food", "Energy"];
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -25,7 +37,8 @@ const DSSPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
-
+  const { years, metrics } = useAppSelector(selectFinalSocioEconomicData);
+  const displayedMetrics = useAppSelector(selectDisplayedMetrics);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
   const isDssConceptOpen = dssModalState.dssConceptModal;
@@ -168,32 +181,43 @@ const DSSPage = () => {
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"
             } gap-2 sm:gap-3 md:gap-4 lg:gap-6`}
           >
-            <ChartWidget
-              data={[]}
-              categories={[]}
-              isScenarioOpen={isScenarioOpen}
-            />
-            <ChartWidget
-              data={[]}
-              categories={[]}
-              isScenarioOpen={isScenarioOpen}
-            />
-            <ChartWidget
-              data={[]}
-              categories={[]}
-              isScenarioOpen={isScenarioOpen}
-            />
-            <ChartWidget
-              data={[]}
-              categories={[]}
-              isScenarioOpen={isScenarioOpen}
-            />
+            {displayedMetrics.map((metric, index) => {
+              const metricData: number[] =
+              (metrics[metric.id as keyof Metrics] as (number | null)[] | number[] | undefined)
+                ?.map(val => (val ?? 0)) ?? [];
 
-            {!isScenarioOpen && (
-              <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7">
-                {/* Table content would go here */}
-              </div>
-            )}
+              const seriesData = [
+                {
+                  name: metric.title,
+                  data: metricData,
+                },
+              ];
+              const type = metric.type;
+
+              return (
+                <ChartWidget
+                  key={metric.id}
+                  metric={metric}
+                  isScenarioOpen={isScenarioOpen}
+                  chartIndex={index}
+                  categories={years}
+                  type={type}
+                  series={seriesData}
+                />
+              );
+            })}
+            {/* {!isScenarioOpen && (
+              <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7"> */}
+            {/* Table<iTableData>
+                  columns={[
+                    { key: "year", label: "Years", className: "w-16" },
+                    { key: "baseline_1", label: "Baseline 1" },
+                    { key: "baseline_2", label: "Baseline 2" },
+                  ]}
+                  data={[]}
+                /> */}
+            {/* </div>
+            )} */}
           </div>
         </div>
       </div>

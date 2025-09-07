@@ -1,20 +1,20 @@
 import { IApiRes, IBaselineData } from "@/lib/types/response";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface PopulationSliceState {
+interface GdrpSliceState {
   data: IApiRes | null;
   baseline: IBaselineData | null;
   error: string | null;
 }
 
-const initialState: PopulationSliceState = {
+const initialState: GdrpSliceState = {
   data: null,
   baseline: null,
   error: null,
 };
 
-const PopulationSlice = createSlice({
-  name: "population",
+const gdrpSlice = createSlice({
+  name: "gdrp",
   initialState,
   reducers: {
     setData: (state, action: PayloadAction<IApiRes>) => {
@@ -31,5 +31,5 @@ const PopulationSlice = createSlice({
   },
 });
 
-export const { setData, setError, setBaseline } = PopulationSlice.actions;
-export default PopulationSlice.reducer;
+export const { setData, setBaseline, setError } = gdrpSlice.actions;
+export default gdrpSlice.reducer;

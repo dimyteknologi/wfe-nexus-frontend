@@ -30,7 +30,7 @@ export const simulationFormConfig: FormSection[] = [
         id: "agriculture.landConversion",
       },
       {
-        label: "Agriculture productivity",
+        label: "Livestock growth: Cattle [%/year]",
         periods: timePeriods,
         withValidation: true,
         id: "livestock.cattleGrowth",
@@ -47,37 +47,23 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "livestock.goatGrowth",
       },
+      {
+        label: "Aquaculture land growth [%/year]",
+        periods: timePeriods,
+        withValidation: true,
+        id: "agriculture.aquacultureLandGrowth",
+      },
     ],
   },
-  // {
-  //   title: "Livestock",
-  //   inputs: [
-  //     {
-  //       label: "Livestock growth: Cattle [%/year]",
-  //       periods: timePeriods,
-  //       id: "livestock.cattleGrowth",
-  //     },
-  //     {
-  //       label: "Livestock growth: Poultry [%/year]",
-  //       periods: timePeriods,
-  //       id: "livestock.poultryGrowth",
-  //     },
-  //     {
-  //       label: "Livestock growth: Goat [%/year]",
-  //       periods: timePeriods,
-  //       id: "livestock.goatGrowth",
-  //     },
-  //   ],
-  // },
   {
     title: "Energy",
     inputs: [
-      {
-        label: "Solar PV Coverage (%)",
-        periods: timePeriods,
-        withValidation: true,
-        id: "energy.solarPvCoverage",
-      },
+      // {
+      //   label: "Solar PV Coverage (%)",
+      //   periods: timePeriods,
+      //   withValidation: true,
+      //   id: "energy.solarPvCoverage",
+      // },
       {
         label: "Solar PV Area Percentage on Industrial (%)",
         periods: timePeriods,
@@ -90,31 +76,30 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "energy.solarPvAreaHousing",
       },
-      {
-        label: "On Grid",
-        periods: timePeriods,
-        withValidation: true,
-        id: "energy.onGrid",
-      },
-
-      {
-        label: "Off Grid",
-        periods: timePeriods,
-        withValidation: true,
-        id: "energy.offGrid",
-      },
-      {
-        label: "Electricity Supply",
-        periods: timePeriods,
-        withValidation: true,
-        id: "energy.electricitySuply",
-      },
-      {
-        label: "Electricity Demand",
-        periods: timePeriods,
-        withValidation: true,
-        id: "energy.electricityDemand",
-      },
+      // {
+      //   label: "On Grid",
+      //   periods: timePeriods,
+      //   withValidation: true,
+      //   id: "energy.onGrid",
+      // },
+      // {
+      //   label: "Off Grid",
+      //   periods: timePeriods,
+      //   withValidation: true,
+      //   id: "energy.offGrid",
+      // },
+      // {
+      //   label: "Electricity Supply",
+      //   periods: timePeriods,
+      //   withValidation: true,
+      //   id: "energy.electricitySupply",
+      // },
+      // {
+      //   label: "Electricity Demand",
+      //   periods: timePeriods,
+      //   withValidation: true,
+      //   id: "energy.electricityDemand",
+      // },
     ],
   },
   {
@@ -131,12 +116,6 @@ export const simulationFormConfig: FormSection[] = [
   {
     title: "Water Management",
     inputs: [
-      // {
-      //   label: "Aquaculture land growth [%/year]",
-      //   periods: timePeriods,
-      //   withValidation: true,
-      //   id: "water.aquacultureLandGrowth",
-      // },
       {
         label: "Artificial Pond Percentage in Industrial Area (%)",
         periods: timePeriods,
