@@ -5,6 +5,8 @@ const organization = [
     imgSrc: "./assets/logo-karawang.svg",
   },
   { id: 2, name: "Samosir", imgSrc: "./assets/logo-samosir.svg" },
+  { id: 3, name: "Lampung", imgSrc: "./assets/logo-lampung.png" },
+  { id: 4, name: "Bappenas", imgSrc: "./assets/logo-bappenas.svg" },
 ];
 
 const features = [
@@ -77,7 +79,7 @@ const LandingPage = () => {
       <section className="py-12 bg-gray-100">
         <div className="container mx-auto px-6">
           <p className="text-center text-gray-500 mb-8">
-            Trusted by goverment leading organizations
+            Colaborated by goverment leading organizations
           </p>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-items-center">
             {organization.map((company) => (
