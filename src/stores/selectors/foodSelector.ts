@@ -58,7 +58,7 @@ import {
   selectLandCoverProjectionA,
   selectLandCoverProjectionB,
 } from "./scenarioProjectionSelector";
-import { selectPopulationDataComparison } from "./socioEconomySelector"; // Impor hasil perbandingan populasi
+import { selectPopulationDataComparison } from "./socioEconomySelector";
 
 const calculateAgricultureLand = (
   projection: IBaselineData | null,
@@ -85,9 +85,7 @@ const calculateLocalFoodProduction = (
   );
   if (!lahanPanenPadi) return [];
 
-  const data = generateLocalFoodProductionYear(lahanPanenPadi);
-  console.log(data);
-  return data;
+  return generateLocalFoodProductionYear(lahanPanenPadi);
 };
 
 export const selectAgricultureLandComparison = createSelector(
