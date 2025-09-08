@@ -263,10 +263,10 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
                               <table className="w-full">
                                 <thead>
                                   <tr className="">
-                                    <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500 bg-white">
+                                    <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500">
                                       Sector
                                     </th>
-                                    <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500 bg-white">
+                                    <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500">
                                       Scope and Boundary
                                     </th>
                                   </tr>
@@ -289,9 +289,6 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
                                       Agriculture
                                     </td>
                                     <td className="px-6 py-4 text-gray-700">
-                                      <p className="mb-2">
-                                        Divided as follows:
-                                      </p>
                                       <ul className="list-disc pl-5 space-y-1">
                                         <li className="text-gray-600">
                                           Rice as the main staple food, with
@@ -530,10 +527,10 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
                             <table className="w-full">
                               <thead>
                                 <tr className="">
-                                  <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500 bg-white">
+                                  <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500">
                                     Sector
                                   </th>
-                                  <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500 bg-white">
+                                  <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500">
                                     Scope and Boundary
                                   </th>
                                 </tr>

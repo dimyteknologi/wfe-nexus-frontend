@@ -7,7 +7,7 @@ const Hero = () => {
       <div className="container mx-auto flex flex-col md:flex-row items-center gap-4 justify-between">
         <div className="md:w-1/2 mb-10 md:mb-0">
           <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6">
-            WFE NEXUS{" "}
+            WEF NEXUS{" "}
             <span className="text-green-700">Decision Support System</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8">
