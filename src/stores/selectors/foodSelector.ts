@@ -85,7 +85,9 @@ const calculateLocalFoodProduction = (
   );
   if (!lahanPanenPadi) return [];
 
-  return generateLocalFoodProductionYear(lahanPanenPadi);
+  const data = generateLocalFoodProductionYear(lahanPanenPadi);
+  console.log(data);
+  return data;
 };
 
 export const selectAgricultureLandComparison = createSelector(
@@ -110,7 +112,6 @@ export const selectLocalFoodProductionComparison = createSelector(
     selectAgricultureScenarioProjectionB,
   ],
   (projActive, projA, projB) => {
-    console.log(calculateLocalFoodProduction(projActive));
     return {
       active: calculateLocalFoodProduction(projActive),
       scenarioA: calculateLocalFoodProduction(projA),

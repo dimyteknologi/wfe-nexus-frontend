@@ -44,11 +44,11 @@ export function selectData<T extends DataType>(
 ): string | number[] | T["parameters"] {
   switch (category) {
     case TYPE_DATA_SELECT.SELECT_TABLE:
-      return data.tabel;
+      return data.label;
     case TYPE_DATA_SELECT.SELECT_UNIT:
       return data.unit;
     case TYPE_DATA_SELECT.SELECT_YEAR:
-      return data.tahun;
+      return data.years;
     case TYPE_DATA_SELECT.SELECT_PARAMETERS:
       return data.parameters;
     default:

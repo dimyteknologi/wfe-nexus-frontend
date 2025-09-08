@@ -6,10 +6,10 @@ interface DashboardState {
 
 const initialState: DashboardState = {
   displayedChartMetricIds: [
+    "localFoodProduction",
     "gdrp",
     "population",
-    "economicGrowth",
-    "gdrpPerCapita",
+    "agricultureLand",
   ],
 };
 
