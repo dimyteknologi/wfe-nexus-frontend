@@ -51,7 +51,7 @@ const ChartComponent: React.FC<ChartProps> = ({
         width: type === "line" ? 3 : 0,
       },
       dataLabels: { enabled: false },
-      legend: { show: true, position: "bottom" },
+      legend: { show: true, offsetY: 10, fontSize: "9px", position: "bottom" },
       grid: {
         borderColor: "#e7e7e7",
         row: {

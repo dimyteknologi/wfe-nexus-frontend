@@ -1,34 +1,38 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import SelectCollapsible from "@/components/select/index";
 import ChartComponent from "@/components/chart/index";
 import { useAppSelector, useAppDispatch } from "@/stores/root-reducer";
 import { updateChartMetric } from "@/stores/slicers/dashboardSlicer";
 import { selectAvailableMetrics } from "@/stores/selectors/dssDashboardSelector";
+import { makeSelectComparisonSeriesForMetric } from "@/stores/selectors/dssChartSelector";
 import { Metric } from "@/lib/constant/metrics";
+
 import { OptionType } from "@/lib/types/select.types";
 
 interface ChartWidgetProps {
   metric: Metric;
   chartIndex: number;
-  type: "area" | "line" | "bar" | "pie" | "donut" | "radialBar";
   categories: string[];
   isScenarioOpen: boolean;
-  series: ApexAxisChartSeries;
 }
 
 const ChartWidget = ({
   metric,
   chartIndex,
   categories,
-  type,
   isScenarioOpen,
-  series,
 }: ChartWidgetProps) => {
   const dispatch = useAppDispatch();
 
+  const selectSeriesForThisChart = useMemo(
+    () => makeSelectComparisonSeriesForMetric(metric.id),
+    [metric.id],
+  );
+  const seriesData = useAppSelector(selectSeriesForThisChart);
   const availableMetrics = useAppSelector(selectAvailableMetrics);
+
   const handleSelectionChange = (selected: OptionType) => {
     dispatch(
       updateChartMetric({
@@ -64,8 +68,7 @@ const ChartWidget = ({
       />
       <div className="mt-2">
         <ChartComponent
-          type={type}
-          series={series}
+          series={seriesData}
           categories={categories}
           height={200}
         />

@@ -2,7 +2,7 @@
 
 // import { motion } from "framer-motion";
 import { useRef, useState, useCallback } from "react";
-import { FileUp, File, X } from "lucide-react";
+import { FileUp, File } from "lucide-react";
 import { useInitializeData } from "@/hooks/useInitDummy";
 import SimulationForm from "@/components/form/simulation";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
@@ -19,13 +19,6 @@ import Link from "next/link";
 import ImportModal from "@/components/importModal";
 import DSSConceptModal from "@/components/dssConceptModal";
 
-type Metrics = {
-  gdrp: string[];
-  economicGrowth: number[];
-  gdrpPerCapita: number[];
-  population: (number | null)[];
-};
-
 const DSSPage = () => {
   // init data
   useInitializeData();
@@ -37,7 +30,7 @@ const DSSPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
-  const { years, metrics } = useAppSelector(selectFinalSocioEconomicData);
+  const { years } = useAppSelector(selectFinalSocioEconomicData);
   const displayedMetrics = useAppSelector(selectDisplayedMetrics);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
@@ -181,31 +174,15 @@ const DSSPage = () => {
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"
             } gap-2 sm:gap-3 md:gap-4 lg:gap-6`}
           >
-            {displayedMetrics.map((metric, index) => {
-              const metricData: number[] =
-              (metrics[metric.id as keyof Metrics] as (number | null)[] | number[] | undefined)
-                ?.map(val => (val ?? 0)) ?? [];
-
-              const seriesData = [
-                {
-                  name: metric.title,
-                  data: metricData,
-                },
-              ];
-              const type = metric.type;
-
-              return (
-                <ChartWidget
-                  key={metric.id}
-                  metric={metric}
-                  isScenarioOpen={isScenarioOpen}
-                  chartIndex={index}
-                  categories={years}
-                  type={type}
-                  series={seriesData}
-                />
-              );
-            })}
+            {displayedMetrics.map((metric, index) => (
+              <ChartWidget
+                key={metric.id}
+                metric={metric}
+                chartIndex={index}
+                categories={years}
+                isScenarioOpen={isScenarioOpen}
+              />
+            ))}
             {/* {!isScenarioOpen && (
               <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7"> */}
             {/* Table<iTableData>
