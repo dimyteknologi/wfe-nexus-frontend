@@ -4,10 +4,13 @@ import {
   updateValue,
   SimulationState,
   resetSimulation,
+  // resetSimulation,
 } from "@/stores/slicers/dssInputSlicer";
+import { resetToBaseline } from "@/stores/thunk/baselineReset";
 import { addScenario, loadScenarios } from "@/stores/slicers/dssScenarioSlicer";
 import { X, Play, ChevronDown } from "lucide-react";
 import { normalizeKey } from "@/lib/utils";
+import { setAlert } from "@/stores/slicers/alertSlicer";
 
 interface ScenarioMenuProps {
   handleOpenScenarioTab: () => void;
@@ -41,10 +44,21 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   const handleSaveSimulation = () => {
     if (Object.keys(errors).length === 0) {
       dispatch(addScenario(simulationState));
-      dispatch(resetSimulation());
-      alert(success);
+      dispatch(
+        setAlert({
+          message: success ?? "Success to save scenario!",
+          type: "success",
+        }),
+      );
+      dispatch(resetToBaseline());
+      // dispatch(resetSimulation());
     } else {
-      alert(error);
+      dispatch(
+        setAlert({
+          message: error ?? "Failed to save scenario!",
+          type: "error",
+        }),
+      );
     }
   };
 

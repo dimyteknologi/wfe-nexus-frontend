@@ -15,6 +15,10 @@ export const selectScenarioBName = (state: IRootState) =>
 
 // base data from state
 export const selectGdrpBaseline = (state: IRootState) => state.gdrp.baseline;
+export const selectFisheryBaseline = (state: IRootState) =>
+  state.fishery.baseline;
+export const selectLivestockBaseline = (state: IRootState) =>
+  state.livestock.baseline;
 export const selectPopulationBaseline = (state: IRootState) =>
   state.population.baseline;
 export const selectLandPortionBaseline = (state: IRootState) =>

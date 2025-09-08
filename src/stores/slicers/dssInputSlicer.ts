@@ -111,8 +111,8 @@ const dssSimulationSlice = createSlice({
       }
       currentState[path[path.length - 1]] = value;
     },
-    resetSimulation: () => {
-      return initialState;
+    resetSimulation: (state) => {
+      state.simulationName = "User Scenario";
     },
     populateInputsWithBaseline: (
       state,

@@ -58,7 +58,7 @@ import {
   selectLandCoverProjectionA,
   selectLandCoverProjectionB,
 } from "./scenarioProjectionSelector";
-import { selectPopulationDataComparison } from "./socioEconomySelector"; // Impor hasil perbandingan populasi
+import { selectPopulationDataComparison } from "./socioEconomySelector";
 
 const calculateAgricultureLand = (
   projection: IBaselineData | null,
@@ -110,7 +110,6 @@ export const selectLocalFoodProductionComparison = createSelector(
     selectAgricultureScenarioProjectionB,
   ],
   (projActive, projA, projB) => {
-    console.log(calculateLocalFoodProduction(projActive));
     return {
       active: calculateLocalFoodProduction(projActive),
       scenarioA: calculateLocalFoodProduction(projA),

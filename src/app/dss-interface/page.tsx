@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import ImportModal from "@/components/importModal";
 import DSSConceptModal from "@/components/dssConceptModal";
+import Alert from "@/components/alert";
 
 const DSSPage = () => {
   // init data
@@ -30,7 +31,7 @@ const DSSPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
-  const { years } = useAppSelector(selectFinalSocioEconomicData);
+  const { years, metrics } = useAppSelector(selectFinalSocioEconomicData);
   const displayedMetrics = useAppSelector(selectDisplayedMetrics);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
@@ -54,6 +55,7 @@ const DSSPage = () => {
 
   return (
     <div className="w-full px-6 pt-28 overflow-hidden">
+      <Alert />
       {/* dashboard menu */}
       <div className="relative flex my-2 sm:my-4 justify-between items-center">
         <div className="flex gap-4">
