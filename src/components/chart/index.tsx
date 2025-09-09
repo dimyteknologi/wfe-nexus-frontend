@@ -6,7 +6,7 @@ const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 interface ChartProps {
   type?: "line" | "bar" | "area" | "pie" | "donut" | "radialBar";
   series: ApexAxisChartSeries | ApexNonAxisChartSeries;
-  categories?: string[];
+  categories?: number[];
   height?: number | string;
   colors?: string[];
 }

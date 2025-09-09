@@ -14,7 +14,7 @@ import { OptionType } from "@/lib/types/select.types";
 interface ChartWidgetProps {
   metric: Metric;
   chartIndex: number;
-  categories: string[];
+  categories: number[];
   isScenarioOpen: boolean;
 }
 

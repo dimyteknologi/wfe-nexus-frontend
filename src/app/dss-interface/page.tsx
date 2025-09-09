@@ -32,6 +32,7 @@ const DSSPage = () => {
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
   const displayedMetrics = useAppSelector(selectDisplayedMetrics);
+  const yearsArray = Array.from({ length: 2045 }, (_, i) => 2010 + i);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
   const isDssConceptOpen = dssModalState.dssConceptModal;
@@ -180,7 +181,7 @@ const DSSPage = () => {
                 key={metric.id}
                 metric={metric}
                 chartIndex={index}
-                categories={["2010", "2011", "2012"]}
+                categories={yearsArray}
                 isScenarioOpen={isScenarioOpen}
               />
             ))}
