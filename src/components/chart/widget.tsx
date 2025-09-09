@@ -25,7 +25,6 @@ const ChartWidget = ({
   isScenarioOpen,
 }: ChartWidgetProps) => {
   const dispatch = useAppDispatch();
-
   const selectSeriesForThisChart = useMemo(
     () => makeSelectComparisonSeriesForMetric(metric.id),
     [metric.id],
@@ -77,4 +76,4 @@ const ChartWidget = ({
   );
 };
 
-export default ChartWidget;
+export default React.memo(ChartWidget);

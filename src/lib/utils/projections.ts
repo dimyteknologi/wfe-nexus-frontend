@@ -1,8 +1,42 @@
 import { IApiData, IBaselineData, Params } from "@/lib/types/response";
 import { average, Computation, growthRate } from "@/lib/utils/formulas";
-import { SimulationState } from "@/stores/slicers/dssInputSlicer";
+import {
+  BaselinePayload,
+  SimulationState,
+} from "@/stores/slicers/dssInputSlicer";
 import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
 import { RESOURCE_DEMAND_UNIT } from "../constant/resourceDemandUnit.constant";
+
+export const nameToStatePathMap: Record<string, string> = {
+  // parameter name : input id
+  "A.Pertanian, Kehutanan, dan Perikanan": "agriculture.growthScenario",
+  "C.Industri Pengolahan": "industry.growth",
+  "Lahan Panen Padi": "agriculture.landConversion",
+  "area perikanan": "agriculture.aquacultureLandGrowth",
+  total: "demography.populationGrowth",
+  "ternak sapi": "livestock.cattleGrowth",
+  "ternak kambing": "livestock.goatGrowth",
+  "ternak ayam": "livestock.poultryGrowth",
+};
+
+export const extractAverageGrowthRates = (
+  parameters: Params[] | null,
+): BaselinePayload => {
+  const payload: BaselinePayload = {};
+  if (!parameters) return payload;
+  for (const param of parameters) {
+    const statePath = nameToStatePathMap[param.name];
+    if (statePath) {
+      if (param.average !== undefined) {
+        payload[statePath] = param.average;
+      } else {
+        const cleanValues = param.values.map((v) => v ?? 0);
+        payload[statePath] = average(growthRate(cleanValues)) * 100;
+      }
+    }
+  }
+  return payload;
+};
 
 const getInputsByName = (name: string, simulationState: SimulationState) => {
   switch (name) {
@@ -123,6 +157,7 @@ export const generateScenarioProjection = (
     const cleanDataSeries = originalDataSeries
       .map((val) => val ?? 0)
       .slice(0, 16);
+
     const scenarioInputs = getInputsByName(name, simulationState);
     const averageGrowth = average(growthRate(cleanDataSeries));
 
@@ -174,7 +209,7 @@ export const generateScenarioProjection = (
   });
 
   return {
-    label: simulationState.simulationName || "User Scenario",
+    label: simulationState.simulationName || "Baseline",
     unit: historicalData.unit,
     years: projectedYears,
     parameters: projectedParameters,
@@ -347,5 +382,22 @@ export const generateBaseline = (
     unit: baseData.unit,
     years: projectedYears,
     parameters: projectedParameters,
+  };
+};
+
+export const generateAllProjectionsForScenario = (
+  allBaselines: {
+    gdp: IBaselineData;
+    population: IBaselineData;
+    agriculture: IBaselineData;
+    landCover: IBaselineData;
+  },
+  inputs: SimulationState,
+) => {
+  return {
+    gdrp: generateScenarioProjection(allBaselines.gdp, inputs),
+    population: generateScenarioProjection(allBaselines.population, inputs),
+    agriculture: generateScenarioProjection(allBaselines.agriculture, inputs),
+    landCover: generateScenarioProjection(allBaselines.landCover, inputs),
   };
 };

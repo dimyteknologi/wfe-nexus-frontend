@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IRootState } from "../root-reducer";
+import { IRootState } from "@/stores";
 import { IGDPResData } from "@/lib/types/response";
 
 export interface ProjectionResultState {

@@ -12,7 +12,9 @@ interface IProps {
 const ProviderComponent = ({ children }: IProps) => {
   return (
     <Provider store={store}>
-      <PersistGate persistor={persistor}>{children}</PersistGate>
+      <PersistGate loading={null} persistor={persistor}>
+        {children}
+      </PersistGate>
     </Provider>
   );
 };

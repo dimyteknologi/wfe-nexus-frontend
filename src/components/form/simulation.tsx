@@ -7,7 +7,7 @@ import { validatePercentage } from "@/lib/utils/validation";
 
 const SimulationForm = () => {
   const dispatch = useAppDispatch();
-  const simulationState = useAppSelector((state) => state.simulation);
+  const simulationState = useAppSelector((state) => state.simulation.active);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const flattenedInputs = useMemo(() => {
@@ -55,4 +55,4 @@ const SimulationForm = () => {
   );
 };
 
-export default SimulationForm;
+export default React.memo(SimulationForm);

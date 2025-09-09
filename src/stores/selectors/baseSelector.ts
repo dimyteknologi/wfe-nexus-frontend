@@ -1,17 +1,20 @@
-import { IRootState } from "../root-reducer";
+import { IRootState } from "@/stores";
 
 // input slices
-export const selectSimulationInputs = (state: IRootState) => state.simulation;
+export const selectSimulationInputs = (state: IRootState) =>
+  state.simulation.active;
 export const selectIndustryInputs = (state: IRootState) =>
-  state.simulation.industry;
+  state.simulation.active.industry;
 export const selectDemographyInputs = (state: IRootState) =>
-  state.simulation.demography;
+  state.simulation.active.demography;
 export const selectAgricultureInputs = (state: IRootState) =>
-  state.simulation.agriculture;
+  state.simulation.active.agriculture;
 export const selectScenarioAName = (state: IRootState) =>
-  state.simulation.scenario_a;
+  state.simulation.active.scenario_a;
 export const selectScenarioBName = (state: IRootState) =>
-  state.simulation.scenario_b;
+  state.simulation.active.scenario_b;
+export const selectBaselineInput = (state: IRootState) =>
+  state.simulation.baseline;
 
 // base data from state
 export const selectGdrpBaseline = (state: IRootState) => state.gdrp.baseline;

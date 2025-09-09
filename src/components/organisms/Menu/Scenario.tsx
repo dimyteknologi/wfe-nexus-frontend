@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
 import {
   updateValue,
   SimulationState,
-  resetSimulation,
   // resetSimulation,
 } from "@/stores/slicers/dssInputSlicer";
 import { resetToBaseline } from "@/stores/thunk/baselineReset";
@@ -22,7 +21,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   errors,
 }) => {
   const dispatch = useAppDispatch();
-  const simulationState = useAppSelector((state) => state.simulation);
+  const simulationState = useAppSelector((state) => state.simulation.active);
   const {
     data: scenarios,
     success,
@@ -31,7 +30,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
 
   useEffect(() => {
     dispatch(loadScenarios());
-  }, [dispatch]);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -180,4 +179,4 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   );
 };
 
-export default ScenarioMenu;
+export default React.memo(ScenarioMenu);

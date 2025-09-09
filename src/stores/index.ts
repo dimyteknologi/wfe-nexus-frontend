@@ -3,6 +3,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "@/stores/storage";
 
 import { listenerMiddleware } from "@/stores/listenerMiddleware";
+import { DssPageListener } from "./listener/dssPageListener";
 import { addGdpListeners } from "./listener/gdrpListener";
 import { addPopulationListeners } from "./listener/populationListener";
 import { addAgricultureListener } from "./listener/agricultureListener";
@@ -31,11 +32,12 @@ import alertReducer from "@/stores/slicers/alertSlicer";
 import { dssModalReducer } from "./slicers/dssModalSlicer";
 import dashboardReducer from "@/stores/slicers/dashboardSlicer";
 
-addGdpListeners();
-addPopulationListeners();
-addAgricultureListener();
-addLivestockListeners();
-addFisheryListeners();
+DssPageListener();
+// addGdpListeners();
+// addPopulationListeners();
+// addAgricultureListener();
+// addLivestockListeners();
+// addFisheryListeners();
 
 export const appReducer = combineReducers({
   scenarios: scenarioReducer,
@@ -91,3 +93,5 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+export type IRootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

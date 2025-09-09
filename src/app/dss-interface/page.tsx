@@ -7,9 +7,9 @@ import { useInitializeData } from "@/hooks/useInitDummy";
 import SimulationForm from "@/components/form/simulation";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
 import ChartWidget from "@/components/chart/widget";
-import { selectFinalSocioEconomicData } from "@/stores/selectors/dssDashboardCalcSelectors";
 import { useAppDispatch, useAppSelector } from "../../stores/root-reducer";
 import { selectDisplayedMetrics } from "@/stores/selectors/dssDashboardSelector";
+import { shallowEqual } from "react-redux";
 import {
   setDssConceptModal,
   setImportModal,
@@ -31,7 +31,6 @@ const DSSPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
-  const { years, metrics } = useAppSelector(selectFinalSocioEconomicData);
   const displayedMetrics = useAppSelector(selectDisplayedMetrics);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
@@ -181,7 +180,7 @@ const DSSPage = () => {
                 key={metric.id}
                 metric={metric}
                 chartIndex={index}
-                categories={years}
+                categories={["2010", "2011", "2012"]}
                 isScenarioOpen={isScenarioOpen}
               />
             ))}

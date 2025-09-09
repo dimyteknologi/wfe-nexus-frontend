@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IRootState } from "../root-reducer";
+import { IRootState } from "@/stores";
 export interface BaselinePayload {
   [key: string]: number;
 }
@@ -61,8 +61,8 @@ const initialTimePeriodData: TimePeriodData = {
   "2041-2045": 0,
 };
 
-export const initialState: SimulationState = {
-  simulationName: "User Scenario",
+export const Simulation: SimulationState = {
+  simulationName: null,
   scenario_a: null,
   scenario_b: null,
   agriculture: {
@@ -98,13 +98,23 @@ export const initialState: SimulationState = {
   },
 };
 
+interface DssInputSliceState {
+  active: SimulationState;
+  baseline: SimulationState;
+}
+
+const initialState: DssInputSliceState = {
+  active: Simulation,
+  baseline: Simulation,
+};
+
 const dssSimulationSlice = createSlice({
   name: "simulation",
   initialState: initialState,
   reducers: {
     updateValue: (state, action: PayloadAction<UpdatePayload>) => {
       const { path, value } = action.payload;
-      let currentState: IRootState = state;
+      let currentState: IRootState = state.active;
 
       for (let i = 0; i < path.length - 1; i++) {
         currentState = currentState[path[i]];
@@ -112,17 +122,43 @@ const dssSimulationSlice = createSlice({
       currentState[path[path.length - 1]] = value;
     },
     resetSimulation: (state) => {
-      state.simulationName = "User Scenario";
+      state.active.simulationName = null;
     },
     populateInputsWithBaseline: (
       state,
       action: PayloadAction<BaselinePayload>,
     ) => {
       const baselineValues = action.payload;
+
+      for (const path in baselineValues) {
+        const value = baselineValues[path];
+        const pathParts = path.split(".");
+
+        try {
+          let activeTarget: IRootState = state.active;
+          let baselineTarget: IRootState = state.baseline;
+          for (let i = 0; i < pathParts.length; i++) {
+            activeTarget = activeTarget[pathParts[i]];
+            baselineTarget = baselineTarget[pathParts[i]];
+          }
+
+          if (activeTarget && baselineTarget) {
+            for (const period in activeTarget) {
+              activeTarget[period] = value;
+              baselineTarget[period] = value;
+            }
+          }
+        } catch (e) {
+          // console.log(e);
+        }
+      }
+    },
+    singleInput: (state, action: PayloadAction<BaselinePayload>) => {
+      const baselineValues = action.payload;
       for (const key in baselineValues) {
         const path = key.split(".");
         const value = baselineValues[key];
-        const currentState: IRootState = state;
+        const currentState: IRootState = state.active;
         const targetObject = currentState[path[0]][path[1]];
         if (targetObject) {
           for (const period in targetObject) {
@@ -134,6 +170,10 @@ const dssSimulationSlice = createSlice({
   },
 });
 
-export const { updateValue, resetSimulation, populateInputsWithBaseline } =
-  dssSimulationSlice.actions;
+export const {
+  updateValue,
+  resetSimulation,
+  singleInput,
+  populateInputsWithBaseline,
+} = dssSimulationSlice.actions;
 export default dssSimulationSlice.reducer;

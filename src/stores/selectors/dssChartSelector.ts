@@ -4,16 +4,21 @@ import {
   selectGdrpInBillionsComparison,
   selectGdrpPerCapitaComparison,
   selectPopulationDataComparison,
-} from "./socioEconomySelector";
+} from "@/stores/selectors/socioEconomySelector";
 import {
   selectAgricultureLandComparison,
   selectAvailabilityPerPersonComparison,
   selectLocalFoodProductionComparison,
-} from "./foodSelector";
-import { selectScenarioAName, selectScenarioBName } from "./baseSelector";
+} from "@/stores/selectors/foodSelector";
+import {
+  selectScenarioAName,
+  selectScenarioBName,
+  selectBaselineInput,
+} from "@/stores/selectors/baseSelector";
 
 type ComparisonData = {
   active: number[];
+  baseline: number[];
   scenarioA: number[];
   scenarioB: number[];
 };
@@ -30,6 +35,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       selectLocalFoodProductionComparison,
       selectScenarioAName,
       selectScenarioBName,
+      selectBaselineInput,
     ],
     (
       gdrpInBillions,
@@ -41,6 +47,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       localFoodProduction,
       nameA,
       nameB,
+      baseline,
     ) => {
       const metricsMap: Record<string, ComparisonData> = {
         gdrp: gdrpInBillions,
@@ -50,6 +57,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
         agricultureLand: agricultureLand,
         availabilityPerson: availabilityPerson,
         localFoodProduction: localFoodProduction,
+        baseline: baseline,
         // ...
       };
 
@@ -57,8 +65,11 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       if (!selectedMetricData) return [];
 
       const series = [];
+      if (selectedMetricData.baseline?.length > 0) {
+        series.push({ name: "Baseline", data: selectedMetricData.baseline });
+      }
       if (selectedMetricData.active?.length > 0) {
-        series.push({ name: "User Scenario", data: selectedMetricData.active });
+        series.push({ name: "Current", data: selectedMetricData.active });
       }
       if (selectedMetricData.scenarioA?.length > 0 && nameA) {
         series.push({ name: nameA, data: selectedMetricData.scenarioA });

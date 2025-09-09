@@ -6,12 +6,13 @@ import {
   selectSavedScenarios,
   selectScenarioAName,
   selectScenarioBName,
+  selectBaselineInput,
   selectPopulationBaseline,
   selectAgricultureBaseline,
   selectLandCoverBaseline,
-} from "./baseSelector";
-import { SimulationState } from "../slicers/dssInputSlicer";
-import { IRootState } from "../root-reducer";
+} from "@/stores/selectors/baseSelector";
+import { SimulationState } from "@/stores/slicers/dssInputSlicer";
+import { IRootState } from "@/stores";
 import { IBaselineData } from "@/lib/types/response";
 import { Selector } from "react-redux";
 
@@ -21,6 +22,7 @@ const createProjectionSelector = (
 ) =>
   createSelector([selectBaseline, selectInputs], (baseline, inputs) => {
     if (!baseline || !inputs) return null;
+    console.log(inputs);
     return generateScenarioProjection(baseline, inputs);
   });
 
@@ -34,6 +36,12 @@ const selectComparisonScenarioB = createSelector(
   [selectSavedScenarios, selectScenarioBName],
   (saved, name) =>
     saved.find((s: SimulationState) => s.simulationName === name) || null,
+);
+
+// gdrp selectors generate gdrp with baselineInput
+export const selectGdrpScenarioProjectionBaseline = createProjectionSelector(
+  selectGdrpBaseline,
+  selectBaselineInput,
 );
 
 // gdrp selectors generate gdrp with activeInput
@@ -54,6 +62,10 @@ export const selectGdrpScenarioProjectionB = createProjectionSelector(
   selectComparisonScenarioB,
 );
 
+// population selectors generate population with baselineInput
+export const selectPopulationScenarioProjectionBaseline =
+  createProjectionSelector(selectPopulationBaseline, selectBaselineInput);
+
 // population selectors generate population with activeInput
 export const selectPopulationScenarioProjection = createProjectionSelector(
   selectPopulationBaseline,
@@ -72,6 +84,10 @@ export const selectPopulationScenarioProjectionB = createProjectionSelector(
   selectComparisonScenarioB,
 );
 
+// agriculture selectors generate agriculture with baselineInput
+export const selectAgricultureScenarioProjectionBaseline =
+  createProjectionSelector(selectAgricultureBaseline, selectBaselineInput);
+
 // agriculture selectors generate agriculture with activeInput
 export const selectAgricultureScenarioProjection = createProjectionSelector(
   selectAgricultureBaseline,
@@ -88,6 +104,12 @@ export const selectAgricultureScenarioProjectionA = createProjectionSelector(
 export const selectAgricultureScenarioProjectionB = createProjectionSelector(
   selectAgricultureBaseline,
   selectComparisonScenarioB,
+);
+
+// agriculture selectors generate land conversion with activeInput
+export const selectLandCoverProjectionBaseline = createProjectionSelector(
+  selectLandCoverBaseline,
+  selectBaselineInput,
 );
 
 // agriculture selectors generate land conversion with activeInput
