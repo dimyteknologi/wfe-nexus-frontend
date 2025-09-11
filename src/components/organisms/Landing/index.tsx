@@ -92,7 +92,7 @@ const LandingPage = () => {
               <span className="text-green-700">Decision Support System</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8">
-              Transforming Water-Food-Energy Nexus thinking into actionable
+              Transforming Water-Energy-Food Nexus thinking into actionable
               insights and policies for sustainable development.
             </p>
             <div className="flex flex-col justify-between md:justify-start sm:flex-row gap-4">
@@ -190,7 +190,7 @@ const LandingPage = () => {
         <div className="container mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-bold text-gray-800 mb-6">
-              How WFE Nexus Works
+              How WEF Nexus Works
             </h2>
             <p className="text-xl text-gray-600">
               A simple four-step process to transform your decision-making
@@ -222,7 +222,7 @@ const LandingPage = () => {
             Ready to Transform Your Decision-Making?
           </h2>
           <p className="text-xl mb-10 max-w-3xl mx-auto">
-            Join hundreds of organizations using WFE Nexus to create sustainable
+            Join hundreds of organizations using WEF Nexus to create sustainable
             policies and practices
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">

@@ -3,6 +3,7 @@ export type InputConfig = {
   periods: string[];
   withValidation?: boolean;
   id: string;
+  information: string;
 };
 
 export type SectionConfig = {
@@ -17,6 +18,7 @@ export type InputGroupProps = {
   values: Record<string, number | null>;
   errors: Record<string, string>;
   id: string;
+  information: string;
 };
 
 export type SectionCardProps = {

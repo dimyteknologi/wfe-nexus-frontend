@@ -1,5 +1,6 @@
 import { InputGroupProps } from "@/lib/types/dss-input.dummy.types.rtk";
-import React from "react";
+import { Info } from "lucide-react";
+import React, { useCallback, useState } from "react";
 
 const InputGroup: React.FC<InputGroupProps> = ({
   label,
@@ -8,12 +9,30 @@ const InputGroup: React.FC<InputGroupProps> = ({
   values,
   errors,
   id,
+  information,
 }) => {
+  const [isHover, setIsHover] = useState(false);
+
+  const mouseHover = useCallback(() => setIsHover((current) => !current), []);
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-      </label>
+      <div className="flex justify-between items-center text-sm font-medium text-gray-700 mb-1">
+        <div>{label}</div>
+        <div
+          className="relative"
+          onMouseEnter={mouseHover}
+          onMouseLeave={mouseHover}
+        >
+          <div>
+            <Info size={15} />
+          </div>
+          {isHover && (
+            <div className="absolute z-500 right-0 top-0 w-75 translate-y-5 bg-white border-2 border-green-600 rounded-xl p-2 shadow-xl">
+              <p className="text-xs">{information}</p>
+            </div>
+          )}
+        </div>
+      </div>
       <div className="grid grid-cols-3 gap-2">
         {periods.map((period) => {
           const uniqueId = `${id}.${period}`;
