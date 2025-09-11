@@ -31,6 +31,8 @@ import landPortionReducer from "@/stores/slicers/landPortionSlicer";
 import alertReducer from "@/stores/slicers/alertSlicer";
 import { dssModalReducer } from "./slicers/dssModalSlicer";
 import dashboardReducer from "@/stores/slicers/dashboardSlicer";
+import foodDemandReducer from "@/stores/slicers/foodDemandSlicer";
+import resourceReducer from "@/stores/slicers/resourceSlicer";
 
 DssPageListener();
 // addGdpListeners();
@@ -45,11 +47,13 @@ export const appReducer = combineReducers({
   projectionResult: projectionReducer,
   simulation: simulationReducer,
   gdrp: gdpReducer,
+  resource: resourceReducer,
   livestock: livestockReducer,
   population: populationReducer,
   fishery: fisheryReducer,
   agriculture: agricultureReducer,
   waterDemand: waterDemandReducer,
+  foodDemand: foodDemandReducer,
   energyDemand: energyDemandReducer,
   landCover: landCoverReducer,
   landPortion: landPortionReducer,
@@ -73,7 +77,7 @@ export const appReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["scenarios", "projections"],
+  whitelist: ["scenarios"],
 };
 
 export const store = configureStore({

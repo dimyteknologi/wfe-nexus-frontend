@@ -5,54 +5,76 @@ import SelectTitle from "@/components/select/title";
 import { OptionType } from "@/lib/types/select.types";
 
 interface SelectCollapsibleProps {
-  options: OptionType[];
-  initialSelected?: OptionType;
-  height?: number | string;
-  onSelect?: (option: OptionType) => void;
+  groupedOptions: { category: string; options: OptionType[] }[];
+  selectedValue: OptionType | null;
+  onSelect: (selectedId: string) => void;
 }
 
+const groupLabel = (param: string) => {
+  if (param == "SE") return "Socio Economic";
+  if (param == "FOOD") return "Food Security";
+  if (param == "ENERGY") return "Energy";
+  if (param == "WATER") return "Water";
+  return param;
+};
+
 const SelectCollapsible = ({
-  options,
-  initialSelected,
-  height,
+  groupedOptions,
+  selectedValue,
   onSelect,
 }: SelectCollapsibleProps) => {
-  const [selectedOption, setSelectedOption] = useState<OptionType>(
-    initialSelected || options[0],
-  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleSelectOption = (option: OptionType) => {
-    setSelectedOption(option);
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onSelect(e.target.value);
     setIsDropdownOpen(false);
-    onSelect?.(option);
   };
 
   return (
     <div className="w-full relative">
       <SelectTitle
-        title={selectedOption?.title}
-        content={selectedOption?.content}
+        title={selectedValue?.title}
+        content={selectedValue?.content}
         isDropdownOpen={isDropdownOpen}
         onChevronClick={() => setIsDropdownOpen(!isDropdownOpen)}
       />
-
       {isDropdownOpen && (
-        <div
-          className={`absolute w-full h-[${Number(height) + 20}px] left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-20 overflow-y-auto`}
-        >
-          <ul>
-            {options.map((option, index) => (
-              <li key={index}>
-                <button
-                  onClick={() => handleSelectOption(option)}
-                  className="w-full text-left text-sm px-4 py-2 text-slate-800 hover:bg-gray-300 transition-colors"
-                >
-                  {option.title}
-                </button>
-              </li>
+        <div className="absolute w-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-20">
+          <select
+            value={selectedValue?.id || ""}
+            onChange={handleSelectChange}
+            className="w-full p-2 border-none outline-none"
+            size={10}
+            onBlur={() => setIsDropdownOpen(false)}
+            autoFocus
+          >
+            {selectedValue && (
+              <optgroup
+                label="Current Selection"
+                className="text-sm text-gray-400"
+              >
+                <option value={selectedValue.id}>{selectedValue.title}</option>
+              </optgroup>
+            )}
+
+            {groupedOptions.map((group) => (
+              <optgroup
+                key={group.category}
+                label={groupLabel(group.category)}
+                className="font-bold text-gray-400 text-sm"
+              >
+                {group.options.map((option) => (
+                  <option
+                    key={option.id}
+                    value={option.id}
+                    className="text-sm text-slate-800"
+                  >
+                    {option.title}
+                  </option>
+                ))}
+              </optgroup>
             ))}
-          </ul>
+          </select>
         </div>
       )}
     </div>

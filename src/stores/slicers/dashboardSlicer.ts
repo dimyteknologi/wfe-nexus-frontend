@@ -1,16 +1,29 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+const DEFAULT_CHARTS_BY_CATEGORY: Record<string, string[]> = {
+  SE: ["gdrp", "population", "economicGrowth", "gdrpPerCapita"],
+  FOOD: [
+    "agricultureLand",
+    "localFoodProduction",
+    "availabilityPerson",
+    "localFoodSuffiency",
+    "productionSurplus",
+  ],
+  ENERGY: [
+    "localEnergySuffiency",
+    "electricityImport",
+    "localEnergyProduction",
+    "localRenewableEnergy",
+    "electricityPerCapita",
+  ],
+  WATER: ["annualWaterSuply", "localWaterSuffiency", "waterAvailability"],
+};
 interface DashboardState {
   displayedChartMetricIds: string[];
 }
 
 const initialState: DashboardState = {
-  displayedChartMetricIds: [
-    "localFoodProduction",
-    "gdrp",
-    "population",
-    "agricultureLand",
-  ],
+  displayedChartMetricIds: DEFAULT_CHARTS_BY_CATEGORY["SE"].slice(0, 4),
 };
 
 const dashboardSlice = createSlice({
@@ -26,8 +39,14 @@ const dashboardSlice = createSlice({
         state.displayedChartMetricIds[chartIndex] = newMetricId;
       }
     },
+    setChartsToCategoryPreset: (state, action: PayloadAction<string>) => {
+      const category = action.payload;
+      const defaultCharts = DEFAULT_CHARTS_BY_CATEGORY[category] || [];
+      state.displayedChartMetricIds = defaultCharts.slice(0, 4);
+    },
   },
 });
 
-export const { updateChartMetric } = dashboardSlice.actions;
+export const { updateChartMetric, setChartsToCategoryPreset } =
+  dashboardSlice.actions;
 export default dashboardSlice.reducer;

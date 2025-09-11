@@ -10,7 +10,6 @@ const FormContainer: React.FC<FormContainerProps> = ({
   validatePercentage,
   sections,
 }) => {
-  // console.log(inputs);
   return (
     <div className="w-full overflow-y-scroll">
       <div className="pl-2 sm:pl-4 mt-2 relative w-full">
@@ -18,7 +17,6 @@ const FormContainer: React.FC<FormContainerProps> = ({
           {sections.map((section, index) => (
             <SectionCard key={index} title={section.title}>
               {section.inputs.map((input, i) => {
-                // console.log(inputs);
                 return (
                   <InputGroup
                     key={i}
@@ -45,4 +43,4 @@ const FormContainer: React.FC<FormContainerProps> = ({
   );
 };
 
-export default FormContainer;
+export default React.memo(FormContainer);

@@ -19,11 +19,12 @@ import Link from "next/link";
 import ImportModal from "@/components/importModal";
 import DSSConceptModal from "@/components/dssConceptModal";
 import Alert from "@/components/alert";
+import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
+import { ALL_METRICS } from "@/lib/constant/metrics";
 
 const DSSPage = () => {
   // init data
   useInitializeData();
-  const presetOuput = ["socio economy", "Water", "Food", "Energy"];
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -31,12 +32,18 @@ const DSSPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
+  const simulationState = useAppSelector(
+    (state) => state.simulation.active,
+    shallowEqual,
+  );
   const displayedMetrics = useAppSelector(selectDisplayedMetrics);
-  const yearsArray = Array.from({ length: 2045 }, (_, i) => 2010 + i);
+  const yearsArray = Array.from({ length: 36 }, (_, i) => 2010 + i);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
   const isDssConceptOpen = dssModalState.dssConceptModal;
-
+  const uniqueCategories = [
+    ...new Set(ALL_METRICS.map((metric) => metric.category)),
+  ];
   const handleOpenScenarioTab = useCallback(() => {
     dispatch(setScenarioModal(!isScenarioOpen));
   }, [dispatch, isScenarioOpen]);
@@ -52,6 +59,10 @@ const DSSPage = () => {
   const mouseHover = useCallback(() => {
     setIsDropdownOpen((current) => !current);
   }, []);
+
+  const handlePreset = (category: string) => {
+    dispatch(setChartsToCategoryPreset(category));
+  };
 
   return (
     <div className="w-full px-6 pt-28 overflow-hidden">
@@ -82,16 +93,17 @@ const DSSPage = () => {
         </div>
         <div className="flex gap-4 items-center">
           <div className="flex gap-4">
-            {presetOuput.map((cat, idx) => {
-              return (
-                <div
-                  key={idx}
-                  className="border border-green-700 rounded-2xl py-2 px-4"
-                >
-                  <p className="text-sm">{cat}</p>
-                </div>
-              );
-            })}
+            {uniqueCategories.map((category) => (
+              <div
+                key={category}
+                onClick={() => handlePreset(category)}
+                className={`cursor-pointer border border-green-700 rounded-xl py-1 px-4`}
+              >
+                <p className={`text-sm capitalize`}>
+                  {category == "SE" ? "Socio Economic" : category}
+                </p>
+              </div>
+            ))}
           </div>
           <div
             className="relative"
@@ -159,10 +171,11 @@ const DSSPage = () => {
           } rounded-lg lg:rounded-2xl py-2 md:py-4 transition-all duration-200 overflow-hidden h-[70dvh] flex flex-col items-center`}
         >
           <ScenarioMenu
+            simulationState={simulationState}
             handleOpenScenarioTab={handleOpenScenarioTab}
             errors={errors}
           />
-          <SimulationForm />
+          <SimulationForm simulationState={simulationState} />
         </div>
 
         {/* chart content */}

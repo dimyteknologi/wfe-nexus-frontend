@@ -1,14 +1,13 @@
-import { IWaterDemandData } from "@/lib/types/demand.types";
-import { IAgricultureResData } from "@/lib/types/response";
+import { IApiData } from "@/lib/types/response";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface WaterDemandSliceState {
-  data: IWaterDemandData | null;
+  baseline: IApiData | null;
   error: string | null;
 }
 
 const initialState: WaterDemandSliceState = {
-  data: null,
+  baseline: null,
   error: null,
 };
 
@@ -16,16 +15,15 @@ const waterDemandSlice = createSlice({
   name: "waterDemand",
   initialState,
   reducers: {
-    setData: (state, action: PayloadAction<IWaterDemandData>) => {
-      state.data = action.payload;
-      state.error = null;
+    setBaseline: (state, action: PayloadAction<IApiData>) => {
+      state.baseline = action.payload;
     },
     setError: (state, action: PayloadAction<string>) => {
-      state.data = null;
+      state.baseline = null;
       state.error = action.payload;
     },
   },
 });
 
-export const { setData, setError } = waterDemandSlice.actions;
+export const { setBaseline, setError } = waterDemandSlice.actions;
 export default waterDemandSlice.reducer;

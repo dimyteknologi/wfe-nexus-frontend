@@ -13,8 +13,51 @@ import {
   selectLandCoverProjection,
   selectLandCoverProjectionA,
   selectLandCoverProjectionB,
+  selectFoodSuffiencyScenarioProjection,
+  selectFoodSuffiencyScenarioProjectionA,
+  selectFoodSuffiencyScenarioProjectionB,
+  selectFoodSuffiencyScenarioProjectionBaseline,
 } from "@/stores/selectors/scenarioProjectionSelector";
+
 import { selectPopulationDataComparison } from "@/stores/selectors/socioEconomySelector";
+
+const calculateProductionSurplus = (
+  projection: IBaselineData | null,
+  localFoodProduction: number[],
+): number[] => {
+  if (!projection) return [];
+  const foodDemand = projection.parameters.find(
+    (param) => param.name === "Food Demand Population",
+  );
+  if (!foodDemand) return [];
+  if (!foodDemand?.values) return [];
+
+  const safeValues = foodDemand.values.map((val) => val ?? 0);
+
+  return safeValues.map((val, i) => {
+    const denominator = localFoodProduction[i] ?? 0;
+    return denominator !== 0 ? Math.round(denominator - val) : 0;
+  });
+};
+
+const calculateFoodSuffiency = (
+  projection: IBaselineData | null,
+  localFoodProduction: number[],
+): number[] => {
+  if (!projection) return [];
+  const foodDemand = projection.parameters.find(
+    (param) => param.name === "Food Demand",
+  );
+  if (!foodDemand) return [];
+  if (!foodDemand?.values) return [];
+
+  const safeValues = foodDemand.values.map((val) => val ?? 0);
+
+  return safeValues.map((val, i) => {
+    const denominator = localFoodProduction[i] ?? 0;
+    return denominator !== 0 ? Math.round((denominator / val) * 100) : 0;
+  });
+};
 
 const calculateAgricultureLand = (
   projection: IBaselineData | null,
@@ -24,6 +67,7 @@ const calculateAgricultureLand = (
     (param) =>
       param.name === "Agriculture Area" || param.name === "Agriculture Land",
   );
+
   if (!agricultureLand) return [];
   if (!agricultureLand?.values) return [];
   const safeValues = agricultureLand.values.map((val) => val ?? 0);
@@ -74,6 +118,54 @@ export const selectLocalFoodProductionComparison = createSelector(
       baseline: calculateLocalFoodProduction(projBase),
       scenarioA: calculateLocalFoodProduction(projA),
       scenarioB: calculateLocalFoodProduction(projB),
+    };
+  },
+);
+
+export const selectProductionSurplusComparison = createSelector(
+  [
+    selectFoodSuffiencyScenarioProjection,
+    selectFoodSuffiencyScenarioProjectionBaseline,
+    selectFoodSuffiencyScenarioProjectionA,
+    selectFoodSuffiencyScenarioProjectionB,
+    selectLocalFoodProductionComparison,
+  ],
+  (projActive, projBase, projA, projB, localFoodProduction) => {
+    return {
+      active: calculateProductionSurplus(
+        projActive,
+        localFoodProduction.active,
+      ),
+      baseline: calculateProductionSurplus(
+        projBase,
+        localFoodProduction.baseline,
+      ),
+      scenarioA: calculateProductionSurplus(
+        projA,
+        localFoodProduction.scenarioA,
+      ),
+      scenarioB: calculateProductionSurplus(
+        projB,
+        localFoodProduction.scenarioB,
+      ),
+    };
+  },
+);
+
+export const selectLocalFoodSuffiencyComparison = createSelector(
+  [
+    selectFoodSuffiencyScenarioProjection,
+    selectFoodSuffiencyScenarioProjectionBaseline,
+    selectFoodSuffiencyScenarioProjectionA,
+    selectFoodSuffiencyScenarioProjectionB,
+    selectLocalFoodProductionComparison,
+  ],
+  (projActive, projBase, projA, projB, localFoodProduction) => {
+    return {
+      active: calculateFoodSuffiency(projActive, localFoodProduction.active),
+      baseline: calculateFoodSuffiency(projBase, localFoodProduction.baseline),
+      scenarioA: calculateFoodSuffiency(projA, localFoodProduction.scenarioA),
+      scenarioB: calculateFoodSuffiency(projB, localFoodProduction.scenarioB),
     };
   },
 );

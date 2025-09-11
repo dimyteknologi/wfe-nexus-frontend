@@ -9,12 +9,27 @@ import {
   selectAgricultureLandComparison,
   selectAvailabilityPerPersonComparison,
   selectLocalFoodProductionComparison,
+  selectLocalFoodSuffiencyComparison,
+  selectProductionSurplusComparison,
 } from "@/stores/selectors/foodSelector";
+import {
+  selectElectricityPerCapitaComparison,
+  selectElectrityImportComparison,
+  selectLocalEnergyProductionComparison,
+  selectLocalEnergySuffiencyComparison,
+  selectLocalRenewableEnergyContributionComparison,
+} from "@/stores/selectors/energySelector";
+import {
+  AnnualWaterSupplyComparison,
+  LocalWaterSuffiencyComparison,
+  WaterAvailabilityPerPerson,
+} from "@/stores/selectors/waterSelector";
 import {
   selectScenarioAName,
   selectScenarioBName,
   selectBaselineInput,
 } from "@/stores/selectors/baseSelector";
+import { ALL_METRICS } from "@/lib/constant/metrics";
 
 type ComparisonData = {
   active: number[];
@@ -33,6 +48,16 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       selectAgricultureLandComparison,
       selectAvailabilityPerPersonComparison,
       selectLocalFoodProductionComparison,
+      selectLocalFoodSuffiencyComparison,
+      selectProductionSurplusComparison,
+      selectElectricityPerCapitaComparison,
+      selectElectrityImportComparison,
+      selectLocalEnergyProductionComparison,
+      selectLocalEnergySuffiencyComparison,
+      selectLocalRenewableEnergyContributionComparison,
+      AnnualWaterSupplyComparison,
+      LocalWaterSuffiencyComparison,
+      WaterAvailabilityPerPerson,
       selectScenarioAName,
       selectScenarioBName,
       selectBaselineInput,
@@ -45,6 +70,16 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       agricultureLand,
       availabilityPerson,
       localFoodProduction,
+      localFoodSuffiency,
+      productionSurplus,
+      electricityPerCapita,
+      electricityImport,
+      localEnergyProduction,
+      localEnergySuffiency,
+      localRenewableEnergy,
+      annualWaterSuply,
+      localWaterSuffiency,
+      waterAvailability,
       nameA,
       nameB,
       baseline,
@@ -57,26 +92,50 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
         agricultureLand: agricultureLand,
         availabilityPerson: availabilityPerson,
         localFoodProduction: localFoodProduction,
+        localFoodSuffiency: localFoodSuffiency,
+        productionSurplus: productionSurplus,
+        electricityPerCapita: electricityPerCapita,
+        electricityImport: electricityImport,
+        localEnergyProduction: localEnergyProduction,
+        localEnergySuffiency: localEnergySuffiency,
+        localRenewableEnergy: localRenewableEnergy,
+        annualWaterSuply,
+        localWaterSuffiency,
+        waterAvailability,
         baseline: baseline,
         // ...
       };
 
+      const metricConfig = ALL_METRICS.find((m) => m.id === metricId);
       const selectedMetricData = metricsMap[metricId];
-      if (!selectedMetricData) return [];
+      if (!selectedMetricData) return { series: [], colors: [] };
 
       const series = [];
+      const colors = [];
+
+      const dynamicColors = ["#C4E1E6", "#8DBCC7", "#0065F8", "#71C0BB"];
       if (selectedMetricData.baseline?.length > 0) {
         series.push({ name: "Baseline", data: selectedMetricData.baseline });
+        colors.push(dynamicColors[0]);
       }
       if (selectedMetricData.active?.length > 0) {
         series.push({ name: "Current", data: selectedMetricData.active });
+        colors.push(dynamicColors[1]);
       }
       if (selectedMetricData.scenarioA?.length > 0 && nameA) {
         series.push({ name: nameA, data: selectedMetricData.scenarioA });
+        colors.push(dynamicColors[2]);
       }
       if (selectedMetricData.scenarioB?.length > 0 && nameB) {
         series.push({ name: nameB, data: selectedMetricData.scenarioB });
+        colors.push(dynamicColors[3]);
       }
-      return series;
+      if (metricConfig?.additionalSeries) {
+        for (const additional of metricConfig.additionalSeries) {
+          series.push({ name: additional.name, data: additional.data });
+          colors.push(additional.color || "#808080");
+        }
+      }
+      return { series, colors, type: metricConfig?.type };
     },
   );

@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
 import {
-  updateValue,
+  updateSimulationSelect,
   SimulationState,
+  updateSimulationName,
   // resetSimulation,
 } from "@/stores/slicers/dssInputSlicer";
 import { resetToBaseline } from "@/stores/thunk/baselineReset";
@@ -12,6 +13,7 @@ import { normalizeKey } from "@/lib/utils";
 import { setAlert } from "@/stores/slicers/alertSlicer";
 
 interface ScenarioMenuProps {
+  simulationState: SimulationState;
   handleOpenScenarioTab: () => void;
   errors: Record<string, string>;
 }
@@ -19,30 +21,40 @@ interface ScenarioMenuProps {
 const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   handleOpenScenarioTab,
   errors,
+  simulationState,
 }) => {
   const dispatch = useAppDispatch();
-  const simulationState = useAppSelector((state) => state.simulation.active);
   const {
     data: scenarios,
     success,
     error,
   } = useAppSelector((state) => state.scenarios);
+  const [simulationName, setSimulationName] = useState("");
+
+  const handleSimulationName = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      setSimulationName(e.target.value);
+    },
+    [simulationName],
+  );
 
   useEffect(() => {
     dispatch(loadScenarios());
-  }, []);
+  }, [dispatch]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const path = [e.target.name];
-    const value = e.target.value;
-    dispatch(updateValue({ path, value }));
-  };
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      dispatch(
+        updateSimulationSelect({ name: e.target.name, value: e.target.value }),
+      );
+    },
+    [],
+  );
 
   const handleSaveSimulation = () => {
     if (Object.keys(errors).length === 0) {
-      dispatch(addScenario(simulationState));
+      dispatch(updateSimulationName(simulationName));
+      dispatch(addScenario({ ...simulationState, simulationName }));
       dispatch(
         setAlert({
           message: success ?? "Success to save scenario!",
@@ -50,7 +62,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
         }),
       );
       dispatch(resetToBaseline());
-      // dispatch(resetSimulation());
+      setSimulationName("");
     } else {
       dispatch(
         setAlert({
@@ -71,8 +83,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     );
   }, [scenarios]);
 
-  const isSaveDisabled =
-    Object.keys(errors).length > 0 || !simulationState.simulationName;
+  const isSaveDisabled = Object.keys(errors).length > 0 || !simulationName;
 
   return (
     <div className="w-full sticky top-0 z-10 backdrop-blur-lg bg-white/80 supports-[backdrop-filter]:bg-white/60 border-b border-gray-300 pb-2 md:pb-4 px-2 sm:px-4 md:px-6">
@@ -98,8 +109,8 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
               <input
                 type="text"
                 name="simulationName"
-                value={simulationState.simulationName || ""}
-                onChange={handleChange}
+                value={simulationName || ""}
+                onChange={handleSimulationName}
                 className="w-full px-3 py-1.5 md:px-4 md:py-2 text-sm rounded-lg outline-none font-medium border bg-white/90 shadow-xs border-gray-300 hover:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
                 placeholder="Enter simulation name"
               />

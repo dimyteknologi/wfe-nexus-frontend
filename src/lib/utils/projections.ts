@@ -71,6 +71,11 @@ const checkType = (label: string) => {
   }
 };
 
+// export const generateFoodDemandWithInput = (
+//   foodDemand: number[],
+
+// );
+
 export const generateAvailabillityPerPerson = (
   populations: number[],
   localFoods: number[],

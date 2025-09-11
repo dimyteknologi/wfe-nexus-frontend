@@ -112,28 +112,43 @@ const dssSimulationSlice = createSlice({
   name: "simulation",
   initialState: initialState,
   reducers: {
-    updateValue: (state, action: PayloadAction<UpdatePayload>) => {
-      const { path, value } = action.payload;
-      let currentState: IRootState = state.active;
+    // updateValue: (state, action: PayloadAction<UpdatePayload>) => {
+    //   const { path, value } = action.payload;
+    //   let currentState: IRootState = state.active;
 
-      for (let i = 0; i < path.length - 1; i++) {
-        currentState = currentState[path[i]];
+    //   for (let i = 0; i < path.length - 1; i++) {
+    //     currentState = currentState[path[i]];
+    //   }
+    //   currentState[path[path.length - 1]] = value;
+    // },
+    updateSimulationSelect: (
+      state,
+      action: PayloadAction<{ name: string; value: string | null }>,
+    ) => {
+      const { name, value } = action.payload;
+      if (name === "scenario_a") {
+        state.active.scenario_a = value;
+      } else {
+        state.active.scenario_b = value;
       }
-      currentState[path[path.length - 1]] = value;
+    },
+    updateSimulationName: (state, action: PayloadAction<string | null>) => {
+      state.active.simulationName = action.payload;
     },
     resetSimulation: (state) => {
       state.active.simulationName = null;
+    },
+    setAllActiveInputs: (state, action: PayloadAction<SimulationState>) => {
+      state.active = action.payload;
     },
     populateInputsWithBaseline: (
       state,
       action: PayloadAction<BaselinePayload>,
     ) => {
       const baselineValues = action.payload;
-
       for (const path in baselineValues) {
         const value = baselineValues[path];
         const pathParts = path.split(".");
-
         try {
           let activeTarget: IRootState = state.active;
           let baselineTarget: IRootState = state.baseline;
@@ -141,7 +156,6 @@ const dssSimulationSlice = createSlice({
             activeTarget = activeTarget[pathParts[i]];
             baselineTarget = baselineTarget[pathParts[i]];
           }
-
           if (activeTarget && baselineTarget) {
             for (const period in activeTarget) {
               activeTarget[period] = value;
@@ -171,9 +185,11 @@ const dssSimulationSlice = createSlice({
 });
 
 export const {
-  updateValue,
+  updateSimulationSelect,
   resetSimulation,
   singleInput,
+  updateSimulationName,
   populateInputsWithBaseline,
+  setAllActiveInputs,
 } = dssSimulationSlice.actions;
 export default dssSimulationSlice.reducer;

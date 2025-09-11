@@ -5,7 +5,7 @@ import SelectCollapsible from "@/components/select/index";
 import ChartComponent from "@/components/chart/index";
 import { useAppSelector, useAppDispatch } from "@/stores/root-reducer";
 import { updateChartMetric } from "@/stores/slicers/dashboardSlicer";
-import { selectAvailableMetrics } from "@/stores/selectors/dssDashboardSelector";
+import { selectAvailableMetricsGrouped } from "@/stores/selectors/dssDashboardSelector";
 import { makeSelectComparisonSeriesForMetric } from "@/stores/selectors/dssChartSelector";
 import { Metric } from "@/lib/constant/metrics";
 
@@ -29,23 +29,23 @@ const ChartWidget = ({
     () => makeSelectComparisonSeriesForMetric(metric.id),
     [metric.id],
   );
-  const seriesData = useAppSelector(selectSeriesForThisChart);
-  const availableMetrics = useAppSelector(selectAvailableMetrics);
+  const { series, type, colors } = useAppSelector(selectSeriesForThisChart);
+  const availableMetricsGrouped = useAppSelector(selectAvailableMetricsGrouped);
 
-  const handleSelectionChange = (selected: OptionType) => {
+  const handleSelectionChange = (selectedId: string) => {
     dispatch(
       updateChartMetric({
         chartIndex: chartIndex,
-        newMetricId: selected.id,
+        newMetricId: selectedId,
       }),
     );
   };
 
-  const selectOptions = availableMetrics.map((m) => ({
-    id: m.id,
-    title: `${m.title} (${m.unit})`,
-    content: m.content,
-  }));
+  // const selectOptions = availableMetrics.map((m) => ({
+  //   id: m.id,
+  //   title: `${m.title} (${m.unit})`,
+  //   content: m.content,
+  // }));
 
   return (
     <div
@@ -56,18 +56,15 @@ const ChartWidget = ({
       }`}
     >
       <SelectCollapsible
-        options={selectOptions}
-        initialSelected={{
-          id: `${metric.id}`,
-          title: `${metric.title} (${metric.unit})`,
-          content: metric.content,
-        }}
-        height={200}
+        groupedOptions={availableMetricsGrouped}
+        selectedValue={metric}
         onSelect={handleSelectionChange}
       />
       <div className="mt-2">
         <ChartComponent
-          series={seriesData}
+          colors={colors}
+          type={type}
+          series={series}
           categories={categories}
           height={200}
         />

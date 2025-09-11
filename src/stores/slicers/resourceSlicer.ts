@@ -1,18 +1,18 @@
 import { IApiData } from "@/lib/types/response";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface IEnergyDemandSliceState {
+interface ResourceSlicer {
   baseline: IApiData | null;
   error: string | null;
 }
 
-const initialState: IEnergyDemandSliceState = {
+const initialState: ResourceSlicer = {
   baseline: null,
   error: null,
 };
 
-const energyDemandSlice = createSlice({
-  name: "energyDemand",
+const resourceSlice = createSlice({
+  name: "resource",
   initialState,
   reducers: {
     setBaseline: (state, action: PayloadAction<IApiData>) => {
@@ -25,5 +25,5 @@ const energyDemandSlice = createSlice({
   },
 });
 
-export const { setBaseline, setError } = energyDemandSlice.actions;
-export default energyDemandSlice.reducer;
+export const { setBaseline, setError } = resourceSlice.actions;
+export default resourceSlice.reducer;

@@ -1,13 +1,13 @@
-import { IFoodDemandData, IWaterDemandData } from "@/lib/types/demand.types";
+import { IApiData } from "@/lib/types/response";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface FoodDemandSliceState {
-  data: IFoodDemandData | null;
+  baseline: IApiData | null;
   error: string | null;
 }
 
 const initialState: FoodDemandSliceState = {
-  data: null,
+  baseline: null,
   error: null,
 };
 
@@ -15,16 +15,15 @@ const foodDemandSlice = createSlice({
   name: "foodDemand",
   initialState,
   reducers: {
-    setData: (state, action: PayloadAction<IFoodDemandData>) => {
-      state.data = action.payload;
-      state.error = null;
+    setBaseline: (state, action: PayloadAction<IApiData>) => {
+      state.baseline = action.payload;
     },
     setError: (state, action: PayloadAction<string>) => {
-      state.data = null;
+      state.baseline = null;
       state.error = action.payload;
     },
   },
 });
 
-export const { setData, setError } = foodDemandSlice.actions;
+export const { setBaseline, setError } = foodDemandSlice.actions;
 export default foodDemandSlice.reducer;
