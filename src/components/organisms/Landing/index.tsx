@@ -4,12 +4,17 @@ import Link from "next/link";
 const organization = [
   {
     id: 1,
+    name: "Kementrian PPN/Bappenas",
+    imgSrc: "./assets/logo-bappenas.svg",
+  },
+  { id: 2, name: "Kementrian ESDM", imgSrc: "./assets/logo-esdm.svg" },
+  {
+    id: 3,
     name: "Karawang",
     imgSrc: "./assets/logo-karawang.svg",
   },
-  { id: 2, name: "Samosir", imgSrc: "./assets/logo-samosir.svg" },
-  { id: 3, name: "Lampung", imgSrc: "./assets/logo-lampung.png" },
-  { id: 4, name: "Bappenas", imgSrc: "./assets/logo-bappenas.svg" },
+  { id: 4, name: "Samosir", imgSrc: "./assets/logo-samosir.svg" },
+  { id: 5, name: "Sanggamus", imgSrc: "./assets/logo-lampung.png" },
 ];
 
 const features = [
