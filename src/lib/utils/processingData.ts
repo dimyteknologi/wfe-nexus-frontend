@@ -1,6 +1,12 @@
+import { arrayBuffer } from "stream/consumers";
 import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
 import { RESOURCE_DEMAND_UNIT } from "../constant/resourceDemandUnit.constant";
-import { Computation, constantMultiply, sumData } from "./formulas";
+import {
+  Computation,
+  constantMultiply,
+  dataProjection,
+  sumData,
+} from "./formulas";
 
 //  WATER DEMAND
 export const generateDomesticWaterDemandProcess = (data: number[]) => {
@@ -130,6 +136,108 @@ const generateLandPortion = (data: number[], availableLand: number[]) => {
     data,
     availableLand,
   );
+};
+
+// AP AREA
+// value bu user input in year 2030 , 2040 , 2045
+export const getPinPoint = (
+  dataAgriculture: number[],
+  year: number,
+  input: number,
+) => {
+  const initYear = 2010;
+  const index = year - initYear;
+  return {
+    year,
+    value: dataAgriculture[index + 1] * input,
+  };
+};
+
+interface data {
+  year: number;
+  value: number;
+}
+
+interface IApGrowth {
+  data: data[];
+}
+
+interface GrowthResult {
+  year: number;
+  growth: number;
+}
+
+// growthrate for 2025-2029, 2030-2039, 2040-2045
+const getApAreaGrowth = (data: IApGrowth): GrowthResult[] => {
+  const results: GrowthResult[] = [];
+
+  const getValueByYear = (year: number): number | undefined => {
+    return data.data.find((item) => item.year === year)?.value;
+  };
+
+  const calculateCAGR = (
+    endValue: number,
+    startValue: number,
+    years: number,
+  ): number => {
+    if (startValue === 0 || years === 0) return 0;
+    return Math.pow(endValue / startValue, 1 / years) - 1;
+  };
+
+  const value2030 = getValueByYear(2030);
+  const value2040 = getValueByYear(2040);
+  const value2045 = getValueByYear(2045);
+
+  if (value2030 !== undefined) {
+    results.push({
+      year: 2025,
+      growth: value2030 / 6,
+    });
+  }
+
+  if (value2030 !== undefined && value2040 !== undefined) {
+    results.push({
+      year: 2030,
+      growth: calculateCAGR(value2040, value2030, 10),
+    });
+  }
+
+  if (value2040 !== undefined && value2045 !== undefined) {
+    results.push({
+      year: 2040,
+      growth: calculateCAGR(value2045, value2040, 5),
+    });
+  }
+
+  return results;
+};
+
+// projection for each pin point of year
+export const generateApArea = (
+  data: number[],
+  finalYear: number,
+  pinPoint: { value: number; year: number },
+  growth: GrowthResult[],
+  initialYear: number = 2010,
+) => {
+  const result: number[] = [...data];
+  let lastYear = initialYear + result.length - 1;
+  if (finalYear === 2030) {
+    const growth2025 = growth.filter((g) => g.year === 2025)[0].growth;
+    result.push(growth2025);
+    while (lastYear < finalYear - 1) {
+      lastYear += 1;
+      const lastValue = result[result.length - 1];
+      const nexValue = lastValue + growth2025;
+      result.push(nexValue);
+    }
+    return result;
+  }
+  result.push(pinPoint.value);
+  const growthRate = growth.filter((g) => g.year === finalYear)[0].growth;
+
+  const projection = dataProjection(result, growthRate, finalYear);
+  return projection;
 };
 
 export const generateCValue = (

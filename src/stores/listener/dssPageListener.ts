@@ -28,6 +28,8 @@ import {
 import { populateInputsWithBaseline } from "@/stores/slicers/dssInputSlicer";
 import {
   extractAverageGrowthRates,
+  generateApAreaHousing,
+  generateApAreaIndustrial,
   generateBaseline,
   generateLandCover,
   generateLandPortion,
@@ -67,6 +69,7 @@ import {
   generateTotalWater,
   generateWaterGenerationEnergyDemand,
 } from "@/lib/utils/processingData";
+import { setDataApArea } from "../slicers/intermediateOuput/apAreaSlicer";
 
 interface TransformationRule {
   sourceParamName: string[] | string;
@@ -207,6 +210,17 @@ const resourceConfig: ProcessingConfig = {
       sourceParamName: "Potential Water",
       calculationFn: generateTotalWater,
       outputParamName: "Total Water Supply",
+    },
+    {
+      sourceParamName: "Industrial land",
+      calculationFn: generateApAreaIndustrial,
+      outputParamName: "AP Area Industrial",
+    },
+
+    {
+      sourceParamName: "Housing land",
+      calculationFn: generateApAreaHousing,
+      outputParamName: "AP Area Housing",
     },
   ],
 };
@@ -373,12 +387,13 @@ const addEnergyDemandListener = () => {
 
 const addResourceListener = () => {
   listenerMiddleware.startListening({
-    matcher: isAnyOf(setLandPortionBaseline),
+    matcher: isAnyOf(setLandPortionBaseline, setDataApArea),
     effect: async (action, listenerApi) => {
       listenerApi.cancelActiveListeners();
       const state = listenerApi.getState();
       const allParameters = [
         ...(selectLandPortionBaseline(state)?.parameters || []),
+        ...(selectAgricultureBaseline(state)?.parameters || []),
       ];
       const sourceDataForProcessing: IBaselineData = {
         label: "Resource",
@@ -388,7 +403,7 @@ const addResourceListener = () => {
       };
 
       const results = preprocessData(sourceDataForProcessing, resourceConfig);
-      //  console.log(results);
+      console.log(results);
       if (results?.parameters.length > 0) {
         listenerApi.dispatch(setResourceBaseline(results));
       }

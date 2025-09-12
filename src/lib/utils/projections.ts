@@ -17,6 +17,8 @@ export const nameToStatePathMap: Record<string, string> = {
   "ternak sapi": "livestock.cattleGrowth",
   "ternak kambing": "livestock.goatGrowth",
   "ternak ayam": "livestock.poultryGrowth",
+  "AP Area Industrial": "water.artificialPondIndustrial",
+  "AP Area Housing": "water.artificialPondHousing",
 };
 
 export const extractAverageGrowthRates = (
@@ -75,6 +77,14 @@ const checkType = (label: string) => {
 //   foodDemand: number[],
 
 // );
+
+export const generateApAreaIndustrial = () => {
+  return Array.from({ length: 15 }, () => 0);
+};
+
+export const generateApAreaHousing = () => {
+  return Array.from({ length: 15 }, () => 0);
+};
 
 export const generateAvailabillityPerPerson = (
   populations: number[],
