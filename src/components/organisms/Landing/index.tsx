@@ -1,5 +1,8 @@
-import { Play } from "lucide-react";
+"use client";
+
+import { Play, ArrowRight, CheckCircle, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 const organization = [
   {
@@ -14,7 +17,7 @@ const organization = [
     imgSrc: "./assets/logo-karawang.svg",
   },
   { id: 4, name: "Samosir", imgSrc: "./assets/logo-samosir.svg" },
-  { id: 5, name: "Sanggamus", imgSrc: "./assets/logo-lampung.png" },
+  { id: 5, name: "Tanggamus", imgSrc: "./assets/logo-tanggamus.svg" },
 ];
 
 const features = [
@@ -82,86 +85,149 @@ const flowProcess = [
 ];
 
 const LandingPage = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   return (
     <>
-      <section className="pt-36 pb-20 px-6 bg-gradient-to-r from-green-50 to-blue-50">
-        <div className="container mx-auto flex flex-col md:flex-row items-center gap-4 justify-between">
+      {/* Hero Section */}
+      <section className="pt-34 pb-20 px-6 bg-gradient-to-r from-green-50 to-blue-50 py-4 relative">
+        {/* Background elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+          <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
+          <div className="absolute top-0 -right-20 w-72 h-72rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-20 left-20 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+        </div>
+
+        <div className="container mx-auto p-4 flex flex-col md:flex-row items-center gap-8 justify-between relative z-10">
           <div className="md:w-1/2 mb-10 md:mb-0">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6">
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
               WEF NEXUS{" "}
-              <span className="text-green-700">Decision Support System</span>
+              <span className="text-green-600">Decision Support System</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
               Transforming Water-Energy-Food Nexus thinking into actionable
               insights and policies for sustainable development.
             </p>
-            <div className="flex flex-col justify-between md:justify-start sm:flex-row gap-4">
-              <button className="bg-green-800 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 transition-colors shadow-lg">
-                <Link href={"./dss-interface"}>Get Started</Link>
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <button className="bg-gradient-to-r from-green-700 to-teal-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                <Link href={"./dss-interface"} className="flex items-center">
+                  Get Started <ArrowRight className="h-5 ml-1" />
+                </Link>
               </button>
-              <button className="border-2 border-green-800 text-green-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-50 transition-colors flex items-center justify-center">
-                <Play className="h-4" />
-                <p>Watch Demo</p>
+              <button className="border-2 bg-white border-green-700 text-green-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-green-50 transition-all duration-300 flex items-center justify-center gap-2 group">
+                <Play className="h-5 transition-transform group-hover:scale-110" />
+                <span>Watch Demo</span>
               </button>
             </div>
             <div className="mt-8 flex items-center">
-              <div className="flex -space-x-2">
+              <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((item) => (
                   <div
                     key={item}
-                    className="w-10 h-10 rounded-full bg-green-200 border-2 border-white"
+                    className="w-12 h-12 rounded-full bg-white border-2 border-white shadow-md"
                   ></div>
                 ))}
               </div>
               <p className="ml-4 text-gray-600">
-                Join <span className="font-semibold">500+</span> organizations
-                using our platform
+                Join <span className="font-semibold text-green-700">500+</span>{" "}
+                organizations using our platform
               </p>
             </div>
           </div>
 
           <div className="md:w-1/2 relative">
-            <div className="flex flex-col justify-between items-end gap-4">
-              <div className="w-full lg:w-96 relative z-10 rounded-xl overflow-hidden">
-                <img src={"./assets/image-demo-1.svg"} alt="image-1" />
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
+              <img
+                className="w-full h-auto "
+                src="./assets/image-demo-3.svg"
+                alt="WEF Nexus Dashboard Preview"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+            </div>
+
+            {/* Floating elements */}
+            <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg z-10 animate-float">
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                <span className="text-sm font-medium">
+                  Colaboration Simulation
+                </span>
               </div>
-              <div className="w-full lg:w-96 relative z-10 self-start rounded-xl overflow-hidden">
-                <img src={"./assets/image-demo-2.svg"} alt="image-2" />
+            </div>
+
+            <div className="absolute -top-6 -right-6 bg-white p-4 rounded-xl shadow-lg z-10 animate-float animation-delay-2000">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-700">98%</div>
+                <div className="text-xs text-gray-500">Active User</div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-      <section className="py-12 bg-gray-100">
-        <div className="container mx-auto px-6">
-          <p className="text-center text-gray-500 mb-8">
-            Colaborated by goverment leading organizations
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-items-center">
-            {organization.map((company) => (
-              <div
-                key={company.id}
-                className="flex flex-col items-center justify-center gap-2"
-              >
-                <div className="h-24 w-32">
-                  <img
-                    className="w-full h-full object-contain"
-                    src={company.imgSrc}
-                    alt={company.name}
-                  />
+
+        <div className="mx-auto px-6 mt-24 relative z-10">
+          <div className="flex flex-col items-center justify-items-center bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-md">
+            <p className="text-center text-gray-500 mb-10 font-bold text-xl">
+              Collaborated with government leading organizations
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 ">
+              {organization.map((company) => (
+                <div
+                  key={company.id}
+                  className="flex flex-col items-center justify-center gap-3 transition-transform hover:scale-110 duration-300"
+                >
+                  <div className="h-20 w-28 grayscale hover:grayscale-0 transition-all duration-500">
+                    <img
+                      className="w-full h-full object-contain"
+                      src={company.imgSrc}
+                      alt={company.name}
+                    />
+                  </div>
+                  <p className="text-gray-500 text-sm text-center">
+                    {company.name}
+                  </p>
                 </div>
-                <p className="text-gray-400 text-sm">{company.name}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 px-6">
-        <div className="container mx-auto">
+      {/* Features Section */}
+      <section ref={sectionRef} className="relative opacity-90">
+        <img
+          className="absolute w-full h-full opacity-10 object-cover -z-1"
+          src="./assets/image-demo-1.svg"
+          alt="background pattern"
+        />
+        <div className="container mx-auto py-20">
           <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-block bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+              Powerful Features
+            </div>
             <h2 className="text-4xl font-bold text-gray-800 mb-6">
-              Powerful Features for Informed Decisions
+              Everything You Need for Informed Decisions
             </h2>
             <p className="text-xl text-gray-600">
               Our platform provides comprehensive tools to analyze and optimize
@@ -169,26 +235,45 @@ const LandingPage = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition-shadow"
+                className={`bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 transform hover:-translate-y-2 ${
+                  isVisible ? "animate-fade-in" : "opacity-0"
+                }`}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="text-4xl mb-4">{feature.icon}</div>
+                <div className="text-5xl mb-5">{feature.icon}</div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <p className="text-gray-600 leading-relaxed">
+                  {feature.description}
+                </p>
+                <div className="mt-4 flex items-center text-green-700 font-medium">
+                  <span className="text-sm">Learn more</span>
+                  <ChevronRight className="h-4 ml-1" />
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 px-6 bg-gray-50">
-        <div className="container mx-auto">
+      {/* Process Section */}
+      <section className="relative opacity-90">
+        <img
+          className="absolute w-full h-full opacity-10 object-cover -z-1"
+          src="./assets/image-demo-2.svg"
+          alt="background pattern"
+        />
+
+        <div className="container mx-auto px-6 py-20 relative">
           <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+              How It Works
+            </div>
             <h2 className="text-4xl font-bold text-gray-800 mb-6">
               How WEF Nexus Works
             </h2>
@@ -197,44 +282,102 @@ const LandingPage = () => {
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row space-y-10 md:space-y-0 md:space-x-8">
-            {flowProcess.map((item, index) => (
-              <div
-                key={index}
-                className="flex-1 flex flex-col items-center text-center"
-              >
-                <div className="w-16 h-16 rounded-full bg-green-100 text-green-800 flex items-center justify-center text-2xl font-bold mb-6">
-                  {item.step}
+          <div className="relative">
+            {/* Connection line for desktop */}
+            <div className="hidden md:block absolute left-0 right-0 top-16 h-1 bg-green-200"></div>
+
+            <div className="grid md:grid-cols-4 gap-8 md:gap-4 relative">
+              {flowProcess.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center text-center group"
+                >
+                  <div className="w-20 h-20 border-4 border-white rounded-full bg-green-100 text-green-800 flex items-center justify-center text-2xl font-bold mb-6 relative z-10 shadow-lg group-hover:bg-green-600 group-hover:text-white transition-all duration-300">
+                    {item.step}
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3 group-hover:text-green-700 transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-600">{item.description}</p>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">
-                  {item.title}
-                </h3>
-                <p className="text-gray-600">{item.description}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </section>
 
-      <section className="py-20 px-6 bg-green-800 text-white">
-        <div className="container mx-auto text-center">
+        <div className="container py-20 mx-auto text-center max-w-4xl">
           <h2 className="text-4xl font-bold mb-6">
             Ready to Transform Your Decision-Making?
           </h2>
-          <p className="text-xl mb-10 max-w-3xl mx-auto">
+          <p className="text-xl mb-10 opacity-90">
             Join hundreds of organizations using WEF Nexus to create sustainable
             policies and practices
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="bg-white text-green-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-100 transition-colors">
-              Get Started
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button className="bg-white text-green-800 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2">
+              Get Started <ArrowRight className="h-5" />
             </button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 transition-colors">
+            <button className="bg-green-800 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 transition-colors shadow-lg">
               Contact us
             </button>
           </div>
         </div>
       </section>
+
+      {/* Add CSS animations */}
+      <style jsx>{`
+        @keyframes blob {
+          0% {
+            transform: translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+          100% {
+            transform: translate(0px, 0px) scale(1);
+          }
+        }
+        @keyframes float {
+          0% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+          100% {
+            transform: translateY(0px);
+          }
+        }
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out forwards;
+        }
+      `}</style>
     </>
   );
 };
