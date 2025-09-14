@@ -9,6 +9,7 @@ export interface AgricultureState {
   growthScenario: TimePeriodData;
   landConversion: TimePeriodData;
   aquacultureLandGrowth: TimePeriodData;
+  productivityTarget: TimePeriodData;
 }
 export interface LivestockState {
   cattleGrowth: TimePeriodData;
@@ -23,6 +24,8 @@ export interface EnergyState {
   offGrid: TimePeriodData;
   electricitySupply: TimePeriodData;
   electricityDemand: TimePeriodData;
+  industrialEnergy: TimePeriodData;
+  domesticElectricity: TimePeriodData;
 }
 export interface IndustryState {
   growth: TimePeriodData;
@@ -32,6 +35,8 @@ export interface WaterState {
   artificialPondHousing: TimePeriodData;
   surfaceWaterCapacity: TimePeriodData;
   groundWaterCapacity: TimePeriodData;
+  domesticWaterDemand: TimePeriodData;
+  industrialWater: TimePeriodData;
 }
 
 export interface DemographyState {
@@ -69,6 +74,7 @@ export const Simulation: SimulationState = {
     growthScenario: { ...initialTimePeriodData },
     landConversion: { ...initialTimePeriodData },
     aquacultureLandGrowth: { ...initialTimePeriodData },
+    productivityTarget: { ...initialTimePeriodData },
   },
   livestock: {
     cattleGrowth: { ...initialTimePeriodData },
@@ -83,6 +89,8 @@ export const Simulation: SimulationState = {
     offGrid: { ...initialTimePeriodData },
     electricitySupply: { ...initialTimePeriodData },
     electricityDemand: { ...initialTimePeriodData },
+    industrialEnergy: { ...initialTimePeriodData },
+    domesticElectricity: { ...initialTimePeriodData },
   },
   industry: {
     growth: { ...initialTimePeriodData },
@@ -92,6 +100,8 @@ export const Simulation: SimulationState = {
     artificialPondHousing: { ...initialTimePeriodData },
     groundWaterCapacity: { ...initialTimePeriodData },
     surfaceWaterCapacity: { ...initialTimePeriodData },
+    domesticWaterDemand: { ...initialTimePeriodData },
+    industrialWater: { ...initialTimePeriodData },
   },
   demography: {
     populationGrowth: { ...initialTimePeriodData },

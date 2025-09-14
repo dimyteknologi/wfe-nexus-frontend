@@ -7,7 +7,11 @@ import {
 } from "@/stores/slicers/dssInputSlicer";
 import FormContainer from "@/components/organisms/DSSInput/DSSInput";
 import { simulationFormConfig } from "@/config/form";
-import { validatePercentage } from "@/lib/utils/validation";
+import {
+  findInputConfig,
+  validatePercentage,
+  validateValue,
+} from "@/lib/utils/validation";
 // import { selectFlattenedInputs } from "@/stores/selectors/baseSelector";
 import { useDebounce } from "@/hooks/useDebounce";
 interface SimulationFormProps {
@@ -31,7 +35,7 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
   }, [debouncedInputs, dispatch]);
 
   const flattenedInputs = useMemo(() => {
-    const flatData: Record<string, number | null> = {};
+    const flatData: Record<string, string | null> = {};
     if (!localInputs) return flatData;
 
     simulationFormConfig.forEach((section) => {
@@ -48,11 +52,11 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
               break;
             }
           }
-          let finalValue: number | null = null;
+          let finalValue: string | null = null;
           if (typeof value === "object" && value !== null) {
             const periodValue = (value as Record<string, unknown>)[period];
             if (typeof periodValue === "number") {
-              finalValue = periodValue;
+              finalValue = periodValue.toString();
             }
           }
 
@@ -64,29 +68,114 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
     return flatData;
   }, [localInputs, simulationFormConfig]);
 
-  const handleChange = useCallback((id: string, value: number) => {
-    const numericValue = value === null ? 0 : Number(value);
-    setLocalInputs((prevState: SimulationState) => {
-      const keys = id.split(".");
-      const newState = JSON.parse(JSON.stringify(prevState));
-      let obj = newState;
-      for (let i = 0; i < keys.length - 1; i++) {
-        obj = obj[keys[i]];
-      }
-      obj[keys[keys.length - 1]] = numericValue;
-      return newState;
-    });
+  // code before
+  // const numericValue = value === null ? 0 : Number(value);
+  // const config = findInputConfig(id);
 
-    const errorMessage = validatePercentage(numericValue);
-    setErrors((prevErrors) => {
-      const newErrors = { ...prevErrors };
-      if (errorMessage) {
-        newErrors[id] = errorMessage;
-      } else {
+  // let finalValue = numericValue;
+
+  // if (config && config.min !== undefined && config.max !== undefined) {
+  //   finalValue = Math.max(config.min, Math.min(numericValue, config.max));
+  // }
+
+  // const errorMessage = validateValue(finalValue, {
+  //   min: config?.min,
+  //   max: config?.max
+  // });
+
+  // if (config && config.max !== undefined && config.min !== undefined ) {
+  //   if (numericValue < config.min) {
+  //     numericValue = config.min;
+  //   }
+  //   if (numericValue > config.max) {
+  //     numericValue = config.max;
+  //   }
+  // }
+
+  // setLocalInputs((prevState: SimulationState) => {
+  //   const keys = id.split(".");
+  //   const newState = JSON.parse(JSON.stringify(prevState));
+  //   let obj = newState;
+  //   for (let i = 0; i < keys.length - 1; i++) {
+  //     obj = obj[keys[i]];
+  //   }
+  //   obj[keys[keys.length - 1]] = finalValue;
+  //   return newState;
+  // });
+
+  // const errorMessage = validatePercentage(numericValue);
+
+  // setErrors((prevErrors) => {
+  //   const newErrors = { ...prevErrors };
+  //   if (errorMessage) {
+  //     newErrors[id] = errorMessage;
+  //   } else {
+  //     delete newErrors[id];
+  //   }
+  //   return newErrors;
+  // });
+  const handleChange = useCallback((id: string, value: string) => {
+    // null string handler
+    if (value === "" || value === "-") {
+      setLocalInputs((prevState: SimulationState) => {
+        const keys = id.split(".");
+        const newState = JSON.parse(JSON.stringify(prevState));
+        let obj = newState;
+        for (let i = 0; i < keys.length - 1; i++) {
+          obj = obj[keys[i]];
+        }
+        obj[keys[keys.length - 1]] = value;
+        return newState;
+      });
+      // delete current input validated
+      setErrors((prevErrors) => {
+        const newErrors = { ...prevErrors };
         delete newErrors[id];
+        return newErrors;
+      });
+      return;
+    }
+
+    const numericValue = parseFloat(value);
+
+    if (!isNaN(numericValue)) {
+      const config = findInputConfig(id);
+
+      // validated value from input
+      const errorMessage = validateValue(numericValue, {
+        min: config?.min,
+        max: config?.max,
+      });
+
+      // update error state
+      setErrors((prevErrors) => {
+        const newErrors = { ...prevErrors };
+        if (errorMessage) {
+          newErrors[id] = errorMessage;
+        } else {
+          delete newErrors[id];
+        }
+        return newErrors;
+      });
+
+      // clamp value
+      let finalValue = numericValue;
+      if (config && config.min !== undefined && config.max !== undefined) {
+        finalValue = Math.max(config.min, Math.min(numericValue, config.max));
       }
-      return newErrors;
-    });
+
+      // update local state with clamp value
+      setLocalInputs((prevState: SimulationState) => {
+        const keys = id.split(".");
+        const newState = JSON.parse(JSON.stringify(prevState));
+        let obj = newState;
+        for (let i = 0; i < keys.length - 1; i++) {
+          obj = obj[keys[i]];
+        }
+        obj[keys[keys.length - 1]] = finalValue;
+        return newState;
+      });
+    }
   }, []);
 
   return (

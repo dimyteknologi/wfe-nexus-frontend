@@ -9,6 +9,7 @@ import { selectPopulationDataComparison } from "@/stores/selectors/socioEconomyS
 import { selectWaterDemandBaseline } from "@/stores/selectors/baseSelector";
 import { createSelector } from "@reduxjs/toolkit";
 import { IBaselineData } from "@/lib/types/response";
+import { constantDevided, resultConverter } from "@/lib/utils/formulas";
 
 const calculateAnnualWater = (projection: IBaselineData | null): number[] => {
   if (!projection) return [];
@@ -20,7 +21,7 @@ const calculateAnnualWater = (projection: IBaselineData | null): number[] => {
 
   const safeValues = totalWater.values.map((val) => val ?? 0);
 
-  return safeValues.map((val, i) => val / 1000000);
+  return resultConverter(constantDevided(safeValues, 1000000));
 };
 
 const calculateWaterAvailability = (
@@ -37,10 +38,12 @@ const calculateWaterAvailability = (
 
   const safeValues = totalWater.values.map((val) => val ?? 0);
 
-  return safeValues.map((val, i) => {
-    const denominator = population[i] ?? 0;
-    return denominator !== 0 ? val / denominator : 0;
-  });
+  return resultConverter(
+    safeValues.map((val, i) => {
+      const denominator = population[i] ?? 0;
+      return denominator !== 0 ? val / denominator : 0;
+    }),
+  );
 };
 
 const calculatLocalWaterSuffiency = (
@@ -60,10 +63,12 @@ const calculatLocalWaterSuffiency = (
 
   const safeValues = totalWater.values.map((val) => val ?? 0);
 
-  return safeValues.map((val, i) => {
-    const denominator = totalWaterDemand?.values[i] ?? 0;
-    return denominator !== 0 ? val / denominator : 0;
-  });
+  return resultConverter(
+    safeValues.map((val, i) => {
+      const denominator = totalWaterDemand?.values[i] ?? 0;
+      return denominator !== 0 ? (val / denominator) * 100 : 0;
+    }),
+  );
 };
 
 export const AnnualWaterSupplyComparison = createSelector(

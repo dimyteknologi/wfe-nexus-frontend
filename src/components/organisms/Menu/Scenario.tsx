@@ -8,7 +8,7 @@ import {
 } from "@/stores/slicers/dssInputSlicer";
 import { resetToBaseline } from "@/stores/thunk/baselineReset";
 import { addScenario, loadScenarios } from "@/stores/slicers/dssScenarioSlicer";
-import { X, Play, ChevronDown } from "lucide-react";
+import { X, Play, ChevronDown, RefreshCcw } from "lucide-react";
 import { normalizeKey } from "@/lib/utils";
 import { setAlert } from "@/stores/slicers/alertSlicer";
 
@@ -114,6 +114,15 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
                 className="w-full px-3 py-1.5 md:px-4 md:py-2 text-sm rounded-lg outline-none font-medium border bg-white/90 shadow-xs border-gray-300 hover:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
                 placeholder="Enter simulation name"
               />
+            </div>
+            <div className="group w-full sm:w-auto">
+              <button
+                onClick={() => dispatch(resetToBaseline())}
+                className={`w-full sm:w-auto p-2 sm:p-3 rounded-lg md:rounded-xl font-medium transition-all transform hover:scale-105 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-md hover:shadow-lg`}
+                aria-label="Save current simulation"
+              >
+                <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 mx-auto sm:mx-0" />
+              </button>
             </div>
             <div className="group w-full sm:w-auto">
               <button

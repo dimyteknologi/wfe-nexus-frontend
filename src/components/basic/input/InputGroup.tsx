@@ -46,7 +46,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
                   errors[uniqueId] ? "border-red-500" : "border-gray-300"
                 }`}
                 value={value}
-                onChange={(e) => onChange(uniqueId, +e.target.value)}
+                onChange={(e) => onChange(uniqueId, e.target.value)}
               />
               {errors[uniqueId] && (
                 <span className="text-red-500 text-xs mt-1">

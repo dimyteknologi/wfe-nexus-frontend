@@ -64,8 +64,8 @@ const DSSPage = () => {
     dispatch(setChartsToCategoryPreset(category));
   };
 
-  const apArea = useAppSelector((state) => state.apArea.data);
-  const dataTest = apArea.apAreaIndustrial;
+  // const apArea = useAppSelector((state) => state.apArea.data);
+  // const dataTest = apArea.apAreaIndustrial;
   // console.log(dataTest);
 
   return (

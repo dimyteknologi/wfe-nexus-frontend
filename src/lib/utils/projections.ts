@@ -1,5 +1,11 @@
 import { IApiData, IBaselineData, Params } from "@/lib/types/response";
-import { average, Computation, growthRate } from "@/lib/utils/formulas";
+import {
+  average,
+  Computation,
+  constantMultiply,
+  growthRate,
+  sumData,
+} from "@/lib/utils/formulas";
 import {
   BaselinePayload,
   SimulationState,
@@ -79,11 +85,15 @@ const checkType = (label: string) => {
 // );
 
 export const generateApAreaIndustrial = () => {
-  return Array.from({ length: 15 }, () => 0);
+  return Array.from({ length: 36 }, () => 0);
 };
 
 export const generateApAreaHousing = () => {
-  return Array.from({ length: 15 }, () => 0);
+  return Array.from({ length: 36 }, () => 0);
+};
+
+export const generateAvailabilityFactor = () => {
+  return Array.from({ length: 36 }, () => 1);
 };
 
 export const generateAvailabillityPerPerson = (
@@ -231,6 +241,43 @@ export const generateScenarioProjection = (
   };
 };
 
+export const generateCValue = (
+  dataIndustrial: number[],
+  dataHousing: number[],
+  dataForest: number[],
+  dataAgriculture: number[],
+  dataOtherLand: number[],
+) => {
+  const constantIndustrial = constantMultiply(
+    dataIndustrial,
+    RESOURCE_DEMAND_UNIT.C_AREA.INDUSTRIAL_LAND,
+  );
+  const constantHousting = constantMultiply(
+    dataHousing,
+    RESOURCE_DEMAND_UNIT.C_AREA.HOUSING_LAND,
+  );
+  const constantForest = constantMultiply(
+    dataForest,
+    RESOURCE_DEMAND_UNIT.C_AREA.FOREST_AREA,
+  );
+  const constantAgriculture = constantMultiply(
+    dataAgriculture,
+    RESOURCE_DEMAND_UNIT.C_AREA.AGRICULTURE_AREA,
+  );
+  const constantOtherLand = constantMultiply(
+    dataOtherLand,
+    RESOURCE_DEMAND_UNIT.C_AREA.OTHER_AREA,
+  );
+
+  return sumData(
+    constantAgriculture,
+    constantOtherLand,
+    constantForest,
+    constantIndustrial,
+    constantHousting,
+  );
+};
+
 export const generateLandCover = (
   startYear: number,
   endYear: number,
@@ -289,6 +336,7 @@ export const generateLandCover = (
     ],
   };
 };
+
 export const generateLandPortion = (landCoverData: IApiData): IApiData => {
   const { years, parameters } = landCoverData;
 
@@ -416,3 +464,7 @@ export const generateAllProjectionsForScenario = (
     landCover: generateScenarioProjection(allBaselines.landCover, inputs),
   };
 };
+
+export const generatePvRooftopAreaIndustrial = (
+  simulation: SimulationState,
+) => {};

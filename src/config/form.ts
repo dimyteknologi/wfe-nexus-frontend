@@ -1,8 +1,10 @@
 import { TimePeriod } from "@/stores/slicers/dssInputSlicer";
 
-interface FormInput {
+export interface FormInput {
   id: string;
   label: string;
+  min?: number;
+  max?: number;
   periods: TimePeriod[];
   withValidation?: boolean;
   information: string;
@@ -20,6 +22,8 @@ export const simulationFormConfig: FormSection[] = [
     inputs: [
       {
         label: "Growth scenario [%/year]",
+        min: -5,
+        max: 5,
         periods: timePeriods,
         withValidation: true,
         id: "agriculture.growthScenario",
@@ -28,6 +32,8 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Agriculture land conversion [%/year]",
+        min: 0,
+        max: 2,
         periods: timePeriods,
         withValidation: true,
         id: "agriculture.landConversion",
@@ -36,6 +42,8 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Livestock growth: Cattle [%/year]",
+        min: -5,
+        max: 5,
         periods: timePeriods,
         withValidation: true,
         id: "livestock.cattleGrowth",
@@ -44,6 +52,8 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Livestock growth: Poultry [%/year]",
+        min: -5,
+        max: 5,
         periods: timePeriods,
         withValidation: true,
         id: "livestock.poultryGrowth",
@@ -52,6 +62,8 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Livestock growth: Goat [%/year]",
+        min: -5,
+        max: 5,
         periods: timePeriods,
         withValidation: true,
         id: "livestock.goatGrowth",
@@ -60,11 +72,23 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Aquaculture land growth [%/year]",
+        min: -5,
+        max: 5,
         periods: timePeriods,
         withValidation: true,
         id: "agriculture.aquacultureLandGrowth",
         information:
           "Scenario for aquaculture area increase or decrease between 2025-2045 in %/year. The number is average value between 2010-2024",
+      },
+      {
+        label: "Productivity target [ton/ha/year]",
+        min: 2,
+        max: 12,
+        periods: timePeriods,
+        withValidation: true,
+        id: "agriculture.productivityTarget",
+        information:
+          "Scenario for agriculture productivity for paddy production between 2025-2045 in ton/ha/year. The number is average value between 2010-2024",
       },
     ],
   },
@@ -79,6 +103,8 @@ export const simulationFormConfig: FormSection[] = [
       // },
       {
         label: "Solar PV Area Percentage on Industrial (%)",
+        min: 0,
+        max: 50,
         periods: timePeriods,
         withValidation: true,
         id: "energy.solarPvAreaIndustrial",
@@ -87,6 +113,8 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Solar PV Area Percentage on Housing (%)",
+        min: 0,
+        max: 50,
         periods: timePeriods,
         withValidation: true,
         id: "energy.solarPvAreaHousing",
@@ -95,6 +123,8 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Industrial Energy efficiency rate",
+        min: 0,
+        max: 5,
         periods: timePeriods,
         withValidation: true,
         id: "energy.industrialEnergy",
@@ -103,6 +133,8 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Domestic electricity consumption increase rate",
+        min: 0,
+        max: 3,
         periods: timePeriods,
         withValidation: true,
         id: "energy.domesticElectricity",
@@ -141,6 +173,8 @@ export const simulationFormConfig: FormSection[] = [
     inputs: [
       {
         label: "Industrial growth scenario [%/year]",
+        min: 0,
+        max: 10,
         periods: timePeriods,
         withValidation: true,
         id: "industry.growth",
@@ -154,6 +188,8 @@ export const simulationFormConfig: FormSection[] = [
     inputs: [
       {
         label: "Artificial Pond Percentage in Industrial Area (%)",
+        min: 0,
+        max: 30,
         periods: timePeriods,
         withValidation: true,
         id: "water.artificialPondIndustrial",
@@ -162,6 +198,8 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Artificial Pond Percentage in Housing Area (%)",
+        min: 0,
+        max: 30,
         periods: timePeriods,
         withValidation: true,
         id: "water.artificialPondHousing",
@@ -170,6 +208,8 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Domestic water demand unit",
+        min: 70,
+        max: 200,
         periods: timePeriods,
         withValidation: true,
         id: "water.domesticWaterDemand",
@@ -178,6 +218,8 @@ export const simulationFormConfig: FormSection[] = [
       },
       {
         label: "Industrial Water intensity",
+        min: 0.2,
+        max: 5,
         periods: timePeriods,
         withValidation: true,
         id: "water.industrialWater",
@@ -203,6 +245,8 @@ export const simulationFormConfig: FormSection[] = [
     inputs: [
       {
         label: "Population Growth [%/year]",
+        min: 0.5,
+        max: 2.5,
         periods: timePeriods,
         withValidation: true,
         id: "demography.populationGrowth",

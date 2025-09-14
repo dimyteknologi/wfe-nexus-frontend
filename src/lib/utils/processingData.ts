@@ -3,6 +3,7 @@ import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
 import { RESOURCE_DEMAND_UNIT } from "../constant/resourceDemandUnit.constant";
 import {
   Computation,
+  constantAdd,
   constantMultiply,
   dataProjection,
   sumData,
@@ -260,9 +261,31 @@ export const generateCValue = (
 };
 
 export const generatePotentialWater = (data: number[]) => {
-  return data.map((item) => item * 3760534400);
+  return constantMultiply(data, 3760534400);
 };
 
-export const generateTotalWater = (data: number[]) => {
-  return data.map((item) => item + (36528322 + 61508750));
+export const generateTotalWater = (
+  dataWaterSupply: number[],
+  dataApWaterIndustrial: number[],
+  dataApWaterHousing: number[],
+) => {
+  return sumData(
+    constantAdd(dataWaterSupply, 36528322 + 61508750),
+    sumData(dataApWaterIndustrial, dataApWaterHousing),
+  );
+};
+
+export const generateApWater = (data: number[]) => {
+  return constantMultiply(data, 1500 * 2);
+};
+
+export const generateEnergySupply = (
+  dataTotalEnergyDemand: number[],
+  dataAvailabilityFactor: number[],
+) => {
+  const result = [];
+  for (let i = 0; i < dataTotalEnergyDemand.length; i++) {
+    result.push(dataTotalEnergyDemand[i] * dataAvailabilityFactor[i]);
+  }
+  return result;
 };

@@ -14,8 +14,8 @@ export type SectionConfig = {
 export type InputGroupProps = {
   label: string;
   periods: string[];
-  onChange: (id: string, value: number) => void;
-  values: Record<string, number | null>;
+  onChange: (id: string, value: string) => void;
+  values: Record<string, string | null>;
   errors: Record<string, string>;
   id: string;
   information: string;
@@ -25,13 +25,13 @@ export type SectionCardProps = {
   title: string;
   children: React.ReactNode;
 };
-export type InitialValues = Record<string, number>;
+export type InitialValues = Record<string, string>;
 
 export type FormContainerProps = {
   initialValues?: InitialValues;
-  inputs: Record<string, number | null>;
+  inputs: Record<string, string | null>;
   errors: Record<string, string>;
-  handleChange: (id: string, value: number) => void;
-  validatePercentage?: (value: number) => string | undefined;
+  handleChange: (id: string, value: string) => void;
+  validatePercentage?: (value: string) => string | undefined;
   sections: SectionConfig[];
 };
