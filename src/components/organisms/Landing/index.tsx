@@ -190,7 +190,7 @@ const LandingPage = () => {
                   key={company.id}
                   className="flex flex-col items-center justify-center gap-3 transition-transform hover:scale-110 duration-300"
                 >
-                  <div className="h-20 w-28 grayscale hover:grayscale-0 transition-all duration-500">
+                  <div className="h-20 w-28 hover:grayscale-0 transition-all duration-500">
                     <img
                       className="w-full h-full object-contain"
                       src={company.imgSrc}
