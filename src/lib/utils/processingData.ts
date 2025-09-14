@@ -141,16 +141,17 @@ const generateLandPortion = (data: number[], availableLand: number[]) => {
 
 // AP AREA
 // value bu user input in year 2030 , 2040 , 2045
+
 export const getPinPoint = (
-  dataAgriculture: number[],
   year: number,
   input: number,
+  dataAgriculture?: number[],
 ) => {
   const initYear = 2010;
   const index = year - initYear;
   return {
     year,
-    value: dataAgriculture[index + 1] * input,
+    value: dataAgriculture ? dataAgriculture[index + 1] * input : input,
   };
 };
 
