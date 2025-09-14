@@ -244,10 +244,6 @@ const LandingPage = () => {
                 <p className="text-gray-600 leading-relaxed">
                   {feature.description}
                 </p>
-                <div className="mt-4 flex items-center text-green-700 font-medium">
-                  <span className="text-sm">Learn more</span>
-                  <ChevronRight className="h-4 ml-1" />
-                </div>
               </div>
             ))}
           </div>

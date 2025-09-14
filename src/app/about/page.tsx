@@ -21,13 +21,13 @@ const AboutPage = () => {
       logo: "/bappenas-logo.png",
     },
     {
-      name: "UNDP Indonesia",
+      name: "UK International Development",
       role: "Development Partner",
       contact: "Mr. XYZ (+6221 7888...)",
       logo: "/undp-logo.png",
     },
     {
-      name: "PT ...",
+      name: "UNDP Indonesia",
       role: "Web Developer",
       contact: "Mr. XYZ (+6221 7888...)",
       logo: "/dev-logo.png",
