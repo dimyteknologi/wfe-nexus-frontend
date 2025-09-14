@@ -113,13 +113,6 @@ const LandingPage = () => {
     <>
       {/* Hero Section */}
       <section className="pt-34 pb-20 px-6 bg-gradient-to-r from-green-50 to-blue-50 py-4 relative">
-        {/* Background elements */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-          <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-          <div className="absolute top-0 -right-20 w-72 h-72rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-20 left-20 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
-        </div>
-
         <div className="container mx-auto p-4 flex flex-col md:flex-row items-center gap-8 justify-between relative z-10">
           <div className="md:w-1/2 mb-10 md:mb-0">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
@@ -158,10 +151,10 @@ const LandingPage = () => {
           </div>
 
           <div className="md:w-1/2 relative">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
+            <div className="relative rounded-[15%] overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
               <img
-                className="w-full h-auto "
-                src="./assets/image-demo-3.svg"
+                className="w-full h-auto object-cover "
+                src="./assets/image-demo-1.svg"
                 alt="WEF Nexus Dashboard Preview"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
@@ -218,7 +211,7 @@ const LandingPage = () => {
       <section ref={sectionRef} className="relative opacity-90">
         <img
           className="absolute w-full h-full opacity-10 object-cover -z-1"
-          src="./assets/image-demo-1.svg"
+          src="./assets/image-demo-2.svg"
           alt="background pattern"
         />
         <div className="container mx-auto py-20">
@@ -265,7 +258,7 @@ const LandingPage = () => {
       <section className="relative opacity-90">
         <img
           className="absolute w-full h-full opacity-10 object-cover -z-1"
-          src="./assets/image-demo-2.svg"
+          src="./assets/image-demo-3.svg"
           alt="background pattern"
         />
 
