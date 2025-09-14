@@ -208,7 +208,7 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section ref={sectionRef} className="relative opacity-90">
+      <section ref={sectionRef} className="relative opacity-90 mt-1">
         <img
           className="absolute w-full h-full opacity-10 object-cover -z-1"
           src="./assets/image-demo-2.svg"
@@ -255,7 +255,7 @@ const LandingPage = () => {
       </section>
 
       {/* Process Section */}
-      <section className="relative opacity-90">
+      <section className="relative opacity-90 mt-1">
         <img
           className="absolute w-full h-full opacity-10 object-cover -z-1"
           src="./assets/image-demo-3.svg"
