@@ -1,6 +1,4 @@
 @import "tailwindcss";
-@import "tailwindcss/preflight";
-@tailwind utilities;
 
 @layer base {
   input[type="number"]::-webkit-inner-spin-button,
