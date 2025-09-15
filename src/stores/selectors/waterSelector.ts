@@ -50,7 +50,7 @@ const calculateAnnualWaterSupply = (totalWaterSupply: number[]) => {
   if (!Array.isArray(totalWaterSupply)) return Array(36).fill(0);
 
   const safeValues = totalWaterSupply.map((val) => (val ? val / 1000000 : 0));
-  return resultConverter(totalWaterSupply);
+  return resultConverter(safeValues);
 };
 
 const calculateLocalWaterSuffiency = (
@@ -71,7 +71,7 @@ const calculateLocalWaterSuffiency = (
   return resultConverter(
     safeValues.map((val, i) => {
       const denominator = projection[i] ?? 0;
-      return denominator !== 0 ? (val / denominator) * 100 : 0;
+      return denominator !== 0 ? (denominator / val) * 100 : 0;
     }),
   );
 };
