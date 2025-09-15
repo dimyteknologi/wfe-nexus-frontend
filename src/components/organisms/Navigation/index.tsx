@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import { ChevronDown, Menu, X, User, LogIn } from "lucide-react";
+import { ChevronDown, Menu, X, LogIn } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -37,7 +37,6 @@ const Navigation = () => {
       setIsScrolled(window.scrollY > 10);
     };
 
-    // Close dropdowns when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -71,6 +70,8 @@ const Navigation = () => {
     setActiveDropdown(null);
     setMobileMenuOpen(false);
   };
+
+  const handleLogin = () => {};
 
   return (
     <>
@@ -113,7 +114,7 @@ const Navigation = () => {
                           <Link
                             key={subItem.label}
                             href={subItem.href}
-                            className="block px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-all duration-200 flex items-center"
+                            className=" px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-all duration-200 flex items-center"
                             onClick={closeAllMenus}
                           >
                             <div className="w-1.5 h-1.5 bg-green-400 rounded-full mr-3"></div>
@@ -135,14 +136,15 @@ const Navigation = () => {
             ))}
           </div>
 
-          {/* Right section - Auth buttons and partner logos */}
           <div className="flex items-center gap-4">
-            {/* Auth Buttons */}
             <div className="hidden md:flex items-center space-x-3">
-              <button className="text-gray-700 hover:text-green-700 transition-colors flex items-center gap-1 px-4 py-2 rounded-lg hover:bg-green-50">
+              <Link
+                href="/login"
+                className="text-gray-700 hover:text-green-700 transition-colors flex items-center gap-1 px-4 py-2 rounded-lg hover:bg-green-50"
+              >
                 <LogIn size={16} />
                 Login
-              </button>
+              </Link>
               <button className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-2.5 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-md hover:shadow-lg">
                 Sign Up
               </button>
@@ -202,12 +204,7 @@ const Navigation = () => {
               className="flex items-center space-x-2"
               onClick={closeAllMenus}
             >
-              <div className="w-10 h-10 bg-gradient-to-r from-green-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">N</span>
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-green-700 to-blue-700 bg-clip-text text-transparent">
-                Nexus
-              </span>
+              <span className="text-xl font-bold text-green-700">Nexus</span>
             </Link>
             <button
               className="p-1 rounded-md text-gray-500 hover:text-gray-700"
@@ -267,20 +264,20 @@ const Navigation = () => {
             </div>
           </div>
 
-          {/* Mobile Auth Buttons */}
           <div className="pt-6 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
-              <button className="w-full flex items-center justify-center gap-2 text-gray-700 py-3 border border-gray-300 rounded-lg hover:border-green-600 hover:text-green-700 transition-colors">
-                <LogIn size={18} />
-                Login
-              </button>
+              <Link href="/login" onClick={closeAllMenus}>
+                <div className="w-full flex items-center justify-center gap-2 text-gray-700 py-3 border border-gray-300 rounded-lg hover:border-green-600 hover:text-green-700 transition-colors">
+                  <LogIn size={18} />
+                  Login
+                </div>
+              </Link>
               <button className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-md">
                 Sign Up
               </button>
             </div>
           </div>
 
-          {/* Partner Logos in Mobile Menu */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500 mb-4">In partnership with:</p>
             <div className="flex justify-center space-x-6">

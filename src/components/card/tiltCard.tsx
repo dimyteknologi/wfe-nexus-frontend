@@ -1,141 +1,116 @@
 "use client";
-import React, { useRef, useEffect, RefObject } from "react";
-import Image from "next/image";
 
-interface TiltEffect {
-  rotateX: number;
-  rotateY: number;
-  translateZ: number;
-  glowX: number;
-  glowY: number;
-  shadowX: number;
-  shadowY: number;
+import React, { useRef, useState } from "react";
+
+interface TiltCardProps {
+  feature: {
+    icon: React.ReactElement;
+    description: string;
+    image: string;
+    color: string;
+    title: string;
+  };
+  index: number;
+  isVisible: boolean;
 }
 
-interface ITiltCard {
-  path: string;
-  name: string;
-}
+const TiltCard = ({ feature, index, isVisible }: TiltCardProps) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-const TiltCard = ({ path, name }: ITiltCard) => {
-  const cardRef: RefObject<HTMLDivElement | null> =
-    useRef<HTMLDivElement | null>(null);
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
 
-  useEffect(() => {
-    const card = cardRef.current;
-    if (!card) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-    const handleMouseMove = (e: MouseEvent): void => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
 
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
+    const rotateX = (y - centerY) / 20;
+    const rotateY = (centerX - x) / 20;
 
-      // Calculate tilt angles (reduced intensity for smoother effect)
-      const rotateX = (y - centerY) / 8;
-      const rotateY = (centerX - x) / 8;
+    setMousePosition({ x, y });
 
-      // Calculate glow position
-      const glowX = (x / rect.width) * 100;
-      const glowY = (y / rect.height) * 100;
-
-      // Calculate shadow offset
-      const shadowX = (x - centerX) / 15;
-      const shadowY = (y - centerY) / 15;
-
-      const tiltEffect: TiltEffect = {
-        rotateX,
-        rotateY,
-        translateZ: 20,
-        glowX,
-        glowY,
-        shadowX,
-        shadowY,
-      };
-
-      applyTiltEffect(card, tiltEffect);
-    };
-
-    const handleMouseLeave = (): void => {
-      if (!card) return;
-
-      card.style.transform =
-        "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
-      card.style.background = "";
-      card.style.boxShadow = "0 10px 25px rgba(0,0,0,0.1)";
-    };
-
-    const applyTiltEffect = (
-      element: HTMLElement,
-      effect: TiltEffect,
-    ): void => {
-      const { rotateX, rotateY, translateZ, glowX, glowY, shadowX, shadowY } =
-        effect;
-
-      element.style.transform = `
-        perspective(1000px)
-        rotateX(${rotateX}deg)
+    if (cardRef.current) {
+      cardRef.current.style.transform = `
+        perspective(1000px) 
+        rotateX(${rotateX}deg) 
         rotateY(${rotateY}deg)
-        translateZ(${translateZ}px)
+        scale3d(1.02, 1.02, 1.02)
       `;
+    }
+  };
 
-      // Add glow effect
-      element.style.background = `
-        radial-gradient(circle at ${glowX}% ${glowY}%, 
-        rgba(255,255,255,0.8) 0%, 
-        rgba(255,255,255,0.3) 50%, 
-        rgba(255,255,255,0.1) 100%)
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (cardRef.current) {
+      cardRef.current.style.transform = `
+        perspective(1000px) 
+        rotateX(0deg) 
+        rotateY(0deg)
+        scale3d(1, 1, 1)
       `;
+    }
+  };
 
-      // Add dynamic shadow
-      element.style.boxShadow = `
-        ${shadowX}px ${shadowY}px 30px rgba(0,0,0,0.2),
-        0 0 50px rgba(59, 130, 246, 0.3)
-      `;
-    };
-
-    card.addEventListener("mousemove", handleMouseMove);
-    card.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      card.removeEventListener("mousemove", handleMouseMove);
-      card.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
 
   return (
     <div
       ref={cardRef}
-      className={`group cursor-pointer tilt-card`}
+      className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden transform-gpu ${
+        isVisible ? "animate-fade-in" : "opacity-0"
+      }`}
       style={{
-        transformStyle: "preserve-3d",
-        transition: "transform 0.1s ease-out, box-shadow 0.1s ease-out",
-        boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-        userSelect: "none",
+        animationDelay: `${index * 100}ms`,
+        transition: "transform 0.1s ease-out, box-shadow 0.3s ease",
       }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
     >
-      <div className="relative overflow-hidden rounded-xl h-64 bg-white">
-        <div className="absolute inset-0">
-          <Image
-            src={path}
-            alt={name}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            style={{
-              transform: "translateZ(30px)",
-            }}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          />
-
-          {/* Overlay gradient */}
-          <div
-            className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style={{ transform: "translateZ(40px)" }}
-          />
+      <div className="h-40 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-green-50"></div>
+        <div className="absolute inset-0 flex items-center justify-center p-4">
+          <div className="w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center">
+            <div
+              className={`bg-gradient-to-r ${feature.color} rounded-full p-3 text-white`}
+            >
+              {feature.icon}
+            </div>
+          </div>
         </div>
+
+        <div
+          className="absolute inset-0 opacity-0 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.4) 0%, transparent 80%)`,
+            opacity: isHovered ? 1 : 0,
+          }}
+        />
       </div>
+
+      <div className="p-6">
+        <h3 className="text-xl font-semibold text-gray-800 mb-3">
+          {feature.title}
+        </h3>
+        <p className="text-gray-600 leading-relaxed mb-4">
+          {feature.description}
+        </p>
+      </div>
+
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          boxShadow: isHovered ? `0 0 0 2px rgba(5, 150, 105, 0.2)` : "none",
+          transition: "box-shadow 0.3s ease",
+        }}
+      />
     </div>
   );
 };
