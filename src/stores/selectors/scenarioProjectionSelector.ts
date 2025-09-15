@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import {
   generateApAreaProjection,
+  generatePvAreaProjection,
   generateScenarioProjection,
 } from "@/lib/utils/projections";
 import {
@@ -47,6 +48,15 @@ const createApAreaIndustrialProjectionSelector = (
     if (!industrialBaseline) return Array(36).fill(0);
     if (!industrialBaseline?.values) return Array(36).fill(0);
     return generateApAreaProjection(industrialBaseline, inputs);
+  });
+
+const createSolarPVAreaProjectionSelector = (
+  name: string | null,
+  selectInputs: Selector<IRootState, SimulationState | null>,
+) =>
+  createSelector([selectInputs], (inputs) => {
+    if (!name || !inputs) return Array(36).fill(0);
+    return generatePvAreaProjection(name, inputs);
   });
 
 const createApAreaHousingProjectionSelector = (
@@ -286,5 +296,61 @@ export const selectApAreaIndustrialProjectionA =
 export const selectApAreaIndustrialProjectionB =
   createApAreaIndustrialProjectionSelector(
     selectLandCoverBaseline,
+    selectComparisonScenarioB,
+  );
+
+// PV industrial selectors generate solar pv with activeInput
+export const selectPvAreaIndustrialProjectionBaseline =
+  createSolarPVAreaProjectionSelector(
+    "Solar Pv Area on Industrial",
+    selectBaselineInput,
+  );
+
+// PV industrial selectors generate solar pv with activeInput
+export const selectPvAreaIndustrialProjection =
+  createSolarPVAreaProjectionSelector(
+    "Solar Pv Area on Industrial",
+    selectActiveScenarioInput,
+  );
+
+// PV industrial selectors generate solar pv with scenarioA
+export const selectPvAreaIndustrialProjectionA =
+  createSolarPVAreaProjectionSelector(
+    "Solar Pv Area on Industrial",
+    selectComparisonScenarioA,
+  );
+
+// PV industrial selectors generate solar pv with scenarioB
+export const selectPvAreaIndustrialProjectionB =
+  createSolarPVAreaProjectionSelector(
+    "Solar Pv Area on Industrial",
+    selectComparisonScenarioB,
+  );
+
+// PV industrial selectors generate solar pv with activeInput
+export const selectPvAreaHousingProjectionBaseline =
+  createSolarPVAreaProjectionSelector(
+    "Solar PV Area Percentage on Housing",
+    selectBaselineInput,
+  );
+
+// PV industrial selectors generate solar pv with activeInput
+export const selectPvAreaHousingProjection =
+  createSolarPVAreaProjectionSelector(
+    "Solar PV Area Percentage on Housing",
+    selectActiveScenarioInput,
+  );
+
+// PV industrial selectors generate solar pv with scenarioA
+export const selectPvAreaHousingProjectionA =
+  createSolarPVAreaProjectionSelector(
+    "Solar PV Area Percentage on Housing",
+    selectComparisonScenarioA,
+  );
+
+// PV industrial selectors generate solar pv with scenarioB
+export const selectPvAreaHousingProjectionB =
+  createSolarPVAreaProjectionSelector(
+    "Solar PV Area Percentage on Housing",
     selectComparisonScenarioB,
   );

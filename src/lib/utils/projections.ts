@@ -70,6 +70,10 @@ const getInputsByName = (name: string, simulationState: SimulationState) => {
       return simulationState.water.artificialPondIndustrial;
     case "Housing Land":
       return simulationState.water.artificialPondHousing;
+    case "Solar Pv Area on Industrial":
+      return simulationState.energy.solarPvAreaIndustrial;
+    case "Solar PV Area Percentage on Housing":
+      return simulationState.energy.solarPvAreaHousing;
     default:
       return null;
   }
@@ -507,77 +511,18 @@ const generateApArea = (
   }
   return result;
 };
-interface Pinpoint {
-  year: number;
-  value: number;
-}
-
-type IApGrowth = Pinpoint[];
-
-export const generatePinpointProjection = (
-  historicalData: number[],
-  pinpoints: Pinpoint[],
-  startYear: number,
-  finalYear: number,
-): number[] => {
-  const historicalPoints: Pinpoint[] = historicalData.map((value, index) => ({
-    year: startYear + index,
-    value,
-  }));
-
-  const allKnownPoints = [...historicalPoints, ...pinpoints].sort(
-    (a, b) => a.year - b.year,
-  );
-
-  const uniqueKnownPoints = allKnownPoints.filter(
-    (point, index, self) =>
-      index === self.findIndex((p) => p.year === point.year),
-  );
-
-  if (uniqueKnownPoints.length < 2) {
-    const lastValue = historicalData[historicalData.length - 1] ?? 0;
-    return Array.from({ length: finalYear - startYear + 1 }, () => lastValue);
-  }
-
-  const resultMap = new Map(uniqueKnownPoints.map((p) => [p.year, p.value]));
-  let pointIndex = 0;
-
-  for (let year = startYear; year <= finalYear; year++) {
-    if (resultMap.has(year)) continue;
-
-    while (uniqueKnownPoints[pointIndex + 1]?.year < year) {
-      pointIndex++;
-    }
-
-    const prevPoint = uniqueKnownPoints[pointIndex];
-    const nextPoint = uniqueKnownPoints[pointIndex + 1];
-
-    if (!prevPoint || !nextPoint) continue;
-
-    const yearDiff = nextPoint.year - prevPoint.year;
-    const valueDiff = nextPoint.value - prevPoint.value;
-    const slope = yearDiff === 0 ? 0 : valueDiff / yearDiff;
-    const interpolatedValue = prevPoint.value + slope * (year - prevPoint.year);
-
-    resultMap.set(year, interpolatedValue);
-  }
-
-  return Array.from({ length: finalYear - startYear + 1 }, (_, i) => {
-    const year = startYear + i;
-    return parseFloat((resultMap.get(year) ?? 0).toFixed(2));
-  });
-};
 
 export const generateApAreaProjection = (
-  param: Params, // ganti nama biar lebih jelas, bukan seluruh historicalData
+  param: Params,
   inputs: SimulationState,
-  startYear: number = 2010, // kasih opsi startYear default
-  finalYear: number = 2045, // kasih opsi finalYear default
+  startYear: number = 2010,
+  finalYear: number = 2045,
 ): number[] => {
   if (!param || !inputs) return [];
 
   const { name, values } = param;
   const scenarioInputs = getInputsByName(name, inputs);
+
   if (!scenarioInputs) return Array(36).fill(0);
 
   const rawPinpoints: { year: number; key: keyof typeof scenarioInputs }[] = [
@@ -611,81 +556,43 @@ export const generateApAreaProjection = (
   return resultConverter(projections);
 };
 
-// export const generateApAreaProjection = (historicalData: IApiData, inputs: SimulationState, ): number[] | [] => {
-//     if (!historicalData || !inputs) return [];
-//     const result: number[] = [];
-//     for (const param of historicalData.parameters) {
-//         const {
-//             name,
-//             values
-//         } = param;
-//         const scenarioInputs = getInputsByName(name, inputs);
-//         if (scenarioInputs) {
-//             const pinpoints: IApGrowth = [{
-//                 year: 2030,
-//                 value: scenarioInputs["2025-2030"] ?? 0
-//             }, {
-//                 year: 2040,
-//                 value: scenarioInputs["2031-2040"] ?? 0
-//             }, {
-//                 year: 2045,
-//                 value: scenarioInputs["2041-2045"] ?? 0
-//             }].filter(p => p.value !== undefined && p.value !== null);
-//             const pinpoint2030 = getPinPoint(2030, Number(pinpoints[0].value), values);
-//             const pinpoint2040 = getPinPoint(2040, Number(pinpoints[1].value), values);
-//             const pinpoint2045 = getPinPoint(2045, Number(pinpoints[2].value), values);
-//             const growths = getApAreaGrowth([pinpoint2030, pinpoint2040, pinpoint2045]);
-//             const projections = generateApArea(Array(15).fill(0.0), growths, 2010, 2045);
-//             result.push(...projections);
-//         }
-//     }
-//     return result;
-// };
-// export const generateApAreaProjection = (
-//   historicalData: IApiData,
-//   inputs: SimulationState
-// ): IBaselineData | null => {
-//   if (!historicalData || !inputs) return null;
+export const generatePvAreaProjection = (
+  name: string,
+  inputs: SimulationState,
+  startYear: number = 2010,
+  finalYear: number = 2045,
+): number[] => {
+  if (!name || !inputs) return [];
 
-//   const projectedParameters: Params[] = [];
-//   const initialYear = historicalData.years[0];
+  const scenarioInputs = getInputsByName(name, inputs);
 
-//   for (const param of historicalData.parameters) {
-//     const scenarioInputs = getInputsByName(param.name, inputs);
+  if (!scenarioInputs) return Array(36).fill(0);
 
-//     if (scenarioInputs) {
-//       const cleanDataSeries = param.values.map((val) => val ?? 0);
+  const rawPinpoints: { year: number; key: keyof typeof scenarioInputs }[] = [
+    { year: 2030, key: "2025-2030" },
+    { year: 2040, key: "2031-2040" },
+    { year: 2045, key: "2041-2045" },
+  ];
 
-//       const scenarioInputs = getInputsByName(param.name, inputs);
+  const pinpoints = rawPinpoints
+    .map(({ year, key }) => ({
+      year,
+      value: Number(scenarioInputs[key] ?? 0),
+    }))
+    .filter((p) => Number.isFinite(p.value));
 
-//       const pinpoints: Pinpoint[] = [
-//         { year: 2030, value: scenarioInputs?.["2025-2030"] ?? 0 },
-//         { year: 2040, value: scenarioInputs?.["2031-2040"] ?? 0 },
-//         { year: 2045, value: scenarioInputs?.["2041-2045"] ?? 0 },
-//       ].filter(p => p.value > 0);
+  if (pinpoints.length === 0) return Array(36).fill(0);
 
-//       const finalProjectedData = generatePinpointProjection(
-//         cleanDataSeries,
-//         pinpoints,
-//         initialYear,
-//         2045
-//       );
-//       const growthRates = growthRate(finalProjectedData);
-//       const averageGrowth = average(growthRates);
-//       projectedParameters.push({name: param.name, average: averageGrowth, growth: growthRates, values: finalProjectedData });
-//     } else {
-//       projectedParameters.push({...param, growth: [], average: 0});
-//     }
-//   }
+  const computedPinpoints = pinpoints.map((p) => getPinPoint(p.year, p.value));
 
-//   return {
-//     label: `${baseData.label} (${checkType(baseData.label)} Baseline)`,
-//     unit: baseData.unit,
-//     years: projectedYears,
-//     parameters: projectedParameters,
-//   };
-// };
+  const growths = getApAreaGrowth(computedPinpoints);
 
-export const generatePvRooftopAreaIndustrial = (
-  simulation: SimulationState,
-) => {};
+  const projections = generateApArea(
+    Array(15).fill(0),
+    growths,
+    startYear,
+    finalYear,
+  );
+
+  return resultConverter(projections);
+};
