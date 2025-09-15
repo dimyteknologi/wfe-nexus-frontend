@@ -127,30 +127,6 @@ const calculateLocalEnergySuffiency = (
   );
 };
 
-const calculateRenewableEnergy = (
-  localEnergyProduction: number[],
-  energyDemand: IBaselineData | null,
-) => {
-  if (!energyDemand) return Array(36).fill(0);
-
-  const totalEnergyDemand = energyDemand?.parameters.find(
-    (param) => param.name === "Total Energy Demand",
-  );
-
-  if (!totalEnergyDemand) return [Array(36).fill(0)];
-  if (!totalEnergyDemand?.values) return [Array(36).fill(0)];
-
-  const safeValues = totalEnergyDemand.values.map((val) => val ?? 0);
-  if (!Array.isArray(localEnergyProduction)) return safeValues;
-
-  return resultConverter(
-    safeValues.map((val, i) => {
-      const denominator = localEnergyProduction[i] ?? 0;
-      return denominator !== 0 ? val - denominator : 0;
-    }),
-  );
-};
-
 const calculateElectricityImport = (
   localEnergyProduction: number[] | null | undefined,
   energyDemand: IBaselineData | null | undefined,
@@ -405,19 +381,19 @@ export const selectLocalRenewableEnergyContributionComparison = createSelector(
   ],
   (projActive, projB, projA, baseline, localEnergyProduction) => {
     return {
-      active: calculateRenewableEnergy(
+      active: calculateLocalEnergySuffiency(
         localEnergyProduction.active,
         projActive,
       ),
-      baseline: calculateRenewableEnergy(
+      baseline: calculateLocalEnergySuffiency(
         localEnergyProduction.baseline,
         baseline,
       ),
-      scenarioA: calculateRenewableEnergy(
+      scenarioA: calculateLocalEnergySuffiency(
         localEnergyProduction.scenarioA,
         projA,
       ),
-      scenarioB: calculateRenewableEnergy(
+      scenarioB: calculateLocalEnergySuffiency(
         localEnergyProduction.scenarioB,
         projB,
       ),
