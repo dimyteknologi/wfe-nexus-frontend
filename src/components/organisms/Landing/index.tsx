@@ -1,9 +1,20 @@
 "use client";
 
-import { Play, ArrowRight, CheckCircle, ChevronRight } from "lucide-react";
+import {
+  Play,
+  ArrowRight,
+  BarChart3,
+  Globe,
+  Zap,
+  Users,
+  Shield,
+  FileText,
+  Database,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+// Data structures
 const organization = [
   {
     id: 1,
@@ -22,39 +33,52 @@ const organization = [
 
 const features = [
   {
-    icon: "📊",
+    icon: <BarChart3 className="w-6 h-6" />,
     title: "Advanced Analytics",
     description:
       "Leverage context and site analytics to gain deep insights into nexus interdependencies and impacts.",
+    image: "./assets/analytics-demo.svg",
+    color: "from-blue-500 to-cyan-500",
   },
   {
-    icon: "🌍",
+    icon: <Globe className="w-6 h-6" />,
     title: "Scenario Modeling",
     description:
       "Create and compare multiple scenarios to evaluate policy decisions under different conditions.",
+    image: "./assets/modeling-demo.svg",
+    color: "from-green-500 to-emerald-500",
   },
   {
-    icon: "📈",
+    icon: <Zap className="w-6 h-6" />,
     title: "Real-time Simulation",
-    description: "Simulation key indicators in real-time.",
+    description:
+      "Simulation key indicators in real-time with dynamic visualization.",
+    image: "./assets/simulation-demo.svg",
+    color: "from-amber-500 to-orange-500",
   },
   {
-    icon: "🤝",
+    icon: <Users className="w-6 h-6" />,
     title: "Stakeholder Collaboration",
     description:
       "Enable seamless collaboration between multiple stakeholders with role-based access.",
+    image: "./assets/collaboration-demo.svg",
+    color: "from-purple-500 to-pink-500",
   },
   {
-    icon: "📑",
+    icon: <FileText className="w-6 h-6" />,
     title: "Comprehensive Reporting",
     description:
-      "Generate detailed reports with visualizations in multiple formats.",
+      "Generate detailed reports with visualizations in multiple formats for decision makers.",
+    image: "./assets/reporting-demo.svg",
+    color: "from-indigo-500 to-blue-500",
   },
   {
-    icon: "🔒",
+    icon: <Shield className="w-6 h-6" />,
     title: "Data Security",
     description:
       "Enterprise-grade security with encryption and compliance with global data protection standards.",
+    image: "./assets/security-demo.svg",
+    color: "from-red-500 to-rose-500",
   },
 ];
 
@@ -64,25 +88,138 @@ const flowProcess = [
     title: "Data Integration",
     description:
       "Connect your data sources or use our sample datasets to get started quickly.",
+    icon: <Database className="w-8 h-8" />,
   },
   {
     step: "2",
     title: "Model Configuration",
     description:
       "Configure models based on your specific context and policy questions.",
+    icon: <BarChart3 className="w-8 h-8" />,
   },
   {
     step: "3",
     title: "Analysis & Simulation",
     description:
       "Run simulations and analyze results through interactive visualizations.",
+    icon: <Globe className="w-8 h-8" />,
   },
   {
     step: "4",
     title: "Implementation",
-    description: "Implement evidence-based policies with confidence.",
+    description:
+      "Implement evidence-based policies with confidence and monitoring.",
+    icon: <Zap className="w-8 h-8" />,
   },
 ];
+
+// Tilt Card Component
+interface TiltCardProps {
+  feature: (typeof features)[0];
+  index: number;
+  isVisible: boolean;
+}
+
+const TiltCard = ({ feature, index, isVisible }: TiltCardProps) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = (y - centerY) / 20;
+    const rotateY = (centerX - x) / 20;
+
+    setMousePosition({ x, y });
+
+    if (cardRef.current) {
+      cardRef.current.style.transform = `
+        perspective(1000px) 
+        rotateX(${rotateX}deg) 
+        rotateY(${rotateY}deg)
+        scale3d(1.02, 1.02, 1.02)
+      `;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (cardRef.current) {
+      cardRef.current.style.transform = `
+        perspective(1000px) 
+        rotateX(0deg) 
+        rotateY(0deg)
+        scale3d(1, 1, 1)
+      `;
+    }
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden transform-gpu ${
+        isVisible ? "animate-fade-in" : "opacity-0"
+      }`}
+      style={{
+        animationDelay: `${index * 100}ms`,
+        transition: "transform 0.1s ease-out, box-shadow 0.3s ease",
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
+    >
+      <div className="h-40 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-green-50"></div>
+        <div className="absolute inset-0 flex items-center justify-center p-4">
+          <div className="w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center">
+            <div
+              className={`bg-gradient-to-r ${feature.color} rounded-full p-3 text-white`}
+            >
+              {feature.icon}
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="absolute inset-0 opacity-0 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.4) 0%, transparent 80%)`,
+            opacity: isHovered ? 1 : 0,
+          }}
+        />
+      </div>
+
+      <div className="p-6">
+        <h3 className="text-xl font-semibold text-gray-800 mb-3">
+          {feature.title}
+        </h3>
+        <p className="text-gray-600 leading-relaxed mb-4">
+          {feature.description}
+        </p>
+      </div>
+
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          boxShadow: isHovered ? `0 0 0 2px rgba(5, 150, 105, 0.2)` : "none",
+          transition: "box-shadow 0.3s ease",
+        }}
+      />
+    </div>
+  );
+};
 
 const LandingPage = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -111,7 +248,6 @@ const LandingPage = () => {
 
   return (
     <>
-      {/* Hero Section */}
       <section className="pt-34 pb-20 px-6 bg-gradient-to-r from-green-50 to-blue-50 py-4 relative">
         <div className="container mx-auto p-4 flex flex-col md:flex-row items-center gap-8 justify-between relative z-10">
           <div className="md:w-1/2 mb-10 md:mb-0">
@@ -158,9 +294,11 @@ const LandingPage = () => {
                 alt="WEF Nexus Dashboard Preview"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              <div className="absolute top-6 left-6 w-48 h-3 bg-green-400/70 rounded-full animate-pulse"></div>
+              <div className="absolute top-14 left-6 w-32 h-3 bg-blue-400/70 rounded-full animate-pulse animation-delay-1000"></div>
+              <div className="absolute top-22 left-6 w-40 h-3 bg-teal-400/70 rounded-full animate-pulse animation-delay-2000"></div>
             </div>
 
-            {/* Floating elements */}
             <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg z-10 animate-float">
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
@@ -207,11 +345,10 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section ref={sectionRef} className="relative opacity-90 mt-1">
         <img
           className="absolute w-full h-full opacity-10 object-cover -z-1"
-          src="./assets/image-demo-2.svg"
+          src="./assets/image-demo-3.svg"
           alt="background pattern"
         />
         <div className="container mx-auto py-20">
@@ -228,106 +365,101 @@ const LandingPage = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 px-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
             {features.map((feature, index) => (
-              <div
+              <TiltCard
                 key={index}
-                className={`bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 transform hover:-translate-y-2 ${
-                  isVisible ? "animate-fade-in" : "opacity-0"
-                }`}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="text-5xl mb-5">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
+                feature={feature}
+                index={index}
+                isVisible={isVisible}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Process Section */}
-      <section className="relative opacity-90 mt-1">
+      <section className="bg-gradient-to-r from-green-50 to-blue-50 relative opacity-90">
         <img
           className="absolute w-full h-full opacity-10 object-cover -z-1"
-          src="./assets/image-demo-3.svg"
+          src="./assets/image-demo-2.svg"
           alt="background pattern"
         />
-
-        <div className="container mx-auto px-6 py-20 relative">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
-              How It Works
+        <div className="container mx-auto pt-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <Globe className="w-4 h-4 mr-2" />
+                How It Works
+              </div>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                From Data to Decisions in Four Steps
+              </h2>
+              <p className="text-xl text-gray-700">
+                A streamlined process to transform complex data into actionable
+                insights
+              </p>
             </div>
-            <h2 className="text-4xl font-bold text-gray-800 mb-6">
-              How WEF Nexus Works
-            </h2>
-            <p className="text-xl text-gray-600">
-              A simple four-step process to transform your decision-making
-            </p>
-          </div>
 
-          <div className="relative">
-            {/* Connection line for desktop */}
-            <div className="hidden md:block absolute left-0 right-0 top-16 h-1 bg-green-200"></div>
-
-            <div className="grid md:grid-cols-4 gap-8 md:gap-4 relative">
-              {flowProcess.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-center text-center group"
-                >
-                  <div className="w-20 h-20 border-4 border-white rounded-full bg-green-100 text-green-800 flex items-center justify-center text-2xl font-bold mb-6 relative z-10 shadow-lg group-hover:bg-green-600 group-hover:text-white transition-all duration-300">
-                    {item.step}
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-3 group-hover:text-green-700 transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-600">{item.description}</p>
+            <div className="relative">
+              <div className="hidden lg:block absolute left-0 right-0 top-20 h-1">
+                <div className="h-full w-full bg-green-600 rounded-full relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-full bg-green-300 rounded-full animate-progress-line"></div>
                 </div>
-              ))}
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+                {flowProcess.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col items-center text-center group"
+                  >
+                    <div className="w-24 h-24 rounded-2xl bg-white border border-white shadow-lg flex items-center justify-center text-green mb-6 relative z-10 group-hover:text-white group-hover:bg-green-600 transition-all duration-300">
+                      {item.icon}
+                      <div className="absolute -top-3 -right-3 w-8 h-8 bg-green-700 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
+                        {item.step}
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-green-700 transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-600">{item.description}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
         <div className="container py-20 mx-auto text-center max-w-4xl">
-          <h2 className="text-4xl font-bold mb-6">
+          <h2 className="text-4xl font-bold text-gray-800 mb-6">
             Ready to Transform Your Decision-Making?
           </h2>
-          <p className="text-xl mb-10 opacity-90">
+          <p className="text-xl text-gray-600 mb-10">
             Join hundreds of organizations using WEF Nexus to create sustainable
             policies and practices
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="bg-white text-green-800 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2">
-              Get Started <ArrowRight className="h-5" />
+            <button className="bg-white text-green-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 group">
+              Get Started{" "}
+              <ArrowRight className="h-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            <button className="bg-green-800 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 transition-colors shadow-lg">
+            <button className="bg-green-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-green-600 transition-colors shadow-lg">
               Contact us
             </button>
           </div>
         </div>
       </section>
-
-      {/* Add CSS animations */}
       <style jsx>{`
-        @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
+        @keyframes pulse-slow {
+          0%,
           100% {
-            transform: translate(0px, 0px) scale(1);
+            opacity: 0.5;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.7;
+            transform: scale(1.05);
           }
         }
         @keyframes float {
@@ -351,8 +483,16 @@ const LandingPage = () => {
             transform: translateY(0);
           }
         }
-        .animate-blob {
-          animation: blob 7s infinite;
+        @keyframes progress-line {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 6s infinite;
         }
         .animation-delay-2000 {
           animation-delay: 2s;
@@ -361,10 +501,13 @@ const LandingPage = () => {
           animation-delay: 4s;
         }
         .animate-float {
-          animation: float 3s ease-in-out infinite;
+          animation: float 4s ease-in-out infinite;
         }
         .animate-fade-in {
           animation: fade-in 0.6s ease-out forwards;
+        }
+        .animate-progress-line {
+          animation: progress-line 3s ease-in-out infinite;
         }
       `}</style>
     </>
