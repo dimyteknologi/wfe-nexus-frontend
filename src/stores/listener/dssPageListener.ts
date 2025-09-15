@@ -28,9 +28,13 @@ import {
 import { populateInputsWithBaseline } from "@/stores/slicers/dssInputSlicer";
 import {
   extractAverageGrowthRates,
+  generateApAreaHousing,
+  generateApAreaIndustrial,
+  generateCValue,
   generateBaseline,
   generateLandCover,
   generateLandPortion,
+  generateAvailabilityFactor,
 } from "@/lib/utils/projections";
 import { IApiData, IBaselineData, Params } from "@/lib/types/response";
 import { INITIAL_DATA_CONSTANT } from "@/lib/constant/initialData.constant";
@@ -49,15 +53,18 @@ import {
   selectLivestockBaseline,
   selectWaterDemandBaseline,
   selectLandPortionBaseline,
+  selectEnergyDemandBaseline,
+  selectLandCoverBaseline,
 } from "@/stores/selectors/baseSelector";
 import {
   generateAgricultureEnergyDemand,
+  generateApWater,
   generateAquacultureWaterDemandProcess,
   generateCropsLandWaterDemandProcess,
-  generateCValue,
   generateDomesticEnergyDemand,
   generateDomesticFoodDemand,
   generateDomesticWaterDemandProcess,
+  generateEnergySupply,
   generateFoodDemand,
   generateIndustrialEnergyDemand,
   generateIndustrialWaterDemandProcess,
@@ -67,6 +74,7 @@ import {
   generateTotalWater,
   generateWaterGenerationEnergyDemand,
 } from "@/lib/utils/processingData";
+import { setDataApArea } from "../slicers/intermediateOuput/apAreaSlicer";
 
 interface TransformationRule {
   sourceParamName: string[] | string;
@@ -148,7 +156,7 @@ const foodDemandConfig: ProcessingConfig = {
 };
 
 const energyDemandConfig: ProcessingConfig = {
-  label: "Energy",
+  label: "Energy Demand",
   unit: "GWh/year",
   transformations: [
     {
@@ -194,6 +202,7 @@ const resourceConfig: ProcessingConfig = {
         "Housing Land",
         "Forest Area",
         "Agriculture Area",
+        "Other Land",
       ],
       calculationFn: generateCValue,
       outputParamName: "C Value",
@@ -201,18 +210,89 @@ const resourceConfig: ProcessingConfig = {
     {
       sourceParamName: "C Value",
       calculationFn: generatePotentialWater,
-      outputParamName: "Potential Water",
+      outputParamName: "Potential Water Supply",
     },
     {
-      sourceParamName: "Potential Water",
+      sourceParamName: "Industrial Land",
+      calculationFn: generateApAreaIndustrial,
+      outputParamName: "AP Area Industrial",
+    },
+    {
+      sourceParamName: "Housing Land",
+      calculationFn: generateApAreaHousing,
+      outputParamName: "AP Area Housing",
+    },
+    {
+      sourceParamName: "Housing Land",
+      calculationFn: generateAvailabilityFactor,
+      outputParamName: "Availability Factor",
+    },
+    {
+      sourceParamName: ["Availability Factor", "Total Energy Demand"],
+      calculationFn: generateEnergySupply,
+      outputParamName: "Energy Supply",
+    },
+    {
+      sourceParamName: "AP Area Industrial",
+      calculationFn: generateApWater,
+      outputParamName: "AP Water Industrial",
+    },
+    {
+      sourceParamName: "AP Area Housing",
+      calculationFn: generateApWater,
+      outputParamName: "AP Water Housing Area",
+    },
+    {
+      sourceParamName: [
+        "Potential Water Supply",
+        "AP Water Industrial",
+        "AP Water Housing Area",
+      ],
       calculationFn: generateTotalWater,
       outputParamName: "Total Water Supply",
     },
   ],
 };
 
+// const energyPvConfig: ProcessingConfig = {
+//   label: "Energy",
+//   unit: '%',
+//   transformations: [
+//     {
+//       sourceParamName: "energy.solarPvAreaIndustrial",
+//       calculationFn: generatePvRooftopAreaIndustrial,
+//       outputParamName: "Solar PV Rooftop Area Industrial"
+//     },
+//     {
+//       sourceParamName: "energy.solarPvAreaHousing",
+//       calculationFn: generatePvRooftopAreaHousing,
+//       outputParamName: "Solar PV Rooftop Area Housing"
+//     },
+//     {
+//       sourceParamName: "",
+//       calculationFn: ,
+//       outputParamName: "Solar PV Rooftop Area Industrial [m2]"
+//     },
+//     {
+//       sourceParamName: "",
+//       calculationFn: ,
+//       outputParamName: "Solar PV Rooftop Area Housing [m2]"
+//     },
+//     {
+//       sourceParamName: "Solar PV Rooftop Area Industrial [m2]",
+//       calculationFn: ,
+//       outputParamName: "Energy production solar PV Industrial [GWh/year]"
+//     },
+//     {
+//       sourceParamName: "Solar PV Rooftop Area Housing [m2]",
+//       calculationFn: ,
+//       outputParamName: "Energy production solar PV Housing [GWh/year]"
+//     }
+//   ]
+// }
+
 const waterDemandConfig: ProcessingConfig = {
-  label: "Water",
+  label: "Water Demand",
   unit: "m3/year",
   transformations: [
     {
@@ -307,7 +387,6 @@ const preprocessPopulationData = (data: IApiData): IApiData => {
 };
 
 // custom listener
-
 const addFoodDemandListener = () => {
   listenerMiddleware.startListening({
     matcher: isAnyOf(setBaselinePopulation),
@@ -335,6 +414,38 @@ const addFoodDemandListener = () => {
   });
 };
 
+// const addSolarPvListener = () => {
+//   listenerMiddleware.startListening({
+//     matcher: isAnyOf(
+//       setLandCoverBaseline
+//     ),
+//     effect: async (action, listenerApi) => {
+//       listenerApi.cancelActiveListeners();
+//       const state = listenerApi.getState();
+
+//       const allParameters = [
+//         ...(selectLandCoverBaseline(state)?.parameters || [])
+//       ]
+
+//       const sourceDataForProcessing: IBaselineData = {
+//         label: "Solar Pv",
+//         unit: "[%, m2. GWh/year]",
+//         years: Array.from({ length: 36 }, (_, i) => 2010 + i),
+//         parameters: allParameters
+//       }
+
+//       const result = preprocessData(
+//         sourceDataForProcessing,
+//         energyPvConfig
+//       )
+
+//       if(result?.parameters.length > 0){
+
+//       }
+//     }
+//   })
+// }
+
 const addEnergyDemandListener = () => {
   listenerMiddleware.startListening({
     matcher: isAnyOf(
@@ -352,18 +463,19 @@ const addEnergyDemandListener = () => {
         ...(selectAgricultureBaseline(state)?.parameters || []),
         ...(selectWaterDemandBaseline(state)?.parameters || []),
       ];
+
       const sourceDataForProcessing: IBaselineData = {
         label: "Energy Demand",
         unit: "GWh/year",
         years: Array.from({ length: 36 }, (_, i) => 2010 + i),
         parameters: allParameters,
       };
-
+      // console.log(allParameters);
       const processedResults = preprocessData(
         sourceDataForProcessing,
         energyDemandConfig,
       );
-      //  console.log(processedResults);
+      // console.log(processedResults);
       if (processedResults?.parameters.length > 0) {
         listenerApi.dispatch(setEnergyDemandBaseline(processedResults));
       }
@@ -373,13 +485,20 @@ const addEnergyDemandListener = () => {
 
 const addResourceListener = () => {
   listenerMiddleware.startListening({
-    matcher: isAnyOf(setLandPortionBaseline),
+    matcher: isAnyOf(
+      setLandPortionBaseline,
+      setDataApArea,
+      setEnergyDemandBaseline,
+    ),
     effect: async (action, listenerApi) => {
       listenerApi.cancelActiveListeners();
       const state = listenerApi.getState();
       const allParameters = [
         ...(selectLandPortionBaseline(state)?.parameters || []),
+        ...(selectAgricultureBaseline(state)?.parameters || []),
+        ...(selectEnergyDemandBaseline(state)?.parameters || []),
       ];
+
       const sourceDataForProcessing: IBaselineData = {
         label: "Resource",
         unit: "m3/year",
@@ -388,7 +507,7 @@ const addResourceListener = () => {
       };
 
       const results = preprocessData(sourceDataForProcessing, resourceConfig);
-      //  console.log(results);
+      // console.log(results);
       if (results?.parameters.length > 0) {
         listenerApi.dispatch(setResourceBaseline(results));
       }
@@ -456,6 +575,8 @@ const addPopulateFormListener = () => {
         ...(selectAgricultureBaseline(state)?.parameters || []),
         ...(selectFisheryBaseline(state)?.parameters || []),
         ...(selectLivestockBaseline(state)?.parameters || []),
+        // ...(selectLandCoverBaseline(state)?.parameters || []),
+        // ...(selectLandPortionBaseline(state)?.parameters || []),
       ];
 
       const completeBaselinePayload = extractAverageGrowthRates(allParameters);
@@ -500,6 +621,7 @@ export function DssPageListener() {
     actionCreator: setDataLivestock,
     effect: async (action, listenerApi) => {
       let data = action.payload.data;
+      // console.log(data);
       if (typeof preprocessLivestockData === "function") {
         data = preprocessLivestockData(data);
       }
@@ -529,6 +651,7 @@ export function DssPageListener() {
     effect: async (action, listenerApi) => {
       const response = action.payload;
       const baseline = generateBaseline(response.data);
+
       if (baseline) {
         listenerApi.dispatch(setAgricultureBaseline(baseline));
       }

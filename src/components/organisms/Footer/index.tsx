@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-2xl font-bold text-green-500 mb-4">
-              WFE NEXUS
+              WEF NEXUS
             </h3>
             <p className="text-gray-400">
               Transforming WEF Nexus thinking into actionable insights and
@@ -117,7 +117,7 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400">
-            © 2025 WFE Nexus. All rights reserved.
+            © 2025 WEF Nexus. All rights reserved.
           </p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <Link

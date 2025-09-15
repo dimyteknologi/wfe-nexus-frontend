@@ -64,6 +64,10 @@ const DSSPage = () => {
     dispatch(setChartsToCategoryPreset(category));
   };
 
+  // const apArea = useAppSelector((state) => state.apArea.data);
+  // const dataTest = apArea.apAreaIndustrial;
+  // console.log(dataTest);
+
   return (
     <div className="w-full px-6 pt-28 overflow-hidden">
       <Alert />
@@ -71,7 +75,7 @@ const DSSPage = () => {
       <div className="relative flex my-2 sm:my-4 justify-between items-center">
         <div className="flex gap-4">
           <button
-            className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm text-white font-bold ${
+            className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs text-white font-bold ${
               isDssConceptOpen ? "bg-green-700" : "bg-green-600"
             }`}
             onClick={handleOpenDssConceptTab}
@@ -81,7 +85,7 @@ const DSSPage = () => {
             DSS Concept
           </button>
           <button
-            className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs sm:text-sm text-white font-bold ${
+            className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs text-white font-bold ${
               isScenarioOpen ? "bg-green-700" : "bg-green-600"
             }`}
             onClick={handleOpenScenarioTab}
@@ -99,18 +103,18 @@ const DSSPage = () => {
                 onClick={() => handlePreset(category)}
                 className={`cursor-pointer border border-green-700 rounded-xl py-1 px-4`}
               >
-                <p className={`text-sm capitalize`}>
+                <p className={`text-xs capitalize`}>
                   {category == "SE" ? "Socio Economic" : category}
                 </p>
               </div>
             ))}
           </div>
           <div
-            className="relative"
+            className="relative p-2"
             onMouseEnter={mouseHover}
             onMouseLeave={mouseHover}
           >
-            <p className="text-sm">Configuration</p>
+            <p className="text-xs">Configuration</p>
             {isDropdownOpen && (
               <div className="absolute flex flex-col border border-green-600 p-2 rounded-2xl gap-2 w-42 right-0 top-5 z-50 bg-white shadow-lg">
                 <Link

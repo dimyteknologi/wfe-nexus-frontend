@@ -1,6 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const DEFAULT_CHARTS_BY_CATEGORY: Record<string, string[]> = {
+  DEFAULT: [
+    "waterAvailability",
+    "population",
+    "localFoodProduction",
+    "electricityPerCapita",
+  ],
   SE: ["gdrp", "population", "economicGrowth", "gdrpPerCapita"],
   FOOD: [
     "agricultureLand",

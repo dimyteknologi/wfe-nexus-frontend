@@ -20,6 +20,7 @@ import {
 } from "@/stores/selectors/scenarioProjectionSelector";
 
 import { selectPopulationDataComparison } from "@/stores/selectors/socioEconomySelector";
+import { resultConverter } from "@/lib/utils/formulas";
 
 const calculateProductionSurplus = (
   projection: IBaselineData | null,
@@ -34,10 +35,12 @@ const calculateProductionSurplus = (
 
   const safeValues = foodDemand.values.map((val) => val ?? 0);
 
-  return safeValues.map((val, i) => {
-    const denominator = localFoodProduction[i] ?? 0;
-    return denominator !== 0 ? Math.round(denominator - val) : 0;
-  });
+  return resultConverter(
+    safeValues.map((val, i) => {
+      const denominator = localFoodProduction[i] ?? 0;
+      return denominator !== 0 ? Math.round(denominator - val) : 0;
+    }),
+  );
 };
 
 const calculateFoodSuffiency = (
@@ -53,10 +56,12 @@ const calculateFoodSuffiency = (
 
   const safeValues = foodDemand.values.map((val) => val ?? 0);
 
-  return safeValues.map((val, i) => {
-    const denominator = localFoodProduction[i] ?? 0;
-    return denominator !== 0 ? Math.round((denominator / val) * 100) : 0;
-  });
+  return resultConverter(
+    safeValues.map((val, i) => {
+      const denominator = localFoodProduction[i] ?? 0;
+      return denominator !== 0 ? Math.round((denominator / val) * 100) : 0;
+    }),
+  );
 };
 
 const calculateAgricultureLand = (
@@ -85,7 +90,7 @@ const calculateLocalFoodProduction = (
   );
   if (!lahanPanenPadi) return [];
 
-  return generateLocalFoodProductionYear(lahanPanenPadi);
+  return resultConverter(generateLocalFoodProductionYear(lahanPanenPadi));
 };
 
 export const selectAgricultureLandComparison = createSelector(

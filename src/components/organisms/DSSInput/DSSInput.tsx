@@ -32,6 +32,7 @@ const FormContainer: React.FC<FormContainerProps> = ({
                     values={inputs}
                     errors={errors}
                     id={input.id}
+                    information={input.information}
                   />
                 );
               })}

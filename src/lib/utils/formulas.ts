@@ -204,3 +204,15 @@ export const growthDataByvalue = (data: number, growthArr: number[]) => {
 export const constantMultiply = (data: number[], constant: number) => {
   return data.map((d) => d * constant);
 };
+
+export const constantDevided = (data: number[], constant: number) => {
+  return data.map((d) => d / constant);
+};
+
+export const constantAdd = (data: number[], constant: number) => {
+  return data.map((d) => d + constant);
+};
+
+export const resultConverter = (data: number[]) => {
+  return data.map((d) => parseFloat(d.toFixed(2)));
+};

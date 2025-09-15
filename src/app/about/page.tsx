@@ -21,13 +21,13 @@ const AboutPage = () => {
       logo: "/bappenas-logo.png",
     },
     {
-      name: "UNDP Indonesia",
+      name: "UK International Development",
       role: "Development Partner",
       contact: "Mr. XYZ (+6221 7888...)",
       logo: "/undp-logo.png",
     },
     {
-      name: "PT ...",
+      name: "UNDP Indonesia",
       role: "Web Developer",
       contact: "Mr. XYZ (+6221 7888...)",
       logo: "/dev-logo.png",
@@ -35,7 +35,12 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pt-24">
+    <div className="relative opacity-90  pt-24">
+      <img
+        className="absolute w-full h-full opacity-10 object-cover -z-1"
+        src="./assets/image-demo-3.svg"
+        alt="background pattern"
+      />
       {/* Header Section */}
       <section className="container mx-auto px-6 py-12">
         <div className="text-center mb-16">

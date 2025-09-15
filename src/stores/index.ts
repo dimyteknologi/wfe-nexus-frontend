@@ -33,6 +33,7 @@ import { dssModalReducer } from "./slicers/dssModalSlicer";
 import dashboardReducer from "@/stores/slicers/dashboardSlicer";
 import foodDemandReducer from "@/stores/slicers/foodDemandSlicer";
 import resourceReducer from "@/stores/slicers/resourceSlicer";
+import { apAreaReducer } from "./slicers/intermediateOuput";
 
 DssPageListener();
 // addGdpListeners();
@@ -59,6 +60,7 @@ export const appReducer = combineReducers({
   landPortion: landPortionReducer,
   dssModal: dssModalReducer,
   alert: alertReducer,
+  apArea: apAreaReducer,
   [gdpApi.reducerPath]: gdpApi.reducer,
   [agricultureApi.reducerPath]: agricultureApi.reducer,
   [livestockApi.reducerPath]: livestockApi.reducer,
