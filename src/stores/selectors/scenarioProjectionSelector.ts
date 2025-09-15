@@ -1,5 +1,8 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { generateScenarioProjection } from "@/lib/utils/projections";
+import {
+  generateApAreaProjection,
+  generateScenarioProjection,
+} from "@/lib/utils/projections";
 import {
   // input
   selectSimulationInputs as selectActiveScenarioInput,
@@ -21,8 +24,6 @@ import { IRootState } from "@/stores";
 import { IBaselineData } from "@/lib/types/response";
 import { Selector } from "react-redux";
 
-const checkInputs = () => {};
-
 const createProjectionSelector = (
   selectBaseline: Selector<IRootState, IBaselineData | null>,
   selectInputs: Selector<IRootState, SimulationState | null>,
@@ -33,13 +34,42 @@ const createProjectionSelector = (
     return generateScenarioProjection(baseData, inputs);
   });
 
-const selectComparisonScenarioA = createSelector(
+const createApAreaIndustrialProjectionSelector = (
+  selectBaseline: Selector<IRootState, IBaselineData | null>,
+  selectInputs: Selector<IRootState, SimulationState | null>,
+) =>
+  createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
+    if (!baseData || !inputs) return Array(36).fill(0);
+
+    const industrialBaseline = baseData.parameters.find(
+      (item) => item.name == "Industrial Land",
+    );
+    if (!industrialBaseline) return Array(36).fill(0);
+    if (!industrialBaseline?.values) return Array(36).fill(0);
+    return generateApAreaProjection(industrialBaseline, inputs);
+  });
+
+const createApAreaHousingProjectionSelector = (
+  selectBaseline: Selector<IRootState, IBaselineData | null>,
+  selectInputs: Selector<IRootState, SimulationState | null>,
+) =>
+  createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
+    if (!baseData || !inputs) return null;
+    const housingBaseline = baseData.parameters.find(
+      (item) => item.name == "Housing Land",
+    );
+    if (!housingBaseline) return Array(36).fill(0);
+    if (!housingBaseline?.values) return Array(36).fill(0);
+    return generateApAreaProjection(housingBaseline, inputs);
+  });
+
+export const selectComparisonScenarioA = createSelector(
   [selectSavedScenarios, selectScenarioAName],
   (saved, name) =>
     saved.find((s: SimulationState) => s.simulationName === name) || null,
 );
 
-const selectComparisonScenarioB = createSelector(
+export const selectComparisonScenarioB = createSelector(
   [selectSavedScenarios, selectScenarioBName],
   (saved, name) =>
     saved.find((s: SimulationState) => s.simulationName === name) || null,
@@ -202,3 +232,59 @@ export const selectLandCoverProjectionB = createProjectionSelector(
   selectLandCoverBaseline,
   selectComparisonScenarioB,
 );
+
+// resources housing selectors generate apArea with activeInput
+export const selectApAreaHousingProjectionBaseline =
+  createApAreaHousingProjectionSelector(
+    selectLandCoverBaseline,
+    selectBaselineInput,
+  );
+
+// resources housing selectors generate apArea with activeInput
+export const selectApAreaHousingProjection =
+  createApAreaHousingProjectionSelector(
+    selectLandCoverBaseline,
+    selectActiveScenarioInput,
+  );
+
+// resources housing selectors generate apArea with scenarioA
+export const selectApAreaHousingProjectionA =
+  createApAreaHousingProjectionSelector(
+    selectLandCoverBaseline,
+    selectComparisonScenarioA,
+  );
+
+// resources housing selectors generate apArea with scenarioB
+export const selectApAreaHousingProjectionB =
+  createApAreaHousingProjectionSelector(
+    selectLandCoverBaseline,
+    selectComparisonScenarioB,
+  );
+
+// resources industrial selectors generate apArea with activeInput
+export const selectApAreaIndustrialProjectionBaseline =
+  createApAreaIndustrialProjectionSelector(
+    selectLandCoverBaseline,
+    selectBaselineInput,
+  );
+
+// resources industrial selectors generate apArea with activeInput
+export const selectApAreaIndustrialProjection =
+  createApAreaIndustrialProjectionSelector(
+    selectLandCoverBaseline,
+    selectActiveScenarioInput,
+  );
+
+// resources industrial selectors generate apArea with scenarioA
+export const selectApAreaIndustrialProjectionA =
+  createApAreaIndustrialProjectionSelector(
+    selectLandCoverBaseline,
+    selectComparisonScenarioA,
+  );
+
+// resources industrial selectors generate apArea with scenarioB
+export const selectApAreaIndustrialProjectionB =
+  createApAreaIndustrialProjectionSelector(
+    selectLandCoverBaseline,
+    selectComparisonScenarioB,
+  );

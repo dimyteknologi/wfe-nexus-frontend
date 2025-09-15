@@ -470,12 +470,12 @@ const addEnergyDemandListener = () => {
         years: Array.from({ length: 36 }, (_, i) => 2010 + i),
         parameters: allParameters,
       };
-      console.log(allParameters);
+      // console.log(allParameters);
       const processedResults = preprocessData(
         sourceDataForProcessing,
         energyDemandConfig,
       );
-      console.log(processedResults);
+      // console.log(processedResults);
       if (processedResults?.parameters.length > 0) {
         listenerApi.dispatch(setEnergyDemandBaseline(processedResults));
       }
@@ -575,6 +575,8 @@ const addPopulateFormListener = () => {
         ...(selectAgricultureBaseline(state)?.parameters || []),
         ...(selectFisheryBaseline(state)?.parameters || []),
         ...(selectLivestockBaseline(state)?.parameters || []),
+        // ...(selectLandCoverBaseline(state)?.parameters || []),
+        // ...(selectLandPortionBaseline(state)?.parameters || []),
       ];
 
       const completeBaselinePayload = extractAverageGrowthRates(allParameters);

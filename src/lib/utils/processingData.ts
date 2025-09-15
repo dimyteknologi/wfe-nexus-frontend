@@ -141,17 +141,21 @@ const generateLandPortion = (data: number[], availableLand: number[]) => {
 
 // AP AREA
 // value bu user input in year 2030 , 2040 , 2045
-
 export const getPinPoint = (
   year: number,
   input: number,
-  dataAgriculture?: number[],
+  dataAgriculture?: (number | null)[],
 ) => {
   const initYear = 2010;
   const index = year - initYear;
+  // console.log(year);
+  // console.log(input);
+  // console.log(dataAgriculture);
   return {
     year,
-    value: dataAgriculture ? dataAgriculture[index + 1] * input : input,
+    value: dataAgriculture
+      ? (Number(dataAgriculture[index] ?? 0) * input) / 100
+      : input,
   };
 };
 
@@ -160,9 +164,11 @@ interface data {
   value: number;
 }
 
-interface IApGrowth {
-  data: data[];
-}
+// interface IApGrowth {
+//   data: data[];
+// }
+
+type IApGrowth = data[];
 
 interface GrowthResult {
   year: number;
@@ -170,11 +176,11 @@ interface GrowthResult {
 }
 
 // growthrate for 2025-2029, 2030-2039, 2040-2045
-const getApAreaGrowth = (data: IApGrowth): GrowthResult[] => {
+export const getApAreaGrowth = (data: IApGrowth): GrowthResult[] => {
   const results: GrowthResult[] = [];
 
   const getValueByYear = (year: number): number | undefined => {
-    return data.data.find((item) => item.year === year)?.value;
+    return data.find((item) => item.year === year)?.value;
   };
 
   const calculateCAGR = (
@@ -216,31 +222,89 @@ const getApAreaGrowth = (data: IApGrowth): GrowthResult[] => {
 
 // projection for each pin point of year
 export const generateApArea = (
-  data: number[],
+  data: (number | null)[],
   finalYear: number,
   pinPoint: { value: number; year: number },
   growth: GrowthResult[],
+  // lastYearResult?: number,
   initialYear: number = 2010,
 ) => {
-  const result: number[] = [...data];
+  const result: (number | null)[] = [];
+  if (data.length == 0) return result;
+  result.push(...data.map((val) => val ?? 0));
   let lastYear = initialYear + result.length - 1;
   if (finalYear === 2030) {
     const growth2025 = growth.filter((g) => g.year === 2025)[0].growth;
     result.push(growth2025);
     while (lastYear < finalYear - 1) {
       lastYear += 1;
-      const lastValue = result[result.length - 1];
+      const lastValue = result[result.length - 1] ?? 0;
       const nexValue = lastValue + growth2025;
-      result.push(nexValue);
+      result.push(nexValue ?? 0);
     }
     return result;
   }
+  // if (finalYear === 2040) {
+  //   const growth2025 = growth.filter((g) => g.year === 2030)[0].growth;
+  //   result.push(growth2025);
+  //   while (lastYear < finalYear - 1) {
+  //     lastYear += 1;
+  //     const lastValue = result[result.length - 1] ?? 0;
+  //     const nexValue = lastValue + growth2025;
+  //     result.push(nexValue ?? 0);
+  //   }
+  //   return result;
+  // }
+  console.log(growth);
   result.push(pinPoint.value);
-  const growthRate = growth.filter((g) => g.year === finalYear)[0].growth;
+  const growthRate = growth.filter((g) => g.year === finalYear)[0]?.growth;
 
-  const projection = dataProjection(result, growthRate, finalYear);
+  const projection = dataProjection(
+    result.map((val) => val ?? 0),
+    growthRate,
+    finalYear,
+  );
+  console.log(projection);
   return projection;
 };
+// export const generateApArea = (
+//   data: (number | null)[],
+//   finalYear: number,
+//   pinPoint: { value: number; year: number },
+//   growth: GrowthResult[],
+//   initialYear: number = 2010,
+// ) => {
+//   const result: number[] = [];
+//   if (data.length === 0) return result;
+//   result.push(...data.map((val) => val ?? 0));
+
+//   let lastYear = initialYear + result.length - 1;
+
+//   if (finalYear === 2029) {
+//     const growth2025 = growth.find((g) => g.year === 2025)?.growth ?? 0;
+
+//     result.push(growth2025);
+
+//     while (lastYear < finalYear - 1) {
+//       lastYear += 1;
+//       const lastValue = result[result.length - 1] ?? 0;
+//       const nextValue = lastValue + growth2025;
+//       result.push(Number.isFinite(nextValue) ? nextValue : 0);
+//     }
+
+//     return result;
+//   }
+//   result.push(pinPoint?.value ?? 0);
+//   const growthRate = growth.find((g) => g.year === finalYear)?.growth ?? 0;
+
+//   const projection = dataProjection(
+//     result.map((val) => (Number.isFinite(val) ? val : 0)),
+//     growthRate,
+//     finalYear,
+//   );
+
+//   return projection.map((val) => (Number.isFinite(val) ? val : 0));
+// };
 
 export const generateCValue = (
   dataIndustrial: number[],
