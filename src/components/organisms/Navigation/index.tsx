@@ -2,9 +2,31 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+
+interface NavItem {
+  href: string;
+  label: string;
+  subItems?: NavItem[];
+}
 
 const Navigation = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  const navItems: NavItem[] = [
+    { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
+    {
+      href: "#",
+      label: "DSS Interface",
+      subItems: [
+        { href: "/dss-interface", label: "Site Specific" },
+        { href: "#", label: "Context Specific" },
+      ],
+    },
+    { href: "#", label: "Contact" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,39 +36,76 @@ const Navigation = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleDropdownToggle = (label: string) => {
+    setActiveDropdown(activeDropdown === label ? null : label);
+  };
+
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? "bg-white shadow-md py-2" : " bg-gradient-to-r from-green-50 to-blue-50 py-4"}`}
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white shadow-md py-2"
+          : "bg-gradient-to-r from-green-50 to-blue-50 py-4"
+      }`}
     >
-      <div className="container mx-auto px-6 flex justify-between items-center">
-        <div className="hidden md:flex space-x-10">
-          <Link
-            href="./"
-            className="text-gray-700 hover:text-green-700 transition-colors"
-          >
-            Home
-          </Link>
-          <Link
-            href="./about"
-            className="text-gray-700 hover:text-green-700 transition-colors"
-          >
-            About
-          </Link>
-          <Link
-            href="./dss-interface"
-            className="text-gray-700 hover:text-green-700 transition-colors"
-          >
-            DSS Interface
-          </Link>
-          <Link
-            href="./contact"
-            className="text-gray-700 hover:text-green-700 transition-colors"
-          >
-            Contact
-          </Link>
+      <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
+        {/* Navigation Links */}
+        <div className="hidden md:flex space-x-8">
+          {navItems.map((item) => (
+            <div key={item.label} className="relative group">
+              {item.subItems ? (
+                <>
+                  <button
+                    type="button"
+                    className="text-gray-700 hover:text-green-700 transition-colors flex items-center"
+                    onClick={() => handleDropdownToggle(item.label)}
+                    aria-expanded={activeDropdown === item.label}
+                  >
+                    {item.label}
+                    <svg
+                      className="ml-1 w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  {activeDropdown === item.label && (
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+                      {item.subItems.map((subItem) => (
+                        <Link
+                          key={subItem.label}
+                          href={subItem.href}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
+                          onClick={() => setActiveDropdown(null)}
+                        >
+                          {subItem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link
+                  href={item.href}
+                  className="text-gray-700 hover:text-green-700 transition-colors"
+                >
+                  {item.label}
+                </Link>
+              )}
+            </div>
+          ))}
         </div>
-
-        <div className="flex items-center space-x-4">
+        {/* Auth Buttons */}
+        <div className="flex items-center space-x-4 mt-4 md:mt-0">
           <button className="text-gray-700 hover:text-green-700 transition-colors">
             Login
           </button>
@@ -54,15 +113,34 @@ const Navigation = () => {
             Sign Up
           </button>
         </div>
-        <div className="p-2 flex justify-between gap-8 items-center">
-          <div className="w-14">
-            <img src="./assets/logo-bappenas.svg" alt="Logo" />
-          </div>
-          <div className="w-32">
-            <img src="./assets/logo-ukaid.webp" alt="Logo" />
-          </div>
-          <div className="w-7">
-            <img src="./assets/logo-undp.svg" alt="Logo" />
+
+        {/* Logo Section */}
+        <div className="flex items-center justify-between w-full md:w-auto mb-4 md:mb-0">
+          <div className="flex items-center space-x-4">
+            <div className="w-14 h-14 relative">
+              <Image
+                src="/assets/logo-bappenas.svg"
+                alt="Logo Bappenas"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <div className="w-32 h-14 relative">
+              <Image
+                src="/assets/logo-ukaid.webp"
+                alt="Logo UKAid"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <div className="w-7 h-14 relative">
+              <Image
+                src="/assets/logo-undp.svg"
+                alt="Logo UNDP"
+                fill
+                className="object-contain"
+              />
+            </div>
           </div>
         </div>
       </div>
