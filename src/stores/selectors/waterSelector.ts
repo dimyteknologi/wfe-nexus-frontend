@@ -47,10 +47,9 @@ const calculateTotalSupply = (
 };
 
 const calculateAnnualWaterSupply = (totalWaterSupply: number[]) => {
-  if (!Array.isArray(totalWaterSupply) && totalWaterSupply.length)
-    return Array(36).fill(0);
+  if (!Array.isArray(totalWaterSupply)) return Array(36).fill(0);
 
-  // const safeValues = totalWaterSupply.map((val) => val ? val / 1000000 : 0);
+  const safeValues = totalWaterSupply.map((val) => (val ? val / 1000000 : 0));
   return resultConverter(totalWaterSupply);
 };
 
