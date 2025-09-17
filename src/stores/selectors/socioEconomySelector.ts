@@ -36,9 +36,8 @@ const calculatePopulationTotal = (
   projection: IBaselineData | null,
 ): number[] => {
   if (!projection) return [];
-
   const totalPopulationParam = projection.parameters.find(
-    (param) => param.name === "total" || param.name === "total_population",
+    (param) => param.name === "Total Populasi",
   );
   if (!totalPopulationParam?.values) return [];
   const safeValues = totalPopulationParam.values.map((val) => val ?? 0);

@@ -75,6 +75,7 @@ import {
   generateWaterGenerationEnergyDemand,
 } from "@/lib/utils/processingData";
 import { setDataApArea } from "../slicers/intermediateOuput/apAreaSlicer";
+import { selectPopulationScenarioProjectionBaseline } from "../selectors/scenarioProjectionSelector";
 
 interface TransformationRule {
   sourceParamName: string[] | string;
@@ -143,12 +144,12 @@ const foodDemandConfig: ProcessingConfig = {
   unit: "ton/year",
   transformations: [
     {
-      sourceParamName: "total",
+      sourceParamName: "Total Populasi",
       calculationFn: generateFoodDemand,
       outputParamName: "Food Demand",
     },
     {
-      sourceParamName: "total",
+      sourceParamName: "Total Populasi",
       calculationFn: generateDomesticFoodDemand,
       outputParamName: "Food Demand Population",
     },
@@ -160,14 +161,14 @@ const energyDemandConfig: ProcessingConfig = {
   unit: "GWh/year",
   transformations: [
     {
-      sourceParamName: "total",
+      sourceParamName: "Total Populasi",
       calculationFn: generateDomesticEnergyDemand,
-      outputParamName: "Domestic Demand",
+      outputParamName: "Domestic Energy Demand",
     },
     {
       sourceParamName: "C.Industri Pengolahan",
       calculationFn: generateIndustrialEnergyDemand,
-      outputParamName: "Industry Demand",
+      outputParamName: "Industry Energy Demand",
     },
     {
       sourceParamName: "Lahan Panen Padi",
@@ -181,8 +182,8 @@ const energyDemandConfig: ProcessingConfig = {
     },
     {
       sourceParamName: [
-        "Domestic Demand",
-        "Industry Demand",
+        "Domestic Energy Demand",
+        "Industry Energy Demand",
         "Agriculture Demand",
         "Water Generation",
       ],
@@ -296,14 +297,14 @@ const waterDemandConfig: ProcessingConfig = {
   unit: "m3/year",
   transformations: [
     {
-      sourceParamName: "total",
+      sourceParamName: "Total Populasi",
       calculationFn: generateDomesticWaterDemandProcess,
-      outputParamName: "Domestic Demand",
+      outputParamName: "Domestic Water Demand",
     },
     {
       sourceParamName: "C.Industri Pengolahan",
       calculationFn: generateIndustrialWaterDemandProcess,
-      outputParamName: "Industrial Demand",
+      outputParamName: "Industrial Water Demand",
     },
     {
       sourceParamName: "Lahan Panen Padi",
@@ -321,14 +322,14 @@ const waterDemandConfig: ProcessingConfig = {
       outputParamName: "Aquaculture",
     },
     {
-      sourceParamName: "Domestic Demand",
+      sourceParamName: "Domestic Water Demand",
       calculationFn: generateMunicipalityWaterDemandProcess,
       outputParamName: "Municipality",
     },
     {
       sourceParamName: [
-        "Domestic Demand",
-        "Industrial Demand",
+        "Domestic Water Demand",
+        "Industrial Water Demand",
         "Crops Land",
         "Livestock",
         "Aquaculture",
@@ -382,7 +383,10 @@ const preprocessPopulationData = (data: IApiData): IApiData => {
 
   return {
     ...data,
-    parameters: [...data.parameters, { name: "total", values: totalValues }],
+    parameters: [
+      ...data.parameters,
+      { name: "Total Populasi", values: totalValues },
+    ],
   };
 };
 
@@ -553,6 +557,21 @@ const addWaterDemandListener = () => {
   });
 };
 
+// const addDynamicPopulateInputListner = () => {
+//     listenerMiddleware.startListening({
+//       matcher: isAnyOf(
+//         setBaselinePopulation,
+//         setWaterDemandBaseline,
+//         setGdrpBaseline,
+//         setAgricultureBaseline
+//       ),
+//       effect: async(action, listenerApi) => {
+//       listenerApi.cancelActiveListeners();
+
+//       }
+//     })
+// }
+
 const addPopulateFormListener = () => {
   listenerMiddleware.startListening({
     matcher: isAnyOf(
@@ -561,6 +580,8 @@ const addPopulateFormListener = () => {
       setDataFishery,
       setDataLivestock,
       setDataPopulation,
+      setWaterDemandBaseline,
+      setEnergyDemandBaseline,
     ),
 
     effect: async (action, listenerApi) => {
@@ -575,12 +596,14 @@ const addPopulateFormListener = () => {
         ...(selectAgricultureBaseline(state)?.parameters || []),
         ...(selectFisheryBaseline(state)?.parameters || []),
         ...(selectLivestockBaseline(state)?.parameters || []),
+        ...(selectWaterDemandBaseline(state)?.parameters || []),
+        ...(selectEnergyDemandBaseline(state)?.parameters || []),
         // ...(selectLandCoverBaseline(state)?.parameters || []),
         // ...(selectLandPortionBaseline(state)?.parameters || []),
       ];
-
+      // console.log(allParameters);
       const completeBaselinePayload = extractAverageGrowthRates(allParameters);
-
+      // console.log(completeBaselinePayload);
       if (Object.keys(completeBaselinePayload).length > 0) {
         listenerApi.dispatch(
           populateInputsWithBaseline(completeBaselinePayload),
@@ -640,6 +663,7 @@ export function DssPageListener() {
         data = preprocessPopulationData(data);
       }
       const baseline = generateBaseline(data);
+
       if (baseline) {
         listenerApi.dispatch(setBaselinePopulation(baseline));
       }
@@ -655,6 +679,7 @@ export function DssPageListener() {
       if (baseline) {
         listenerApi.dispatch(setAgricultureBaseline(baseline));
       }
+      console.log(baseline, "Lahan Panen Padi");
       const landCoverData = generateLandCover(2010, 2045);
       const landPortionData = generateLandPortion(landCoverData);
       listenerApi.dispatch(setLandCoverBaseline(landCoverData));

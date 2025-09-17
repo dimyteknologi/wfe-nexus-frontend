@@ -4,11 +4,6 @@ import storage from "@/stores/storage";
 
 import { listenerMiddleware } from "@/stores/listenerMiddleware";
 import { DssPageListener } from "./listener/dssPageListener";
-import { addGdpListeners } from "./listener/gdrpListener";
-import { addPopulationListeners } from "./listener/populationListener";
-import { addAgricultureListener } from "./listener/agricultureListener";
-import { addLivestockListeners } from "./listener/livestockListener";
-import { addFisheryListeners } from "./listener/fisheryListener";
 
 import { gdpApi } from "@/stores/api/gdpApi";
 import { livestockApi } from "@/stores/api/livestockApi";
@@ -23,7 +18,6 @@ import livestockReducer from "@/stores/slicers/livestockSlicer";
 import populationReducer from "@/stores/slicers/populationSlicer";
 import fisheryReducer from "@/stores/slicers/fisherySlicer";
 import simulationReducer from "@/stores/slicers/dssInputSlicer";
-import projectionReducer from "@/stores/slicers/dssProjectionSlicer";
 import waterDemandReducer from "@/stores/slicers/waterDemandSlicer";
 import energyDemandReducer from "@/stores/slicers/EnergyDemandSlicer";
 import landCoverReducer from "@/stores/slicers/landCoverSlicer";
@@ -45,7 +39,6 @@ DssPageListener();
 export const appReducer = combineReducers({
   scenarios: scenarioReducer,
   dashboard: dashboardReducer,
-  projectionResult: projectionReducer,
   simulation: simulationReducer,
   gdrp: gdpReducer,
   resource: resourceReducer,
