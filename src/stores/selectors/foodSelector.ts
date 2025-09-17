@@ -180,7 +180,8 @@ export const selectAvailabilityPerPersonComparison = createSelector(
   (foodProduction, population) => {
     const calculateAvailability = (food: number[], pop: number[]) => {
       if (!food || !pop || food.length !== pop.length) return [];
-      return generateAvailabillityPerPerson(food, pop);
+      const data = generateAvailabillityPerPerson(pop, food);
+      return data;
     };
 
     return {
