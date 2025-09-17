@@ -679,7 +679,7 @@ export function DssPageListener() {
       if (baseline) {
         listenerApi.dispatch(setAgricultureBaseline(baseline));
       }
-      console.log(baseline, "Lahan Panen Padi");
+
       const landCoverData = generateLandCover(2010, 2045);
       const landPortionData = generateLandPortion(landCoverData);
       listenerApi.dispatch(setLandCoverBaseline(landCoverData));

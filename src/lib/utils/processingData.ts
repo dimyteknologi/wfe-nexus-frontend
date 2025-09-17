@@ -255,8 +255,6 @@ export const generateApArea = (
   //   }
   //   return result;
   // }
-  console.log(growth);
-  result.push(pinPoint.value);
   const growthRate = growth.filter((g) => g.year === finalYear)[0]?.growth;
 
   const projection = dataProjection(

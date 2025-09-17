@@ -29,7 +29,7 @@ interface DashboardState {
 }
 
 const initialState: DashboardState = {
-  displayedChartMetricIds: DEFAULT_CHARTS_BY_CATEGORY["SE"].slice(0, 4),
+  displayedChartMetricIds: DEFAULT_CHARTS_BY_CATEGORY["DEFAULT"].slice(0, 4),
 };
 
 const dashboardSlice = createSlice({
