@@ -28,8 +28,10 @@ import {
   selectScenarioAName,
   selectScenarioBName,
   selectBaselineInput,
+  selectIndustryInputs,
 } from "@/stores/selectors/baseSelector";
 import { ALL_METRICS } from "@/lib/constant/metrics";
+import { selectTotalWaterDemand } from "./demandSideSelector";
 
 type ComparisonData = {
   active: number[];
@@ -103,13 +105,13 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
         localWaterSuffiency,
         waterAvailability,
         baseline: baseline,
+
         // ...
       };
 
       const metricConfig = ALL_METRICS.find((m) => m.id === metricId);
       const selectedMetricData = metricsMap[metricId];
       if (!selectedMetricData) return { series: [], colors: [] };
-
       const series = [];
       const colors = [];
 

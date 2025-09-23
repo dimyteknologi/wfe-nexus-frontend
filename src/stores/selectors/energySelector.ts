@@ -1,11 +1,5 @@
 import { IBaselineData } from "@/lib/types/response";
 import { selectPopulationDataComparison } from "./socioEconomySelector";
-import {
-  selectEnergyDemandScenarioProjection,
-  selectEnergyDemandScenarioProjectionB,
-  selectEnergyDemandScenarioProjectionA,
-  selectEnergyDemandScenarioProjectionBaseline,
-} from "./scenarioProjectionSelector";
 import { selectLandCoverBaseline } from "./baseSelector";
 import {
   selectPvAreaHousingProjection,
@@ -19,7 +13,7 @@ import {
 } from "./scenarioProjectionSelector";
 import { createSelector } from "@reduxjs/toolkit";
 import { resultConverter } from "@/lib/utils/formulas";
-
+import { selectTotalEnergy } from "./demandSideSelector";
 const calculatePvAreaPercentage = (data: number[]): number[] => {
   if (!Array.isArray(data)) return Array(36).fill(0);
   return resultConverter(data);
@@ -105,19 +99,12 @@ const calculateLocalEnergyProduction = (
 
 const calculateLocalEnergySuffiency = (
   localEnergyProduction: number[],
-  energyDemand: IBaselineData | null,
+  totalWaterEnergyGeneration: number[],
 ) => {
-  if (!Array.isArray(localEnergyProduction) && !energyDemand)
+  if (!Array.isArray(localEnergyProduction) && !totalWaterEnergyGeneration)
     return Array(36).fill(0);
 
-  const totalEnergyDemand = energyDemand?.parameters.find(
-    (param) => param.name === "Total Energy Demand",
-  );
-
-  if (!totalEnergyDemand) return Array(36).fill(0);
-  if (!totalEnergyDemand?.values) return Array(36).fill(0);
-
-  const safeValues = totalEnergyDemand.values.map((val) => val ?? 0);
+  const safeValues = totalWaterEnergyGeneration.map((val) => val ?? 0);
 
   return resultConverter(
     safeValues.map((val, i) => {
@@ -129,42 +116,34 @@ const calculateLocalEnergySuffiency = (
 
 const calculateElectricityImport = (
   localEnergyProduction: number[] | null | undefined,
-  energyDemand: IBaselineData | null | undefined,
+  totalWaterEnergyGeneration: number[],
 ): number[] => {
-  const totalEnergyDemandParam = energyDemand?.parameters.find(
-    (param) => param.name === "Total Energy Demand",
-  );
+  if (!Array.isArray(localEnergyProduction) && !totalWaterEnergyGeneration)
+    return Array(36).fill(0);
 
-  if (!totalEnergyDemandParam?.values) {
-    return [];
-  }
-
-  const safeDemandValues = totalEnergyDemandParam.values.map((val) => val ?? 0);
+  const safeValues = totalWaterEnergyGeneration.map((val) => val ?? 0);
   if (!localEnergyProduction || localEnergyProduction.length === 0) {
-    return safeDemandValues;
+    return safeValues;
   }
 
-  if (localEnergyProduction.length !== safeDemandValues.length) {
-    return safeDemandValues;
+  if (localEnergyProduction.length !== safeValues.length) {
+    return safeValues;
   }
 
-  return safeDemandValues.map((demandValue, index) => {
+  return safeValues.map((demandValue, index) => {
     const productionValue = localEnergyProduction[index] ?? 0;
     return demandValue - productionValue;
   });
 };
 
 const calculateElectricityPerCapita = (
-  projection: IBaselineData | null,
+  totalWaterEnergyGeneration: number[],
   population: number[],
 ): number[] => {
-  if (!projection) return Array(36).fill(0);
-  const totalEnergyDemand = projection?.parameters.find(
-    (item) => item.name == "Total Energy Demand",
-  );
-  if (!totalEnergyDemand) return Array(36).fill(0);
-  if (!totalEnergyDemand.values) return Array(36).fill(0);
-  const safeValues = totalEnergyDemand.values.map((val) => val ?? 0);
+  if (!totalWaterEnergyGeneration) return Array(36).fill(0);
+
+  const safeValues = totalWaterEnergyGeneration.map((val) => val ?? 0);
+
   return resultConverter(
     safeValues.map((val, idx) => {
       const denominator = population[idx] ?? 0;
@@ -312,109 +291,97 @@ export const selectLocalEnergyProductionComparison = createSelector(
 );
 
 export const selectLocalEnergySuffiencyComparison = createSelector(
-  [
-    selectEnergyDemandScenarioProjection,
-    selectEnergyDemandScenarioProjectionB,
-    selectEnergyDemandScenarioProjectionA,
-    selectEnergyDemandScenarioProjectionBaseline,
-    selectLocalEnergyProductionComparison,
-  ],
-  (projActive, projB, projA, baseline, localEnergyProduction) => {
+  [selectTotalEnergy, selectLocalEnergyProductionComparison],
+  (totalEnergy, localEnergyProduction) => {
     return {
       active: calculateLocalEnergySuffiency(
         localEnergyProduction.active,
-        projActive,
+        totalEnergy.active,
       ),
       baseline: calculateLocalEnergySuffiency(
         localEnergyProduction.baseline,
-        baseline,
+        totalEnergy.baseline,
       ),
       scenarioA: calculateLocalEnergySuffiency(
         localEnergyProduction.scenarioA,
-        projA,
+        totalEnergy.baseline,
       ),
       scenarioB: calculateLocalEnergySuffiency(
         localEnergyProduction.scenarioB,
-        projB,
+        totalEnergy.baseline,
       ),
     };
   },
 );
 
 export const selectElectrityImportComparison = createSelector(
-  [
-    selectEnergyDemandScenarioProjection,
-    selectEnergyDemandScenarioProjectionB,
-    selectEnergyDemandScenarioProjectionA,
-    selectEnergyDemandScenarioProjectionBaseline,
-    selectLocalEnergyProductionComparison,
-  ],
-  (projActive, projB, projA, baseline, localEnergyProduction) => {
+  [selectTotalEnergy, selectLocalEnergyProductionComparison],
+  (totalEnergy, localEnergyProduction) => {
     return {
       active: calculateElectricityImport(
         localEnergyProduction.active,
-        projActive,
+        totalEnergy.active,
       ),
       baseline: calculateElectricityImport(
         localEnergyProduction.baseline,
-        baseline,
+        totalEnergy.baseline,
       ),
       scenarioA: calculateElectricityImport(
         localEnergyProduction.scenarioA,
-        projA,
+        totalEnergy.scenarioA,
       ),
       scenarioB: calculateElectricityImport(
         localEnergyProduction.scenarioB,
-        projB,
+        totalEnergy.scenarioB,
       ),
     };
   },
 );
 
 export const selectLocalRenewableEnergyContributionComparison = createSelector(
-  [
-    selectEnergyDemandScenarioProjection,
-    selectEnergyDemandScenarioProjectionB,
-    selectEnergyDemandScenarioProjectionA,
-    selectEnergyDemandScenarioProjectionBaseline,
-    selectLocalEnergyProductionComparison,
-  ],
-  (projActive, projB, projA, baseline, localEnergyProduction) => {
+  [selectTotalEnergy, selectLocalEnergyProductionComparison],
+  (totalEnergy, localEnergyProduction) => {
     return {
       active: calculateLocalEnergySuffiency(
         localEnergyProduction.active,
-        projActive,
+        totalEnergy.active,
       ),
       baseline: calculateLocalEnergySuffiency(
         localEnergyProduction.baseline,
-        baseline,
+        totalEnergy.baseline,
       ),
       scenarioA: calculateLocalEnergySuffiency(
         localEnergyProduction.scenarioA,
-        projA,
+        totalEnergy.baseline,
       ),
       scenarioB: calculateLocalEnergySuffiency(
         localEnergyProduction.scenarioB,
-        projB,
+        totalEnergy.baseline,
       ),
     };
   },
 );
 
 export const selectElectricityPerCapitaComparison = createSelector(
-  [
-    selectEnergyDemandScenarioProjection,
-    selectEnergyDemandScenarioProjectionBaseline,
-    selectEnergyDemandScenarioProjectionA,
-    selectEnergyDemandScenarioProjectionB,
-    selectPopulationDataComparison,
-  ],
-  (projActive, projBase, projA, projB, population) => {
+  [selectTotalEnergy, selectPopulationDataComparison],
+  (totalEnergy, population) => {
     return {
-      active: calculateElectricityPerCapita(projActive, population.active),
-      baseline: calculateElectricityPerCapita(projBase, population.baseline),
-      scenarioA: calculateElectricityPerCapita(projA, population.scenarioA),
-      scenarioB: calculateElectricityPerCapita(projB, population.scenarioB),
+      active: calculateElectricityPerCapita(
+        totalEnergy.active,
+        population.active,
+      ),
+      baseline: calculateElectricityPerCapita(
+        totalEnergy.baseline,
+        population.baseline,
+      ),
+      scenarioA: calculateElectricityPerCapita(
+        totalEnergy.scenarioA,
+        population.scenarioA,
+      ),
+      scenarioB: calculateElectricityPerCapita(
+        totalEnergy.scenarioB,
+        population.scenarioB,
+      ),
     };
   },
 );

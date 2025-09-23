@@ -11,7 +11,7 @@ export const RESOURCE_DEMAND_UNIT = {
   },
   ENERGY: {
     DOMESTIC_DEMAND: 634,
-    INDUSTRIAL_ENERGY_INTENSITY: 50,
+    INDUSTRIAL_ENERGY_INTENSITY: 50.43,
     AGRICULTURE_ENERGY_INTENSITY: 3932,
     ENERGY_FOR_WATER: 0.37,
   },
@@ -35,4 +35,14 @@ export const RESOURCE_DEMAND_UNIT = {
     PRODUCTIVTY_PADDY_YEAR: 7.39,
     RASIO_SUSUT_BERAS: 0.6538461538,
   },
+};
+
+export const dynamicalInputs = {
+  "water.domesticWaterDemand":
+    (RESOURCE_DEMAND_UNIT.WATER.DOMESTIC_DEMAND / 365) * 1000,
+  "water.industrialWater": RESOURCE_DEMAND_UNIT.WATER.INDUSTRIAL_DEMAND,
+  "energy.domesticElectricity": 0,
+  "energy.industrialEnergy": 0,
+  "agriculture.productivityTarget":
+    RESOURCE_DEMAND_UNIT.FOOD.PRODUCTIVTY_PADDY_YEAR,
 };

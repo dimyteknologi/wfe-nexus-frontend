@@ -18,6 +18,7 @@ import { selectWaterDemandBaseline } from "@/stores/selectors/baseSelector";
 import { createSelector } from "@reduxjs/toolkit";
 import { IBaselineData } from "@/lib/types/response";
 import { constantAdd, resultConverter, sumData } from "@/lib/utils/formulas";
+import { selectTotalWaterDemand } from "./demandSideSelector";
 
 const calculateApWater = (projection: number[] | null) => {
   if (!projection) return [];
@@ -55,18 +56,11 @@ const calculateAnnualWaterSupply = (totalWaterSupply: number[]) => {
 
 const calculateLocalWaterSuffiency = (
   projection: number[],
-  waterDemand: IBaselineData | null,
+  waterDemand: number[],
 ): number[] => {
-  if (!projection) return [];
+  if (!projection && !waterDemand) return [];
 
-  const totalWaterDemand = waterDemand?.parameters.find(
-    (param) => param.name === "Total Water Demand",
-  );
-
-  if (!totalWaterDemand) return [];
-  if (!totalWaterDemand?.values) return [];
-
-  const safeValues = totalWaterDemand.values.map((val) => val ?? 0);
+  const safeValues = waterDemand.map((val) => val ?? 0);
 
   return resultConverter(
     safeValues.map((val, i) => {
@@ -176,18 +170,24 @@ export const AnnualWaterSupplyComparison = createSelector(
 );
 
 export const LocalWaterSuffiencyComparison = createSelector(
-  [totalWaterSupplyComparsion, selectWaterDemandBaseline],
+  [totalWaterSupplyComparsion, selectTotalWaterDemand],
   (totalWater, waterDemand) => {
     return {
-      active: calculateLocalWaterSuffiency(totalWater.active, waterDemand),
-      baseline: calculateLocalWaterSuffiency(totalWater.baseline, waterDemand),
+      active: calculateLocalWaterSuffiency(
+        totalWater.active,
+        waterDemand.active,
+      ),
+      baseline: calculateLocalWaterSuffiency(
+        totalWater.baseline,
+        waterDemand.baseline,
+      ),
       scenarioA: calculateLocalWaterSuffiency(
         totalWater.scenarioA,
-        waterDemand,
+        waterDemand.scenarioA,
       ),
       scenarioB: calculateLocalWaterSuffiency(
         totalWater.scenarioB,
-        waterDemand,
+        waterDemand.scenarioB,
       ),
     };
   },

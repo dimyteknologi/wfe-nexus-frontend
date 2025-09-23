@@ -10,6 +10,7 @@ import {
 import {
   BaselinePayload,
   SimulationState,
+  TimePeriod,
 } from "@/stores/slicers/dssInputSlicer";
 import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
 import { RESOURCE_DEMAND_UNIT } from "../constant/resourceDemandUnit.constant";
@@ -54,10 +55,6 @@ export const extractAverageGrowthRates = (
           payload[statePath] = Math.abs(param.average);
         }
       }
-      // else {
-      //   const cleanValues = param.values.map((v) => v ?? 0);
-      //   payload[statePath] = average(growthRate(cleanValues)) * 100;
-      // }
     }
   }
   return payload;
@@ -239,7 +236,7 @@ export const generateScenarioProjection = (
         ),
         finalYear: 2030,
       });
-      console.log(projectionStage1, name);
+
       const projectionStage3 = Computation.projection({
         data: projectionStage2,
         growth: convertInput(

@@ -18,9 +18,11 @@ import {
   selectFoodSuffiencyScenarioProjectionB,
   selectFoodSuffiencyScenarioProjectionBaseline,
 } from "@/stores/selectors/scenarioProjectionSelector";
-
+import { dynamicInputPaddyProductivity } from "./dynamicInputSelector";
 import { selectPopulationDataComparison } from "@/stores/selectors/socioEconomySelector";
-import { resultConverter } from "@/lib/utils/formulas";
+import { constantMultiply, resultConverter } from "@/lib/utils/formulas";
+import { calculateMultiplyArrays, getParameters } from "./demandSideSelector";
+import { RESOURCE_DEMAND_UNIT } from "@/lib/constant/resourceDemandUnit.constant";
 
 const calculateProductionSurplus = (
   projection: IBaselineData | null,
@@ -80,19 +82,6 @@ const calculateAgricultureLand = (
   return safeValues.length > 1 ? safeValues : [];
 };
 
-const calculateLocalFoodProduction = (
-  projection: IBaselineData | null,
-): number[] => {
-  if (!projection || !Array.isArray(projection.parameters)) return [];
-
-  const lahanPanenPadi = projection.parameters.find(
-    (item) => item.name === "Lahan Panen Padi",
-  );
-  if (!lahanPanenPadi) return [];
-
-  return resultConverter(generateLocalFoodProductionYear(lahanPanenPadi));
-};
-
 export const selectAgricultureLandComparison = createSelector(
   [
     selectLandCoverProjection,
@@ -116,13 +105,38 @@ export const selectLocalFoodProductionComparison = createSelector(
     selectAgricultureScenarioProjectionBaseline,
     selectAgricultureScenarioProjectionA,
     selectAgricultureScenarioProjectionB,
+    dynamicInputPaddyProductivity,
   ],
-  (projActive, projBase, projA, projB) => {
+  (projActive, projBaseline, projA, projB, foodInputs) => {
     return {
-      active: calculateLocalFoodProduction(projActive),
-      baseline: calculateLocalFoodProduction(projBase),
-      scenarioA: calculateLocalFoodProduction(projA),
-      scenarioB: calculateLocalFoodProduction(projB),
+      active: constantMultiply(
+        calculateMultiplyArrays(
+          getParameters(projActive, "Lahan Panen Padi"),
+          foodInputs.active,
+        ),
+        RESOURCE_DEMAND_UNIT.FOOD.RASIO_SUSUT_BERAS,
+      ),
+      baseline: constantMultiply(
+        calculateMultiplyArrays(
+          getParameters(projBaseline, "Lahan Panen Padi"),
+          foodInputs.baseline,
+        ),
+        RESOURCE_DEMAND_UNIT.FOOD.RASIO_SUSUT_BERAS,
+      ),
+      scenarioA: constantMultiply(
+        calculateMultiplyArrays(
+          getParameters(projA, "Lahan Panen Padi"),
+          foodInputs.scenarioA,
+        ),
+        RESOURCE_DEMAND_UNIT.FOOD.RASIO_SUSUT_BERAS,
+      ),
+      scenarioB: constantMultiply(
+        calculateMultiplyArrays(
+          getParameters(projB, "Lahan Panen Padi"),
+          foodInputs.scenarioB,
+        ),
+        RESOURCE_DEMAND_UNIT.FOOD.RASIO_SUSUT_BERAS,
+      ),
     };
   },
 );
