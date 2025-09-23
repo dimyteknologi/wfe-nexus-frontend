@@ -262,7 +262,7 @@ export const generateApArea = (
     growthRate,
     finalYear,
   );
-  console.log(projection);
+
   return projection;
 };
 // export const generateApArea = (

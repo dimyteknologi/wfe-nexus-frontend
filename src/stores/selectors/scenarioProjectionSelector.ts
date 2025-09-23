@@ -19,6 +19,8 @@ import {
   selectFoodDemandBaseline,
   selectEnergyDemandBaseline,
   selectResourceBaseline,
+  selectFisheryBaseline,
+  selectLivestockBaseline,
 } from "@/stores/selectors/baseSelector";
 import { SimulationState } from "@/stores/slicers/dssInputSlicer";
 import { IRootState } from "@/stores";
@@ -31,7 +33,6 @@ const createProjectionSelector = (
 ) =>
   createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
     if (!baseData || !inputs) return null;
-    // console.log(inputs);
     return generateScenarioProjection(baseData, inputs);
   });
 
@@ -83,6 +84,54 @@ export const selectComparisonScenarioB = createSelector(
   [selectSavedScenarios, selectScenarioBName],
   (saved, name) =>
     saved.find((s: SimulationState) => s.simulationName === name) || null,
+);
+
+// resources livestock selectors generate livestockData with input active
+export const selectLivestockProjection = createProjectionSelector(
+  selectLivestockBaseline,
+  selectActiveScenarioInput,
+);
+
+// resources livestock selectors generate livestockData with baseline
+export const selectLivestockProjectionBaseline = createProjectionSelector(
+  selectLivestockBaseline,
+  selectBaselineInput,
+);
+
+// resources livestock selectors generate livestockData with scenarioA
+export const selectLivestockProjectionA = createProjectionSelector(
+  selectLivestockBaseline,
+  selectComparisonScenarioA,
+);
+
+// resources livestock selectors generate livestockData with scenarioB
+export const selectLivestockProjectionB = createProjectionSelector(
+  selectLivestockBaseline,
+  selectComparisonScenarioB,
+);
+
+// resources fishery selectors generate fisheryData with input active
+export const selectFisheryProjection = createProjectionSelector(
+  selectFisheryBaseline,
+  selectActiveScenarioInput,
+);
+
+// resources fishery selectors generate fisheryData with baseline
+export const selectFisheryProjectionBaseline = createProjectionSelector(
+  selectFisheryBaseline,
+  selectBaselineInput,
+);
+
+// resources fishery selectors generate fisheryData with scenarioA
+export const selectFisheryProjectionA = createProjectionSelector(
+  selectFisheryBaseline,
+  selectComparisonScenarioA,
+);
+
+// resources fishery selectors generate fisheryData with scenarioB
+export const selectFisheryProjectionB = createProjectionSelector(
+  selectFisheryBaseline,
+  selectComparisonScenarioB,
 );
 
 // foodDemand selectors generate foodDemand Baseline with baselineInput

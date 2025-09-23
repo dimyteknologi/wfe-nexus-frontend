@@ -11,12 +11,17 @@ import {
   setData as setDataLivestock,
   setBaseline as setBaselineLivestock,
 } from "@/stores/slicers/livestockSlicer";
+
 import { setBaseline as setLandPortionBaseline } from "@/stores/slicers/landPortionSlicer";
 import { setBaseline as setLandCoverBaseline } from "@/stores/slicers/landCoverSlicer";
 import { setBaseline as setEnergyDemandBaseline } from "@/stores/slicers/EnergyDemandSlicer";
 import { setBaseline as setWaterDemandBaseline } from "@/stores/slicers/waterDemandSlicer";
 import { setBaseline as setResourceBaseline } from "@/stores/slicers/resourceSlicer";
 import { setBaseline as setFoodDemandBaseline } from "@/stores/slicers/foodDemandSlicer";
+import { setData as setDataDynamicInputEnergy } from "@/stores/slicers/dynamic-input/dynamicEnergyInput";
+import { setData as setDataDynamicInputWater } from "@/stores/slicers/dynamic-input/dynamicWaterInput";
+import { setData as setDataDynamicInputFood } from "@/stores/slicers/dynamic-input/dynamicFoodInput";
+
 import {
   setData as setDataFishery,
   setBaseline as setFisheryBaseline,
@@ -76,6 +81,10 @@ import {
 } from "@/lib/utils/processingData";
 import { setDataApArea } from "../slicers/intermediateOuput/apAreaSlicer";
 import { selectPopulationScenarioProjectionBaseline } from "../selectors/scenarioProjectionSelector";
+import {
+  dynamicalInputs,
+  RESOURCE_DEMAND_UNIT,
+} from "@/lib/constant/resourceDemandUnit.constant";
 
 interface TransformationRule {
   sourceParamName: string[] | string;
@@ -474,12 +483,10 @@ const addEnergyDemandListener = () => {
         years: Array.from({ length: 36 }, (_, i) => 2010 + i),
         parameters: allParameters,
       };
-      // console.log(allParameters);
       const processedResults = preprocessData(
         sourceDataForProcessing,
         energyDemandConfig,
       );
-      // console.log(processedResults);
       if (processedResults?.parameters.length > 0) {
         listenerApi.dispatch(setEnergyDemandBaseline(processedResults));
       }
@@ -511,7 +518,6 @@ const addResourceListener = () => {
       };
 
       const results = preprocessData(sourceDataForProcessing, resourceConfig);
-      // console.log(results);
       if (results?.parameters.length > 0) {
         listenerApi.dispatch(setResourceBaseline(results));
       }
@@ -549,28 +555,12 @@ const addWaterDemandListener = () => {
         sourceDataForProcessing,
         waterDemandConfig,
       );
-      //  console.log(processedWaterData);
       if (processedWaterData?.parameters.length > 0) {
         listenerApi.dispatch(setWaterDemandBaseline(processedWaterData));
       }
     },
   });
 };
-
-// const addDynamicPopulateInputListner = () => {
-//     listenerMiddleware.startListening({
-//       matcher: isAnyOf(
-//         setBaselinePopulation,
-//         setWaterDemandBaseline,
-//         setGdrpBaseline,
-//         setAgricultureBaseline
-//       ),
-//       effect: async(action, listenerApi) => {
-//       listenerApi.cancelActiveListeners();
-
-//       }
-//     })
-// }
 
 const addPopulateFormListener = () => {
   listenerMiddleware.startListening({
@@ -586,8 +576,6 @@ const addPopulateFormListener = () => {
 
     effect: async (action, listenerApi) => {
       listenerApi.cancelActiveListeners();
-      // debounce
-      // await listenerApi.delay(50);
 
       const state = listenerApi.getState();
       const allParameters = [
@@ -598,12 +586,11 @@ const addPopulateFormListener = () => {
         ...(selectLivestockBaseline(state)?.parameters || []),
         ...(selectWaterDemandBaseline(state)?.parameters || []),
         ...(selectEnergyDemandBaseline(state)?.parameters || []),
-        // ...(selectLandCoverBaseline(state)?.parameters || []),
-        // ...(selectLandPortionBaseline(state)?.parameters || []),
       ];
-      // console.log(allParameters);
-      const completeBaselinePayload = extractAverageGrowthRates(allParameters);
-      // console.log(completeBaselinePayload);
+      const completeBaselinePayload = {
+        ...extractAverageGrowthRates(allParameters),
+        ...dynamicalInputs,
+      };
       if (Object.keys(completeBaselinePayload).length > 0) {
         listenerApi.dispatch(
           populateInputsWithBaseline(completeBaselinePayload),
@@ -620,6 +607,7 @@ export function DssPageListener() {
     effect: async (action, listenerApi) => {
       const response = action.payload;
       const baseline = generateBaseline(response.data);
+
       if (baseline) {
         listenerApi.dispatch(setGdrpBaseline(baseline));
       }
@@ -644,7 +632,6 @@ export function DssPageListener() {
     actionCreator: setDataLivestock,
     effect: async (action, listenerApi) => {
       let data = action.payload.data;
-      // console.log(data);
       if (typeof preprocessLivestockData === "function") {
         data = preprocessLivestockData(data);
       }
