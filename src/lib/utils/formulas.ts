@@ -189,12 +189,10 @@ export const growthRate = (data: number[]) => {
 };
 
 export const average = (data: number[]) => {
-  // console.log(data.slice(1));
   if (data[0] === 0) {
     return Computation.averageArray(data.slice(1));
   }
   return Computation.averageArray(data);
-  // console.log("data Growth:", data);
 };
 
 export const growthDataByvalue = (data: number, growthArr: number[]) => {

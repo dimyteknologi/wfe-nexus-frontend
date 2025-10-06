@@ -65,30 +65,30 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
             selectedOptions.map((option) => (
               <div
                 key={option.value}
-                className="flex items-center gap-1 rounded bg-gray-200 px-2 py-0.5 text-sm"
+                className="flex items-center gap-1 rounded bg-gray-200 px-2 py-0.5 text-xs"
               >
                 {option.label}
                 <button onClick={(e) => handleRemove(option.value, e)}>
-                  <X size={14} />
+                  <X size={12} />
                 </button>
               </div>
             ))
           ) : (
-            <span className="text-gray-500">{placeholder}</span>
+            <span className="text-gray-500 text-xs">{placeholder}</span>
           )}
         </div>
         <div className="flex items-center gap-2">
-          <button
+          {/* <button
             onClick={(e) => {
               e.stopPropagation();
               onChange([]);
             }}
-          >
-            <X size={18} className="text-gray-500" />
-          </button>
-          <div className="h-full w-px bg-gray-300"></div>
+          > */}
+          {/* <X size={18} className="text-gray-500" /> */}
+          {/* </button> */}
+          {/* <div className="h-full w-px bg-gray-300"></div> */}
           <ChevronDown
-            size={18}
+            size={12}
             className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
           />
         </div>
@@ -102,7 +102,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               <li
                 key={option.value}
                 onClick={() => handleSelect(option.value)}
-                className={`cursor-pointer px-4 py-2 hover:bg-gray-100 ${
+                className={`cursor-pointer text-xs px-4 py-2 hover:bg-gray-100 ${
                   isSelected ? "bg-blue-100 font-semibold" : ""
                 }`}
               >

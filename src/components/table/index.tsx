@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { TableProps } from "@/lib/types/table.typers";
 
-const PAGE_SIZES = [5, 10, 20];
+const PAGE_SIZES = [10, 15, 20];
 
 export default function Table<T extends Record<string, unknown>>({
   columns,
@@ -31,7 +31,7 @@ export default function Table<T extends Record<string, unknown>>({
               {columns.map((col) => (
                 <th
                   key={String(col.key)}
-                  className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-600"
+                  className="whitespace-nowrap px-4 py-2 text-lef text-xs font-medium text-gray-600"
                 >
                   {col.label}
                 </th>
@@ -45,7 +45,7 @@ export default function Table<T extends Record<string, unknown>>({
                   {columns.map((col) => (
                     <td
                       key={String(col.key)}
-                      className="whitespace-nowrap px-4 py-2 text-gray-700"
+                      className="whitespace-nowrap px-4 py-2 text-gray-700 text-xs"
                     >
                       {String(row[col.key])}
                     </td>
@@ -56,7 +56,7 @@ export default function Table<T extends Record<string, unknown>>({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-4 py-6 text-center text-gray-400"
+                  className="px-4 py-6 text-center text-gray-400 text-xs"
                 >
                   No data available
                 </td>
@@ -69,7 +69,7 @@ export default function Table<T extends Record<string, unknown>>({
       {/* pagination */}
       <div className="mt-2 flex flex-wrap items-center justify-evenly gap-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">Rows per page:</span>
+          <span className="text-xs text-gray-600">rows:</span>
           <select
             value={pageSize}
             onChange={(e) => {
@@ -88,21 +88,21 @@ export default function Table<T extends Record<string, unknown>>({
 
         {/* navigation page */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">
+          <span className="text-xs text-gray-600">
             Page {page} of {totalPages || 1}
           </span>
           <div className="flex gap-2">
             <button
               disabled={page === 1}
               onClick={goToPrevPage}
-              className="rounded-lg border px-3 py-1 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg border px-3 py-1 btn btn-xs text-xs text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Prev
             </button>
             <button
               disabled={page === totalPages || totalPages === 0}
               onClick={goToNextPage}
-              className="rounded-lg border px-3 py-1 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg border px-3 py-1 btn-xs text-xs text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next
             </button>

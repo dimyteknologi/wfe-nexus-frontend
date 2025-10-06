@@ -6,6 +6,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
   label,
   periods,
   onChange,
+  onBlur,
   values,
   errors,
   id,
@@ -37,6 +38,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
         {periods.map((period) => {
           const uniqueId = `${id}.${period}`;
           const value = values[uniqueId] ?? "";
+
           return (
             <div key={uniqueId} className="flex flex-col">
               <span className="text-xs text-gray-500 mb-1">{period}</span>
@@ -47,6 +49,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
                 }`}
                 value={value}
                 onChange={(e) => onChange(uniqueId, e.target.value)}
+                onBlur={() => onBlur(uniqueId)}
               />
               {errors[uniqueId] && (
                 <span className="text-red-500 text-xs mt-1">

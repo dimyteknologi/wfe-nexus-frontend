@@ -18,6 +18,7 @@ export const resetToBaseline = createAsyncThunk(
   "simulation/resetToBaseline",
   async (_, { getState, dispatch }) => {
     const state = getState() as IRootState;
+    let mergedPayload: BaselinePayload = {};
 
     const gdrpData = selectGdrpBaseline(state);
     const populationData = selectPopulationBaseline(state);
@@ -33,13 +34,26 @@ export const resetToBaseline = createAsyncThunk(
       ...(livestockData?.parameters || []),
     ];
 
+    const hardCodedBaselinePayload = {
+      "energy.solarPvAreaIndustrial": 0,
+      "energy.solarPvAreaHousing": 0,
+      "energy.industrialEnergy": 0,
+      "energy.domesticElectricity": 0,
+      "water.artificialPondIndustrial": 0,
+      "water.artificialPondHousing": 0,
+      "water.domesticWaterDemand": 125,
+      "water.industrialWater": 1.687,
+    };
     const completeBaselinePayload = extractAverageGrowthRates(allParameters);
     if (Object.keys(completeBaselinePayload).length > 0) {
-      dispatch(singleInput(completeBaselinePayload));
+      mergedPayload = {
+        ...completeBaselinePayload,
+        ...hardCodedBaselinePayload,
+      };
+      dispatch(singleInput(mergedPayload));
     }
 
     dispatch(resetSimulation());
-
-    return completeBaselinePayload;
+    return mergedPayload;
   },
 );

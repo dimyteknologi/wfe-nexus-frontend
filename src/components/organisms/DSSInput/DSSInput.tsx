@@ -7,6 +7,7 @@ const FormContainer: React.FC<FormContainerProps> = ({
   inputs,
   errors,
   handleChange,
+  handleBlur,
   validatePercentage,
   sections,
 }) => {
@@ -22,6 +23,9 @@ const FormContainer: React.FC<FormContainerProps> = ({
                     key={i}
                     label={input.label}
                     periods={input.periods}
+                    onBlur={(id) => {
+                      handleBlur(id);
+                    }}
                     onChange={(id, value) => {
                       handleChange(id, value);
                       if (input.withValidation && validatePercentage) {

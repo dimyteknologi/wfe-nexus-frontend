@@ -20,16 +20,16 @@ export const simulationFormConfig: FormSection[] = [
   {
     title: "Agriculture",
     inputs: [
-      {
-        label: "Growth scenario [%/year]",
-        min: -5,
-        max: 5,
-        periods: timePeriods,
-        withValidation: true,
-        id: "agriculture.growthScenario",
-        information:
-          "Scenario for Agriculture economy growth between 2025-2045 in % p.a of GDRP, divided into three phase period; 2025-2030, 2031-2040, and 2041-2045. The number is average value between 2010-2024. MIN: -5 || MAX : 5",
-      },
+      // {
+      //   label: "Growth scenario [%/year]",
+      //   min: -5,
+      //   max: 5,
+      //   periods: timePeriods,
+      //   withValidation: true,
+      //   id: "agriculture.growthScenario",
+      //   information:
+      //     "Scenario for Agriculture economy growth between 2025-2045 in % p.a of GDRP, divided into three phase period; 2025-2030, 2031-2040, and 2041-2045. The number is average value between 2010-2024. MIN: -5 || MAX : 5",
+      // },
       {
         label: "Agriculture land conversion [%/year]",
         min: 0,

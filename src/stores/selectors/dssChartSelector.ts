@@ -104,7 +104,6 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
         annualWaterSuply,
         localWaterSuffiency,
         waterAvailability,
-        baseline: baseline,
 
         // ...
       };
@@ -141,3 +140,69 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       return { series, colors, type: metricConfig?.type };
     },
   );
+
+export const selectAllMetricsDataMap = createSelector(
+  [
+    selectGdrpInBillionsComparison,
+    selectEconomicGrowthComparison,
+    selectGdrpPerCapitaComparison,
+    selectPopulationDataComparison,
+    selectAgricultureLandComparison,
+    selectAvailabilityPerPersonComparison,
+    selectLocalFoodProductionComparison,
+    selectLocalFoodSuffiencyComparison,
+    selectProductionSurplusComparison,
+    selectElectricityPerCapitaComparison,
+    selectElectrityImportComparison,
+    selectLocalEnergyProductionComparison,
+    selectLocalEnergySuffiencyComparison,
+    selectLocalRenewableEnergyContributionComparison,
+    AnnualWaterSupplyComparison,
+    LocalWaterSuffiencyComparison,
+    WaterAvailabilityPerPerson,
+    selectScenarioAName,
+    selectScenarioBName,
+    selectBaselineInput,
+  ],
+  (
+    gdrpInBillions,
+    economicGrowth,
+    gdrpPerCapita,
+    population,
+    agricultureLand,
+    availabilityPerson,
+    localFoodProduction,
+    localFoodSuffiency,
+    productionSurplus,
+    electricityPerCapita,
+    electricityImport,
+    localEnergyProduction,
+    localEnergySuffiency,
+    localRenewableEnergy,
+    annualWaterSuply,
+    localWaterSuffiency,
+    waterAvailability,
+  ) => {
+    const metricsMap: Record<string, ComparisonData> = {
+      gdrp: gdrpInBillions,
+      economicGrowth: economicGrowth,
+      gdrpPerCapita: gdrpPerCapita,
+      population: population,
+      agricultureLand: agricultureLand,
+      availabilityPerson: availabilityPerson,
+      localFoodProduction: localFoodProduction,
+      localFoodSuffiency: localFoodSuffiency,
+      productionSurplus: productionSurplus,
+      electricityPerCapita: electricityPerCapita,
+      electricityImport: electricityImport,
+      localEnergyProduction: localEnergyProduction,
+      localEnergySuffiency: localEnergySuffiency,
+      localRenewableEnergy: localRenewableEnergy,
+      annualWaterSuply,
+      localWaterSuffiency,
+      waterAvailability,
+    };
+
+    return metricsMap;
+  },
+);

@@ -259,7 +259,7 @@ const LandingPage = () => {
             </h2>
             <p className="text-xl text-gray-600">
               Our platform provides comprehensive tools to analyze and optimize
-              the Water-Food-Energy Nexus
+              the Water-Energy-Food Nexus
             </p>
           </div>
 

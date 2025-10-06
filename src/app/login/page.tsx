@@ -3,6 +3,7 @@
 import { ArrowRight, Eye, EyeOff, Shield } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useLoginMutation } from "@/stores/api/auth";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +14,8 @@ const LoginPage = () => {
     rememberMe: false,
   });
 
+  // const [login, {isLoading: loadingLogin}] = useLoginMutation();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -21,12 +24,17 @@ const LoginPage = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+    // setIsLoading(false);
+    // try {
+    //   const response = await login({...formData}).unwrap();
+    // } catch (error) {
+
+    // }
+    // setTimeout(() => {
+    //   setIsLoading(true);
+    // }, 1500);
   };
 
   return (

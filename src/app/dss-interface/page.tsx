@@ -21,6 +21,7 @@ import DSSConceptModal from "@/components/dssConceptModal";
 import Alert from "@/components/alert";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
 import { ALL_METRICS } from "@/lib/constant/metrics";
+import TableWidget from "@/components/table/widget";
 
 const DSSPage = () => {
   // init data
@@ -63,10 +64,6 @@ const DSSPage = () => {
   const handlePreset = (category: string) => {
     dispatch(setChartsToCategoryPreset(category));
   };
-
-  // const apArea = useAppSelector((state) => state.apArea.data);
-  // const dataTest = apArea.apAreaIndustrial;
-  // console.log(dataTest);
 
   return (
     <div className="w-full px-6 pt-28 overflow-hidden">
@@ -202,18 +199,11 @@ const DSSPage = () => {
                 isScenarioOpen={isScenarioOpen}
               />
             ))}
-            {/* {!isScenarioOpen && (
-              <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7"> */}
-            {/* Table<iTableData>
-                  columns={[
-                    { key: "year", label: "Years", className: "w-16" },
-                    { key: "baseline_1", label: "Baseline 1" },
-                    { key: "baseline_2", label: "Baseline 2" },
-                  ]}
-                  data={[]}
-                /> */}
-            {/* </div>
-            )} */}
+            {!isScenarioOpen && (
+              <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7">
+                <TableWidget />
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -83,16 +83,16 @@ const calculateEnergyProductionSolar = (data: number[]) => {
 };
 
 const calculateLocalEnergyProduction = (
-  industrial: number[],
   housing: number[],
+  industrial: number[],
 ) => {
-  if (!Array.isArray(industrial) && !Array.isArray(housing))
+  if (!Array.isArray(industrial) || !Array.isArray(housing))
     return Array(36).fill(0);
   const safeValues = industrial.map((val) => val ?? 0);
   return resultConverter(
     safeValues.map((val, i) => {
       const denominator = housing[i] ?? 0;
-      return denominator !== 0 ? val + denominator : 0;
+      return val + denominator;
     }),
   );
 };
