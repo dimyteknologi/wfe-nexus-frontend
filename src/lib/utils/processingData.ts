@@ -148,9 +148,6 @@ export const getPinPoint = (
 ) => {
   const initYear = 2010;
   const index = year - initYear;
-  // console.log(year);
-  // console.log(input);
-  // console.log(dataAgriculture);
   return {
     year,
     value: dataAgriculture

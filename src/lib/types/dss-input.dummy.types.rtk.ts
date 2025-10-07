@@ -4,6 +4,8 @@ export type InputConfig = {
   withValidation?: boolean;
   id: string;
   information: string;
+  min: number;
+  max: number;
 };
 
 export type SectionConfig = {
@@ -15,10 +17,13 @@ export type InputGroupProps = {
   label: string;
   periods: string[];
   onChange: (id: string, value: string) => void;
+  onBlur: (id: string) => void;
   values: Record<string, string | null>;
   errors: Record<string, string>;
   id: string;
   information: string;
+  min: number;
+  max: number;
 };
 
 export type SectionCardProps = {
@@ -32,6 +37,7 @@ export type FormContainerProps = {
   inputs: Record<string, string | null>;
   errors: Record<string, string>;
   handleChange: (id: string, value: string) => void;
+  handleBlur: (id: string) => void;
   validatePercentage?: (value: string) => string | undefined;
   sections: SectionConfig[];
 };
