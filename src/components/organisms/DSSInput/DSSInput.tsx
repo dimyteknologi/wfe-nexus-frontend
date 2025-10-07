@@ -37,6 +37,8 @@ const FormContainer: React.FC<FormContainerProps> = ({
                     errors={errors}
                     id={input.id}
                     information={input.information}
+                    min={input.min}
+                    max={input.max}
                   />
                 );
               })}

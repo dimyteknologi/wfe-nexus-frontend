@@ -180,34 +180,62 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
                             development performance.
                           </motion.p>
 
-                          <motion.div
+                          <motion.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                            className="bg-blue-50 p-6 rounded-xl border border-blue-100 mb-6"
+                            transition={{ delay: 0.2 }}
+                            className="text-lg text-gray-700 mb-6 leading-relaxed"
                           >
-                            <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-                              Using a systems thinking perspective and system
-                              dynamics modeling approach (Forester, 1961;
-                              Vennix, 1996; Senge, 2000; Sterman, 2000;
-                              Morecroft, 2015), the DSS Tool is designed to
-                              illustrate the impacts of demand scenarios for the
-                              economic sector (industry and services),
-                              agriculture production (rice, livestock, and
-                              inland fisheries), and population growth on the
-                              local capacity to meet water, food, and energy
-                              needs.
-                            </p>
-                            <p className="text-lg text-gray-700 leading-relaxed">
-                              It also incorporates sector-specific scenarios
-                              such as the development of recharge areas for
-                              water production (artificial ponds, conservation
-                              measures), solar PV deployment, and agricultural
-                              productivity improvements, with the aim of
-                              enhancing local water, energy, and food resilience
-                              in the future.
-                            </p>
-                          </motion.div>
+                            Using a
+                            <span className="font-bold text-blue-600">
+                              {" "}
+                              systems thinking perspective
+                            </span>{" "}
+                            and{" "}
+                            <span className="font-bold text-blue-600">
+                              {" "}
+                              system dynamics modeling approach{" "}
+                            </span>{" "}
+                            (Forester, 1961; Vennix, 1996; Senge, 2000; Sterman,
+                            2000; Morecroft, 2015), the DSS Tool is designed to
+                            illustrate the impacts of demand scenarios for the
+                            economic sector (industry and services), agriculture
+                            production (rice, livestock, and inland fisheries),
+                            and population growth on the local capacity to meet
+                            water, food, and energy needs.
+                          </motion.p>
+
+                          <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-lg text-gray-700 mb-6 leading-relaxed"
+                          >
+                            It also incorporates sector-specific scenarios such
+                            as the development{" "}
+                            <span className="font-bold text-blue-600">
+                              of recharge areas for water production (artificial
+                              ponds, conservation measures), solar PV
+                              deployment,
+                            </span>{" "}
+                            and{" "}
+                            <span className="font-bold text-blue-600">
+                              agricultural productivity improvements
+                            </span>
+                            , with the aim of enhancing local water, energy, and
+                            food resilience in the future.
+                          </motion.p>
+
+                          <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-lg text-gray-700 mb-2 leading-relaxed"
+                          >
+                            The conceptual framework of the sectoral
+                            interlinkages within the DSS Tool is illustrated as
+                            follows:
+                          </motion.p>
 
                           <motion.div
                             initial={{ opacity: 0 }}
@@ -233,16 +261,288 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
                             transition={{ delay: 0.5 }}
                             className="text-lg text-gray-700 mb-8 leading-relaxed"
                           >
-                            The DSS concept was developed at a high level, only
-                            considering the aspects of demand and supply—without
-                            yet delving deeply into the distribution network
-                            aspect of supply—as it was limited to providing an
-                            initial overview of local resource availability and
-                            their dependence on respective regional systems.
-                            This preliminary information is expected to be
-                            useful for detailed analysis of resource and
-                            sectoral aspects in depth.
+                            The diagram above illustrates the{" "}
+                            <span className="font-bold text-blue-600">
+                              interconnected dynamics
+                            </span>{" "}
+                            within the
+                            <span className="font-bold text-green-700">
+                              Water–Energy–Food (WEF) Nexus
+                            </span>
+                            , emphasizing the feedback relationships between
+                            resource availability, consumption, and production.
+                            Each component influences the others through{" "}
+                            <span className="font-bold text-blue-600">
+                              reinforcing
+                            </span>{" "}
+                            and{" "}
+                            <span className="font-bold text-blue-600">
+                              balancing loops
+                            </span>
+                            , shaping sustainability outcomes over time. The
+                            modules including:
                           </motion.p>
+
+                          <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.1 }}
+                            className="text-lg text-gray-700 mb-2 leading-relaxed"
+                          >
+                            Several assumptions related to resource needs
+                            (water, energy, food) within a region include:
+                          </motion.p>
+
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3 }}
+                            className="bg-blue-50 p-6 rounded-xl border border-blue-100 mb-6 space-y-4"
+                          >
+                            <div className="text-gray-700 leading-relaxed">
+                              <h3 className="font-bold text-lg mb-1">
+                                1. Food Module
+                              </h3>
+                              <p>
+                                <span className="font-semibold text-blue-600">
+                                  Components:
+                                </span>{" "}
+                                Local food production (rice, livestock, fish,
+                                etc.), food availability, Self-Sufficiency Level
+                                (SSL), and Availability per Person (APP).
+                              </p>
+                              <p>
+                                <span className="font-semibold text-green-600">
+                                  Dependencies:
+                                </span>{" "}
+                                Food production depends on water availability
+                                for irrigation and energy for pumping,
+                                processing, and transportation.
+                              </p>
+                            </div>
+
+                            <div className="text-gray-700 leading-relaxed">
+                              <h3 className="font-bold text-lg mb-1">
+                                2. Water Module
+                              </h3>
+                              <p>
+                                <span className="font-semibold text-blue-600">
+                                  Components:
+                                </span>{" "}
+                                Water storage, irrigation supply, domestic and
+                                industrial demand.
+                              </p>
+                              <p>
+                                <span className="font-semibold text-green-600">
+                                  Linkages:
+                                </span>{" "}
+                                Water supply gives availability for economy and
+                                population to grow.
+                              </p>
+                            </div>
+
+                            <div className="text-gray-700 leading-relaxed">
+                              <h3 className="font-bold text-lg mb-1">
+                                3. Energy Module
+                              </h3>
+                              <p>
+                                <span className="font-semibold text-blue-600">
+                                  Components:
+                                </span>{" "}
+                                Energy supply (including renewables),
+                                consumption by agricultural and water sectors.
+                              </p>
+                              <p>
+                                <span className="font-semibold text-green-600">
+                                  Interactions:
+                                </span>{" "}
+                                Energy generation often requires water (e.g.,
+                                hydropower, cooling systems), creating
+                                interdependencies across modules.
+                              </p>
+                            </div>
+
+                            <div className="text-gray-700 leading-relaxed">
+                              <h3 className="font-bold text-lg mb-1">
+                                4. Economy Module
+                              </h3>
+                              <p>
+                                <span className="font-semibold text-blue-600">
+                                  Components:
+                                </span>{" "}
+                                GDRP for manufacture, agriculture, and others.
+                              </p>
+                              <p>
+                                <span className="font-semibold text-green-600">
+                                  Interactions:
+                                </span>{" "}
+                                As driver for resources (food, water, energy)
+                                demand and feedback in terms of availability for
+                                growing economy.
+                              </p>
+                            </div>
+
+                            <div className="text-gray-700 leading-relaxed">
+                              <h3 className="font-bold text-lg mb-1">
+                                5. Population Module
+                              </h3>
+                              <p>
+                                <span className="font-semibold text-blue-600">
+                                  Components:
+                                </span>{" "}
+                                Population and its growth.
+                              </p>
+                              <p>
+                                <span className="font-semibold text-green-600">
+                                  Interactions:
+                                </span>{" "}
+                                As driver for resources (food, water, energy)
+                                demand for population and feedback in terms of
+                                availability for growing economy that affect the
+                                population growth.
+                              </p>
+                            </div>
+                          </motion.div>
+
+                          <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-lg text-gray-700 mb-2 leading-relaxed"
+                          >
+                            The interaction among the sectors will form the loop
+                            between each module, including:
+                          </motion.p>
+
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.7 }}
+                            className="bg-gray-50 p-6 rounded-xl mb-6 border border-gray-200"
+                          >
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-sm">
+                                <thead>
+                                  <tr>
+                                    <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-indigo-500">
+                                      Loop
+                                    </th>
+                                    <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-indigo-500">
+                                      Involved Module
+                                    </th>
+                                    <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-indigo-500">
+                                      Description
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-200">
+                                  {/* Loop B1 */}
+                                  <tr className="hover:bg-indigo-50 transition-colors duration-150">
+                                    <td className="px-6 py-4 font-bold text-indigo-800">
+                                      B1
+                                    </td>
+                                    <td className="px-6 py-4 font-medium text-gray-800">
+                                      Economy ➔ Water ➔ Economy
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-600 leading-relaxed">
+                                      GDRP affects water demand; water supply in
+                                      turn affects the economy`s capacity to
+                                      grow.
+                                    </td>
+                                  </tr>
+
+                                  {/* Loop B2 */}
+                                  <tr className="hover:bg-indigo-50 transition-colors duration-150">
+                                    <td className="px-6 py-4 font-bold text-indigo-800">
+                                      B2
+                                    </td>
+                                    <td className="px-6 py-4 font-medium text-gray-800">
+                                      Economy ➔ Energy ➔ Economy
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-600 leading-relaxed">
+                                      GDRP affects energy demand; energy supply
+                                      in turn affects the economy`s capacity to
+                                      grow.
+                                    </td>
+                                  </tr>
+
+                                  {/* Loop B3 */}
+                                  <tr className="hover:bg-indigo-50 transition-colors duration-150">
+                                    <td className="px-6 py-4 font-bold text-indigo-800">
+                                      B3
+                                    </td>
+                                    <td className="px-6 py-4 font-medium text-gray-800">
+                                      Food ➔ Water ➔ Food
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-600 leading-relaxed">
+                                      Food production volume affects water
+                                      demand for irrigation; water supply
+                                      affects food production capacity.
+                                    </td>
+                                  </tr>
+
+                                  {/* Loop B4 */}
+                                  <tr className="hover:bg-indigo-50 transition-colors duration-150">
+                                    <td className="px-6 py-4 font-bold text-indigo-800">
+                                      B4
+                                    </td>
+                                    <td className="px-6 py-4 font-medium text-gray-800">
+                                      Food ➔ Energy ➔ Food
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-600 leading-relaxed">
+                                      Food production volume affects energy
+                                      demand for production; energy supply
+                                      affects food production capacity.
+                                    </td>
+                                  </tr>
+
+                                  {/* Reinforcing Loop R1 */}
+                                  <tr className="hover:bg-red-50 transition-colors duration-150">
+                                    <td className="px-6 py-4 font-bold text-red-800">
+                                      R1
+                                    </td>
+                                    <td className="px-6 py-4 font-medium text-gray-800">
+                                      Population
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-600 leading-relaxed">
+                                      Population and its own growth acts as a
+                                      reinforcing loop.
+                                    </td>
+                                  </tr>
+
+                                  {/* Loop B5 */}
+                                  <tr className="hover:bg-indigo-50 transition-colors duration-150">
+                                    <td className="px-6 py-4 font-bold text-indigo-800">
+                                      B5
+                                    </td>
+                                    <td className="px-6 py-4 font-medium text-gray-800">
+                                      Population ➔ Water ➔ Population
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-600 leading-relaxed">
+                                      Population affects water demand; water
+                                      supply sufficiency and quality affect
+                                      population growth.
+                                    </td>
+                                  </tr>
+
+                                  {/* Loop B6 */}
+                                  <tr className="hover:bg-indigo-50 transition-colors duration-150">
+                                    <td className="px-6 py-4 font-bold text-indigo-800">
+                                      B6
+                                    </td>
+                                    <td className="px-6 py-4 font-medium text-gray-800">
+                                      Population ➔ Food ➔ Population
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-600 leading-relaxed">
+                                      Population affects food demand; food
+                                      supply affects population growth due to
+                                      sufficiency.
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </motion.div>
 
                           <motion.h3
                             initial={{ opacity: 0 }}
@@ -252,7 +552,6 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
                           >
                             Sectoral Scope and Boundaries
                           </motion.h3>
-
                           <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -419,24 +718,22 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
                             </div>
                           </motion.div>
 
-                          <motion.div
+                          <motion.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            transition={{ delay: 0.8 }}
-                            className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 mt-8"
+                            transition={{ delay: 0.2 }}
+                            className="text-lg text-gray-700 mb-6 leading-relaxed"
                           >
-                            <p className="text-lg text-gray-700">
-                              The use of the{" "}
-                              <span className="font-bold text-green-700">
-                                DSS
-                              </span>{" "}
-                              begins with inputting a dataset of regional
-                              conditions, followed by configuring the
-                              assumptions and trends of the model in the area,
-                              mapping these assumptions and trends into model
-                              scenarios, and validating historical behavior.
-                            </p>
-                          </motion.div>
+                            The use of the{" "}
+                            <span className="font-bold text-green-700">
+                              DSS
+                            </span>{" "}
+                            begins with inputting a dataset of regional
+                            conditions, followed by configuring the assumptions
+                            and trends of the model in the area, mapping these
+                            assumptions and trends into model scenarios, and
+                            validating historical behavior.
+                          </motion.p>
                         </div>
                       </div>
                     )}
@@ -454,8 +751,8 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
                         <motion.p
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          transition={{ delay: 0.1 }}
-                          className="text-lg text-gray-700 mb-8 leading-relaxed"
+                          transition={{ delay: 0.2 }}
+                          className="text-lg text-gray-700 mb-2 leading-relaxed"
                         >
                           Several assumptions related to resource needs (water,
                           energy, food) within a region include:

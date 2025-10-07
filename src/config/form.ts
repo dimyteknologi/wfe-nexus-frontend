@@ -3,8 +3,8 @@ import { TimePeriod } from "@/stores/slicers/dssInputSlicer";
 export interface FormInput {
   id: string;
   label: string;
-  min?: number;
-  max?: number;
+  min: number;
+  max: number;
   periods: TimePeriod[];
   withValidation?: boolean;
   information: string;
@@ -38,7 +38,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "agriculture.landConversion",
         information:
-          "Scenario for agriculture land conversion rate between 2025-2045 in % p.a from agriculture land cover. The number is average value between 2010-2024. MIN: 0 || MAX: 2",
+          "Scenario for agriculture land conversion rate between 2025-2045 in % p.a from agriculture land cover. The number is average value between 2010-2024.",
       },
       {
         label: "Livestock growth: Cattle [%/year]",
@@ -48,7 +48,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "livestock.cattleGrowth",
         information:
-          "Scenario for livestock growth between 2025-2045 in %/year. The number is average value between 2010-2024. MIN: -5 || MAX: 5",
+          "Scenario for livestock growth between 2025-2045 in %/year. The number is average value between 2010-2024.",
       },
       {
         label: "Livestock growth: Poultry [%/year]",
@@ -58,7 +58,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "livestock.poultryGrowth",
         information:
-          "Scenario for livestock growth between 2025-2045 in %/year. The number is average value between 2010-2024. MIN: -5 || MAX: 5",
+          "Scenario for livestock growth between 2025-2045 in %/year. The number is average value between 2010-2024.",
       },
       {
         label: "Livestock growth: Goat [%/year]",
@@ -68,7 +68,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "livestock.goatGrowth",
         information:
-          "Scenario for livestock growth between 2025-2045 in %/year. The number is average value between 2010-2024. MIN: -5 || MAX: 5",
+          "Scenario for livestock growth between 2025-2045 in %/year. The number is average value between 2010-2024.",
       },
       {
         label: "Aquaculture land growth [%/year]",
@@ -78,7 +78,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "agriculture.aquacultureLandGrowth",
         information:
-          "Scenario for aquaculture area increase or decrease between 2025-2045 in %/year. The number is average value between 2010-2024. MIN: -4 || MAX: 5",
+          "Scenario for aquaculture area increase or decrease between 2025-2045 in %/year. The number is average value between 2010-2024.",
       },
       {
         label: "Productivity target [ton/ha/year]",
@@ -88,7 +88,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "agriculture.productivityTarget",
         information:
-          "Scenario for agriculture productivity for paddy production between 2025-2045 in ton/ha/year. The number is average value between 2010-2024. MIN: 2 || MAX: 12",
+          "Scenario for agriculture productivity for paddy production between 2025-2045 in ton/ha/year. The number is average value between 2010-2024.",
       },
     ],
   },
@@ -109,7 +109,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "energy.solarPvAreaIndustrial",
         information:
-          "Percentage of industrial area equipped with solar PV for electricity production, that will increase local energy resilience. MIN: 0 || MAX: 50",
+          "Percentage of industrial area equipped with solar PV for electricity production, that will increase local energy resilience.",
       },
       {
         label: "Solar PV Area Percentage on Housing (%)",
@@ -119,7 +119,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "energy.solarPvAreaHousing",
         information:
-          "Percentage of housing area equipped with solar PV for electricity production, that will increase local energy resilience. MIN: 0 || MAX: 50",
+          "Percentage of housing area equipped with solar PV for electricity production, that will increase local energy resilience.",
       },
       {
         label: "Industrial Energy efficiency rate",
@@ -129,7 +129,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "energy.industrialEnergy",
         information:
-          "Increase of industrial energy efficiency indicated by decreasing rate of energy intensity, in %/year of intensity decrease. MIN: 0 || MAX: 5",
+          "Increase of industrial energy efficiency indicated by decreasing rate of energy intensity, in %/year of intensity decrease.",
       },
       {
         label: "Domestic electricity consumption increase rate",
@@ -139,7 +139,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "energy.domesticElectricity",
         information:
-          "Increase of domestic electricity per capita, indicated increase in society wellbeing in %/year of per capita increase. MIN: 0 || MAX: 3",
+          "Increase of domestic electricity per capita, indicated increase in society wellbeing in %/year of per capita increase.",
       },
 
       // {
@@ -179,7 +179,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "industry.growth",
         information:
-          "Scenario for industrial economy growth between 2025-2045 in % p.a of GDRP, divided into three phase period; 2025-2030, 2031-2040, and 2041-2045. The number is average value between 2010-2024. MIN: 0 || MAX: 10",
+          "Scenario for industrial economy growth between 2025-2045 in % p.a of GDRP, divided into three phase period; 2025-2030, 2031-2040, and 2041-2045. The number is average value between 2010-2024.",
       },
     ],
   },
@@ -194,7 +194,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "water.artificialPondIndustrial",
         information:
-          "Percentage of industrial area developed as artificial pond (retention pond, detention pond, water storage, embung, etc). MIN: 0 || MAX: 30",
+          "Percentage of industrial area developed as artificial pond (retention pond, detention pond, water storage, embung, etc).",
       },
       {
         label: "Artificial Pond Percentage in Housing Area (%)",
@@ -204,7 +204,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "water.artificialPondHousing",
         information:
-          "Percentage of housing area developed as artificial pond (urban retention pond, rainwater harvesting pond, infiltration pond, etc). MIN: 0 || MAX: 30",
+          "Percentage of housing area developed as artificial pond (urban retention pond, rainwater harvesting pond, infiltration pond, etc).",
       },
       {
         label: "Domestic water demand unit",
@@ -214,7 +214,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "water.domesticWaterDemand",
         information:
-          "The number of domestic demand water per capita (Litre/kapital/day], represent of water in. MIN: 70 || MAX: 200",
+          "The number of domestic demand water per capita (Litre/kapital/day], represent of water in.",
       },
       {
         label: "Industrial Water intensity",
@@ -224,7 +224,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "water.industrialWater",
         information:
-          "Represent on how many waters unit consumed to produce one unit of industrial value added [m3/Million Rp]. MIN: 0.2 || MAX: 5",
+          "Represent on how many waters unit consumed to produce one unit of industrial value added [m3/Million Rp].",
       },
       // {
       //   label: "Surface Water Capacity",
@@ -251,7 +251,7 @@ export const simulationFormConfig: FormSection[] = [
         withValidation: true,
         id: "demography.populationGrowth",
         information:
-          "Scenario for population growth rate of area in %/year, divided into three period phases; 2025-2030, 2031-2040, and 2041-2045. The number is average value between 2010-2024. MIN: 0.5 || MAX: 2.5",
+          "Scenario for population growth rate of area in %/year, divided into three period phases; 2025-2030, 2031-2040, and 2041-2045. The number is average value between 2010-2024.",
       },
     ],
   },

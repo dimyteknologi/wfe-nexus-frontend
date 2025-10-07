@@ -11,6 +11,8 @@ const InputGroup: React.FC<InputGroupProps> = ({
   errors,
   id,
   information,
+  min,
+  max,
 }) => {
   const [isHover, setIsHover] = useState(false);
 
@@ -29,7 +31,15 @@ const InputGroup: React.FC<InputGroupProps> = ({
           </div>
           {isHover && (
             <div className="absolute z-500 right-0 top-0 w-75 translate-y-5 bg-white border-2 border-green-600 rounded-xl p-2 shadow-xl">
-              <p className="text-xs">{information}</p>
+              <p className="text-xs">
+                <span className="text-black">Description:</span> {information}
+              </p>
+              <p className="text-xs">
+                <span className="text-black">Min:</span> {min}
+              </p>
+              <p className="text-xs">
+                <span className="text-black">Max:</span> {max}
+              </p>
             </div>
           )}
         </div>

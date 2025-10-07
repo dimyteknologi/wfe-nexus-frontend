@@ -4,6 +4,8 @@ export type InputConfig = {
   withValidation?: boolean;
   id: string;
   information: string;
+  min: number;
+  max: number;
 };
 
 export type SectionConfig = {
@@ -20,6 +22,8 @@ export type InputGroupProps = {
   errors: Record<string, string>;
   id: string;
   information: string;
+  min: number;
+  max: number;
 };
 
 export type SectionCardProps = {

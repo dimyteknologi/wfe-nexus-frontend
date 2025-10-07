@@ -27,7 +27,7 @@ export const ALL_METRICS: Metric[] = [
     unit: "Bilion Rp/year",
     type: "bar",
     content:
-      "GDP adalah nilai total seluruh barang dan jasa yang dihasilkan oleh suatu negara dalam periode tertentu (biasanya satu tahun)Indikator ini menggambarkan ukuran ekonomi suatu negara, semakin tinggi GDP berarti semakin besar aktivitas ekonominya.",
+      "The number of gross domestic regional product within one year, as economic performance of region",
   },
   {
     category: "SE",
@@ -35,7 +35,7 @@ export const ALL_METRICS: Metric[] = [
     title: "Population [people]",
     unit: "people",
     type: "line",
-    content: "",
+    content: "The number of populations in the region",
   },
   {
     category: "SE",
@@ -43,16 +43,15 @@ export const ALL_METRICS: Metric[] = [
     title: "Economic Growth [%/year]",
     unit: "%/year",
     type: "line",
-    content:
-      "Economic growth adalah peningkatan kapasitas suatu negara dalam menghasilkan barang dan jasa dari waktu ke waktu. Pertumbuhan ini biasanya diukur dengan persentase kenaikan GDP riil tahunan. Pertumbuhan ekonomi mencerminkan perkembangan produktivitas, investasi, dan kesejahteraan masyarakat.",
+    content: "GDRP Growth rate",
   },
   {
     category: "SE",
     id: "gdrpPerCapita",
-    title: "GDRP Per Capita [Milion Rp/cap/year]",
+    title: "GDP Per Capita [Milion Rp/cap/year]",
     unit: "Milion Rp/cap/year",
     type: "line",
-    content: "",
+    content: "The number of GDRP divided by number of populations",
   },
   {
     category: "FOOD",
@@ -60,7 +59,7 @@ export const ALL_METRICS: Metric[] = [
     title: "Agriculture land [ha]",
     unit: "ha",
     type: "line",
-    content: "",
+    content: "The number of harvested crops land within a year in the region",
   },
   {
     category: "FOOD",
@@ -76,7 +75,8 @@ export const ALL_METRICS: Metric[] = [
     title: "Local Food Production [ton/year]",
     unit: "ton/year",
     type: "bar",
-    content: "",
+    content:
+      "The number production of staple food (crops, fish, meat, and egg) in the region",
   },
   {
     category: "FOOD",
@@ -84,7 +84,8 @@ export const ALL_METRICS: Metric[] = [
     title: "Availability per Person [kg/kap/year]",
     unit: "kg/kap/year",
     type: "line",
-    content: "",
+    content:
+      "The number production of staple food divided by number of populations",
   },
   {
     category: "FOOD",
@@ -92,7 +93,8 @@ export const ALL_METRICS: Metric[] = [
     title: "Local Food Suffiency [%]",
     unit: "%",
     type: "line",
-    content: "",
+    content:
+      "The number production of staple food divided by number of its demand—staple food unit times population",
   },
   {
     category: "ENERGY",
@@ -100,7 +102,8 @@ export const ALL_METRICS: Metric[] = [
     title: "Local Energy Suffiency [%]",
     unit: "%",
     type: "line",
-    content: "",
+    content:
+      "The ratio between local energy production and region’s energy demand for social and economic purpose",
   },
   {
     category: "ENERGY",
@@ -108,7 +111,8 @@ export const ALL_METRICS: Metric[] = [
     title: "Electricity Import [GWh/year]",
     unit: "GWh/year",
     type: "line",
-    content: "",
+    content:
+      "The number of gaps between local energy supply and local demand which be fulfilled from regional system",
   },
   {
     category: "ENERGY",
@@ -116,7 +120,7 @@ export const ALL_METRICS: Metric[] = [
     title: "Local Energy Production [GWh/year]",
     unit: "GWh/year",
     type: "line",
-    content: "",
+    content: "The number of local energy production",
   },
   {
     category: "ENERGY",
@@ -124,7 +128,8 @@ export const ALL_METRICS: Metric[] = [
     title: "Local Renewable Energy Contribution [%]",
     unit: "%",
     type: "line",
-    content: "",
+    content:
+      "The ratio between the number of local energy production which using renewable sources and total energy demand",
   },
   {
     category: "ENERGY",
@@ -146,7 +151,7 @@ export const ALL_METRICS: Metric[] = [
     title: "Annual Water Supply [million m3/year]",
     unit: "million m3/year",
     type: "line",
-    content: "",
+    content: "One year calculation regarding annual water supply",
   },
   {
     category: "WATER",
@@ -154,7 +159,7 @@ export const ALL_METRICS: Metric[] = [
     title: "Local Water Suffiency [%]",
     unit: "%",
     type: "line",
-    content: "",
+    content: "The ratio between local water production and its demand",
   },
   {
     id: "waterAvailability",
@@ -162,7 +167,7 @@ export const ALL_METRICS: Metric[] = [
     category: "WATER",
     unit: "m3/cap/year",
     type: "line",
-    content: "Ketersediaan air tahunan per kapita.",
+    content: "",
     additionalSeries: [
       {
         name: "Falkenmark: No stress",
