@@ -8,7 +8,7 @@ import {
 } from "@/stores/slicers/dssInputSlicer";
 import { resetToBaseline } from "@/stores/thunk/baselineReset";
 import { addScenario, loadScenarios } from "@/stores/slicers/dssScenarioSlicer";
-import { X, Play, ChevronDown, RefreshCcw } from "lucide-react";
+import { X, Play, ChevronDown, RefreshCcw, Info } from "lucide-react";
 import { normalizeKey } from "@/lib/utils";
 import { setAlert } from "@/stores/slicers/alertSlicer";
 
@@ -30,7 +30,8 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     error,
   } = useAppSelector((state) => state.scenarios);
   const [simulationName, setSimulationName] = useState("");
-
+  const [isHover, setIsHover] = useState(false);
+  const mouseHover = useCallback(() => setIsHover((current) => !current), []);
   const handleSimulationName = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       setSimulationName(e.target.value);
@@ -90,6 +91,31 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
       <div className="flex flex-col gap-3 sm:gap-4 md:gap-6">
         {/* header */}
         <div className="flex justify-between border-b border-gray-600 items-center">
+          <div
+            className="relative"
+            onMouseEnter={mouseHover}
+            onMouseLeave={mouseHover}
+          >
+            <div>
+              <Info size={15} />
+            </div>
+            {isHover && (
+              <div className="absolute z-500 left-0 top-0 w-75 translate-y-5 bg-white border-2 border-green-600 rounded-xl p-2 shadow-xl">
+                <p className="text-sm font-bold">
+                  Simulation Name :{" "}
+                  <span className="font-normal">
+                    Please enter your simulation name to be saved in the system
+                  </span>
+                </p>
+                <p className="text-sm font-bold">
+                  Scenario :{" "}
+                  <span className="font-normal">
+                    You can select scenario already named and simulated
+                  </span>
+                </p>
+              </div>
+            )}
+          </div>
           <h1 className="text-lg md:text-xl">Scenario Menu</h1>
           <button
             onClick={handleOpenScenarioTab}

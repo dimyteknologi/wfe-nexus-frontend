@@ -70,9 +70,10 @@ const calculateAgricultureLand = (
   projection: IBaselineData | null,
 ): number[] => {
   if (!projection) return [];
+  console.log(projection);
   const agricultureLand = projection.parameters.find(
     (param) =>
-      param.name === "Agriculture Area" || param.name === "Agriculture Land",
+      param.name === "Lahan Panen Padi" || param.name === "Agriculture Land",
   );
 
   if (!agricultureLand) return [];
@@ -84,10 +85,10 @@ const calculateAgricultureLand = (
 
 export const selectAgricultureLandComparison = createSelector(
   [
-    selectLandCoverProjection,
-    selectLandCoverProjectionBaseline,
-    selectLandCoverProjectionA,
-    selectLandCoverProjectionB,
+    selectAgricultureScenarioProjection,
+    selectAgricultureScenarioProjectionBaseline,
+    selectAgricultureScenarioProjectionA,
+    selectAgricultureScenarioProjectionB,
   ],
   (projActive, projBase, projA, projB) => {
     return {
