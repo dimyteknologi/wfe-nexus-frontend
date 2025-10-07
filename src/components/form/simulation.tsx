@@ -119,6 +119,25 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
         obj[keys[keys.length - 1]] = numericValue;
         return newState;
       });
+
+      const config = findInputConfig(id);
+      // validated value from input
+      const errorMessage = validateValue(numericValue, {
+        min: config?.min,
+        max: config?.max,
+      });
+
+      if (errorMessage) {
+        setErrors((prevErrors) => {
+          const newErrors = { ...prevErrors };
+          if (errorMessage) {
+            newErrors[id] = errorMessage;
+          } else {
+            delete newErrors[id];
+          }
+          return newErrors;
+        });
+      }
     }
   }, []);
 
@@ -126,22 +145,9 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
     (id: string) => {
       const value = getValueFromNestedState(localInputs, id);
       const numericValue = parseFloat(value ? value.toString() : "");
-      const config = findInputConfig(id);
-      // validated value from input
-      const errorMessage = validateValue(numericValue, {
-        min: config?.min,
-        max: config?.max,
-      });
       // update error state
-      setErrors((prevErrors) => {
-        const newErrors = { ...prevErrors };
-        if (errorMessage) {
-          newErrors[id] = errorMessage;
-        } else {
-          delete newErrors[id];
-        }
-        return newErrors;
-      });
+      const config = findInputConfig(id);
+
       // update clamp
       let finalValue = numericValue;
       if (config && config.min !== undefined && config.max !== undefined) {
@@ -157,6 +163,12 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
         }
         obj[keys[keys.length - 1]] = finalValue;
         return newState;
+      });
+      // delete current input  because clamped
+      setErrors((prevErrors) => {
+        const newErrors = { ...prevErrors };
+        delete newErrors[id];
+        return newErrors;
       });
     },
     [localInputs],
