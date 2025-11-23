@@ -1,0 +1,208 @@
+import { createSelector } from "@reduxjs/toolkit";
+import {
+  selectEconomicGrowthComparison,
+  selectGdrpInBillionsComparison,
+  selectGdrpPerCapitaComparison,
+  selectPopulationDataComparison,
+} from "@/stores/selectors/socioEconomySelector";
+import {
+  selectAgricultureLandComparison,
+  selectAvailabilityPerPersonComparison,
+  selectLocalFoodProductionComparison,
+  selectLocalFoodSuffiencyComparison,
+  selectProductionSurplusComparison,
+} from "@/stores/selectors/foodSelector";
+import {
+  selectElectricityPerCapitaComparison,
+  selectElectrityImportComparison,
+  selectLocalEnergyProductionComparison,
+  selectLocalEnergySuffiencyComparison,
+  selectLocalRenewableEnergyContributionComparison,
+} from "@/stores/selectors/energySelector";
+import {
+  AnnualWaterSupplyComparison,
+  LocalWaterSuffiencyComparison,
+  WaterAvailabilityPerPerson,
+} from "@/stores/selectors/waterSelector";
+import {
+  selectScenarioAName,
+  selectScenarioBName,
+  selectBaselineInput,
+  selectIndustryInputs,
+} from "@/stores/selectors/baseSelector";
+import { ALL_METRICS } from "@/lib/constant/metrics";
+import { selectTotalWaterDemand } from "./demandSideSelector";
+
+type ComparisonData = {
+  active: number[];
+  baseline: number[];
+  scenarioA: number[];
+  scenarioB: number[];
+};
+
+export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
+  createSelector(
+    [
+      selectGdrpInBillionsComparison,
+      selectEconomicGrowthComparison,
+      selectGdrpPerCapitaComparison,
+      selectPopulationDataComparison,
+      selectAgricultureLandComparison,
+      selectAvailabilityPerPersonComparison,
+      selectLocalFoodProductionComparison,
+      selectLocalFoodSuffiencyComparison,
+      selectProductionSurplusComparison,
+      selectElectricityPerCapitaComparison,
+      selectElectrityImportComparison,
+      selectLocalEnergyProductionComparison,
+      selectLocalEnergySuffiencyComparison,
+      selectLocalRenewableEnergyContributionComparison,
+      AnnualWaterSupplyComparison,
+      LocalWaterSuffiencyComparison,
+      WaterAvailabilityPerPerson,
+      selectScenarioAName,
+      selectScenarioBName,
+      selectBaselineInput,
+    ],
+    (
+      gdrpInBillions,
+      economicGrowth,
+      gdrpPerCapita,
+      population,
+      agricultureLand,
+      availabilityPerson,
+      localFoodProduction,
+      localFoodSuffiency,
+      productionSurplus,
+      electricityPerCapita,
+      electricityImport,
+      localEnergyProduction,
+      localEnergySuffiency,
+      localRenewableEnergy,
+      annualWaterSuply,
+      localWaterSuffiency,
+      waterAvailability,
+      nameA,
+      nameB,
+      baseline,
+    ) => {
+      const metricsMap: Record<string, ComparisonData> = {
+        gdrp: gdrpInBillions,
+        economicGrowth: economicGrowth,
+        gdrpPerCapita: gdrpPerCapita,
+        population: population,
+        agricultureLand: agricultureLand,
+        availabilityPerson: availabilityPerson,
+        localFoodProduction: localFoodProduction,
+        localFoodSuffiency: localFoodSuffiency,
+        productionSurplus: productionSurplus,
+        electricityPerCapita: electricityPerCapita,
+        electricityImport: electricityImport,
+        localEnergyProduction: localEnergyProduction,
+        localEnergySuffiency: localEnergySuffiency,
+        localRenewableEnergy: localRenewableEnergy,
+        annualWaterSuply,
+        localWaterSuffiency,
+        waterAvailability,
+
+        // ...
+      };
+
+      const metricConfig = ALL_METRICS.find((m) => m.id === metricId);
+      const selectedMetricData = metricsMap[metricId];
+      if (!selectedMetricData) return { series: [], colors: [] };
+      const series = [];
+      const colors = [];
+
+      const dynamicColors = ["#C4E1E6", "#8DBCC7", "#0065F8", "#71C0BB"];
+      if (selectedMetricData.baseline?.length > 0) {
+        series.push({ name: "Baseline", data: selectedMetricData.baseline });
+        colors.push(dynamicColors[0]);
+      }
+      if (selectedMetricData.active?.length > 0) {
+        series.push({ name: "Current", data: selectedMetricData.active });
+        colors.push(dynamicColors[1]);
+      }
+      if (selectedMetricData.scenarioA?.length > 0 && nameA) {
+        series.push({ name: nameA, data: selectedMetricData.scenarioA });
+        colors.push(dynamicColors[2]);
+      }
+      if (selectedMetricData.scenarioB?.length > 0 && nameB) {
+        series.push({ name: nameB, data: selectedMetricData.scenarioB });
+        colors.push(dynamicColors[3]);
+      }
+      if (metricConfig?.additionalSeries) {
+        for (const additional of metricConfig.additionalSeries) {
+          series.push({ name: additional.name, data: additional.data });
+          colors.push(additional.color || "#808080");
+        }
+      }
+      return { series, colors, type: metricConfig?.type };
+    },
+  );
+
+export const selectAllMetricsDataMap = createSelector(
+  [
+    selectGdrpInBillionsComparison,
+    selectEconomicGrowthComparison,
+    selectGdrpPerCapitaComparison,
+    selectPopulationDataComparison,
+    selectAgricultureLandComparison,
+    selectAvailabilityPerPersonComparison,
+    selectLocalFoodProductionComparison,
+    selectLocalFoodSuffiencyComparison,
+    selectProductionSurplusComparison,
+    selectElectricityPerCapitaComparison,
+    selectElectrityImportComparison,
+    selectLocalEnergyProductionComparison,
+    selectLocalEnergySuffiencyComparison,
+    selectLocalRenewableEnergyContributionComparison,
+    AnnualWaterSupplyComparison,
+    LocalWaterSuffiencyComparison,
+    WaterAvailabilityPerPerson,
+    selectScenarioAName,
+    selectScenarioBName,
+    selectBaselineInput,
+  ],
+  (
+    gdrpInBillions,
+    economicGrowth,
+    gdrpPerCapita,
+    population,
+    agricultureLand,
+    availabilityPerson,
+    localFoodProduction,
+    localFoodSuffiency,
+    productionSurplus,
+    electricityPerCapita,
+    electricityImport,
+    localEnergyProduction,
+    localEnergySuffiency,
+    localRenewableEnergy,
+    annualWaterSuply,
+    localWaterSuffiency,
+    waterAvailability,
+  ) => {
+    const metricsMap: Record<string, ComparisonData> = {
+      gdrp: gdrpInBillions,
+      economicGrowth: economicGrowth,
+      gdrpPerCapita: gdrpPerCapita,
+      population: population,
+      agricultureLand: agricultureLand,
+      availabilityPerson: availabilityPerson,
+      localFoodProduction: localFoodProduction,
+      localFoodSuffiency: localFoodSuffiency,
+      productionSurplus: productionSurplus,
+      electricityPerCapita: electricityPerCapita,
+      electricityImport: electricityImport,
+      localEnergyProduction: localEnergyProduction,
+      localEnergySuffiency: localEnergySuffiency,
+      localRenewableEnergy: localRenewableEnergy,
+      annualWaterSuply,
+      localWaterSuffiency,
+      waterAvailability,
+    };
+
+    return metricsMap;
+  },
+);
