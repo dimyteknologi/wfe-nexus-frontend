@@ -7,7 +7,7 @@ import { useInitializeData } from "@/hooks/useInitDummy";
 import SimulationForm from "@/components/form/simulation";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
 import ChartWidget from "@/components/chart/widget";
-import { useAppDispatch, useAppSelector } from "../../stores/root-reducer";
+import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
 import { selectDisplayedMetrics } from "@/stores/selectors/dssDashboardSelector";
 import { shallowEqual } from "react-redux";
 import {

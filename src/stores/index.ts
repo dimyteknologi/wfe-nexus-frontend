@@ -28,6 +28,8 @@ import dashboardReducer from "@/stores/slicers/dashboardSlicer";
 import foodDemandReducer from "@/stores/slicers/foodDemandSlicer";
 import resourceReducer from "@/stores/slicers/resourceSlicer";
 import { apAreaReducer } from "./slicers/intermediateOuput";
+import { userReducer } from "./slicers/userSlicer";
+import { authReducer } from "@/stores/slicers/auth/AuthSlice";
 
 DssPageListener();
 // addGdpListeners();
@@ -37,6 +39,8 @@ DssPageListener();
 // addFisheryListeners();
 
 export const appReducer = combineReducers({
+  auth: authReducer,
+  user: userReducer,
   scenarios: scenarioReducer,
   dashboard: dashboardReducer,
   simulation: simulationReducer,

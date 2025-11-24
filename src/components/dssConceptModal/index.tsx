@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -8,8 +9,6 @@ import {
   BookOpen,
   BarChart3,
   Lightbulb,
-  Download,
-  ArrowRight,
 } from "lucide-react";
 
 interface DSSConceptModalProps {
@@ -243,10 +242,12 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
                             transition={{ delay: 0.4 }}
                             className="relative mb-8 rounded-xl overflow-hidden border border-gray-200 shadow-md"
                           >
-                            <img
+                            <Image
                               className="w-full h-auto"
-                              src={"./assets/concept-diagram.png"}
+                              src="/assets/concept-diagram.png"
                               alt="DSS Conceptual Framework"
+                              width={1200}
+                              height={800}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                               <span className="text-white text-sm">

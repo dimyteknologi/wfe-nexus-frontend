@@ -3,39 +3,25 @@
 import { ArrowRight, Eye, EyeOff, Shield } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useLoginMutation } from "@/stores/api/auth";
+import { useLogin } from "@/hooks/useLogin";
 
 const LoginPage = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    rememberMe: false,
-  });
+  const {
+    showPassword,
+    authError,
+    rememberMe,
+    form: {
+      register,
+      handleSubmit,
+      formState: { errors, isSubmitting },
+    },
+    togglePasswordVisibility,
+    handleRememberMeChange,
+    onSubmit,
+  } = useLogin();
 
-  // const [login, {isLoading: loadingLogin}] = useLoginMutation();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // setIsLoading(false);
-    // try {
-    //   const response = await login({...formData}).unwrap();
-    // } catch (error) {
-
-    // }
-    // setTimeout(() => {
-    //   setIsLoading(true);
-    // }, 1500);
-  };
+  console.log("errors", errors);
+  console.log("authError", authError);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8 relative">
@@ -68,7 +54,7 @@ const LoginPage = () => {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             <div>
               <label
@@ -79,15 +65,18 @@ const LoginPage = () => {
               </label>
               <input
                 id="email"
-                name="email"
                 type="email"
                 autoComplete="email"
                 required
-                value={formData.email}
-                onChange={handleChange}
+                {...register("email")}
                 className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:z-10 transition-colors"
                 placeholder="nama@domain.com"
               />
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -100,19 +89,17 @@ const LoginPage = () => {
               <div className="relative">
                 <input
                   id="password"
-                  name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
-                  value={formData.password}
-                  onChange={handleChange}
+                  {...register("password")}
                   className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:z-10 transition-colors pr-12"
                   placeholder="Masukkan kata sandi"
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={togglePasswordVisibility}
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
@@ -121,6 +108,11 @@ const LoginPage = () => {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center justify-between">
@@ -129,8 +121,8 @@ const LoginPage = () => {
                   id="rememberMe"
                   name="rememberMe"
                   type="checkbox"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
+                  checked={rememberMe}
+                  onChange={(e) => handleRememberMeChange(e.target.checked)}
                   className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                 />
                 <label
@@ -152,13 +144,17 @@ const LoginPage = () => {
             </div>
           </div>
 
+          {authError && (
+            <div className="text-red-500 text-sm text-center">{authError}</div>
+          )}
+
           <div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isSubmitting}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-lg font-medium rounded-lg text-white bg-gradient-to-r from-green-700 to-teal-700 hover:from-green-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-75 disabled:cursor-not-allowed"
             >
-              {isLoading ? (
+              {isSubmitting ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                   Memproses...
