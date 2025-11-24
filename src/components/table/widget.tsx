@@ -6,10 +6,10 @@ import MultiSelect, { SelectOption } from "@/components/select/multi-select";
 import { Column } from "@/lib/types/table.typers";
 import { Metric, ALL_METRICS } from "@/lib/constant/metrics";
 import { useAppSelector } from "@/stores/root-reducer";
-import { selectAllMetricsDataMap } from "@/stores/selectors/dssChartSelector";
+import { selectAllMetricsDataMap } from "@/stores/selectors/site-specific/dssChartSelector";
 import {
-  selectScenarioAName,
-  selectScenarioBName,
+  selectSiteSpecificScenarioAName,
+  selectSiteSpecificScenarioBName,
 } from "@/stores/selectors/baseSelector";
 import { selectDisplayedMetrics } from "@/stores/selectors/dssDashboardSelector";
 
@@ -25,8 +25,8 @@ const SnapshotTableWidget: React.FC = () => {
   const years = useAppSelector(
     (state) => state.gdrp.baseline?.years.map(String) || [],
   );
-  const scenarioAName = useAppSelector(selectScenarioAName);
-  const scenarioBName = useAppSelector(selectScenarioBName);
+  const scenarioAName = useAppSelector(selectSiteSpecificScenarioAName);
+  const scenarioBName = useAppSelector(selectSiteSpecificScenarioBName);
   const [selectedMetricIds, setSelectedMetricIds] = useState<string[]>([]);
   const [selectedScenarioKeys, setSelectedScenarioKeys] = useState<string[]>([
     "active",

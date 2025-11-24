@@ -1,5 +1,6 @@
-import { SimulationState } from "@/stores/slicers/dssInputSlicer";
-import { FormInput, simulationFormConfig } from "@/config/form";
+import { SiteSpecificState } from "@/stores/slicers/siteSpecificInputSlicer";
+import { ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
+import { FormInput, siteSpecificInput } from "@/config/form";
 
 interface ValidationOptions {
   min?: number;
@@ -22,7 +23,7 @@ export const getNestedValue = (obj: object, path: string[]): unknown => {
 
 export const findInputConfig = (id: string): FormInput | undefined => {
   const inputId = id.substring(0, id.lastIndexOf("."));
-  for (const section of simulationFormConfig) {
+  for (const section of siteSpecificInput) {
     const found = section.inputs.find((input) => input.id === inputId);
     if (found) return found;
   }
@@ -62,10 +63,10 @@ export const validatePercentage = (
 };
 
 export const validateParameters = (
-  simulationState: SimulationState,
+  simulationState: SiteSpecificState | ContextSpecificState,
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
-  simulationFormConfig.forEach((section) => {
+  siteSpecificInput.forEach((section) => {
     section.inputs.forEach((input) => {
       input.periods.forEach((period) => {
         const uniqueId = `${input.id}.${period}`;

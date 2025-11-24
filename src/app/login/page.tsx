@@ -3,9 +3,12 @@
 import { ArrowRight, Eye, EyeOff, Shield } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useLoginMutation } from "@/stores/api/auth";
+import { authApi, useLoginMutation } from "@/stores/api/auth";
+import { setCredential, setUser } from "@/stores/slicers/api/authSlice";
+import { useAppDispatch } from "@/stores/root-reducer";
 
 const LoginPage = () => {
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -13,9 +16,12 @@ const LoginPage = () => {
     password: "",
     rememberMe: false,
   });
+  const [message, setMessage] = useState({
+    type: "",
+    content: "",
+  });
 
-  // const [login, {isLoading: loadingLogin}] = useLoginMutation();
-
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -26,15 +32,49 @@ const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // setIsLoading(false);
-    // try {
-    //   const response = await login({...formData}).unwrap();
-    // } catch (error) {
+    setIsLoading(isLoginLoading);
+    try {
+      const response = await login({ ...formData }).unwrap();
+      if (response?.access_token) {
+        setMessage({
+          type: "success" as const,
+          content: "Login success! Redirecting...",
+        });
+        dispatch(
+          setCredential({
+            access_token: response.access_token,
+            email: formData.email,
+            rememberMe: formData.rememberMe,
+          }),
+        );
+      }
+    } catch (error: unknown) {
+      let errorMessage = "Login failed. Please try again.";
 
-    // }
-    // setTimeout(() => {
-    //   setIsLoading(true);
-    // }, 1500);
+      if (error && typeof error === "object") {
+        const apiError = error as {
+          data?: { message?: string; error?: string };
+          message?: string;
+        };
+
+        if (apiError.data?.message) {
+          errorMessage = apiError.data.message;
+        } else if (apiError.data?.error) {
+          errorMessage = apiError.data.error;
+        } else if (apiError.message) {
+          errorMessage = apiError.message;
+        }
+      }
+
+      setMessage({
+        type: "error" as const,
+        content: errorMessage,
+      });
+    } finally {
+      setTimeout(() => {
+        setIsLoading(isLoginLoading);
+      }, 1500);
+    }
   };
 
   return (
@@ -47,8 +87,8 @@ const LoginPage = () => {
         />
       </div>
 
-      <div className="max-w-md w-full space-y-8 bg-white/90 backdrop-blur-sm p-10 rounded-2xl shadow-xl border border-gray-100 z-10">
-        <div>
+      <div className="max-w-md w-full space-y-8 bg-white/90 backdrop-blur-sm p-10 mt-12 rounded-2xl shadow-xl border border-gray-100 z-10">
+        <div className="mb-2">
           <div className="flex justify-center">
             <div className="bg-gradient-to-r from-green-700 to-teal-700 p-3 rounded-full">
               <Shield className="h-8 w-8 text-white" />
@@ -68,7 +108,15 @@ const LoginPage = () => {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <div className="flex justify-center my-1">
+          <span
+            className={`text-xs font-medium ${message.type === "error" ? "text-red-500" : "text-green-700"}`}
+          >
+            {message.content}
+          </span>
+        </div>
+
+        <form className="mt-2 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
               <label
@@ -155,10 +203,10 @@ const LoginPage = () => {
           <div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoginLoading}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-lg font-medium rounded-lg text-white bg-gradient-to-r from-green-700 to-teal-700 hover:from-green-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-75 disabled:cursor-not-allowed"
             >
-              {isLoading ? (
+              {isLoginLoading ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                   Memproses...

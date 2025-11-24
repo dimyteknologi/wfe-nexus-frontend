@@ -1,24 +1,30 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppDispatch } from "@/stores/root-reducer";
 import {
-  setAllActiveInputs,
-  SimulationState,
-} from "@/stores/slicers/dssInputSlicer";
+  DssSiteSpecificState,
+  setAllActiveInputs as setActiveInputSite,
+  SiteSpecificState,
+} from "@/stores/slicers/siteSpecificInputSlicer";
 import FormContainer from "@/components/organisms/DSSInput/DSSInput";
-import { simulationFormConfig } from "@/config/form";
+import { FormSection } from "@/config/form";
 import {
   findInputConfig,
   validatePercentage,
   validateValue,
 } from "@/lib/utils/validation";
 import { useDebounce } from "@/hooks/useDebounce";
+import {
+  ContextSpecificState,
+  DssContextSpecificState,
+  setAllActiveInputs as setActiveInputContext,
+} from "@/stores/slicers/contextSpecificInputSlicer";
 
 // const getValueFromNestedState = (state: SimulationState, path: string): string => {
 //   return path.split('.').reduce((acc: SimulationState | undefined, part) => acc && acc[part], state) ?? '';
 // };
 
 export const getValueFromNestedState = (
-  state: SimulationState,
+  state: ContextSpecificState | SiteSpecificState,
   path: string,
 ): unknown => {
   return (
@@ -31,30 +37,44 @@ export const getValueFromNestedState = (
   );
 };
 interface SimulationFormProps {
-  simulationState: SimulationState;
+  simulationState: DssContextSpecificState | DssSiteSpecificState;
+  category: "siteSpecific" | "contextSpecific";
+  FormInputs: FormSection[];
 }
 
-const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
+const SimulationForm: React.FC<SimulationFormProps> = ({
+  simulationState,
+  FormInputs,
+  category,
+}) => {
   const dispatch = useAppDispatch();
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [localInputs, setLocalInputs] = useState(simulationState);
+  const [localInputs, setLocalInputs] = useState(simulationState.active);
   const debouncedInputs = useDebounce(localInputs, 750);
 
   useEffect(() => {
-    setLocalInputs(simulationState);
-  }, [simulationState]);
+    setLocalInputs(simulationState.active);
+  }, [simulationState.active]);
 
   useEffect(() => {
-    if (JSON.stringify(debouncedInputs) !== JSON.stringify(simulationState)) {
-      dispatch(setAllActiveInputs(debouncedInputs));
+    if (
+      JSON.stringify(debouncedInputs) !== JSON.stringify(simulationState.active)
+    ) {
+      if (category === "siteSpecific") {
+        dispatch(setActiveInputSite(debouncedInputs as SiteSpecificState));
+      } else {
+        dispatch(
+          setActiveInputContext(debouncedInputs as ContextSpecificState),
+        );
+      }
     }
-  }, [debouncedInputs, dispatch]);
+  }, [debouncedInputs, dispatch, category]);
 
   const flattenedInputs = useMemo(() => {
     const flatData: Record<string, string | null> = {};
     if (!localInputs) return flatData;
 
-    simulationFormConfig.forEach((section) => {
+    FormInputs.forEach((section) => {
       section.inputs.forEach((input) => {
         const path = input.id.split(".");
         input.periods.forEach((period) => {
@@ -82,11 +102,11 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
     });
 
     return flatData;
-  }, [localInputs, simulationFormConfig]);
+  }, [localInputs, FormInputs]);
 
   const handleChange = useCallback((id: string, value: string) => {
     if (value === "" || value === "-") {
-      setLocalInputs((prevState: SimulationState) => {
+      setLocalInputs((prevState: SiteSpecificState | ContextSpecificState) => {
         const keys = id.split(".");
         const newState = JSON.parse(JSON.stringify(prevState));
         let obj = newState;
@@ -109,7 +129,7 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
 
     if (!isNaN(numericValue)) {
       // update local state with clamp value
-      setLocalInputs((prevState: SimulationState) => {
+      setLocalInputs((prevState: SiteSpecificState | ContextSpecificState) => {
         const keys = id.split(".");
         const newState = JSON.parse(JSON.stringify(prevState));
         let obj = newState;
@@ -148,13 +168,13 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
       // update error state
       const config = findInputConfig(id);
 
-      // update clamp
+      // update clamp value
       let finalValue = numericValue;
       if (config && config.min !== undefined && config.max !== undefined) {
         finalValue = Math.max(config.min, Math.min(numericValue, config.max));
       }
 
-      setLocalInputs((prevState: SimulationState) => {
+      setLocalInputs((prevState: SiteSpecificState | ContextSpecificState) => {
         const keys = id.split(".");
         const newState = JSON.parse(JSON.stringify(prevState));
         let obj = newState;
@@ -176,7 +196,8 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ simulationState }) => {
 
   return (
     <FormContainer
-      sections={simulationFormConfig}
+      category={category}
+      sections={FormInputs}
       inputs={flattenedInputs}
       errors={errors}
       handleChange={handleChange}

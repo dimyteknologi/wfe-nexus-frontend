@@ -1,25 +1,39 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
 import {
-  updateSimulationSelect,
-  SimulationState,
-  updateSimulationName,
+  updateSimulationSelect as updateSimulationSelectSiteSpecific,
+  // SimulationState,
+  // updateSimulationName,
   // resetSimulation,
-} from "@/stores/slicers/dssInputSlicer";
+} from "@/stores/slicers/siteSpecificInputSlicer";
+import {
+  SiteSpecificState,
+  DssSiteSpecificState,
+} from "@/stores/slicers/siteSpecificInputSlicer";
+import {
+  ContextSpecificState,
+  DssContextSpecificState,
+  updateSimulationSelect as updateSimulationSelectContextSpecific,
+} from "@/stores/slicers/contextSpecificInputSlicer";
 import { resetToBaseline } from "@/stores/thunk/baselineReset";
-import { addScenario, loadScenarios } from "@/stores/slicers/dssScenarioSlicer";
+// import { addScenario, loadScenarios } from "@/stores/slicers/dssScenarioSlicer";
+import { addScenario } from "@/stores/thunk/addScenario";
+import { loadScenarios } from "@/stores/thunk/loadScenario";
 import { X, Play, ChevronDown, RefreshCcw, Info } from "lucide-react";
 import { normalizeKey } from "@/lib/utils";
 import { setAlert } from "@/stores/slicers/alertSlicer";
+import { ScenarioItem } from "@/stores/slicers/dssScenarioSlicer";
 
 interface ScenarioMenuProps {
-  simulationState: SimulationState;
+  simulationState: DssSiteSpecificState | DssContextSpecificState;
+  category: "siteSpecific" | "contextSpecific";
   handleOpenScenarioTab: () => void;
   errors: Record<string, string>;
 }
 
 const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   handleOpenScenarioTab,
+  category,
   errors,
   simulationState,
 }) => {
@@ -45,17 +59,32 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      dispatch(
-        updateSimulationSelect({ name: e.target.name, value: e.target.value }),
-      );
+      if (category === "siteSpecific") {
+        dispatch(
+          updateSimulationSelectSiteSpecific({
+            name: e.target.name,
+            value: e.target.value,
+          }),
+        );
+      } else {
+        dispatch(
+          updateSimulationSelectContextSpecific({
+            name: e.target.name,
+            value: e.target.value,
+          }),
+        );
+      }
+      setSimulationName(e.target.value);
     },
     [],
   );
 
   const handleSaveSimulation = () => {
     if (Object.keys(errors).length === 0) {
-      dispatch(updateSimulationName(simulationName));
-      dispatch(addScenario({ ...simulationState, simulationName }));
+      // dispatch(updateSimulationName(simulationName));
+      dispatch(
+        addScenario({ simulationName, category, data: simulationState.active }),
+      );
       dispatch(
         setAlert({
           message: success ?? "Success to save scenario!",
@@ -78,8 +107,12 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     if (!scenarios) {
       return [];
     }
-    return scenarios.filter(
-      (s: SimulationState, index: number, arr: SimulationState[]) =>
+    const data =
+      category == "siteSpecific"
+        ? scenarios.siteSpecific
+        : scenarios.contextSpecific;
+    return data?.filter(
+      (s: ScenarioItem, index: number, arr: ScenarioItem[]) =>
         index === arr.findIndex((t) => t.simulationName === s.simulationName),
     );
   }, [scenarios]);
@@ -179,14 +212,18 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
                   className="block w-full px-3 py-2 md:px-4 md:py-2.5 text-sm text-gray-700 bg-white/90 border border-gray-300 rounded-lg shadow-xs appearance-none focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 hover:border-gray-400 transition-all duration-200"
                 >
                   <option value="">-- Select an option --</option>
-                  {scenarioOptions.map((scenario: SimulationState) => (
-                    <option
-                      key={normalizeKey(scenario?.simulationName || "default")}
-                      value={scenario.simulationName || ""}
-                    >
-                      {scenario.simulationName}
-                    </option>
-                  ))}
+                  {scenarioOptions.map(
+                    (scenario: SiteSpecificState | ContextSpecificState) => (
+                      <option
+                        key={normalizeKey(
+                          scenario?.simulationName || "default",
+                        )}
+                        value={scenario.simulationName || ""}
+                      >
+                        {scenario.simulationName}
+                      </option>
+                    ),
+                  )}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                   <ChevronDown className="w-4 h-4" />
@@ -206,7 +243,10 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
                 >
                   <option value="">-- Select an option --</option>
                   {scenarioOptions.map(
-                    (scenario: SimulationState, idx: number) => (
+                    (
+                      scenario: SiteSpecificState | ContextSpecificState,
+                      idx: number,
+                    ) => (
                       <option key={idx} value={scenario.simulationName || ""}>
                         {scenario.simulationName}
                       </option>

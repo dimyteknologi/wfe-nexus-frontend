@@ -6,7 +6,7 @@ import ChartComponent from "@/components/chart/index";
 import { useAppSelector, useAppDispatch } from "@/stores/root-reducer";
 import { updateChartMetric } from "@/stores/slicers/dashboardSlicer";
 import { selectAvailableMetricsGrouped } from "@/stores/selectors/dssDashboardSelector";
-import { makeSelectComparisonSeriesForMetric } from "@/stores/selectors/dssChartSelector";
+import { makeSelectComparisonSeriesForMetric } from "@/stores/selectors/site-specific/dssChartSelector";
 import { Metric } from "@/lib/constant/metrics";
 
 import { OptionType } from "@/lib/types/select.types";

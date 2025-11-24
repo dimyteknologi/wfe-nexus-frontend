@@ -29,7 +29,7 @@ import {
   selectFisheryProjectionBaseline,
   selectFisheryProjectionA,
   selectFisheryProjectionB,
-} from "./scenarioProjectionSelector";
+} from "@/stores/selectors/site-specific/scenarioProjectionSelector";
 
 import { IBaselineData } from "@/lib/types/response";
 import { RESOURCE_DEMAND_UNIT } from "@/lib/constant/resourceDemandUnit.constant";

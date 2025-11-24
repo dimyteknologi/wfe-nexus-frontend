@@ -1,6 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { IRootState } from "@/stores";
-import { singleInput, resetSimulation } from "../slicers/dssInputSlicer";
+import {
+  singleInput,
+  //  resetSimulation
+} from "../slicers/siteSpecificInputSlicer";
 
 import {
   selectGdrpBaseline,
@@ -44,6 +47,7 @@ export const resetToBaseline = createAsyncThunk(
       "water.domesticWaterDemand": 125,
       "water.industrialWater": 1.687,
     };
+
     const completeBaselinePayload = extractAverageGrowthRates(allParameters);
     if (Object.keys(completeBaselinePayload).length > 0) {
       mergedPayload = {
@@ -53,7 +57,7 @@ export const resetToBaseline = createAsyncThunk(
       dispatch(singleInput(mergedPayload));
     }
 
-    dispatch(resetSimulation());
+    // dispatch(resetSimulation());
     return mergedPayload;
   },
 );

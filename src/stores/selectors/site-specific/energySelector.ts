@@ -1,6 +1,6 @@
 import { IBaselineData } from "@/lib/types/response";
 import { selectPopulationDataComparison } from "./socioEconomySelector";
-import { selectLandCoverBaseline } from "./baseSelector";
+import { selectLandCoverBaseline } from "../baseSelector";
 import {
   selectPvAreaHousingProjection,
   selectPvAreaHousingProjectionA,

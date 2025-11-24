@@ -29,12 +29,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main className=" bg-white w-full">
-          <Navigation />
-          <div className=" w-full">
-            <ProviderComponent>{children}</ProviderComponent>
-          </div>
-        </main>
+        <ProviderComponent>
+          <main className="bg-white w-full">
+            <Navigation />
+            <div className=" w-full">{children}</div>
+          </main>
+        </ProviderComponent>
       </body>
     </html>
   );

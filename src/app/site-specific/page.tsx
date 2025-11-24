@@ -22,6 +22,7 @@ import Alert from "@/components/alert";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
 import { ALL_METRICS } from "@/lib/constant/metrics";
 import TableWidget from "@/components/table/widget";
+import { siteSpecificInput } from "@/config/form";
 
 const DSSPage = () => {
   // init data
@@ -34,7 +35,7 @@ const DSSPage = () => {
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
   const simulationState = useAppSelector(
-    (state) => state.simulation.active,
+    (state) => state.siteSpecific,
     shallowEqual,
   );
   const displayedMetrics = useAppSelector(selectDisplayedMetrics);
@@ -173,10 +174,15 @@ const DSSPage = () => {
         >
           <ScenarioMenu
             simulationState={simulationState}
+            category="siteSpecific"
             handleOpenScenarioTab={handleOpenScenarioTab}
             errors={errors}
           />
-          <SimulationForm simulationState={simulationState} />
+          <SimulationForm
+            category="siteSpecific"
+            simulationState={simulationState}
+            FormInputs={siteSpecificInput}
+          />
         </div>
 
         {/* chart content */}

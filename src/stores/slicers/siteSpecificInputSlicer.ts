@@ -1,52 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IRootState } from "@/stores";
-export interface BaselinePayload {
-  [key: string]: number;
-}
-export type TimePeriod = "2025-2030" | "2031-2040" | "2041-2045";
-export type TimePeriodData = Record<TimePeriod, number | null>;
-export interface AgricultureState {
-  growthScenario: TimePeriodData;
-  landConversion: TimePeriodData;
-  aquacultureLandGrowth: TimePeriodData;
-  productivityTarget: TimePeriodData;
-}
-export interface LivestockState {
-  cattleGrowth: TimePeriodData;
-  poultryGrowth: TimePeriodData;
-  goatGrowth: TimePeriodData;
-}
-export interface EnergyState {
-  solarPvCoverage: TimePeriodData;
-  solarPvAreaIndustrial: TimePeriodData;
-  solarPvAreaHousing: TimePeriodData;
-  onGrid: TimePeriodData;
-  offGrid: TimePeriodData;
-  electricitySupply: TimePeriodData;
-  electricityDemand: TimePeriodData;
-  industrialEnergy: TimePeriodData;
-  domesticElectricity: TimePeriodData;
-}
-export interface IndustryState {
-  growth: TimePeriodData;
-}
-export interface WaterState {
-  artificialPondIndustrial: TimePeriodData;
-  artificialPondHousing: TimePeriodData;
-  surfaceWaterCapacity: TimePeriodData;
-  groundWaterCapacity: TimePeriodData;
-  domesticWaterDemand: TimePeriodData;
-  industrialWater: TimePeriodData;
-}
 
-export interface DemographyState {
-  populationGrowth: TimePeriodData;
-}
+import {
+  AgricultureState,
+  LivestockState,
+  EnergyState,
+  IndustryState,
+  WaterState,
+  DemographyState,
+  BaselinePayload,
+  initialTimePeriodData,
+} from "@/lib/constant/inputType.constant";
+import { ContextSpecificState } from "./contextSpecificInputSlicer";
 
-export interface SimulationState {
+export interface SiteSpecificState {
   simulationName: string | null;
-  scenario_a: string | null;
-  scenario_b: string | null;
   agriculture: AgricultureState;
   livestock: LivestockState;
   energy: EnergyState;
@@ -55,21 +23,8 @@ export interface SimulationState {
   demography: DemographyState;
 }
 
-export interface UpdatePayload {
-  path: string[];
-  value: number | string | null;
-}
-
-const initialTimePeriodData: TimePeriodData = {
-  "2025-2030": 0,
-  "2031-2040": 0,
-  "2041-2045": 0,
-};
-
-export const Simulation: SimulationState = {
+export const SiteSpecific: SiteSpecificState = {
   simulationName: null,
-  scenario_a: null,
-  scenario_b: null,
   agriculture: {
     growthScenario: { ...initialTimePeriodData },
     landConversion: { ...initialTimePeriodData },
@@ -108,47 +63,42 @@ export const Simulation: SimulationState = {
   },
 };
 
-interface DssInputSliceState {
-  active: SimulationState;
-  baseline: SimulationState;
+export interface DssSiteSpecificState {
+  active: SiteSpecificState;
+  baseline: SiteSpecificState;
+  scenario_a: string | null;
+  scenario_b: string | null;
 }
 
-const initialState: DssInputSliceState = {
-  active: Simulation,
-  baseline: Simulation,
+const initialState: DssSiteSpecificState = {
+  active: SiteSpecific,
+  baseline: SiteSpecific,
+  scenario_a: null,
+  scenario_b: null,
 };
 
-const dssSimulationSlice = createSlice({
-  name: "simulation",
+const DssSiteSpecific = createSlice({
+  name: "siteSpecific",
   initialState: initialState,
   reducers: {
-    // updateValue: (state, action: PayloadAction<UpdatePayload>) => {
-    //   const { path, value } = action.payload;
-    //   let currentState: IRootState = state.active;
-
-    //   for (let i = 0; i < path.length - 1; i++) {
-    //     currentState = currentState[path[i]];
-    //   }
-    //   currentState[path[path.length - 1]] = value;
-    // },
+    updateSimulationName: (state, action: PayloadAction<string | null>) => {
+      state.active.simulationName = action.payload;
+    },
     updateSimulationSelect: (
       state,
       action: PayloadAction<{ name: string; value: string | null }>,
     ) => {
       const { name, value } = action.payload;
       if (name === "scenario_a") {
-        state.active.scenario_a = value;
+        state.scenario_a = value;
       } else {
-        state.active.scenario_b = value;
+        state.scenario_b = value;
       }
-    },
-    updateSimulationName: (state, action: PayloadAction<string | null>) => {
-      state.active.simulationName = action.payload;
     },
     resetSimulation: (state) => {
       state.active.simulationName = null;
     },
-    setAllActiveInputs: (state, action: PayloadAction<SimulationState>) => {
+    setAllActiveInputs: (state, action: PayloadAction<SiteSpecificState>) => {
       state.active = action.payload;
     },
     populateInputsWithBaseline: (
@@ -195,11 +145,11 @@ const dssSimulationSlice = createSlice({
 });
 
 export const {
-  updateSimulationSelect,
   resetSimulation,
   singleInput,
+  updateSimulationSelect,
   updateSimulationName,
   populateInputsWithBaseline,
   setAllActiveInputs,
-} = dssSimulationSlice.actions;
-export default dssSimulationSlice.reducer;
+} = DssSiteSpecific.actions;
+export default DssSiteSpecific.reducer;

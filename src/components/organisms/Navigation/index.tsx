@@ -25,8 +25,8 @@ const Navigation = () => {
       href: "#",
       label: "DSS Interface",
       subItems: [
-        { href: "/dss-interface", label: "Site Specific" },
-        { href: "#", label: "Context Specific" },
+        { href: "/site-specific", label: "Site Specific" },
+        { href: "/context-specific", label: "Context Specific" },
       ],
     },
     { href: "#", label: "Contact" },

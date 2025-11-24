@@ -9,7 +9,7 @@ import {
   selectPopulationScenarioProjectionA,
   selectPopulationScenarioProjectionB,
   selectPopulationScenarioProjectionBaseline,
-} from "./scenarioProjectionSelector";
+} from "@/stores/selectors/site-specific/scenarioProjectionSelector";
 import { IBaselineData } from "@/lib/types/response";
 
 const calculateGdrpTotal = (projection: IBaselineData | null): number[] => {
