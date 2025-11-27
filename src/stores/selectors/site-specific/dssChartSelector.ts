@@ -35,15 +35,11 @@ import {
   // selectContextSpecificBaseline
   // selectIndustryInputs,
 } from "@/stores/selectors/baseSelector";
-import { ALL_METRICS } from "@/lib/constant/metrics";
+import { ALL_METRICS_SITE_SPECIFICS } from "@/lib/constant/metrics";
 // import { selectTotalWaterDemand } from "./demandSideSelector";
 
-type ComparisonData = {
-  active: number[];
-  baseline: number[];
-  scenarioA: number[];
-  scenarioB: number[];
-};
+type ScenarioKey = "active" | "baseline" | "scenarioA" | "scenarioB";
+type ComparisonData = Record<ScenarioKey, number[]>;
 
 export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
   createSelector(
@@ -111,7 +107,9 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
         waterAvailability,
       };
 
-      const metricConfig = ALL_METRICS.find((m) => m.id === metricId);
+      const metricConfig = ALL_METRICS_SITE_SPECIFICS.find(
+        (m) => m.id === metricId,
+      );
       const selectedMetricData = metricsMap[metricId];
       if (!selectedMetricData) return { series: [], colors: [] };
       const series = [];
@@ -140,7 +138,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
           colors.push(additional.color || "#808080");
         }
       }
-      return { series, colors, type: metricConfig?.type };
+      return { series, colors, type: metricConfig?.type ?? "line" };
     },
   );
 

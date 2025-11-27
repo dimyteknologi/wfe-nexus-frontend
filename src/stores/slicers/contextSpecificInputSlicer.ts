@@ -23,44 +23,44 @@ export interface ContextSpecificState {
 export const ContextSpecific: ContextSpecificState = {
   simulationName: null,
   food: {
-    populationInitial: { ...initialTimePeriodDataContext },
-    populationGrowth: { ...initialTimePeriodDataContext },
-    riceDemandPerPerson: { ...initialTimePeriodDataContext },
-    convertionFactorToRice: { ...initialTimePeriodDataContext },
-    convertionFactoTOGkg: { ...initialTimePeriodDataContext },
+    populationInitial: { "2015-2030": 950000 },
+    populationGrowth: { "2015-2030": 1.32 },
+    riceDemandPerPerson: { "2015-2030": 79.2 },
+    convertionFactorToRice: { "2015-2030": 0.63 },
+    convertionFactoTOGkg: { "2015-2030": 0.85 },
   },
   agriculture: {
-    areaInpari32: { ...initialTimePeriodDataContext },
-    conversionInpari32: { ...initialTimePeriodDataContext },
-    areaCiherang: { ...initialTimePeriodDataContext },
-    conversionCiherang: { ...initialTimePeriodDataContext },
-    areaMekongga: { ...initialTimePeriodDataContext },
-    conversionMekongga: { ...initialTimePeriodDataContext },
-    areaHipaSeries: { ...initialTimePeriodDataContext },
-    conversionHipaSeries: { ...initialTimePeriodDataContext },
-    areaLokal: { ...initialTimePeriodDataContext },
-    conversionLokal: { ...initialTimePeriodDataContext },
+    areaInpari32: { "2015-2030": 15000 },
+    conversionInpari32: { "2015-2030": 1.32 },
+    areaCiherang: { "2015-2030": 25000 },
+    conversionCiherang: { "2015-2030": 0.88 },
+    areaMekongga: { "2015-2030": 32000 },
+    conversionMekongga: { "2015-2030": 1.7 },
+    areaHipaSeries: { "2015-2030": 12500 },
+    conversionHipaSeries: { "2015-2030": 1.2 },
+    areaLokal: { "2015-2030": 7500 },
+    conversionLokal: { "2015-2030": 2.1 },
   },
   fertilizer: {
-    percentageOfChemical: { ...initialTimePeriodDataContext },
-    ratioOrganic: { ...initialTimePeriodDataContext },
+    percentageOfChemical: { "2015-2030": 30 },
+    ratioOrganic: { "2015-2030": 17 },
   },
   rainfall: {
-    annualRainfall: { ...initialTimePeriodDataContext },
-    areaSize: { ...initialTimePeriodDataContext },
+    annualRainfall: { "2015-2030": 150 },
+    areaSize: { "2015-2030": 110 },
   },
 };
 
 export interface DssContextSpecificState {
   active: ContextSpecificState;
-  baseline: ContextSpecificState;
+  // baseline: ContextSpecificState;
   scenario_a: string | null;
   scenario_b: string | null;
 }
 
 const initialState: DssContextSpecificState = {
   active: ContextSpecific,
-  baseline: ContextSpecific,
+  // baseline: ContextSpecific,
   scenario_a: null,
   scenario_b: null,
 };
@@ -102,15 +102,16 @@ const DssContextSpecific = createSlice({
         const pathParts = path.split(".");
         try {
           let activeTarget: IRootState = state.active;
-          let baselineTarget: IRootState = state.baseline;
+          // let baselineTarget: IRootState = state.baseline;
           for (let i = 0; i < pathParts.length; i++) {
             activeTarget = activeTarget[pathParts[i]];
-            baselineTarget = baselineTarget[pathParts[i]];
+            // baselineTarget = baselineTarget[pathParts[i]];
           }
-          if (activeTarget && baselineTarget) {
+          // if (activeTarget && baselineTarget) {
+          if (activeTarget) {
             for (const period in activeTarget) {
               activeTarget[period] = value;
-              baselineTarget[period] = value;
+              // baselineTarget[period] = value;
             }
           }
         } catch (e) {

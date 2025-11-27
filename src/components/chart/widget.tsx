@@ -5,14 +5,17 @@ import SelectCollapsible from "@/components/select/index";
 import ChartComponent from "@/components/chart/index";
 import { useAppSelector, useAppDispatch } from "@/stores/root-reducer";
 import { updateChartMetric } from "@/stores/slicers/dashboardSlicer";
-import { selectAvailableMetricsGrouped } from "@/stores/selectors/dssDashboardSelector";
-import { makeSelectComparisonSeriesForMetric } from "@/stores/selectors/site-specific/dssChartSelector";
+import {
+  selectAvailableMetricsGrouped,
+  selectAvailableMetricsGroupedContext,
+} from "@/stores/selectors/dssDashboardSelector";
+import { makeSelectComparisonSeriesForMetric as ComparissonSiteSeries } from "@/stores/selectors/site-specific/dssChartSelector";
+import { makeSelectComparisonSeriesForMetric as ComparissonContextSeries } from "@/stores/selectors/context-specific/dssChartSelector";
 import { Metric } from "@/lib/constant/metrics";
-
-import { OptionType } from "@/lib/types/select.types";
 
 interface ChartWidgetProps {
   metric: Metric;
+  category: "site" | "context";
   chartIndex: number;
   categories: number[];
   isScenarioOpen: boolean;
@@ -21,38 +24,43 @@ interface ChartWidgetProps {
 const ChartWidget = ({
   metric,
   chartIndex,
+  category,
   categories,
   isScenarioOpen,
 }: ChartWidgetProps) => {
   const dispatch = useAppDispatch();
   const selectSeriesForThisChart = useMemo(
-    () => makeSelectComparisonSeriesForMetric(metric.id),
-    [metric.id],
+    () =>
+      category === "site"
+        ? ComparissonSiteSeries(metric.id)
+        : ComparissonContextSeries(metric.id),
+    [metric.id, category],
   );
+
   const { series, type, colors } = useAppSelector(selectSeriesForThisChart);
-  const availableMetricsGrouped = useAppSelector(selectAvailableMetricsGrouped);
+
+  const availableMetricsGrouped = useAppSelector(
+    category === "site"
+      ? selectAvailableMetricsGrouped
+      : selectAvailableMetricsGroupedContext,
+  );
 
   const handleSelectionChange = (selectedId: string) => {
     dispatch(
       updateChartMetric({
-        chartIndex: chartIndex,
+        target: category,
+        chartIndex,
         newMetricId: selectedId,
       }),
     );
   };
-
-  // const selectOptions = availableMetrics.map((m) => ({
-  //   id: m.id,
-  //   title: `${m.title} (${m.unit})`,
-  //   content: m.content,
-  // }));
 
   return (
     <div
       className={`w-full max-w-full mx-auto bg-white rounded-lg p-2 shadow-md ${
         isScenarioOpen
           ? "sm:col-span-1 xl:col-span-3"
-          : "sm:col-span-1  lg:col-span-3"
+          : "sm:col-span-1 lg:col-span-3"
       }`}
     >
       <SelectCollapsible
@@ -60,6 +68,7 @@ const ChartWidget = ({
         selectedValue={metric}
         onSelect={handleSelectionChange}
       />
+
       <div className="mt-2">
         <ChartComponent
           colors={colors}

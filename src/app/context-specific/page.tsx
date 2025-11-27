@@ -16,28 +16,26 @@ import {
   setScenarioModal,
 } from "@/stores/slicers/dssModalSlicer";
 import { File, FileUp } from "lucide-react";
-import { shallowEqual } from "react-redux";
 import { contextSpecificInput } from "@/config/form";
+import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
+import { ALL_METRICS_CONTEXT_SPECIFICS } from "@/lib/constant/metrics";
+import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSelector";
+
 const ContextSpecificPage = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
-  // const paddyPerFieldPerYieldComparison = useAppSelector(selectPaddyPerFieldPerYieldComparisson, shallowEqual);
-  // // const averagePlantingSessions = useAppSelector(selectAveragePlantingSessions, shallowEqual);
-  // // const potentialProductivityPerScenario = useAppSelector(selectOrganicDemandPerScenario, shallowEqual);
-  // // console.log(potentialProductivityPerScenario, 'water');
-  // // console.log(averagePlantingSessions, 'average');
-  // // console.log(paddyPerFieldPerYieldComparison);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const simulationState = useAppSelector(
-    (state) => state.contextSpecific,
-    shallowEqual,
-  );
+  const simulationState = useAppSelector((state) => state.contextSpecific);
+  const displayedMetrics = useAppSelector(selectDisplayedMetricsContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
-  const yearsArray = Array.from({ length: 36 }, (_, i) => 2010 + i);
+  const yearsArray = Array.from({ length: 10 }, (_, i) => 2015 + i);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
   const isDssConceptOpen = dssModalState.dssConceptModal;
+  const uniqueCategories = [
+    ...new Set(ALL_METRICS_CONTEXT_SPECIFICS.map((metric) => metric.category)),
+  ];
 
   const handleOpenScenarioTab = useCallback(() => {
     dispatch(setScenarioModal(!isScenarioOpen));
@@ -55,9 +53,9 @@ const ContextSpecificPage = () => {
     setIsDropdownOpen((current) => !current);
   }, []);
 
-  // const handlePreset = (category: string) => {
-  //     dispatch(setChartsToCategoryPreset(category));
-  // };
+  const handlePreset = (category: string) => {
+    dispatch(setChartsToCategoryPreset({ target: "context", category }));
+  };
 
   return (
     <div className="w-full px-6 pt-28 overflow-hidden">
@@ -87,6 +85,19 @@ const ContextSpecificPage = () => {
           </button>
         </div>
         <div className="flex gap-4 items-center">
+          <div className="flex gap-4">
+            {uniqueCategories.map((category) => (
+              <div
+                key={category}
+                onClick={() => handlePreset(category)}
+                className={`cursor-pointer border border-green-700 rounded-xl py-1 px-4`}
+              >
+                <p className={`text-xs capitalize`}>
+                  {category == "SE" ? "Socio Economic" : category}
+                </p>
+              </div>
+            ))}
+          </div>
           <div
             className="relative p-2"
             onMouseEnter={mouseHover}
@@ -175,9 +186,19 @@ const ContextSpecificPage = () => {
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"
             } gap-2 sm:gap-3 md:gap-4 lg:gap-6`}
           >
+            {displayedMetrics.map((metric, index) => (
+              <ChartWidget
+                category={"context"}
+                key={metric.id}
+                metric={metric}
+                chartIndex={index}
+                categories={yearsArray}
+                isScenarioOpen={isScenarioOpen}
+              />
+            ))}
             {!isScenarioOpen && (
               <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7">
-                {/* <TableWidget /> */}
+                <TableWidget category={"context"} />
               </div>
             )}
           </div>

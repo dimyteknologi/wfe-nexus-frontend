@@ -9,7 +9,6 @@ import ScenarioMenu from "@/components/organisms/Menu/Scenario";
 import ChartWidget from "@/components/chart/widget";
 import { useAppDispatch, useAppSelector } from "../../stores/root-reducer";
 import { selectDisplayedMetrics } from "@/stores/selectors/dssDashboardSelector";
-import { shallowEqual } from "react-redux";
 import {
   setDssConceptModal,
   setImportModal,
@@ -20,7 +19,7 @@ import ImportModal from "@/components/importModal";
 import DSSConceptModal from "@/components/dssConceptModal";
 import Alert from "@/components/alert";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
-import { ALL_METRICS } from "@/lib/constant/metrics";
+import { ALL_METRICS_SITE_SPECIFICS } from "@/lib/constant/metrics";
 import TableWidget from "@/components/table/widget";
 import { siteSpecificInput } from "@/config/form";
 
@@ -34,17 +33,14 @@ const DSSPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
-  const simulationState = useAppSelector(
-    (state) => state.siteSpecific,
-    shallowEqual,
-  );
+  const simulationState = useAppSelector((state) => state.siteSpecific);
   const displayedMetrics = useAppSelector(selectDisplayedMetrics);
   const yearsArray = Array.from({ length: 36 }, (_, i) => 2010 + i);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
   const isDssConceptOpen = dssModalState.dssConceptModal;
   const uniqueCategories = [
-    ...new Set(ALL_METRICS.map((metric) => metric.category)),
+    ...new Set(ALL_METRICS_SITE_SPECIFICS.map((metric) => metric.category)),
   ];
   const handleOpenScenarioTab = useCallback(() => {
     dispatch(setScenarioModal(!isScenarioOpen));
@@ -63,7 +59,7 @@ const DSSPage = () => {
   }, []);
 
   const handlePreset = (category: string) => {
-    dispatch(setChartsToCategoryPreset(category));
+    dispatch(setChartsToCategoryPreset({ target: "site", category }));
   };
 
   return (
@@ -198,6 +194,7 @@ const DSSPage = () => {
           >
             {displayedMetrics.map((metric, index) => (
               <ChartWidget
+                category={"site"}
                 key={metric.id}
                 metric={metric}
                 chartIndex={index}
@@ -207,7 +204,7 @@ const DSSPage = () => {
             ))}
             {!isScenarioOpen && (
               <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7">
-                <TableWidget />
+                <TableWidget category={"site"} />
               </div>
             )}
           </div>

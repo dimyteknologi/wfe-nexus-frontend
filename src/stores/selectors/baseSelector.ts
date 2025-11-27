@@ -17,8 +17,8 @@ export const selectSiteSpecificScenarioBName = (state: IRootState) =>
 // CONTEXT SPECIFIC ACTIVE INPUT
 export const selectContextSpecificActive = (state: IRootState) =>
   state.contextSpecific.active;
-export const selectContextSpecificBaseline = (state: IRootState) =>
-  state.contextSpecific.baseline;
+// export const selectContextSpecificBaseline = (state: IRootState) =>
+//   state.contextSpecific.baseline;
 export const selectContextSpecificAName = (state: IRootState) =>
   state.contextSpecific.scenario_a;
 export const selectContextSpecificBName = (state: IRootState) =>
@@ -72,7 +72,9 @@ export const selectScenarioByCategory =
 
 // ui
 export const selectDisplayedIds = (state: IRootState) =>
-  state.dashboard.displayedChartMetricIds;
+  state.dashboard.displayedChartSiteSpecifics;
+export const selectDisplayedContextIds = (state: IRootState) =>
+  state.dashboard.displayedChartContextSpecifics;
 // export const selectActiveCategory = (state: IRootState) => state.dashboard.activeCategory;
 
 export const selectFlattenedSiteSpecificInputs = createSelector(

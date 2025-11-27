@@ -74,7 +74,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
           }),
         );
       }
-      setSimulationName(e.target.value);
+      // setSimulationName(e.target.value);
     },
     [],
   );
@@ -91,7 +91,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
           type: "success",
         }),
       );
-      dispatch(resetToBaseline());
+      dispatch(resetToBaseline(category));
       setSimulationName("");
     } else {
       dispatch(
@@ -176,7 +176,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
             </div>
             <div className="group w-full sm:w-auto">
               <button
-                onClick={() => dispatch(resetToBaseline())}
+                onClick={() => dispatch(resetToBaseline(category))}
                 className={`w-full sm:w-auto p-2 sm:p-3 rounded-lg md:rounded-xl font-medium transition-all transform hover:scale-105 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-md hover:shadow-lg`}
                 aria-label="Save current simulation"
               >
@@ -211,7 +211,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
                   onChange={handleChange}
                   className="block w-full px-3 py-2 md:px-4 md:py-2.5 text-sm text-gray-700 bg-white/90 border border-gray-300 rounded-lg shadow-xs appearance-none focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 hover:border-gray-400 transition-all duration-200"
                 >
-                  <option value="">-- Select an option --</option>
+                  <option value="">-- select --</option>
                   {scenarioOptions.map(
                     (scenario: SiteSpecificState | ContextSpecificState) => (
                       <option
@@ -241,7 +241,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
                   onChange={handleChange}
                   className="block w-full px-3 py-2 md:px-4 md:py-2.5 text-sm text-gray-700 bg-white/90 border border-gray-300 rounded-lg shadow-xs appearance-none focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 hover:border-gray-400 transition-all duration-200"
                 >
-                  <option value="">-- Select an option --</option>
+                  <option value="">-- select --</option>
                   {scenarioOptions.map(
                     (
                       scenario: SiteSpecificState | ContextSpecificState,
