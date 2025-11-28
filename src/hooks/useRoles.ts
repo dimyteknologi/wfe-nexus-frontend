@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/api/api';
 import { Role } from '@/lib/types/admin.types';
-import { DUMMY_ROLES } from '@/lib/dummy-data';
 
 export function useRoles() {
   const [roles, setRoles] = useState<Role[]>([]);
@@ -12,8 +11,9 @@ export function useRoles() {
     try {
       setLoading(true);
       const response = await apiClient.get('/role');
-      setRoles(response.data);
-      console.log(response.data)
+      const rolesList = Array.isArray(response) ? response : (response.data || []);
+      setRoles(rolesList);
+      console.log(rolesList);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch roles');
@@ -25,7 +25,7 @@ export function useRoles() {
   const createRole = async (roleData: Omit<Role, 'id'>) => {
     try {
       const response = await apiClient.post('/role', roleData);
-      const newRole = response.data;
+      const newRole = response.data || response;
       setRoles(prev => [...prev, newRole]);
       return newRole;
     } catch (err) {
@@ -33,29 +33,21 @@ export function useRoles() {
     }
   };
 
-  const updateRole = async (id: number, roleData: Partial<Role>) => {
+  const updateRole = async (id: string, roleData: Partial<Role>) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const index = DUMMY_ROLES.findIndex(r => r.id === id);
-      if (index !== -1) {
-        DUMMY_ROLES[index] = { ...DUMMY_ROLES[index], ...roleData };
-        setRoles([...DUMMY_ROLES]);
-        return DUMMY_ROLES[index];
-      }
-      throw new Error('Role not found');
+      const response = await apiClient.put(`/role/${id}`, roleData);
+      const updatedRole = response.data || response;
+      setRoles(prev => prev.map(role => role.id === id ? updatedRole : role));
+      return updatedRole;
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to update role');
     }
   };
 
-  const deleteRole = async (id: number) => {
+  const deleteRole = async (id: string) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const index = DUMMY_ROLES.findIndex(r => r.id === id);
-      if (index !== -1) {
-        DUMMY_ROLES.splice(index, 1);
-        setRoles([...DUMMY_ROLES]);
-      }
+      await apiClient.delete(`/role/${id}`);
+      setRoles(prev => prev.filter(role => role.id !== id));
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to delete role');
     }

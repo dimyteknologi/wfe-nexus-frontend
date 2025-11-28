@@ -39,8 +39,8 @@ export function UserForm({ initialData = defaultFormData, isEdit = false, onSubm
       try {
         const [rolesData, citiesData, orgsData] = await Promise.all([
           apiClient.get('/role'),
-          apiClient.get('/city'),
-          apiClient.get('/organization')
+          apiClient.get('/kota'),
+          apiClient.get('/institusi')
         ]);
         setRoles(rolesData);
         setCities(citiesData);
@@ -99,11 +99,11 @@ export function UserForm({ initialData = defaultFormData, isEdit = false, onSubm
       newErrors.institutionId = "Organization is required";
     }
 
-    if (!formData.phone.trim()) {
+    if (!formData.phone?.trim()) {
       newErrors.phone = "Phone number is required";
     }
 
-    if (!formData.department.trim()) {
+    if (!formData.department?.trim()) {
       newErrors.department = "Department is required";
     }
 

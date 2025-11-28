@@ -9,7 +9,7 @@ export default function RolesPage() {
   const [activeTab, setActiveTab] = useState(0);
   const { roles, loading, error, deleteRole } = useRoles();
 
-  const handleDelete = async (roleId: number, roleName: string) => {
+  const handleDelete = async (roleId: string, roleName: string) => {
     if (confirm(`Are you sure you want to delete ${roleName}?`)) {
       try {
         await deleteRole(roleId);
@@ -60,7 +60,7 @@ export default function RolesPage() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-green-800 text-white px-6 py-3 rounded-xl font-medium hover:bg-green-700 transition-colors"
+            className="bg-green-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors"
           >
             Add New Role
           </motion.button>
@@ -78,9 +78,7 @@ export default function RolesPage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Role Name</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Description</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Permissions</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Status</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Actions</th>
               </tr>
             </thead>
@@ -106,6 +104,12 @@ export default function RolesPage() {
                     </div>
                   </td>
                   
+                  <td className="px-6 py-4">
+                    <span className="text-sm text-gray-500">
+                      {role.permissions?.length || 0} permissions
+                    </span>
+                  </td>
+
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
                       <Link href={`/admin/role/${role.id}`}>

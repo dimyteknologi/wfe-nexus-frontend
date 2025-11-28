@@ -1,6 +1,6 @@
 import { getSession } from 'next-auth/react';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://103.63.24.47:4000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://103.63.24.47:4000';
 
 const getAuthHeader = async (): Promise<Record<string, string>> => {
   const session = await getSession();

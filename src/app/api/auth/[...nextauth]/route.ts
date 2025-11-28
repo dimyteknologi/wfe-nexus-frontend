@@ -27,10 +27,10 @@ const handler = NextAuth({
         try {
           console.log("=== Login Attempt ===");
           console.log("Email:", credentials?.email);
-          console.log("API URL:", `${API_URL}/api/auth/login`);
+          console.log("API URL:", `${API_URL}/auth/login`);
           
           const loginRes = await axios.post(
-            `${API_URL}/api/auth/login`,
+            `${API_URL}/auth/login`,
             {
               email: credentials?.email,
               password: credentials?.password,

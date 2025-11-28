@@ -11,6 +11,7 @@ const menuItems = [
   { href: "/admin/organization", label: "Organizations", icon: "🏢" },
   { href: "/admin/city", label: "Cities", icon: "🗺️" },
   { href: "/admin/role", label: "Roles", icon: "🔐" },
+  { href: "/admin/permission", label: "Permissions", icon: "🛡️" },
 ];
 
 export function AdminSidebar() {

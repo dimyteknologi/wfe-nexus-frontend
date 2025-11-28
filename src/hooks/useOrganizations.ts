@@ -25,7 +25,8 @@ export function useOrganizations() {
 
   const createOrganization = async (orgData: OrganizationFormData) => {
     try {
-      const newOrg = await apiClient.post('/institusi', orgData);
+      const response = await apiClient.post('/institusi', orgData);
+      const newOrg = response.data || response;
       setOrganizations(prev => [...prev, newOrg]);
       return newOrg;
     } catch (err) {
@@ -35,7 +36,8 @@ export function useOrganizations() {
 
   const updateOrganization = async (id: string, orgData: Partial<OrganizationFormData>) => {
     try {
-      const updatedOrg = await apiClient.put(`/institusi/${id}`, orgData);
+      const response = await apiClient.put(`/institusi/${id}`, orgData);
+      const updatedOrg = response.data || response;
       setOrganizations(prev => prev.map(org => org.id === id ? updatedOrg : org));
       return updatedOrg;
     } catch (err) {

@@ -23,7 +23,8 @@ export function useCities() {
 
   const createCity = async (cityData: CityFormData) => {
     try {
-      const newCity = await apiClient.post('/kota', cityData);
+      const response = await apiClient.post('/kota', cityData);
+      const newCity = response.data || response;
       setCities(prev => [...prev, newCity]);
       return newCity;
     } catch (err) {
@@ -33,7 +34,8 @@ export function useCities() {
 
   const updateCity = async (id: string, cityData: Partial<CityFormData>) => {
     try {
-      const updatedCity = await apiClient.put(`/city/${id}`, cityData);
+      const response = await apiClient.put(`/city/${id}`, cityData);
+      const updatedCity = response.data || response;
       setCities(prev => prev.map(city => city.id === id ? updatedCity : city));
       return updatedCity;
     } catch (err) {

@@ -9,7 +9,7 @@ import { useRoles } from '@/hooks/useRoles';
 export default function EditRolePage() {
   const params = useParams();
   const router = useRouter();
-  const roleId = Number(params.id);
+  const roleId = params.id as string;
   const { roles, updateRole, loading: rolesLoading } = useRoles();
   
   const [roleData, setRoleData] = useState<Role | null>(null);

@@ -141,7 +141,8 @@ export default function AdminDashboard() {
               { label: "Manage Users", icon: "👤", color: "green", href: "/admin/users" },
               { label: "Manage Organizations", icon: "🏢", color: "blue", href: "/admin/organization" },
               { label: "Manage Cities", icon: "🗺️", color: "purple", href: "/admin/city" },
-              { label: "Manage Roles", icon: "🔐", color: "orange", href: "/admin/role" }
+              { label: "Manage Roles", icon: "🔐", color: "orange", href: "/admin/role" },
+              { label: "Manage Permissions", icon: "🛡️", color: "red", href: "/admin/permission" }
             ].map((action, index) => (
               <Link key={action.label} href={action.href}>
                 <motion.div

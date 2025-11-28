@@ -78,9 +78,6 @@ export default function CitiesPage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">City Name</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Code</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Province</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Status</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Actions</th>
               </tr>
             </thead>

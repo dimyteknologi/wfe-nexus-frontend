@@ -47,11 +47,10 @@ export interface CityFormData {
 }
 
 export interface Role {
-  id: number;
+  id: string; // UUID
   name: string;
   description?: string;
-  permissions?: string[];
-  status: "Active" | "Inactive";
+  permissions?: Permission[];
   createdAt?: string;
 }
 
