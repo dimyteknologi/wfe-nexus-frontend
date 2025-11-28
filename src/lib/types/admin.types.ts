@@ -56,13 +56,21 @@ export interface Role {
 }
 
 export interface Organization {
-  id: number;
+  id: string; // UUID
   name: string;
-  code?: string;
-  type?: string;
-  status: "Active" | "Inactive";
-  contactEmail?: string;
-  createdAt?: string;
+  createdAt: string;
+  updatedAt: string | null;
+  deletedAt: string | null;
+  updatedBy: string;
+  users?: Array<{
+    id: string;
+    name: string;
+    email: string;
+  }>;
+}
+
+export interface OrganizationFormData {
+  name: string;
 }
 
 export interface StatsCard {
@@ -93,4 +101,30 @@ export interface CreateUserPayload {
   roleId: string;
   cityId: string;
   institutionId: string;
+}
+
+export interface Permission {
+  id: string; // UUID
+  permissionName: string;
+  permissionCode: string;
+  description: string | null;
+  roles?: Array<{
+    id: string;
+    roleId: string;
+    permissionId: string;
+    role: {
+      id: string;
+      name: string;
+    };
+  }>;
+}
+
+export interface PermissionFormData {
+  permissionName: string;
+  permissionCode: string;
+}
+
+export interface AssignPermissionPayload {
+  roleId: string;
+  permissionIds: string[];
 }

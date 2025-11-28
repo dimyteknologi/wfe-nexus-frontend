@@ -3,23 +3,23 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { OrganizationForm } from '@/components/admin/OrganizationForm';
-import { Organization } from '@/lib/types/admin.types';
+import { OrganizationFormData } from '@/lib/types/admin.types';
 import { useOrganizations } from '@/hooks/useOrganizations';
 
 export default function EditOrganizationPage() {
   const params = useParams();
   const router = useRouter();
-  const orgId = Number(params.id);
+  const orgId = params.id as string;
   const { organizations, updateOrganization, loading: orgsLoading } = useOrganizations();
   
-  const [orgData, setOrgData] = useState<Organization | null>(null);
+  const [orgData, setOrgData] = useState<OrganizationFormData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (organizations.length > 0) {
       const org = organizations.find(o => o.id === orgId);
       if (org) {
-        setOrgData(org);
+        setOrgData({ name: org.name });
       }
       setLoading(false);
     } else if (!orgsLoading) {
@@ -27,7 +27,7 @@ export default function EditOrganizationPage() {
     }
   }, [orgId, organizations, orgsLoading]);
 
-  const handleSubmit = async (formData: Partial<Organization>) => {
+  const handleSubmit = async (formData: OrganizationFormData) => {
     try {
       await updateOrganization(orgId, formData);
       alert('Organization updated successfully!');

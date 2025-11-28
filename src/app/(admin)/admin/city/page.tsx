@@ -9,7 +9,7 @@ export default function CitiesPage() {
   const [activeTab, setActiveTab] = useState(0);
   const { cities, loading, error, deleteCity } = useCities();
 
-  const handleDelete = async (cityId: number, cityName: string) => {
+  const handleDelete = async (cityId: string, cityName: string) => {
     if (confirm(`Are you sure you want to delete ${cityName}?`)) {
       try {
         await deleteCity(cityId);
@@ -105,18 +105,7 @@ export default function CitiesPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="text-gray-600">{city.code || '-'}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-gray-600">{city.province || '-'}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${city.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {city.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
+                 <td className="px-6 py-4">
                     <div className="flex space-x-2">
                       <Link href={`/admin/city/${city.id}`}>
                         <motion.button

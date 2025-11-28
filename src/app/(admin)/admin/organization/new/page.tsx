@@ -3,21 +3,21 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { OrganizationForm } from "@/components/admin/OrganizationForm";
-import { Organization } from "@/lib/types/admin.types";
+import { OrganizationFormData } from "@/lib/types/admin.types";
 import { useOrganizations } from "@/hooks/useOrganizations";
 
 export default function AddOrganizationPage() {
   const router = useRouter();
   const { createOrganization } = useOrganizations();
 
-  const handleSubmit = async (formData: Partial<Organization>) => {
+  const handleSubmit = async (formData: OrganizationFormData) => {
     try {
-      await createOrganization(formData as Omit<Organization, 'id'>);
+      await createOrganization(formData);
       alert("Organization created successfully!");
       router.push("/admin/organization");
     } catch (error) {
       console.error("Error creating organization:", error);
-      alert("Error creating organization. Please try again.");
+      alert(error instanceof Error ? error.message : "Error creating organization. Please try again.");
     }
   };
 

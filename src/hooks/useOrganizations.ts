@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Organization } from '@/lib/types/admin.types';
-import { DUMMY_ORGANIZATIONS } from '@/lib/dummy-data';
+import { Organization, OrganizationFormData } from '@/lib/types/admin.types';
+import { apiClient } from '@/lib/api/api';
 
 export function useOrganizations() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -12,9 +12,9 @@ export function useOrganizations() {
   const fetchOrganizations = async () => {
     try {
       setLoading(true);
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setOrganizations([...DUMMY_ORGANIZATIONS]);
+      const data = await apiClient.get('/institusi');
+      const orgList = Array.isArray(data) ? data : (data.data || []);
+      setOrganizations(orgList);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch organizations');
@@ -23,44 +23,30 @@ export function useOrganizations() {
     }
   };
 
-  const createOrganization = async (orgData: Omit<Organization, 'id'>) => {
+  const createOrganization = async (orgData: OrganizationFormData) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const newOrg = { 
-        ...orgData, 
-        id: Math.floor(Math.random() * 10000) + 100 
-      } as Organization;
-      DUMMY_ORGANIZATIONS.push(newOrg);
-      setOrganizations([...DUMMY_ORGANIZATIONS]);
+      const newOrg = await apiClient.post('/institusi', orgData);
+      setOrganizations(prev => [...prev, newOrg]);
       return newOrg;
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to create organization');
     }
   };
 
-  const updateOrganization = async (id: number, orgData: Partial<Organization>) => {
+  const updateOrganization = async (id: string, orgData: Partial<OrganizationFormData>) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const index = DUMMY_ORGANIZATIONS.findIndex(o => o.id === id);
-      if (index !== -1) {
-        DUMMY_ORGANIZATIONS[index] = { ...DUMMY_ORGANIZATIONS[index], ...orgData };
-        setOrganizations([...DUMMY_ORGANIZATIONS]);
-        return DUMMY_ORGANIZATIONS[index];
-      }
-      throw new Error('Organization not found');
+      const updatedOrg = await apiClient.put(`/institusi/${id}`, orgData);
+      setOrganizations(prev => prev.map(org => org.id === id ? updatedOrg : org));
+      return updatedOrg;
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to update organization');
     }
   };
 
-  const deleteOrganization = async (id: number) => {
+  const deleteOrganization = async (id: string) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const index = DUMMY_ORGANIZATIONS.findIndex(o => o.id === id);
-      if (index !== -1) {
-        DUMMY_ORGANIZATIONS.splice(index, 1);
-        setOrganizations([...DUMMY_ORGANIZATIONS]);
-      }
+      await apiClient.delete(`/institusi/${id}`);
+      setOrganizations(prev => prev.filter(org => org.id !== id));
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to delete organization');
     }

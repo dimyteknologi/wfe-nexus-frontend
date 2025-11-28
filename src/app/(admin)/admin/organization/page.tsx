@@ -9,7 +9,7 @@ export default function OrganizationsPage() {
   const [activeTab, setActiveTab] = useState(0);
   const { organizations, loading, error, deleteOrganization } = useOrganizations();
 
-  const handleDelete = async (orgId: number, orgName: string) => {
+  const handleDelete = async (orgId: string, orgName: string) => {
     if (confirm(`Are you sure you want to delete ${orgName}?`)) {
       try {
         await deleteOrganization(orgId);
@@ -105,20 +105,6 @@ export default function OrganizationsPage() {
                         <p className="font-medium text-gray-800">{org.name}</p>
                       </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-gray-600">{org.code || '-'}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-gray-600">{org.type || '-'}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-gray-600">{org.contactEmail || '-'}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${org.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {org.status}
-                    </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
