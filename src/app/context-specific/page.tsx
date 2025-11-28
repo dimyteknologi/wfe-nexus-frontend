@@ -1,7 +1,7 @@
 "use client";
 
 import Alert from "@/components/alert";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
 import ChartWidget from "@/components/chart/widget";
 import SimulationForm from "@/components/form/simulation";

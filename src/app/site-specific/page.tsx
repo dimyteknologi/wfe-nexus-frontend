@@ -1,7 +1,7 @@
 "use client";
 
 // import { motion } from "framer-motion";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { FileUp, File } from "lucide-react";
 import { useInitializeData } from "@/hooks/useInitDummy";
 import SimulationForm from "@/components/form/simulation";

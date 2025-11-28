@@ -54,6 +54,27 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   );
 
   useEffect(() => {
+    const persistKey = "persist:root";
+    const persistData = localStorage.getItem(persistKey);
+
+    if (persistData) {
+      const parsed = JSON.parse(persistData);
+      const scenariosParsed = JSON.parse(parsed.scenarios);
+
+      if (
+        Array.isArray(scenariosParsed.data) &&
+        scenariosParsed.data.length === 0
+      ) {
+        const newScenarios = {
+          data: { siteSpecific: [], contextSpecific: [] },
+        };
+        parsed.scenarios = JSON.stringify(newScenarios);
+        localStorage.setItem(persistKey, JSON.stringify(parsed));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     dispatch(loadScenarios());
   }, [dispatch]);
 
@@ -74,7 +95,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
           }),
         );
       }
-      // setSimulationName(e.target.value);
+      setSimulationName(e.target.value);
     },
     [],
   );
@@ -176,7 +197,9 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
             </div>
             <div className="group w-full sm:w-auto">
               <button
-                onClick={() => dispatch(resetToBaseline(category))}
+                onClick={() => {
+                  (dispatch(resetToBaseline(category)), setSimulationName(""));
+                }}
                 className={`w-full sm:w-auto p-2 sm:p-3 rounded-lg md:rounded-xl font-medium transition-all transform hover:scale-105 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-md hover:shadow-lg`}
                 aria-label="Save current simulation"
               >

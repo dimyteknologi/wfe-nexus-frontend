@@ -43,7 +43,7 @@ export const resetToBaseline = createAsyncThunk(
   async (category: ResetCategory, { getState, dispatch }) => {
     const state = getState() as IRootState;
 
-    if (category === "siteSpecific") {
+    if (category == "siteSpecific") {
       let mergedPayload: BaselinePayload = {};
       const gdrpData = selectGdrpBaseline(state);
       const populationData = selectPopulationBaseline(state);
@@ -82,7 +82,7 @@ export const resetToBaseline = createAsyncThunk(
       return mergedPayload;
     }
 
-    if (category === "contextSpecific") {
+    if (category == "contextSpecific") {
       dispatch(contextSingleInput(CONTEXT_BASELINE_PAYLOAD));
       return CONTEXT_BASELINE_PAYLOAD;
     }
