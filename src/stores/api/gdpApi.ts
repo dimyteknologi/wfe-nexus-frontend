@@ -9,7 +9,7 @@ export const gdpApi = createApi({
   endpoints: (builder) => ({
     getGdps: builder.query<IGDPResData, void>({
       query: () => ({
-        url: "/dummy/get-gdp",
+        url: "/get-gdp",
         method: "GET",
       }),
       providesTags: ["gdpService"],

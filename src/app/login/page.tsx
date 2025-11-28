@@ -3,14 +3,14 @@
 import { ArrowRight, Eye, EyeOff, Shield } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { authApi, useLoginMutation } from "@/stores/api/auth";
-import { setCredential, setUser } from "@/stores/slicers/api/authSlice";
+import { useLoginMutation } from "@/stores/api/auth";
+import { setCredential } from "@/stores/slicers/api/authSlice";
 import { useAppDispatch } from "@/stores/root-reducer";
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -32,7 +32,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(isLoginLoading);
+    // setIsLoading(isLoginLoading);
     try {
       const response = await login({ ...formData }).unwrap();
       if (response?.access_token) {
@@ -72,7 +72,7 @@ const LoginPage = () => {
       });
     } finally {
       setTimeout(() => {
-        setIsLoading(isLoginLoading);
+        // setIsLoading(isLoginLoading);
       }, 1500);
     }
   };

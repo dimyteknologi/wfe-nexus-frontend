@@ -10,7 +10,7 @@ export const selectedContextSpecificA = createSelector(
   [selectContextSpecificAName, selectSavedContextSpecificScenarios],
   (nameA, savedScenarios) => {
     return (
-      savedScenarios.find(
+      savedScenarios?.find(
         (scenario: ContextSpecificState) => scenario.simulationName === nameA,
       )?.data || null
     );
@@ -21,7 +21,7 @@ export const selectedContextSpecificB = createSelector(
   [selectContextSpecificBName, selectSavedContextSpecificScenarios],
   (nameB, savedScenarios) => {
     return (
-      savedScenarios.find(
+      savedScenarios?.find(
         (scenario: ContextSpecificState) => scenario.simulationName === nameB,
       )?.data || null
     );

@@ -27,7 +27,7 @@ const DSSPage = () => {
   // init data
   useInitializeData();
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors] = useState<Record<string, string>>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);

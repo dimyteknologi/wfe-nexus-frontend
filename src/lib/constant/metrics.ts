@@ -196,7 +196,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     content: "",
     additionalSeries: [
       {
-        name: "Fuel intensity BAseline [L/ha/tear]",
+        name: "Fuel intensity Baseline [L/ha/tear]",
         type: "line",
         data: [
           241.850574513121, 241.881580259024, 241.912331399117,

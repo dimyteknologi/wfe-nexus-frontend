@@ -77,14 +77,14 @@ const createApAreaHousingProjectionSelector = (
 export const selectComparisonScenarioA = createSelector(
   [selectSavedSiteSpecificScenarios, selectSiteSpecificScenarioAName],
   (saved, name) =>
-    saved.find((s: SiteSpecificState) => s.simulationName === name)?.data ||
+    saved?.find((s: SiteSpecificState) => s.simulationName === name)?.data ||
     null,
 );
 
 export const selectComparisonScenarioB = createSelector(
   [selectSavedSiteSpecificScenarios, selectSiteSpecificScenarioBName],
   (saved, name) =>
-    saved.find((s: SiteSpecificState) => s.simulationName === name)?.data ||
+    saved?.find((s: SiteSpecificState) => s.simulationName === name)?.data ||
     null,
 );
 
