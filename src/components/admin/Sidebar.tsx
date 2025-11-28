@@ -8,7 +8,9 @@ import { motion } from "framer-motion";
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: "📊" },
   { href: "/admin/users", label: "Users", icon: "👥" },
-
+  { href: "/admin/organization", label: "Organizations", icon: "🏢" },
+  { href: "/admin/city", label: "Cities", icon: "🗺️" },
+  { href: "/admin/role", label: "Roles", icon: "🔐" },
 ];
 
 export function AdminSidebar() {

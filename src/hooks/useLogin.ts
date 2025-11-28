@@ -3,7 +3,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession, signIn } from "next-auth/react";
-import { clearError, setError, setRememberMe } from "@/stores/slicers/auth/AuthSlice";
+import { clearError, setError, setRememberMe, setUser } from "@/stores/slicers/auth/AuthSlice";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
 import { LoginFormValues, loginSchema } from "@/lib/schema/loginSchema";
 
@@ -22,8 +22,6 @@ export const useLogin = () => {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
-
-  console.log("Form values:", form.getValues());
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -53,8 +51,30 @@ export const useLogin = () => {
       }
 
       if (result?.ok) {
-        const dest = searchParams.get("callbackUrl") || "/";
-        router.push(dest);
+        const { getSession } = await import("next-auth/react");
+        const session = await getSession();
+        
+        console.log("Session after login:", session);
+      
+        if (session?.user) {
+          dispatch(setUser({
+            id: session.user.id,
+            email: session.user.email || "",
+            username: session.user.username,
+            role: session.user.role,
+            permissions: session.user.permissions,
+            cityId: session.user.cityId,
+          }));
+        }
+        
+        const userRole = session?.user?.role;
+        
+        if (userRole === "Admin") {
+          router.push("/admin");
+        } else {
+          const dest = searchParams.get("callbackUrl") || "/";
+          router.push(dest);
+        }
       }
     } catch (error: any) {
       console.error("Login error:", error);

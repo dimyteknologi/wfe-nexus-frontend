@@ -3,19 +3,19 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useUsers } from '@/hooks/useUsers';
+import { useCities } from '@/hooks/useCities';
 
-export default function UsersPage() {
+export default function CitiesPage() {
   const [activeTab, setActiveTab] = useState(0);
-  const { users, loading, error, deleteUser } = useUsers();
+  const { cities, loading, error, deleteCity } = useCities();
 
-  const handleDelete = async (userId: string, userName: string) => {
-    if (confirm(`Are you sure you want to delete ${userName}?`)) {
+  const handleDelete = async (cityId: number, cityName: string) => {
+    if (confirm(`Are you sure you want to delete ${cityName}?`)) {
       try {
-        await deleteUser(userId);
-        alert('User deleted successfully!');
+        await deleteCity(cityId);
+        alert('City deleted successfully!');
       } catch (err) {
-        alert(err instanceof Error ? err.message : 'Failed to delete user');
+        alert(err instanceof Error ? err.message : 'Failed to delete city');
       }
     }
   };
@@ -23,7 +23,7 @@ export default function UsersPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-lg text-gray-600">Loading users...</div>
+        <div className="text-lg text-gray-600">Loading cities...</div>
       </div>
     );
   }
@@ -52,22 +52,22 @@ export default function UsersPage() {
       >
         <div>
           <h1 className="text-3xl font-bold text-green-800 mb-2">
-            User Management ({users.length})
+            City Management ({cities.length})
           </h1>
-          <p className="text-gray-600">Manage your users and their permissions</p>
+          <p className="text-gray-600">Manage cities and regions</p>
         </div>
-        <Link href="/admin/users/new">
+        <Link href="/admin/city/new">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="bg-green-800 text-white px-6 py-3 rounded-xl font-medium hover:bg-green-700 transition-colors"
           >
-            Add New User
+            Add New City
           </motion.button>
         </Link>
       </motion.div>
 
-      {/* Users Table */}
+      {/* Cities Table */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -77,16 +77,17 @@ export default function UsersPage() {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">User</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Role</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">City Name</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Code</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Province</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Status</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {users.map((user, index) => (
+              {cities.map((city, index) => (
                 <motion.tr
-                  key={user.id}
+                  key={city.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: index * 0.1 }}
@@ -94,30 +95,30 @@ export default function UsersPage() {
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="font-semibold text-blue-600">
-                          {user.name.split(' ').map((n: string) => n[0]).join('')}
+                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                        <span className="font-semibold text-green-600">
+                          {city.name.substring(0, 2).toUpperCase()}
                         </span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-800">{user.name}</p>
-                        <p className="text-sm text-gray-500">{user.email}</p>
+                        <p className="font-medium text-gray-800">{city.name}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${user.role?.name === 'Admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
-                      {user.role?.name || 'N/A'}
-                    </span>
+                    <span className="text-gray-600">{city.code || '-'}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-gray-600">
-                      {user.city?.name || 'N/A'}
+                    <span className="text-gray-600">{city.province || '-'}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${city.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {city.status}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
-                      <Link href={`/admin/users/${user.id}`}>
+                      <Link href={`/admin/city/${city.id}`}>
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
@@ -129,7 +130,7 @@ export default function UsersPage() {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handleDelete(user.id, user.name)}
+                        onClick={() => handleDelete(city.id, city.name)}
                         className="text-red-600 hover:text-red-800 transition-colors"
                       >
                         Delete

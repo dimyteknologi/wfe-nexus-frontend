@@ -12,7 +12,7 @@ interface CustomJwtPayload extends JwtPayload {
   permissions: string[];
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://103.63.24.47:4000/";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://103.63.24.47:4000";
 
 const handler = NextAuth({
   debug: true,
@@ -25,23 +25,35 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         try {
+          console.log("=== Login Attempt ===");
+          console.log("Email:", credentials?.email);
+          console.log("API URL:", `${API_URL}/api/auth/login`);
+          
           const loginRes = await axios.post(
-            `${API_URL}/auth/login`,
+            `${API_URL}/api/auth/login`,
             {
               email: credentials?.email,
               password: credentials?.password,
             }
           );
+          
+          console.log("Login response status:", loginRes.status);
+          console.log("Login response data:", loginRes.data);
+          
           const token = loginRes.data.access_token;
           if (!token) {
-            console.error("Login failed: No token received");
+            console.error("Login failed: No token received in response");
+            console.error("Response data:", loginRes.data);
             return null;
           }
 
+          console.log("Token received, attempting to decode...");
           const decodedToken = jwtDecode<CustomJwtPayload>(token);
+          console.log("Decoded token:", decodedToken);
+          
           const userId = decodedToken.sub as string;
 
-          return {
+          const userObject = {
             accessToken: token,
             id: userId,
             email: decodedToken.email,
@@ -51,8 +63,18 @@ const handler = NextAuth({
             role: decodedToken.role,
             permissions: decodedToken.permissions,
           };
-        } catch (error: any) {
-          console.error("Login error:", error?.response?.data || error.message);
+          
+          console.log("Returning user object:", userObject);
+          return userObject;
+        } catch (error) {
+          console.error("=== Login Error ===");
+          if (axios.isAxiosError(error)) {
+            console.error("Axios error status:", error.response?.status);
+            console.error("Axios error data:", error.response?.data);
+            console.error("Axios error message:", error.message);
+          } else {
+            console.error("Non-Axios error:", error);
+          }
           return null;
         }
       },

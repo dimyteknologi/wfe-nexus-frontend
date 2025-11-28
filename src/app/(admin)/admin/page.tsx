@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function AdminDashboard() {
   const stats = [
@@ -137,21 +138,23 @@ export default function AdminDashboard() {
           </h2>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { label: "Add User", icon: "👤", color: "green" },
-              { label: "Add Organization", icon: "🏢", color: "blue" },
-              { label: "Add Region", icon: "🗺️", color: "purple" }
+              { label: "Manage Users", icon: "👤", color: "green", href: "/admin/users" },
+              { label: "Manage Organizations", icon: "🏢", color: "blue", href: "/admin/organization" },
+              { label: "Manage Cities", icon: "🗺️", color: "purple", href: "/admin/city" },
+              { label: "Manage Roles", icon: "🔐", color: "orange", href: "/admin/role" }
             ].map((action, index) => (
-              <motion.button
-                key={action.label}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`p-4 rounded-xl border border-gray-400 hover:shadow-md transition-all`}
-              >
-                <div className="text-2xl mb-2">{action.icon}</div>
-                <span className="font-medium text-gray-800">
-                  {action.label}
-                </span>
-              </motion.button>
+              <Link key={action.label} href={action.href}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="p-4 rounded-xl border border-gray-400 hover:shadow-md transition-all cursor-pointer"
+                >
+                  <div className="text-2xl mb-2">{action.icon}</div>
+                  <span className="font-medium text-gray-800">
+                    {action.label}
+                  </span>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </motion.div>
