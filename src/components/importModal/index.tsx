@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { FileUp, X } from "lucide-react";
 
 interface ImportModalProps {

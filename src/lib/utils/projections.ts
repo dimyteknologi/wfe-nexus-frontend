@@ -8,10 +8,11 @@ import {
   sumData,
 } from "@/lib/utils/formulas";
 import {
-  BaselinePayload,
-  SimulationState,
-  TimePeriod,
-} from "@/stores/slicers/dssInputSlicer";
+  // BaselinePayload,
+  SiteSpecificState,
+  // TimePeriod,
+} from "@/stores/slicers/siteSpecificInputSlicer";
+import { TimePeriod, BaselinePayload } from "../constant/inputType.constant";
 import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
 import { RESOURCE_DEMAND_UNIT } from "../constant/resourceDemandUnit.constant";
 import { getApAreaGrowth, getPinPoint } from "./processingData";
@@ -60,7 +61,7 @@ export const extractAverageGrowthRates = (
   return payload;
 };
 
-const getInputsByName = (name: string, simulationState: SimulationState) => {
+const getInputsByName = (name: string, simulationState: SiteSpecificState) => {
   switch (name) {
     case "A.Pertanian, Kehutanan, dan Perikanan":
       return simulationState.agriculture.growthScenario;
@@ -195,7 +196,7 @@ const convertInput = (
 
 export const generateScenarioProjection = (
   historicalData: IApiData,
-  simulationState: SimulationState,
+  simulationState: SiteSpecificState,
   finalYear = 2045,
 ): IBaselineData | null => {
   if (
@@ -500,7 +501,7 @@ export const generateAllProjectionsForScenario = (
     agriculture: IBaselineData;
     landCover: IBaselineData;
   },
-  inputs: SimulationState,
+  inputs: SiteSpecificState,
 ) => {
   return {
     gdrp: generateScenarioProjection(allBaselines.gdp, inputs),
@@ -541,7 +542,7 @@ const generateApArea = (
 
 export const generateApAreaProjection = (
   param: Params,
-  inputs: SimulationState,
+  inputs: SiteSpecificState,
   startYear: number = 2010,
   finalYear: number = 2045,
 ): number[] => {
@@ -585,7 +586,7 @@ export const generateApAreaProjection = (
 
 export const generatePvAreaProjection = (
   name: string,
-  inputs: SimulationState,
+  inputs: SiteSpecificState,
   startYear: number = 2010,
   finalYear: number = 2045,
 ): number[] => {

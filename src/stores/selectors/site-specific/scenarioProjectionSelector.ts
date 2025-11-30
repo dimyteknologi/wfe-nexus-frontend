@@ -6,11 +6,11 @@ import {
 } from "@/lib/utils/projections";
 import {
   // input
-  selectSimulationInputs as selectActiveScenarioInput,
-  selectSavedScenarios,
-  selectScenarioAName,
-  selectScenarioBName,
-  selectBaselineInput,
+  selectSiteSpecificActive as selectActiveScenarioInput,
+  selectSavedSiteSpecificScenarios,
+  selectSiteSpecificScenarioAName,
+  selectSiteSpecificScenarioBName,
+  selectSiteSpecificBaseline,
   // basedata
   selectGdrpBaseline,
   selectPopulationBaseline,
@@ -22,14 +22,14 @@ import {
   selectFisheryBaseline,
   selectLivestockBaseline,
 } from "@/stores/selectors/baseSelector";
-import { SimulationState } from "@/stores/slicers/dssInputSlicer";
+import { SiteSpecificState } from "@/stores/slicers/siteSpecificInputSlicer";
 import { IRootState } from "@/stores";
 import { IBaselineData } from "@/lib/types/response";
 import { Selector } from "react-redux";
 
 const createProjectionSelector = (
   selectBaseline: Selector<IRootState, IBaselineData | null>,
-  selectInputs: Selector<IRootState, SimulationState | null>,
+  selectInputs: Selector<IRootState, SiteSpecificState | null>,
 ) =>
   createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
     if (!baseData || !inputs) return null;
@@ -38,7 +38,7 @@ const createProjectionSelector = (
 
 const createApAreaIndustrialProjectionSelector = (
   selectBaseline: Selector<IRootState, IBaselineData | null>,
-  selectInputs: Selector<IRootState, SimulationState | null>,
+  selectInputs: Selector<IRootState, SiteSpecificState | null>,
 ) =>
   createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
     if (!baseData || !inputs) return Array(36).fill(0);
@@ -53,7 +53,7 @@ const createApAreaIndustrialProjectionSelector = (
 
 const createSolarPVAreaProjectionSelector = (
   name: string | null,
-  selectInputs: Selector<IRootState, SimulationState | null>,
+  selectInputs: Selector<IRootState, SiteSpecificState | null>,
 ) =>
   createSelector([selectInputs], (inputs) => {
     if (!name || !inputs) return Array(36).fill(0);
@@ -62,7 +62,7 @@ const createSolarPVAreaProjectionSelector = (
 
 const createApAreaHousingProjectionSelector = (
   selectBaseline: Selector<IRootState, IBaselineData | null>,
-  selectInputs: Selector<IRootState, SimulationState | null>,
+  selectInputs: Selector<IRootState, SiteSpecificState | null>,
 ) =>
   createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
     if (!baseData || !inputs) return null;
@@ -75,15 +75,17 @@ const createApAreaHousingProjectionSelector = (
   });
 
 export const selectComparisonScenarioA = createSelector(
-  [selectSavedScenarios, selectScenarioAName],
+  [selectSavedSiteSpecificScenarios, selectSiteSpecificScenarioAName],
   (saved, name) =>
-    saved.find((s: SimulationState) => s.simulationName === name) || null,
+    saved.find((s: SiteSpecificState) => s.simulationName === name)?.data ||
+    null,
 );
 
 export const selectComparisonScenarioB = createSelector(
-  [selectSavedScenarios, selectScenarioBName],
+  [selectSavedSiteSpecificScenarios, selectSiteSpecificScenarioBName],
   (saved, name) =>
-    saved.find((s: SimulationState) => s.simulationName === name) || null,
+    saved.find((s: SiteSpecificState) => s.simulationName === name)?.data ||
+    null,
 );
 
 // resources livestock selectors generate livestockData with input active
@@ -95,7 +97,7 @@ export const selectLivestockProjection = createProjectionSelector(
 // resources livestock selectors generate livestockData with baseline
 export const selectLivestockProjectionBaseline = createProjectionSelector(
   selectLivestockBaseline,
-  selectBaselineInput,
+  selectSiteSpecificBaseline,
 );
 
 // resources livestock selectors generate livestockData with scenarioA
@@ -119,7 +121,7 @@ export const selectFisheryProjection = createProjectionSelector(
 // resources fishery selectors generate fisheryData with baseline
 export const selectFisheryProjectionBaseline = createProjectionSelector(
   selectFisheryBaseline,
-  selectBaselineInput,
+  selectSiteSpecificBaseline,
 );
 
 // resources fishery selectors generate fisheryData with scenarioA
@@ -136,7 +138,7 @@ export const selectFisheryProjectionB = createProjectionSelector(
 
 // foodDemand selectors generate foodDemand Baseline with baselineInput
 export const selectResourceScenarioProjectionBaseline =
-  createProjectionSelector(selectResourceBaseline, selectBaselineInput);
+  createProjectionSelector(selectResourceBaseline, selectSiteSpecificBaseline);
 
 // foodDemand selectors generate foodDemand Baseline with activeInput
 export const selectResourceScenarioProjection = createProjectionSelector(
@@ -158,7 +160,10 @@ export const selectResourceScenarioProjectionB = createProjectionSelector(
 
 // foodDemand selectors generate foodDemand Baseline with baselineInput
 export const selectEnergyDemandScenarioProjectionBaseline =
-  createProjectionSelector(selectEnergyDemandBaseline, selectBaselineInput);
+  createProjectionSelector(
+    selectEnergyDemandBaseline,
+    selectSiteSpecificBaseline,
+  );
 
 // foodDemand selectors generate foodDemand Baseline with activeInput
 export const selectEnergyDemandScenarioProjection = createProjectionSelector(
@@ -180,7 +185,10 @@ export const selectEnergyDemandScenarioProjectionB = createProjectionSelector(
 
 // foodDemand selectors generate foodDemand Baseline with baselineInput
 export const selectFoodSuffiencyScenarioProjectionBaseline =
-  createProjectionSelector(selectFoodDemandBaseline, selectBaselineInput);
+  createProjectionSelector(
+    selectFoodDemandBaseline,
+    selectSiteSpecificBaseline,
+  );
 
 // foodDemand selectors generate foodDemand Baseline with activeInput
 export const selectFoodSuffiencyScenarioProjection = createProjectionSelector(
@@ -203,7 +211,7 @@ export const selectFoodSuffiencyScenarioProjectionB = createProjectionSelector(
 // gdrp selectors generate gdrp with baselineInput
 export const selectGdrpScenarioProjectionBaseline = createProjectionSelector(
   selectGdrpBaseline,
-  selectBaselineInput,
+  selectSiteSpecificBaseline,
 );
 
 // gdrp selectors generate gdrp with activeInput
@@ -226,7 +234,10 @@ export const selectGdrpScenarioProjectionB = createProjectionSelector(
 
 // population selectors generate population with baselineInput
 export const selectPopulationScenarioProjectionBaseline =
-  createProjectionSelector(selectPopulationBaseline, selectBaselineInput);
+  createProjectionSelector(
+    selectPopulationBaseline,
+    selectSiteSpecificBaseline,
+  );
 
 // population selectors generate population with activeInput
 export const selectPopulationScenarioProjection = createProjectionSelector(
@@ -248,7 +259,10 @@ export const selectPopulationScenarioProjectionB = createProjectionSelector(
 
 // agriculture selectors generate agriculture with baselineInput
 export const selectAgricultureScenarioProjectionBaseline =
-  createProjectionSelector(selectAgricultureBaseline, selectBaselineInput);
+  createProjectionSelector(
+    selectAgricultureBaseline,
+    selectSiteSpecificBaseline,
+  );
 
 // agriculture selectors generate agriculture with activeInput
 export const selectAgricultureScenarioProjection = createProjectionSelector(
@@ -271,7 +285,7 @@ export const selectAgricultureScenarioProjectionB = createProjectionSelector(
 // agriculture selectors generate land conversion with activeInput
 export const selectLandCoverProjectionBaseline = createProjectionSelector(
   selectLandCoverBaseline,
-  selectBaselineInput,
+  selectSiteSpecificBaseline,
 );
 
 // agriculture selectors generate land conversion with activeInput
@@ -296,7 +310,7 @@ export const selectLandCoverProjectionB = createProjectionSelector(
 export const selectApAreaHousingProjectionBaseline =
   createApAreaHousingProjectionSelector(
     selectLandCoverBaseline,
-    selectBaselineInput,
+    selectSiteSpecificBaseline,
   );
 
 // resources housing selectors generate apArea with activeInput
@@ -324,7 +338,7 @@ export const selectApAreaHousingProjectionB =
 export const selectApAreaIndustrialProjectionBaseline =
   createApAreaIndustrialProjectionSelector(
     selectLandCoverBaseline,
-    selectBaselineInput,
+    selectSiteSpecificBaseline,
   );
 
 // resources industrial selectors generate apArea with activeInput
@@ -352,7 +366,7 @@ export const selectApAreaIndustrialProjectionB =
 export const selectPvAreaIndustrialProjectionBaseline =
   createSolarPVAreaProjectionSelector(
     "Solar Pv Area on Industrial",
-    selectBaselineInput,
+    selectSiteSpecificBaseline,
   );
 
 // PV industrial selectors generate solar pv with activeInput
@@ -380,7 +394,7 @@ export const selectPvAreaIndustrialProjectionB =
 export const selectPvAreaHousingProjectionBaseline =
   createSolarPVAreaProjectionSelector(
     "Solar PV Area Percentage on Housing",
-    selectBaselineInput,
+    selectSiteSpecificBaseline,
   );
 
 // PV industrial selectors generate solar pv with activeInput

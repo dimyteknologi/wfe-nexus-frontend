@@ -59,7 +59,7 @@ export function AdminSidebar() {
           ))}
         </ul>
       </nav>
-<div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
             <span className="font-semibold text-green-800">A</span>

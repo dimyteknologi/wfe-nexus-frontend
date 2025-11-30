@@ -33,8 +33,8 @@ const LoginPage = () => {
         />
       </div>
 
-      <div className="max-w-md w-full space-y-8 bg-white/90 backdrop-blur-sm p-10 rounded-2xl shadow-xl border border-gray-100 z-10">
-        <div>
+      <div className="max-w-md w-full space-y-8 bg-white/90 backdrop-blur-sm p-10 mt-12 rounded-2xl shadow-xl border border-gray-100 z-10">
+        <div className="mb-2">
           <div className="flex justify-center">
             <div className="bg-gradient-to-r from-green-700 to-teal-700 p-3 rounded-full">
               <Shield className="h-8 w-8 text-white" />

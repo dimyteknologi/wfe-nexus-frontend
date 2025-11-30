@@ -76,11 +76,12 @@ export const useLogin = () => {
           router.push(dest);
         }
       }
-    } catch (error: any) {
-      console.error("Login error:", error);
-      const errorMessage = error?.message || "Login failed. Please try again.";
-      dispatch(setError(errorMessage));
-      form.setError("password", { type: "manual", message: errorMessage });
+    } catch (error: unknown) {
+        console.error("Login error:", error);
+        const errorMessage =
+          error instanceof Error ? error?.message : "Login failed. Please try again.";
+        dispatch(setError(errorMessage));
+        form.setError("password", { type: "manual", message: errorMessage });
     }
     
   };

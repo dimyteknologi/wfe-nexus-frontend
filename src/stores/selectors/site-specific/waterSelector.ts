@@ -11,9 +11,9 @@ import {
   selectApAreaIndustrialProjectionA,
   selectApAreaIndustrialProjectionB,
   selectApAreaIndustrialProjectionBaseline,
-} from "@/stores/selectors/scenarioProjectionSelector";
+} from "@/stores/selectors/site-specific/scenarioProjectionSelector";
 import { selectResourceBaseline } from "@/stores/selectors/baseSelector";
-import { selectPopulationDataComparison } from "@/stores/selectors/socioEconomySelector";
+import { selectPopulationDataComparison } from "@/stores/selectors/site-specific/socioEconomySelector";
 import { selectWaterDemandBaseline } from "@/stores/selectors/baseSelector";
 import { createSelector } from "@reduxjs/toolkit";
 import { IBaselineData } from "@/lib/types/response";

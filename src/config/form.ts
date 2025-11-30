@@ -1,22 +1,242 @@
-import { TimePeriod } from "@/stores/slicers/dssInputSlicer";
-
+import { TimePeriod } from "@/lib/constant/inputType.constant";
 export interface FormInput {
   id: string;
   label: string;
   min: number;
   max: number;
-  periods: TimePeriod[];
+  periods: TimePeriod[] | string[];
   withValidation?: boolean;
   information: string;
 }
 
-interface FormSection {
+export interface FormSection {
   title: string;
   inputs: FormInput[];
 }
 
 const timePeriods: TimePeriod[] = ["2025-2030", "2031-2040", "2041-2045"];
-export const simulationFormConfig: FormSection[] = [
+
+export const contextSpecificInput: FormSection[] = [
+  {
+    title: "Food Demand Side",
+    inputs: [
+      {
+        label: "Population Initial [people]",
+        min: 1000000,
+        max: 50000000,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "food.populationInitial",
+        information:
+          "Initial population of the area in 2025, used to calculate food demand.",
+      },
+      {
+        label: "Population Growth [%/year]",
+        min: 0.5,
+        max: 2.5,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "food.populationGrowth",
+        information:
+          "Scenario for population growth rate of area in %/year, divided into three period phases; 2025-2030, 2031-2040, and 2041-2045. The number is average value between 2010-2024.",
+      },
+      {
+        label: "Rice Demand Per Person [kg/kap/year]",
+        min: 50,
+        max: 200,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "food.riceDemandPerPerson",
+        information:
+          "Average rice demand per person in kg/kap/year, used to calculate total rice demand.",
+      },
+      {
+        label: "Convertion Factor GKG to rice [dmnl]",
+        min: 0.5,
+        max: 1.5,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "food.convertionFactorToRice",
+        information:
+          "Conversion factor from GKG (Greenhouse Gas Equivalent) to rice production, used to calculate the impact of rice production on GHG emissions.",
+      },
+      {
+        label: "Convertion Factor GKP to GKG [dmnl]",
+        min: 0.5,
+        max: 1.5,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "food.convertionFactoTOGkg",
+        information:
+          "Conversion factor from GKP (Greenhouse Gas Production) to GKG (Greenhouse Gas Equivalent), used to calculate the impact of rice production on GHG emissions.",
+      },
+    ],
+  },
+  {
+    title: "Agriculture Production Demand",
+    inputs: [
+      {
+        label: "Inpari32 Area",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.areaInpari32",
+        information:
+          "Average productivity of Inpari 32 rice variety in ha, used to calculate total rice production.",
+      },
+      {
+        label: "Conversion",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.conversionInpari32",
+        information:
+          "Average productivity of Inpari 32 rice variety in %, used to calculate total rice production.",
+      },
+      // Ciherang
+      {
+        label: "Ciherang Area",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.areaCiherang",
+        information:
+          "Average productivity area of Ciherang rice variety in ha, used to calculate total rice production.",
+      },
+      {
+        label: "Conversion",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.conversionCiherang",
+        information:
+          "Average productivity conversion of Ciherang rice variety in %, used to calculate total rice production.",
+      },
+
+      // Hipa Series
+      {
+        label: "Hipa Series Area",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.areaHipaSeries",
+        information:
+          "Average productivity area of Hipa Series rice variety in ha, used to calculate total rice production.",
+      },
+      {
+        label: "Conversion",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.conversionHipaSeries",
+        information:
+          "Average productivity conversion of Hipa Series rice variety in %, used to calculate total rice production.",
+      },
+
+      // Mekongga
+      {
+        label: "Mekongga Area",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.areaMekongga",
+        information:
+          "Average productivity area of Mekongga rice variety in ha, used to calculate total rice production.",
+      },
+      {
+        label: "Conversion",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.conversionMekongga",
+        information:
+          "Average productivity conversion of Mekongga rice variety in %, used to calculate total rice production.",
+      },
+
+      // Lokal
+      {
+        label: "Lokal Area",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.areaLokal",
+        information:
+          "Average productivity area of local rice variety in ha, used to calculate total rice production.",
+      },
+      {
+        label: "Conversion",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.conversionLokal",
+        information:
+          "Average productivity conversion of local rice variety in %, used to calculate total rice production.",
+      },
+    ],
+  },
+  {
+    title: "Fertilizer",
+    inputs: [
+      {
+        label: "Percentage of Chemical Fertilizer [%]",
+        min: 0,
+        max: 100,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "fertilizer.percentageOfChemical",
+        information:
+          "Percentage of chemical fertilizer used in agriculture, used to calculate fertilizer demand.",
+      },
+      {
+        label: "Ratio Organic Fertilizer to Chemical Fertilizer [dmnl]",
+        min: 0,
+        max: 1,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "fertilizer.ratioOrganic",
+        information:
+          "Ratio of organic fertilizer to chemical fertilizer used in agriculture, used to calculate fertilizer demand.",
+      },
+    ],
+  },
+  {
+    title: "Rainfall",
+    inputs: [
+      {
+        label: "Rainfall Intensity [mm/day]",
+        min: 0,
+        max: 500,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "rainfall.annualRainfall",
+        information:
+          "Average rainfall intensity in mm/day, used to calculate water availability for agriculture.",
+      },
+      {
+        label: "Rainfall Duration [days]",
+        min: 0,
+        max: 365,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "rainfall.areaSize",
+        information:
+          "Average rainfall duration in days, used to calculate water availability for agriculture.",
+      },
+    ],
+  },
+];
+
+export const siteSpecificInput: FormSection[] = [
   {
     title: "Agriculture",
     inputs: [
@@ -24,7 +244,7 @@ export const simulationFormConfig: FormSection[] = [
       //   label: "Growth scenario [%/year]",
       //   min: -5,
       //   max: 5,
-      //   periods: timePeriods,
+      //   periods: ["2015-2030"],
       //   withValidation: true,
       //   id: "agriculture.growthScenario",
       //   information:

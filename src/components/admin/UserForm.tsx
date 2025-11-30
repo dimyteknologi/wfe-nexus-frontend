@@ -483,7 +483,7 @@ export function UserForm({ initialData = defaultFormData, isEdit = false, onSubm
           <li>• Ensure all required fields (marked with *) are filled</li>
           <li>• Use a valid email address for account verification</li>
           <li>• Select the correct Role, City, and Organization</li>
-          <li>• Set status to "Inactive" for temporary account suspension</li>
+          <li>• Set status to  {"\"Inactive\""} for temporary account suspension</li>
         </ul>
       </motion.div>
     </motion.div>
