@@ -153,7 +153,7 @@ const LandingPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <button className="bg-gradient-to-r from-green-700 to-teal-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                <Link href={"./dss-interface"} className="flex items-center">
+                <Link href={"./site-specific"} className="flex items-center">
                   Get Started <ArrowRight className="h-5 ml-1" />
                 </Link>
               </button>

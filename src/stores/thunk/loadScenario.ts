@@ -15,3 +15,24 @@ export const loadScenarios = () => (dispatch: typeof store.dispatch) => {
     dispatch(setError("Fail loading scenarios"));
   }
 };
+
+export const convertScenariosVersion = () => (dispatch: typeof store.dispatch) => {
+    const persistKey = "persist:root";
+    const persistData = localStorage.getItem(persistKey);
+
+    if (persistData) {
+      const parsed = JSON.parse(persistData);
+      const scenariosParsed = JSON.parse(parsed.scenarios);
+
+      if (
+        Array.isArray(scenariosParsed.data) &&
+        scenariosParsed.data.length === 0
+      ) {
+        const newScenarios = {
+          data: { siteSpecific: [], contextSpecific: [] },
+        };
+        parsed.scenarios = JSON.stringify(newScenarios);
+        localStorage.setItem(persistKey, JSON.stringify(parsed));
+      }
+    }
+}

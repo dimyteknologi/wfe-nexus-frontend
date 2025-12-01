@@ -11,6 +11,8 @@ import { livestockApi } from "@/stores/api/livestockApi";
 import { populationApi } from "@/stores/api/populationApi";
 import { fisheryApi } from "@/stores/api/fisheryApi";
 import { agricultureApi } from "@/stores/api/agricultureApi";
+import { importApi } from "@/stores/api/csvApi";
+import { scenarioApi } from "@/stores/api/scenarioApi";
 
 // development api services
 import { authApi } from "@/stores/api/auth";
@@ -71,6 +73,8 @@ export const appReducer = combineReducers({
   [populationApi.reducerPath]: populationApi.reducer,
   [fisheryApi.reducerPath]: fisheryApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [scenarioApi.reducerPath]: scenarioApi.reducer,
+  [importApi.reducerPath]: importApi.reducer,
 });
 
 // custom logic state
@@ -100,6 +104,8 @@ export const store = configureStore({
         agricultureApi.middleware,
         fisheryApi.middleware,
         authApi.middleware,
+        importApi.middleware,
+        scenarioApi.middleware
       )
       .prepend(listenerMiddleware.middleware),
 });

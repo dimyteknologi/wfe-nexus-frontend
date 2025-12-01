@@ -2,7 +2,15 @@
 
 import { useState, useCallback } from "react";
 import { FileUp, X } from "lucide-react";
-
+import { useImportCsvMutation, useValidateFileMutation } from "@/stores/api/csvApi";
+import { useAppDispatch } from "@/stores/root-reducer";
+import { useAppSelector } from "@/stores/root-reducer";
+import { selectImpactOfEnergyAvailabillityProductionPerScenario } from "@/stores/selectors/context-specific/resourceSupplySelector";
+import { setData as setGdpData } from "@/stores/slicers/gdrpSlicer";
+import { setData as setLivestockData } from "@/stores/slicers/livestockSlicer";
+import { setData as setAgricultureData } from "@/stores/slicers/agricultureSlicer";
+import { setData as setPopulationData } from "@/stores/slicers/populationSlicer";
+import { setData as setFisheryData } from "@/stores/slicers/fisherySlicer";
 interface ImportModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -16,6 +24,9 @@ const ImportModal: React.FC<ImportModalProps> = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const dispatch = useAppDispatch();
+  const [validateFile] = useValidateFileMutation();
+  const [importCsv] = useImportCsvMutation();
   const [uploadStatus, setUploadStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
@@ -115,10 +126,39 @@ const ImportModal: React.FC<ImportModalProps> = ({
       setUploadMessage("Mengupload file...");
 
       // Simulasi proses upload
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const validation = await validateFile(selectedFile).unwrap();
 
-      setUploadStatus("success");
-      setUploadMessage("File berhasil diupload!");
+      if (!validation?.isValid) {
+        setUploadStatus("error");
+        setUploadMessage(validation.message || "File tidak valid!");
+        return;
+      }
+
+      const imported = await importCsv(selectedFile).unwrap();
+
+      if (imported?.status === 'success') {
+        setUploadStatus("success");
+        setUploadMessage("Berhasil import CSV!");
+
+      const {
+        "get-gdp": gdp,
+        "get-population": population,
+        "get-pertanian": agriculture,
+        "get-peternakan": livestock,
+      } = imported.data;
+      
+      dispatch(setGdpData(gdp));
+      dispatch(setLivestockData(livestock));
+      dispatch(setPopulationData(population));
+      dispatch(setAgricultureData(agriculture));
+
+      } else {
+        setUploadStatus("error");
+        setUploadMessage(imported?.message || "Gagal mengimport CSV");
+      }
+
+      // setUploadStatus("success");
+      // setUploadMessage("File berhasil diupload!");
 
       setTimeout(() => {
         setSelectedFile(null);

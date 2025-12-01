@@ -16,7 +16,7 @@ const Hero = () => {
           </p>
           <div className="flex flex-col justify-between md:justify-start sm:flex-row gap-4">
             <button className="bg-green-800 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 transition-colors shadow-lg">
-              <Link href={"./dss-interface"}>Get Started</Link>
+              <Link href={"./site-specific"}>Get Started</Link>
             </button>
             <button className="border-2 border-green-800 text-green-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-50 transition-colors flex items-center justify-center">
               <Play className="h-4" />

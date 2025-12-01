@@ -64,6 +64,7 @@ export const useLogin = () => {
             role: session.user.role,
             permissions: session.user.permissions,
             cityId: session.user.cityId,
+            access_token: session.accessToken
           }));
         }
         

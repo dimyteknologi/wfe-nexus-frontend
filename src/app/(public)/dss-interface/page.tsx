@@ -25,7 +25,7 @@ import { siteSpecificInput } from "@/config/form";
 
 const DSSPage = () => {
   // init data
-  useInitializeData();
+  // useInitializeData();
 
   const [errors] = useState<Record<string, string>>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

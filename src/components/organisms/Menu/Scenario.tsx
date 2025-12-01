@@ -13,16 +13,18 @@ import {
 import {
   ContextSpecificState,
   DssContextSpecificState,
+  updateSimulationName,
   updateSimulationSelect as updateSimulationSelectContextSpecific,
 } from "@/stores/slicers/contextSpecificInputSlicer";
 import { resetToBaseline } from "@/stores/thunk/baselineReset";
 // import { addScenario, loadScenarios } from "@/stores/slicers/dssScenarioSlicer";
 import { addScenario } from "@/stores/thunk/addScenario";
-import { loadScenarios } from "@/stores/thunk/loadScenario";
+import { convertScenariosVersion, loadScenarios } from "@/stores/thunk/loadScenario";
 import { X, Play, ChevronDown, RefreshCcw, Info } from "lucide-react";
 import { normalizeKey } from "@/lib/utils";
 import { setAlert } from "@/stores/slicers/alertSlicer";
 import { ScenarioItem } from "@/stores/slicers/dssScenarioSlicer";
+import { useCreateScenarioMutation, useGetScenariosQuery } from "@/stores/api/scenarioApi";
 
 interface ScenarioMenuProps {
   simulationState: DssSiteSpecificState | DssContextSpecificState;
@@ -44,6 +46,9 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     error,
   } = useAppSelector((state) => state.scenarios);
   const [simulationName, setSimulationName] = useState("");
+  const { contextSpecific } = useAppSelector((state) => state.scenarios);
+  const [createScenario] = useCreateScenarioMutation();
+  const { data: siteScenarios = [] } = useGetScenariosQuery({});
   const [isHover, setIsHover] = useState(false);
   const mouseHover = useCallback(() => setIsHover((current) => !current), []);
   const handleSimulationName = useCallback(
@@ -54,24 +59,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   );
 
   useEffect(() => {
-    const persistKey = "persist:root";
-    const persistData = localStorage.getItem(persistKey);
-
-    if (persistData) {
-      const parsed = JSON.parse(persistData);
-      const scenariosParsed = JSON.parse(parsed.scenarios);
-
-      if (
-        Array.isArray(scenariosParsed.data) &&
-        scenariosParsed.data.length === 0
-      ) {
-        const newScenarios = {
-          data: { siteSpecific: [], contextSpecific: [] },
-        };
-        parsed.scenarios = JSON.stringify(newScenarios);
-        localStorage.setItem(persistKey, JSON.stringify(parsed));
-      }
-    }
+    convertScenariosVersion();
   }, []);
 
   useEffect(() => {
@@ -100,43 +88,101 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     [],
   );
 
-  const handleSaveSimulation = () => {
-    if (Object.keys(errors).length === 0) {
-      // dispatch(updateSimulationName(simulationName));
-      dispatch(
-        addScenario({ simulationName, category, data: simulationState.active }),
-      );
+  // const handleSaveSimulation = () => {
+  //   if (Object.keys(errors).length === 0) {
+  //     dispatch(updateSimulationName(simulationName));
+  //     dispatch(
+  //       addScenario({ simulationName, category, data: simulationState.active }),
+  //     );
+  //     dispatch(
+  //       setAlert({
+  //         message: success ?? "Success to save scenario!",
+  //         type: "success",
+  //       }),
+  //     );
+  //     dispatch(resetToBaseline(category));
+  //     setSimulationName("");
+  //   } else {
+  //     dispatch(
+  //       setAlert({
+  //         message: error ?? "Failed to save scenario!",
+  //         type: "error",
+  //       }),
+  //     );
+  //   }
+  // };
+
+  const handleSaveSimulation = async () => {
+    if (Object.keys(errors).length !== 0) {
+      dispatch(setAlert({ message: "Failed to save scenario!", type: "error" }));
+      return;
+    }
+
+    try {
+      dispatch(updateSimulationName(simulationName));
+
+      if (category === "siteSpecific") {
+        await createScenario(
+          {...simulationState.active, simulationName},
+        ).unwrap();
+      } else {
+        dispatch(
+          addScenario({
+            simulationName,
+            category,
+            data: simulationState.active,
+          })
+        );
+      }
+
       dispatch(
         setAlert({
-          message: success ?? "Success to save scenario!",
+          message: "Success to save scenario!",
           type: "success",
-        }),
+        })
       );
+
       dispatch(resetToBaseline(category));
       setSimulationName("");
-    } else {
+
+    } catch (err) {
       dispatch(
         setAlert({
-          message: error ?? "Failed to save scenario!",
+          message: "Failed to save scenario!",
           type: "error",
-        }),
+        })
       );
     }
   };
 
+  // const scenarioOptions = useMemo(() => {
+  //   if (!scenarios) {
+  //     return [];
+  //   }
+  //   const data =
+  //     category == "siteSpecific"
+  //       ? scenarios.siteSpecific
+  //       : scenarios.contextSpecific;
+  //   return data?.filter(
+  //     (s: ScenarioItem, index: number, arr: ScenarioItem[]) =>
+  //       index === arr.findIndex((t) => t.simulationName === s.simulationName),
+  //   );
+  // }, [scenarios]);
   const scenarioOptions = useMemo(() => {
-    if (!scenarios) {
-      return [];
+    let data: SiteSpecificState[] | ContextSpecificState[] = [];
+
+    if (category === "siteSpecific") {
+      data = siteScenarios.data ?? [];
+    } else {
+      data = contextSpecific ?? [];
     }
-    const data =
-      category == "siteSpecific"
-        ? scenarios.siteSpecific
-        : scenarios.contextSpecific;
-    return data?.filter(
-      (s: ScenarioItem, index: number, arr: ScenarioItem[]) =>
-        index === arr.findIndex((t) => t.simulationName === s.simulationName),
+
+    return data.filter(
+      (s, index, arr) =>
+        index === arr.findIndex((t) => t.simulationName === s.simulationName)
     );
-  }, [scenarios]);
+  }, [category, siteScenarios, contextSpecific]);
+
 
   const isSaveDisabled = Object.keys(errors).length > 0 || !simulationName;
 
@@ -209,11 +255,10 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
             <div className="group w-full sm:w-auto">
               <button
                 onClick={handleSaveSimulation}
-                className={`w-full sm:w-auto p-2 sm:p-3 rounded-lg md:rounded-xl font-medium transition-all transform hover:scale-105 ${
-                  isSaveDisabled
-                    ? "bg-gray-200 cursor-not-allowed text-gray-400"
-                    : "bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-lg"
-                }`}
+                className={`w-full sm:w-auto p-2 sm:p-3 rounded-lg md:rounded-xl font-medium transition-all transform hover:scale-105 ${isSaveDisabled
+                  ? "bg-gray-200 cursor-not-allowed text-gray-400"
+                  : "bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-lg"
+                  }`}
                 disabled={isSaveDisabled}
                 aria-label="Save current simulation"
               >

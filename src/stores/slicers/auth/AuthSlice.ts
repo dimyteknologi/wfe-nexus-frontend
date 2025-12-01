@@ -7,6 +7,7 @@ interface UserInfo {
   role: string;
   permissions: string[];
   cityId: string;
+  access_token?: string;
 }
 
 interface AuthState {
