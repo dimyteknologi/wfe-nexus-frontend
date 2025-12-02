@@ -46,10 +46,15 @@ export const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    setAccessToken: (state, action: PayloadAction<string | null>) => {
+      state.accessToken = action.payload;
+      state.isAuthenticated = !!action.payload;
+    },
     logout: (state) => {
       state.isAuthenticated = false;
       state.user = null;
       state.error = null;
+      state.accessToken = null;
     },
   },
 });

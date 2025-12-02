@@ -15,13 +15,6 @@ export const authApi = createApi({
   baseQuery: baseQueryApi,
   tagTypes: ["auth"],
   endpoints: (builder) => ({
-    login: builder.mutation<LoginResponse, LoginPayload>({
-      query: (payload) => ({
-        url: "/auth/login",
-        method: "POST",
-        body: payload,
-      }),
-    }),
     logout: builder.mutation<void, { access_token: string }>({
       query: (payload) => ({
         url: "/auth/logout",
@@ -32,4 +25,4 @@ export const authApi = createApi({
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation } = authApi;
+export const { useLogoutMutation } = authApi;
