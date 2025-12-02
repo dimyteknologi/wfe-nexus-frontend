@@ -3,18 +3,21 @@ import {
   calculateDevidedArrays,
   multiplyArrayData,
   selectChemicalDemandPerScenario,
-  selectCiherang,
+  // selectCiherang,
   selectEnergyHarvestAndTransportDemandTotalPerScenario,
   selectEnergyLandProcessingDemandTotalPerScenario,
   selectEnergyPlantingAndMaintenanceDemandTotalPerScenario,
-  selectHipaSeries,
-  selectInpari32,
+  // selectHipaSeries,
+  // selectInpari32,
+  agricultureLandPaddyPerscenario,
   selectLandPaddyFieldPerScenario,
-  selectLokal,
-  selectMekongga,
+  // selectLokal,
+  // selectMekongga,
   selectOrganicDemandPerScenario,
   selectWaterDemandPerScenario,
   sumArrayData,
+  selectNpkApplicationPerScenario,
+  agricultureLandPerScenario,
 } from "./foodAndSupplyInputDemandSelector";
 import {
   selectContextSpecificActive,
@@ -30,7 +33,7 @@ import {
   resultConverter,
 } from "@/lib/utils/formulas";
 import { RESOURCE_SUPPLY_INPUT } from "@/lib/constant/resourceSupplyInput.constant";
-import { ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
+import { ContextSpecific, ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
 import { FOOD_AND_YIELD } from "@/lib/constant/initialDataContext.constans";
 
 export const findResourceSupplyByTitle = (title: string) => {
@@ -160,7 +163,15 @@ const applySigmoidToArray = (arr: number[]) => {
   return arr.map((v) => sigmoidImpact(v));
 };
 
-const getRainfallDebit = (input?: ContextSpecificState) => {
+const getWaterPumpDiesel = (input?: ContextSpecificState) => {
+  if (!input) return Array(16).fill(0);
+
+  const installedCapacity = input.diesel?.installedCapacity?.["2015-2030"] ?? 0;
+
+  return Array(16).fill(installedCapacity * 1000/(1000*9.81*30)*(60*6*3600));
+}
+
+const getRainfallDebit = (input?: ContextSpecificState) :number[] =>  {
   if (!input) return Array(16).fill(0);
 
   const annualRainfall = input.rainfall?.annualRainfall?.["2015-2030"] ?? 0;
@@ -257,8 +268,17 @@ export const selectWaterRainfallDebitPerScenario = createSelector(
   }),
 );
 
+export const selectSurfaceWaterPerScenario = createSelector(
+  [selectWaterRainfallDebitPerScenario],
+  (rainfalldebit) => ({
+    active: constantMultiply(rainfalldebit.active, 0.74),
+    scenarioA: constantMultiply(rainfalldebit.scenarioA, 0.74),
+    scenarioB: constantMultiply(rainfalldebit.scenarioB, 0.74),
+  })
+)
+
 export const selectWaterAvailableSurfacePerScenario = createSelector(
-  selectWaterRainfallDebitPerScenario, // as surface water
+  selectSurfaceWaterPerScenario,
   (surfaceWater) => ({
     active: constantMultiply(surfaceWater.active, 1.0),
     // baseline: constantMultiply(surfaceWater.baseline, 1.00),
@@ -266,6 +286,15 @@ export const selectWaterAvailableSurfacePerScenario = createSelector(
     scenarioB: constantMultiply(surfaceWater.scenarioB, 1.0),
   }),
 );
+
+export const selectWaterPumpDieselPerScenario = createSelector(
+  [selectContextSpecificActive,selectedContextSpecificA,selectedContextSpecificB],
+  (activeState, scenarioA, scenarioB) => ({
+    active: getWaterPumpDiesel(activeState),
+    scenarioA: getWaterPumpDiesel(scenarioA),
+    scenarioB: getWaterPumpDiesel(scenarioB),
+  })
+)
 
 // current static value 0
 const groundWaters = Array(16).fill(0);
@@ -323,39 +352,59 @@ export const selectSumWaterGroundWaterWithdrawal = createSelector(
 
 export const selectWaterGapPerScenario = createSelector(
   selectTotalWaterDemandPerScenario,
-  selectSumWaterGroundWaterWithdrawal,
-  (totalWaterDemand, totalWaterGroundSurface) => ({
-    active: calculateWaterGap(
-      totalWaterDemand.active,
-      totalWaterGroundSurface.active,
-    ),
-    // baseline: calculateWaterGap(totalWaterDemand.baseline, totalWaterGroundSurface.baseline),
-    scenarioA: calculateWaterGap(
-      totalWaterDemand.scenarioA,
-      totalWaterGroundSurface.scenarioA,
-    ),
-    scenarioB: calculateWaterGap(
-      totalWaterDemand.scenarioB,
-      totalWaterGroundSurface.scenarioB,
-    ),
+  selectWaterPumpDieselPerScenario,
+  selectWaterAvailableSurfacePerScenario,
+  (totalWaterDemand,waterDiesel, waterSurface) => ({
+    active: minArrayData(totalWaterDemand.active, sumArrayData(
+      waterDiesel.active,
+      waterSurface.active,
+    )),
+    scenarioA: minArrayData(totalWaterDemand.scenarioA,sumArrayData(
+      waterDiesel.scenarioA,
+      waterSurface.scenarioA,
+    )),
+    scenarioB: minArrayData(totalWaterDemand.scenarioB, sumArrayData(
+      waterDiesel.scenarioB,
+      waterSurface.scenarioB,
+    ))
   }),
 );
 
+export const selectSolarWaterPumpPerScenario = createSelector(
+  [],
+  () => {
+    const solarWaterPump =
+      findResourceSupplyByTitle("Solar Water Pump Capacity")?.values ??
+      Array(16).fill(0);
+
+    const factor = (0.8 * 6 * 365 * 3600) / (9.81 * 30);
+
+    const computed = constantMultiply(solarWaterPump, factor);
+
+    return {
+      active: computed,
+      scenarioA: computed,
+      scenarioB: computed,
+    };
+  }
+);
+
+
 export const selectSupplyWaterTotalPerScenario = createSelector(
   [
+    // selectSolarWaterPumpPerScenario,
     selectWaterAvailableSurfacePerScenario,
-    selectGroundWaterWithdrawalPerScenario,
+    selectWaterPumpDieselPerScenario
   ],
-  (surfaceWater, groundWaterWithdrawal) => ({
-    active: sumArrayData(surfaceWater.active, groundWaterWithdrawal.active),
-    // baseline: sumArrayData(surfaceWater.baseline, groundWaterWithdrawal.baseline),
+  (surfaceWater, waterDiesel) => ({
+    active: sumArrayData(surfaceWater.active, waterDiesel.active),
     scenarioA: sumArrayData(
       surfaceWater.scenarioA,
-      groundWaterWithdrawal.scenarioA,
+      waterDiesel.scenarioA,
     ),
     scenarioB: sumArrayData(
       surfaceWater.scenarioB,
-      groundWaterWithdrawal.scenarioB,
+      waterDiesel.scenarioB,
     ),
   }),
 );
@@ -436,7 +485,6 @@ export const selectImpactOfWaterAvailabilityForAgri = createSelector(
   [selectWaterAllocationForAgriPerScenario, selectWaterDemandPerScenario],
   (allocationAgri, demandAgri) => ({
     active: calculateImpactWaterAgri(allocationAgri.active, demandAgri.active),
-    // baseline: calculateImpactWaterAgri(allocationAgri.baseline, demandAgri.baseline),
     scenarioA: calculateImpactWaterAgri(
       allocationAgri.scenarioA,
       demandAgri.scenarioA,
@@ -458,10 +506,6 @@ export const selectImpactOfWaterAvailabilityForGeothermal = createSelector(
       allocationGeo.active,
       demandGeo.active,
     ),
-    // baseline: calculateImpactWaterGeothermal(
-    //     allocationGeo.baseline,
-    //     demandGeo.baseline
-    // ),
     scenarioA: calculateImpactWaterGeothermal(
       allocationGeo.scenarioA,
       demandGeo.scenarioA,
@@ -474,177 +518,42 @@ export const selectImpactOfWaterAvailabilityForGeothermal = createSelector(
 );
 
 // circular dependency from sigmoid function
-export const selectInpariProductionPerScenario = createSelector(
-  [selectInpari32, selectImpactOfWaterAvailabilityForAgri],
-  (inpari32, waterAgri) => ({
+export const selectAgricultureLandProductionPerScenario = createSelector(
+  [agricultureLandPerScenario, selectImpactOfWaterAvailabilityForAgri],
+  (land, waterAgri) => ({
     active: multiplyArrayData(
       constantMultiply(
         waterAgri.active,
         FOOD_AND_YIELD.INPARI_32.POTENTIAL_PRODUCTIVITY,
       ),
-      inpari32.active,
+      land.active,
     ),
-    // baseline: multiplyArrayData(constantMultiply(waterAgri.baseline, FOOD_AND_YIELD.INPARI_32.POTENTIAL_PRODUCTIVITY), inpari32.baseline),
+    // baseline: multiplyArrayData(constantMultiply(waterAgri.baseline, FOOD_AND_YIELD.INPARI_32.POTENTIAL_PRODUCTIVITY), land.baseline),
     scenarioA: multiplyArrayData(
       constantMultiply(
         waterAgri.scenarioA,
         FOOD_AND_YIELD.INPARI_32.POTENTIAL_PRODUCTIVITY,
       ),
-      inpari32.scenarioA,
+      land.scenarioA,
     ),
     scenarioB: multiplyArrayData(
       constantMultiply(
         waterAgri.scenarioB,
         FOOD_AND_YIELD.INPARI_32.POTENTIAL_PRODUCTIVITY,
       ),
-      inpari32.scenarioB,
-    ),
-  }),
-);
-// circular dependency from sigmoid function
-export const selectCiherangProductionPerScenario = createSelector(
-  [selectCiherang, selectImpactOfWaterAvailabilityForAgri],
-  (ciherang, waterAgri) => ({
-    active: multiplyArrayData(
-      constantMultiply(
-        waterAgri.active,
-        FOOD_AND_YIELD.CIHERANG.POTENTIAL_PRODUCTIVITY,
-      ),
-      ciherang.active,
-    ),
-    // baseline: multiplyArrayData(constantMultiply(waterAgri.baseline, FOOD_AND_YIELD.CIHERANG.POTENTIAL_PRODUCTIVITY), ciherang.baseline),
-    scenarioA: multiplyArrayData(
-      constantMultiply(
-        waterAgri.scenarioA,
-        FOOD_AND_YIELD.CIHERANG.POTENTIAL_PRODUCTIVITY,
-      ),
-      ciherang.scenarioA,
-    ),
-    scenarioB: multiplyArrayData(
-      constantMultiply(
-        waterAgri.scenarioB,
-        FOOD_AND_YIELD.CIHERANG.POTENTIAL_PRODUCTIVITY,
-      ),
-      ciherang.scenarioB,
-    ),
-  }),
-);
-// circular dependency from sigmoid function
-export const selectMekonggaProductionPerScenario = createSelector(
-  [selectMekongga, selectImpactOfWaterAvailabilityForAgri],
-  (Mekongga, waterAgri) => ({
-    active: multiplyArrayData(
-      constantMultiply(
-        waterAgri.active,
-        FOOD_AND_YIELD.MEKONGGA.POTENTIAL_PRODUCTIVITY,
-      ),
-      Mekongga.active,
-    ),
-    // baseline: multiplyArrayData(constantMultiply(waterAgri.baseline, FOOD_AND_YIELD.MEKONGGA.POTENTIAL_PRODUCTIVITY), Mekongga.baseline),
-    scenarioA: multiplyArrayData(
-      constantMultiply(
-        waterAgri.scenarioA,
-        FOOD_AND_YIELD.MEKONGGA.POTENTIAL_PRODUCTIVITY,
-      ),
-      Mekongga.scenarioA,
-    ),
-    scenarioB: multiplyArrayData(
-      constantMultiply(
-        waterAgri.scenarioB,
-        FOOD_AND_YIELD.MEKONGGA.POTENTIAL_PRODUCTIVITY,
-      ),
-      Mekongga.scenarioB,
-    ),
-  }),
-);
-// circular dependency from sigmoid function
-export const selectHipaseriesProductionPerScenario = createSelector(
-  [selectHipaSeries, selectImpactOfWaterAvailabilityForAgri],
-  (hipaseries, waterAgri) => ({
-    active: multiplyArrayData(
-      constantMultiply(
-        waterAgri.active,
-        FOOD_AND_YIELD.HIPASERRIES.POTENTIAL_PRODUCTIVITY,
-      ),
-      hipaseries.active,
-    ),
-    // baseline: multiplyArrayData(constantMultiply(waterAgri.baseline, FOOD_AND_YIELD.HIPASERRIES.POTENTIAL_PRODUCTIVITY), hipaseries.baseline),
-    scenarioA: multiplyArrayData(
-      constantMultiply(
-        waterAgri.scenarioA,
-        FOOD_AND_YIELD.HIPASERRIES.POTENTIAL_PRODUCTIVITY,
-      ),
-      hipaseries.scenarioA,
-    ),
-    scenarioB: multiplyArrayData(
-      constantMultiply(
-        waterAgri.scenarioB,
-        FOOD_AND_YIELD.HIPASERRIES.POTENTIAL_PRODUCTIVITY,
-      ),
-      hipaseries.scenarioB,
-    ),
-  }),
-);
-// circular dependency from sigmoid function
-export const selectLokalProductionPerScenario = createSelector(
-  [selectLokal, selectImpactOfWaterAvailabilityForAgri],
-  (lokal, waterAgri) => ({
-    active: multiplyArrayData(
-      constantMultiply(
-        waterAgri.active,
-        FOOD_AND_YIELD.LOKAL.POTENTIAL_PRODUCTIVITY,
-      ),
-      lokal.active,
-    ),
-    // baseline: multiplyArrayData(constantMultiply(waterAgri.baseline, FOOD_AND_YIELD.LOKAL.POTENTIAL_PRODUCTIVITY), lokal.baseline),
-    scenarioA: multiplyArrayData(
-      constantMultiply(
-        waterAgri.scenarioA,
-        FOOD_AND_YIELD.LOKAL.POTENTIAL_PRODUCTIVITY,
-      ),
-      lokal.scenarioA,
-    ),
-    scenarioB: multiplyArrayData(
-      constantMultiply(
-        waterAgri.scenarioB,
-        FOOD_AND_YIELD.LOKAL.POTENTIAL_PRODUCTIVITY,
-      ),
-      lokal.scenarioB,
+      land.scenarioB,
     ),
   }),
 );
 
 export const selectProductionTotalPerScenario = createSelector(
   [
-    selectInpariProductionPerScenario,
-    selectCiherangProductionPerScenario,
-    selectMekonggaProductionPerScenario,
-    selectHipaseriesProductionPerScenario,
-    selectLokalProductionPerScenario,
+    selectAgricultureLandProductionPerScenario,
   ],
-  (inpari32, ciherang, mekongga, hipaseries, lokal) => ({
-    active: sumArrayData(
-      inpari32.active,
-      ciherang.active,
-      mekongga.active,
-      hipaseries.active,
-      lokal.active,
-    ),
-    // // // // // // baseline: sumArrayData(inpari32.baseline, ciherang.baseline, mekongga.baseline, hipaseries.baseline, lokal.baseline),
-    scenarioA: sumArrayData(
-      inpari32.scenarioA,
-      ciherang.scenarioA,
-      mekongga.scenarioA,
-      hipaseries.scenarioA,
-      lokal.scenarioA,
-    ),
-    scenarioB: sumArrayData(
-      inpari32.scenarioB,
-      ciherang.scenarioB,
-      mekongga.scenarioB,
-      hipaseries.scenarioB,
-      lokal.scenarioB,
-    ),
+  (land) => ({
+    active: land.active,
+    scenarioA: land.scenarioA,
+    scenarioB: land.scenarioB,
   }),
 );
 
@@ -655,7 +564,6 @@ export const selectActualGenerationPerScenario = createSelector(
   ],
   (potentialWater, impactWater) => ({
     active: multiplyArrayData(potentialWater.active, impactWater.active),
-    // // // baseline: multiplyArrayData(potentialWater.baseline, impactWater.baseline),
     scenarioA: multiplyArrayData(
       potentialWater.scenarioA,
       impactWater.scenarioA,
@@ -664,6 +572,28 @@ export const selectActualGenerationPerScenario = createSelector(
       potentialWater.scenarioB,
       impactWater.scenarioB,
     ),
+  }),
+);
+
+export const selectActualCiPerScenario = createSelector(
+  [selectImpactOfWaterAvailabilityForAgri, selectContextSpecificActive, selectedContextSpecificA, selectedContextSpecificB],
+  (impactAgri, activeState, scenarioA, scenarioB) => {
+     const getCroppingInput = (scenario: ContextSpecificState) => (scenario?.agriculture?.croppingIntensity?.["2015-2030"] ?? 0);
+    
+     return {
+        active: constantMultiply(impactAgri.active, getCroppingInput(activeState)),
+        scenarioA: constantMultiply(impactAgri.scenarioA, getCroppingInput(scenarioA)),
+        scenarioB: constantMultiply(impactAgri.scenarioB, getCroppingInput(scenarioB)),
+     }
+  }
+)
+
+export const selectFertilizerEmissionApplicationPerScenario = createSelector(
+  [selectNpkApplicationPerScenario, selectActualCiPerScenario],
+  (npkApplication, actualCi) => ({
+    active: multiplyArrayData(constantMultiply(npkApplication.active, 0.49 * 298), actualCi.active),
+    scenarioA: multiplyArrayData(constantMultiply(npkApplication.scenarioA, 0.49 * 298), actualCi.scenarioA),
+    scenarioB: multiplyArrayData(constantMultiply(npkApplication.scenarioB, 0.49 * 298), actualCi.scenarioB),
   }),
 );
 
@@ -959,12 +889,6 @@ export const selectDieselDemandPerScenario = createSelector(
       energyPlanting.active,
       energyLand.active,
     ),
-    // baseline: sumArrayData(
-    //     energyFuel.baseline,
-    //     energyHarvest.baseline,
-    //     energyPlanting.baseline,
-    //     energyLand.baseline
-    // ),
     scenarioA: sumArrayData(
       energyFuel.scenarioA,
       energyHarvest.scenarioA,

@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { FOOD_AND_YIELD } from "@/lib/constant/initialDataContext.constans";
-import { selectPaddyPerFieldPerYieldComparisson } from "./foodAndSupplyInputDemandSelector";
+import { agricultureLandPaddyPerscenario } from "./foodAndSupplyInputDemandSelector";
 
 export const PLANTING_SESSIONS = {
   INPARI32: FOOD_AND_YIELD.INPARI_32.PLANTING_SESSION_PER_YEAR,
@@ -11,26 +11,27 @@ export const PLANTING_SESSIONS = {
 } as const;
 
 const calculateAveragePlantingSession = (
-  shares: Record<string, number[]>,
+  // shares: Record<string, number[]>,
+  shares: number[],
   plantingSessions: Record<string, number>,
 ) => {
-  const years = shares.Inpari32.length;
+  const years = shares.length;
   const result = Array(years).fill(0);
 
   for (let i = 0; i < years; i++) {
-    const inpari32 = shares.Inpari32[i] / 100;
-    const ciherang = shares.Ciherang[i] / 100;
-    const mekongga = shares.Mekongga[i] / 100;
-    const hipa = shares.HipaSeries[i] / 100;
-    const lokal = shares.Lokal[i] / 100;
+    // const inpari32 = shares.Inpari32[i] / 100;
+    // const ciherang = shares.Ciherang[i] / 100;
+    // const mekongga = shares.Mekongga[i] / 100;
+    // const hipa = shares.HipaSeries[i] / 100;
+    // const lokal = shares.Lokal[i] / 100;
 
     result[i] = Number(
       (
-        inpari32 * plantingSessions.INPARI32 +
-        ciherang * plantingSessions.CIHERANG +
-        mekongga * plantingSessions.MEKONGGA +
-        hipa * plantingSessions.HIPASERRIES +
-        lokal * plantingSessions.LOKAL
+        shares[i] * plantingSessions.INPARI32 +
+        shares[i] * plantingSessions.CIHERANG +
+        shares[i] * plantingSessions.MEKONGGA +
+        shares[i] * plantingSessions.HIPASERRIES +
+        shares[i]  * plantingSessions.LOKAL
       ).toFixed(10),
     );
   }
@@ -39,7 +40,7 @@ const calculateAveragePlantingSession = (
 };
 
 export const selectAveragePlantingSessions = createSelector(
-  [selectPaddyPerFieldPerYieldComparisson],
+  [agricultureLandPaddyPerscenario],
   (comparison) => ({
     active: calculateAveragePlantingSession(
       comparison.active,

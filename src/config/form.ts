@@ -76,14 +76,14 @@ export const contextSpecificInput: FormSection[] = [
     title: "Agriculture Production Demand",
     inputs: [
       {
-        label: "Inpari32 Area",
+        label: "Agriculture Land",
         min: 2,
         max: 12,
         periods: ["2015-2030"],
         withValidation: false,
-        id: "agriculture.areaInpari32",
+        id: "agriculture.landProduction",
         information:
-          "Average productivity of Inpari 32 rice variety in ha, used to calculate total rice production.",
+          "",
       },
       {
         label: "Conversion",
@@ -91,96 +91,151 @@ export const contextSpecificInput: FormSection[] = [
         max: 12,
         periods: ["2015-2030"],
         withValidation: false,
-        id: "agriculture.conversionInpari32",
+        id: "agriculture.conversionLandProduction",
         information:
-          "Average productivity of Inpari 32 rice variety in %, used to calculate total rice production.",
+          "",
+      },
+      {
+        label: "Base Yield [ton/ha]",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.baseYield",
+        information:
+          "",
+      },
+      {
+        label: "Cropping Intensity [1/year]",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.croppingIntensity",
+        information:
+          "",
+      },
+      {
+        label: "Water intensity [m3/ha/season]",
+        min: 2,
+        max: 12,
+        periods: ["2015-2030"],
+        withValidation: false,
+        id: "agriculture.waterIntensity",
+        information:
+          "",
       },
       // Ciherang
-      {
-        label: "Ciherang Area",
-        min: 2,
-        max: 12,
-        periods: ["2015-2030"],
-        withValidation: false,
-        id: "agriculture.areaCiherang",
-        information:
-          "Average productivity area of Ciherang rice variety in ha, used to calculate total rice production.",
-      },
-      {
-        label: "Conversion",
-        min: 2,
-        max: 12,
-        periods: ["2015-2030"],
-        withValidation: false,
-        id: "agriculture.conversionCiherang",
-        information:
-          "Average productivity conversion of Ciherang rice variety in %, used to calculate total rice production.",
-      },
+      // {
+      //   label: "Ciherang Area",
+      //   min: 2,
+      //   max: 12,
+      //   periods: ["2015-2030"],
+      //   withValidation: false,
+      //   id: "agriculture.areaCiherang",
+      //   information:
+      //     "Average productivity area of Ciherang rice variety in ha, used to calculate total rice production.",
+      // },
+      // {
+      //   label: "Conversion",
+      //   min: 2,
+      //   max: 12,
+      //   periods: ["2015-2030"],
+      //   withValidation: false,
+      //   id: "agriculture.conversionCiherang",
+      //   information:
+      //     "Average productivity conversion of Ciherang rice variety in %, used to calculate total rice production.",
+      // },
 
       // Hipa Series
-      {
-        label: "Hipa Series Area",
-        min: 2,
-        max: 12,
-        periods: ["2015-2030"],
-        withValidation: false,
-        id: "agriculture.areaHipaSeries",
-        information:
-          "Average productivity area of Hipa Series rice variety in ha, used to calculate total rice production.",
-      },
-      {
-        label: "Conversion",
-        min: 2,
-        max: 12,
-        periods: ["2015-2030"],
-        withValidation: false,
-        id: "agriculture.conversionHipaSeries",
-        information:
-          "Average productivity conversion of Hipa Series rice variety in %, used to calculate total rice production.",
-      },
+      // {
+      //   label: "Hipa Series Area",
+      //   min: 2,
+      //   max: 12,
+      //   periods: ["2015-2030"],
+      //   withValidation: false,
+      //   id: "agriculture.areaHipaSeries",
+      //   information:
+      //     "Average productivity area of Hipa Series rice variety in ha, used to calculate total rice production.",
+      // },
+      // {
+      //   label: "Conversion",
+      //   min: 2,
+      //   max: 12,
+      //   periods: ["2015-2030"],
+      //   withValidation: false,
+      //   id: "agriculture.conversionHipaSeries",
+      //   information:
+      //     "Average productivity conversion of Hipa Series rice variety in %, used to calculate total rice production.",
+      // },
 
       // Mekongga
-      {
-        label: "Mekongga Area",
-        min: 2,
-        max: 12,
-        periods: ["2015-2030"],
-        withValidation: false,
-        id: "agriculture.areaMekongga",
-        information:
-          "Average productivity area of Mekongga rice variety in ha, used to calculate total rice production.",
-      },
-      {
-        label: "Conversion",
-        min: 2,
-        max: 12,
-        periods: ["2015-2030"],
-        withValidation: false,
-        id: "agriculture.conversionMekongga",
-        information:
-          "Average productivity conversion of Mekongga rice variety in %, used to calculate total rice production.",
-      },
+      // {
+      //   label: "Mekongga Area",
+      //   min: 2,
+      //   max: 12,
+      //   periods: ["2015-2030"],
+      //   withValidation: false,
+      //   id: "agriculture.areaMekongga",
+      //   information:
+      //     "Average productivity area of Mekongga rice variety in ha, used to calculate total rice production.",
+      // },
+      // {
+      //   label: "Conversion",
+      //   min: 2,
+      //   max: 12,
+      //   periods: ["2015-2030"],
+      //   withValidation: false,
+      //   id: "agriculture.conversionMekongga",
+      //   information:
+      //     "Average productivity conversion of Mekongga rice variety in %, used to calculate total rice production.",
+      // },
 
       // Lokal
+      // {
+      //   label: "Lokal Area",
+      //   min: 2,
+      //   max: 12,
+      //   periods: ["2015-2030"],
+      //   withValidation: false,
+      //   id: "agriculture.areaLokal",
+      //   information:
+      //     "Average productivity area of local rice variety in ha, used to calculate total rice production.",
+      // },
+      // {
+      //   label: "Conversion",
+      //   min: 2,
+      //   max: 12,
+      //   periods: ["2015-2030"],
+      //   withValidation: false,
+      //   id: "agriculture.conversionLokal",
+      //   information:
+      //     "Average productivity conversion of local rice variety in %, used to calculate total rice production.",
+      // },
+    ],
+  },
+  {
+    title: "Diesel Pump",
+    inputs: [
       {
-        label: "Lokal Area",
-        min: 2,
-        max: 12,
+        label: "Installed Capacity [KWp]",
+        min: 0,
+        max: 100,
         periods: ["2015-2030"],
         withValidation: false,
-        id: "agriculture.areaLokal",
+        id: "diesel.installedCapacity",
         information:
-          "Average productivity area of local rice variety in ha, used to calculate total rice production.",
+          "",
       },
       {
-        label: "Conversion",
-        min: 2,
-        max: 12,
+        label: "Head Unit [m]",
+        min: 0,
+        max: 1,
         periods: ["2015-2030"],
         withValidation: false,
-        id: "agriculture.conversionLokal",
+        id: "diesel.headUnit",
         information:
-          "Average productivity conversion of local rice variety in %, used to calculate total rice production.",
+          "",
       },
     ],
   },

@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import {
   selectContextSpecificActive,
+  // selectSiteSpecificActive,
   // selectContextSpecificBaseline,
 } from "../baseSelector";
 import {
@@ -15,22 +16,19 @@ import {
 import { FOOD_AND_YIELD } from "@/lib/constant/initialDataContext.constans";
 import { ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
 
-const VARIETY_KEYS = [
-  "Inpari32",
-  "Ciherang",
-  "Mekongga",
-  "HipaSeries",
-  "Lokal",
+export const varietas = [
+  "landConversion",
 ] as const;
-type Variety = (typeof VARIETY_KEYS)[number];
 
-const DEMAND_KEYS = {
-  WATER_CONSUMPTION_UNIT: "WATER_CONSUMPTION_UNIT",
-  CHEMICAL_FERTILIZER_DEMAND: "CHEMICAL_FERTILIZER_DEMAND",
-  ORGANIC_FERTILIZER_DEMAND: "ORGANIC_FERTILIZER_DEMAND",
-} as const;
+const VARIETY_KEYS = [
+  "landConversion",
+] as const;
 
-type DemandKey = keyof typeof DEMAND_KEYS;
+export const scenarios = [
+  "active",
+  "scenarioA",
+  "scenarioB",
+] as const;
 
 const ENERGY_KEYS = {
   LAND_PROCESSING: "LAND_PROCESSING",
@@ -41,71 +39,56 @@ const ENERGY_KEYS = {
 
 type EnergyKey = keyof typeof ENERGY_KEYS;
 
-export const varietas = [
-  "Inpari32",
-  "Ciherang",
-  "Lokal",
-  "HipaSeries",
-  "Mekongga",
-] as const;
+const DEMAND_KEYS = {
+  WATER_CONSUMPTION_UNIT: "WATER_CONSUMPTION_UNIT",
+  CHEMICAL_FERTILIZER_DEMAND: "CHEMICAL_FERTILIZER_DEMAND",
+  ORGANIC_FERTILIZER_DEMAND: "ORGANIC_FERTILIZER_DEMAND",
+} as const;
 
-export type Varietas = (typeof varietas)[number];
+type DemandKey = keyof typeof DEMAND_KEYS;
+type Variety = (typeof VARIETY_KEYS)[number];
 
-export const scenarios = [
-  "active",
-  // "baseline",
-  "scenarioA",
-  "scenarioB",
-] as const;
-
-export type Scenario = (typeof scenarios)[number];
-
-export type VarietasData = Record<Scenario, number[]>;
-
-export type PaddyFieldComparison = Record<Scenario, Record<Varietas, number[]>>;
+const ENERGY_INPUT: Record<Variety, Record<EnergyKey, number>> = {
+  landConversion: FOOD_AND_YIELD.INPARI_32.ENERGY_DEMAND,
+};
 
 const DEMAND_INPUT: Record<Variety, Record<DemandKey, number>> = {
-  Inpari32: {
+  landConversion: {
     WATER_CONSUMPTION_UNIT: FOOD_AND_YIELD.INPARI_32.WATER_CONSUMPTION_UNIT,
     CHEMICAL_FERTILIZER_DEMAND:
       FOOD_AND_YIELD.INPARI_32.CHEMICAL_FERTILIZER_DEMAND,
     ORGANIC_FERTILIZER_DEMAND:
       FOOD_AND_YIELD.INPARI_32.ORGANIC_FERTILIZER_DEMAND,
-  },
-  Ciherang: {
-    WATER_CONSUMPTION_UNIT: FOOD_AND_YIELD.CIHERANG.WATER_CONSUMPTION_UNIT,
-    CHEMICAL_FERTILIZER_DEMAND:
-      FOOD_AND_YIELD.CIHERANG.CHEMICAL_FERTILIZER_DEMAND,
-    ORGANIC_FERTILIZER_DEMAND:
-      FOOD_AND_YIELD.CIHERANG.ORGANIC_FERTILIZER_DEMAND,
-  },
-  Mekongga: {
-    WATER_CONSUMPTION_UNIT: FOOD_AND_YIELD.MEKONGGA.WATER_CONSUMPTION_UNIT,
-    CHEMICAL_FERTILIZER_DEMAND:
-      FOOD_AND_YIELD.MEKONGGA.CHEMICAL_FERTILIZER_DEMAND,
-    ORGANIC_FERTILIZER_DEMAND:
-      FOOD_AND_YIELD.MEKONGGA.ORGANIC_FERTILIZER_DEMAND,
-  },
-  HipaSeries: {
-    WATER_CONSUMPTION_UNIT: FOOD_AND_YIELD.HIPASERRIES.WATER_CONSUMPTION_UNIT,
-    CHEMICAL_FERTILIZER_DEMAND:
-      FOOD_AND_YIELD.HIPASERRIES.CHEMICAL_FERTILIZER_DEMAND,
-    ORGANIC_FERTILIZER_DEMAND:
-      FOOD_AND_YIELD.HIPASERRIES.ORGANIC_FERTILIZER_DEMAND,
-  },
-  Lokal: {
-    WATER_CONSUMPTION_UNIT: FOOD_AND_YIELD.LOKAL.WATER_CONSUMPTION_UNIT,
-    CHEMICAL_FERTILIZER_DEMAND: FOOD_AND_YIELD.LOKAL.CHEMICAL_FERTILIZER_DEMAND,
-    ORGANIC_FERTILIZER_DEMAND: FOOD_AND_YIELD.LOKAL.ORGANIC_FERTILIZER_DEMAND,
-  },
+  }
 };
 
-const ENERGY_INPUT: Record<Variety, Record<EnergyKey, number>> = {
-  Inpari32: FOOD_AND_YIELD.INPARI_32.ENERGY_DEMAND,
-  Ciherang: FOOD_AND_YIELD.CIHERANG.ENERGY_DEMAND,
-  Mekongga: FOOD_AND_YIELD.MEKONGGA.ENERGY_DEMAND,
-  HipaSeries: FOOD_AND_YIELD.HIPASERRIES.ENERGY_DEMAND,
-  Lokal: FOOD_AND_YIELD.LOKAL.ENERGY_DEMAND,
+const additionalCompute = (
+  key: DemandKey,
+  value: number,
+  extraKey?: ContextSpecificState,
+  extraVariety?: Variety,
+) => {
+  switch (key) {
+    case "WATER_CONSUMPTION_UNIT":
+      return value;
+    case "CHEMICAL_FERTILIZER_DEMAND":
+      return (
+        (value *
+          (extraKey?.fertilizer?.percentageOfChemical?.["2015-2030"] ?? 1)) /
+        100
+      );
+    case "ORGANIC_FERTILIZER_DEMAND":
+      if (extraVariety)
+        return (
+          DEMAND_INPUT[extraVariety]["CHEMICAL_FERTILIZER_DEMAND"] *
+          (1 -
+            (extraKey?.fertilizer?.percentageOfChemical?.["2015-2030"] ?? 1) /
+              100) *
+          (extraKey?.fertilizer?.ratioOrganic?.["2015-2030"] ?? 0)
+        );
+    default:
+      return 0;
+  }
 };
 
 export const sumArrayData = (...arrays: number[][]): number[] => {
@@ -117,6 +100,26 @@ export const sumArrayData = (...arrays: number[][]): number[] => {
       result[i] += arr[i];
     }
   }
+  return result;
+};
+
+const calculateDemand = (
+  shares: number[],
+  key: DemandKey,
+  extraKey?: ContextSpecificState,
+) => {
+  const years = shares.length;
+  const result = Array(years).fill(0);
+  for (let i = 0; i < years; i++) {
+    let total = 0;
+    for (const variety of VARIETY_KEYS) {
+      total +=
+        (shares[i] / 100) *
+        additionalCompute(key, DEMAND_INPUT[variety][key], extraKey, variety);
+    }
+    result[i] = Number(total.toFixed(10));
+  }
+
   return result;
 };
 
@@ -155,65 +158,41 @@ export const calculateDevidedArrays = (arr1: number[], arr2: number[]) => {
   return result;
 };
 
-const additionalCompute = (
-  key: DemandKey,
-  value: number,
-  extraKey?: ContextSpecificState,
-  extraVariety?: Variety,
-) => {
-  switch (key) {
-    case "WATER_CONSUMPTION_UNIT":
-      return value;
-    case "CHEMICAL_FERTILIZER_DEMAND":
-      return (
-        (value *
-          (extraKey?.fertilizer?.percentageOfChemical?.["2015-2030"] ?? 1)) /
-        100
-      );
-    case "ORGANIC_FERTILIZER_DEMAND":
-      if (extraVariety)
-        return (
-          DEMAND_INPUT[extraVariety]["CHEMICAL_FERTILIZER_DEMAND"] *
-          (1 -
-            (extraKey?.fertilizer?.percentageOfChemical?.["2015-2030"] ?? 1) /
-              100) *
-          (extraKey?.fertilizer?.ratioOrganic?.["2015-2030"] ?? 0)
-        );
-    default:
-      return 0;
-  }
-};
+export const calculateInput = (
+  initial: number = 0,
+  percentage: number = 0,
+  length: number = 16
+): number[] => {
+  const result = Array(length).fill(0);
 
-const calculateDemand = (
-  shares: Record<Variety, number[]>,
-  key: DemandKey,
-  extraKey?: ContextSpecificState,
-) => {
-  const years = shares.Inpari32.length;
-  const result = Array(years).fill(0);
-  for (let i = 0; i < years; i++) {
-    let total = 0;
-    for (const variety of VARIETY_KEYS) {
-      total +=
-        (shares[variety][i] / 100) *
-        additionalCompute(key, DEMAND_INPUT[variety][key], extraKey, variety);
-    }
-    result[i] = Number(total.toFixed(10));
+  const pct = Math.abs(percentage) > 1 ? percentage / 100 : percentage;
+  const multiplier = 1 - pct;
+
+  result[0] = initial;
+
+  for (let i = 1; i < length; i++) {
+    result[i] = Math.round(result[i - 1] * multiplier);
   }
 
   return result;
+};
+
+
+export const calculatePaddyLandShare = (value: number = 0, total: number = 0) => {
+  if (total === 0) return 0;
+  return value / total;
 };
 
 const calculateEnergyDemand = (
-  shares: Record<Variety, number[]>,
+  shares: number[],
   key: EnergyKey,
 ) => {
-  const years = shares.Inpari32.length;
+  const years = shares.length;
   const result = Array(years).fill(0);
   for (let i = 0; i < years; i++) {
     let total = 0;
     for (const variety of VARIETY_KEYS) {
-      total += (shares[variety][i] / 100) * ENERGY_INPUT[variety][key];
+      total += (shares[i] / 100) * ENERGY_INPUT[variety][key];
     }
     result[i] = Number(total.toFixed(10));
   }
@@ -221,104 +200,52 @@ const calculateEnergyDemand = (
   return result;
 };
 
-export const createPaddySelector = (varietyKey: string) => {
-  return createSelector(
-    [
-      selectContextSpecificActive,
-      // selectContextSpecificBaseline,
-      selectedContextSpecificA,
-      selectedContextSpecificB,
-    ],
-    (activeState, scenarioAState, scenarioBState) => {
-      const areaKey = `area${varietyKey}`;
-      const convKey = `conversion${varietyKey}`;
-
-      return {
-        active: calculatePaddyPeryieldPerseed(
-          activeState.agriculture[areaKey]["2015-2030"],
-          activeState.agriculture[convKey]["2015-2030"],
-        ),
-
-        // baseline: calculatePaddyPeryieldPerseed(
-        //     baselineState.agriculture[areaKey]["2015-2030"],
-        //     baselineState.agriculture[convKey]["2015-2030"]
-        // ),
-
-        scenarioA: calculatePaddyPeryieldPerseed(
-          scenarioAState ? scenarioAState.agriculture[areaKey]["2015-2030"] : 0,
-          scenarioAState ? scenarioAState.agriculture[convKey]["2015-2030"] : 0,
-        ),
-
-        scenarioB: calculatePaddyPeryieldPerseed(
-          scenarioBState ? scenarioBState.agriculture[areaKey]["2015-2030"] : 0,
-          scenarioBState ? scenarioBState.agriculture[convKey]["2015-2030"] : 0,
-        ),
-      };
-    },
-  );
-};
-
-export const selectInpari32 = createPaddySelector("Inpari32");
-export const selectCiherang = createPaddySelector("Ciherang");
-export const selectLokal = createPaddySelector("Lokal");
-export const selectMekongga = createPaddySelector("Mekongga");
-export const selectHipaSeries = createPaddySelector("HipaSeries");
-
-export const selectPaddyPerFieldPerYieldComparisson = createSelector(
+export const agricultureLandPerScenario = createSelector(
   [
-    selectInpari32,
-    selectCiherang,
-    selectLokal,
-    selectHipaSeries,
-    selectMekongga,
+    selectContextSpecificActive,
+    selectedContextSpecificA,
+    selectedContextSpecificB
   ],
-  (
-    Inpari32: VarietasData,
-    Ciherang: VarietasData,
-    Lokal: VarietasData,
-    HipaSeries: VarietasData,
-    Mekongga: VarietasData,
-  ): PaddyFieldComparison => {
-    const dataMap: Record<Varietas, VarietasData> = {
-      Inpari32,
-      Ciherang,
-      Lokal,
-      HipaSeries,
-      Mekongga,
-    };
+  (activeState, scenarioAState, scenarioBState) => ({
+    active: calculateInput(
+      activeState.agriculture.landProduction["2015-2030"],
+      activeState.agriculture.conversionLandProduction["2015-2030"]
+    ),
 
-    const result = {} as PaddyFieldComparison;
+    scenarioA: calculateInput(
+      scenarioAState?.agriculture?.landProduction["2015-2030"],
+      scenarioAState?.agriculture?.conversionLandProduction["2015-2030"]
+    ),
 
-    scenarios.forEach((scenario) => {
-      const total = sumArrayData(...varietas.map((v) => dataMap[v][scenario]));
-
-      result[scenario] = Object.fromEntries(
-        varietas.map((v) => [
-          v,
-          calculateDevidedArrays(dataMap[v][scenario], total),
-        ]),
-      ) as Record<Varietas, number[]>;
-    });
-
-    return result;
-  },
+    scenarioB: calculateInput(
+      scenarioBState?.agriculture?.landProduction["2015-2030"],
+      scenarioBState?.agriculture?.conversionLandProduction["2015-2030"]
+    ),
+  })
 );
 
+export const agricultureLandPaddyPerscenario = createSelector(
+  [agricultureLandPerScenario],
+  (agriculture) => ({
+    active: Array(16).fill(100),
+    scenarioA: Array(16).fill(100),
+    scenarioB: Array(16).fill(100),
+  })
+)
+
 export const selectWaterDemandAveragePerScenario = createSelector(
-  [selectPaddyPerFieldPerYieldComparisson],
+  [agricultureLandPaddyPerscenario],
   (shares) => ({
-    active: calculateDemand(shares.active, "WATER_CONSUMPTION_UNIT"),
-    // baseline: calculateDemand(shares.baseline, "WATER_CONSUMPTION_UNIT"),
-    scenarioA: calculateDemand(shares.scenarioA, "WATER_CONSUMPTION_UNIT"),
-    scenarioB: calculateDemand(shares.scenarioB, "WATER_CONSUMPTION_UNIT"),
+    active: constantMultiply(calculateDemand(shares.active, "WATER_CONSUMPTION_UNIT"),2),
+    scenarioA: constantMultiply(calculateDemand(shares.scenarioA, "WATER_CONSUMPTION_UNIT"),2),
+    scenarioB: constantMultiply(calculateDemand(shares.scenarioB, "WATER_CONSUMPTION_UNIT"),2),
   }),
 );
 
 export const selectChemicalDemandAveragePerScenario = createSelector(
   [
-    selectPaddyPerFieldPerYieldComparisson,
+    agricultureLandPaddyPerscenario,
     selectContextSpecificActive,
-    // selectContextSpecificBaseline,
     selectedContextSpecificA,
     selectedContextSpecificB,
   ],
@@ -329,7 +256,6 @@ export const selectChemicalDemandAveragePerScenario = createSelector(
         "CHEMICAL_FERTILIZER_DEMAND",
         active,
       ),
-      // baseline: calculateDemand(shares.baseline, "CHEMICAL_FERTILIZER_DEMAND", baseline),
       scenarioA: calculateDemand(
         shares.scenarioA,
         "CHEMICAL_FERTILIZER_DEMAND",
@@ -346,9 +272,8 @@ export const selectChemicalDemandAveragePerScenario = createSelector(
 
 export const selectOrganicDemandAveragePerScenario = createSelector(
   [
-    selectPaddyPerFieldPerYieldComparisson,
+    agricultureLandPaddyPerscenario,
     selectContextSpecificActive,
-    // selectContextSpecificBaseline,
     selectedContextSpecificA,
     selectedContextSpecificB,
   ],
@@ -359,7 +284,6 @@ export const selectOrganicDemandAveragePerScenario = createSelector(
         "ORGANIC_FERTILIZER_DEMAND",
         active,
       ),
-      // baseline: calculateDemand(shares.baseline, "ORGANIC_FERTILIZER_DEMAND", baseline),
       scenarioA: calculateDemand(
         shares.scenarioA,
         "ORGANIC_FERTILIZER_DEMAND",
@@ -375,17 +299,15 @@ export const selectOrganicDemandAveragePerScenario = createSelector(
 );
 
 export const selectEnergyLandProcessingDemandAveragePerScenario =
-  createSelector([selectPaddyPerFieldPerYieldComparisson], (shares) => ({
+  createSelector([agricultureLandPaddyPerscenario], (shares) => ({
     active: calculateEnergyDemand(shares.active, "LAND_PROCESSING"),
-    // baseline: calculateEnergyDemand(shares.baseline, "LAND_PROCESSING"),
     scenarioA: calculateEnergyDemand(shares.scenarioA, "LAND_PROCESSING"),
     scenarioB: calculateEnergyDemand(shares.scenarioB, "LAND_PROCESSING"),
   }));
 
 export const selectEnergyPlantingAndMaintenanceDemandAveragePerScenario =
-  createSelector([selectPaddyPerFieldPerYieldComparisson], (shares) => ({
+  createSelector([agricultureLandPaddyPerscenario], (shares) => ({
     active: calculateEnergyDemand(shares.active, "PLANTING_AND_MAINTENANCE"),
-    // baseline: calculateEnergyDemand(shares.baseline, "PLANTING_AND_MAINTENANCE"),
     scenarioA: calculateEnergyDemand(
       shares.scenarioA,
       "PLANTING_AND_MAINTENANCE",
@@ -397,19 +319,17 @@ export const selectEnergyPlantingAndMaintenanceDemandAveragePerScenario =
   }));
 
 export const selectEnergyIrrigationDemandAveragePerScenario = createSelector(
-  [selectPaddyPerFieldPerYieldComparisson],
+  [agricultureLandPaddyPerscenario],
   (shares) => ({
     active: calculateEnergyDemand(shares.active, "IRRIGATION"),
-    // baseline: calculateEnergyDemand(shares.baseline, "IRRIGATION"),
     scenarioA: calculateEnergyDemand(shares.scenarioA, "IRRIGATION"),
     scenarioB: calculateEnergyDemand(shares.scenarioB, "IRRIGATION"),
   }),
 );
 
 export const selectEnergyHarvestAndTransportDemandAveragePerScenario =
-  createSelector([selectPaddyPerFieldPerYieldComparisson], (shares) => ({
+  createSelector([agricultureLandPaddyPerscenario], (shares) => ({
     active: calculateEnergyDemand(shares.active, "HARVEST_AND_TRANSPORT"),
-    // baseline: calculateEnergyDemand(shares.baseline, "HARVEST_AND_TRANSPORT"),
     scenarioA: calculateEnergyDemand(shares.scenarioA, "HARVEST_AND_TRANSPORT"),
     scenarioB: calculateEnergyDemand(shares.scenarioB, "HARVEST_AND_TRANSPORT"),
   }));
@@ -433,12 +353,6 @@ export const selectTotalEnergyDemandAveragePerScenario = createSelector(
       irrigation.active,
       harvestAndTransport.active,
     ),
-    // baseline: sumArrayData(
-    //   landProcessing.baseline,
-    //   plantingAndMaintenance.baseline,
-    //   irrigation.baseline,
-    //   harvestAndTransport.baseline
-    // ),
     scenarioA: sumArrayData(
       landProcessing.scenarioA,
       plantingAndMaintenance.scenarioA,
@@ -456,39 +370,18 @@ export const selectTotalEnergyDemandAveragePerScenario = createSelector(
 
 export const selectLandPaddyFieldPerScenario = createSelector(
   [
-    selectInpari32,
-    selectCiherang,
-    selectLokal,
-    selectHipaSeries,
-    selectMekongga,
+    agricultureLandPaddyPerscenario
   ],
-  (inpari32, ciherang, lokal, hipaseries, mekongga) => ({
-    active: sumArrayData(
-      inpari32.active,
-      ciherang.active,
-      lokal.active,
-      hipaseries.active,
-      mekongga.active,
-    ),
-    // baseline: sumArrayData(ciherang.baseline, lokal.baseline, hipaseries.baseline, mekongga.baseline),
-    scenarioA: sumArrayData(
-      ciherang.scenarioA,
-      lokal.scenarioA,
-      hipaseries.scenarioA,
-      mekongga.scenarioA,
-    ),
-    scenarioB: sumArrayData(
-      mekongga.scenarioB,
-      hipaseries.scenarioB,
-      lokal.scenarioB,
-      ciherang.scenarioB,
-      inpari32.scenarioB,
-    ),
+  (land) => ({
+    active: land.active,
+    scenarioA: land.scenarioA,
+    scenarioB: land.scenarioB
   }),
 );
 
+// should change
 export const selectWaterDemandPerScenario = createSelector(
-  [selectWaterDemandAveragePerScenario, selectLandPaddyFieldPerScenario],
+  [selectWaterDemandAveragePerScenario, agricultureLandPerScenario],
   (waterDemand, paddyField) => ({
     active: multiplyArrayData(waterDemand.active, paddyField.active),
     // baseline: multiplyArrayData(waterDemand.baseline, paddyField.baseline),
@@ -496,15 +389,33 @@ export const selectWaterDemandPerScenario = createSelector(
     scenarioB: multiplyArrayData(waterDemand.scenarioB, paddyField.scenarioB),
   }),
 );
+// export const selectWaterDemandPerScenario = createSelector(
+//   [selectWaterDemandAveragePerScenario, selectLandPaddyFieldPerScenario, selectContextSpecificActive, selectedContextSpecificA, selectedContextSpecificB],
+//   (waterDemand, paddyField, activeState, scenarioA, scenarioB) => 
+//   {
+//     const getCroppingInput = (scenario: ContextSpecificState) =>
+//       (scenario?.agriculture?.croppingIntensity?.["2015-2030"] ?? 0);
+
+//     return {
+//       active: constantMultiply(multiplyArrayData(waterDemand.active, paddyField.active),getCroppingInput(activeState)),
+//       scenarioA: constantMultiply(multiplyArrayData(waterDemand.active, paddyField.active),getCroppingInput(scenarioA)),
+//       scenarioB: constantMultiply(multiplyArrayData(waterDemand.active, paddyField.active),getCroppingInput(scenarioB)), 
+//     }
+//   }
+  //   ({
+  //   active: constantMultiply(multiplyArrayData(waterDemand.active, paddyField.active),activeState.),
+  //   scenarioA: constantMultiply(multiplyArrayData(waterDemand.scenarioA, paddyField.scenarioA),2),
+  //   scenarioB: constantMultiply(multiplyArrayData(waterDemand.scenarioB, paddyField.scenarioB),2),
+  // }),
+// );
 
 export const selectChemicalDemandPerScenario = createSelector(
-  [selectChemicalDemandAveragePerScenario, selectLandPaddyFieldPerScenario],
+  [selectChemicalDemandAveragePerScenario, agricultureLandPerScenario],
   (chemicalDemand, paddyField) => ({
     active: constantDevided(
       multiplyArrayData(chemicalDemand.active, paddyField.active),
       1000,
     ),
-    // baseline: constantDevided(multiplyArrayData(chemicalDemand.baseline, paddyField.baseline), 1000),
     scenarioA: constantDevided(
       multiplyArrayData(chemicalDemand.scenarioA, paddyField.scenarioA),
       1000,
@@ -517,13 +428,12 @@ export const selectChemicalDemandPerScenario = createSelector(
 );
 
 export const selectOrganicDemandPerScenario = createSelector(
-  [selectOrganicDemandAveragePerScenario, selectLandPaddyFieldPerScenario],
+  [selectOrganicDemandAveragePerScenario, agricultureLandPerScenario],
   (organicDemand, paddyField) => ({
     active: constantDevided(
       multiplyArrayData(organicDemand.active, paddyField.active),
       1000,
     ),
-    // baseline: constantDevided(multiplyArrayData(organicDemand.baseline, paddyField.baseline), 1000),
     scenarioA: constantDevided(
       multiplyArrayData(organicDemand.scenarioA, paddyField.scenarioA),
       1000,
@@ -538,11 +448,10 @@ export const selectOrganicDemandPerScenario = createSelector(
 export const selectEnergyLandProcessingDemandTotalPerScenario = createSelector(
   [
     selectEnergyLandProcessingDemandAveragePerScenario,
-    selectLandPaddyFieldPerScenario,
+    agricultureLandPerScenario,
   ],
   (landProcessing, paddyField) => ({
     active: multiplyArrayData(landProcessing.active, paddyField.active),
-    // baseline: multiplyArrayData(landProcessing.baseline, paddyField.baseline),
     scenarioA: multiplyArrayData(
       landProcessing.scenarioA,
       paddyField.scenarioA,
@@ -558,14 +467,13 @@ export const selectEnergyPlantingAndMaintenanceDemandTotalPerScenario =
   createSelector(
     [
       selectEnergyPlantingAndMaintenanceDemandAveragePerScenario,
-      selectLandPaddyFieldPerScenario,
+      agricultureLandPerScenario,
     ],
     (plantingAndMaintenance, paddyField) => ({
       active: multiplyArrayData(
         plantingAndMaintenance.active,
         paddyField.active,
       ),
-      // baseline: multiplyArrayData(plantingAndMaintenance.baseline, paddyField.baseline),
       scenarioA: multiplyArrayData(
         plantingAndMaintenance.scenarioA,
         paddyField.scenarioA,
@@ -580,11 +488,10 @@ export const selectEnergyPlantingAndMaintenanceDemandTotalPerScenario =
 export const selectEnergyIrrigationDemandTotalPerScenario = createSelector(
   [
     selectEnergyIrrigationDemandAveragePerScenario,
-    selectLandPaddyFieldPerScenario,
+    agricultureLandPerScenario,
   ],
   (irrigation, paddyField) => ({
     active: multiplyArrayData(irrigation.active, paddyField.active),
-    // baseline: multiplyArrayData(irrigation.baseline, paddyField.baseline),
     scenarioA: multiplyArrayData(irrigation.scenarioA, paddyField.scenarioA),
     scenarioB: multiplyArrayData(irrigation.scenarioB, paddyField.scenarioB),
   }),
@@ -594,11 +501,10 @@ export const selectEnergyHarvestAndTransportDemandTotalPerScenario =
   createSelector(
     [
       selectEnergyHarvestAndTransportDemandAveragePerScenario,
-      selectLandPaddyFieldPerScenario,
+      agricultureLandPerScenario,
     ],
     (harvestAndTransport, paddyField) => ({
       active: multiplyArrayData(harvestAndTransport.active, paddyField.active),
-      // baseline: multiplyArrayData(harvestAndTransport.baseline, paddyField.baseline),
       scenarioA: multiplyArrayData(
         harvestAndTransport.scenarioA,
         paddyField.scenarioA,
@@ -623,39 +529,27 @@ export const selectTotalEnergyDemandPerScenario = createSelector(
     irrigation,
     harvestAndTransport,
   ) => ({
-    active: constantDevided(
-      sumArrayData(
+    active:
+      constantDevided(sumArrayData(
         landProcessing.active,
         plantingAndMaintenance.active,
         irrigation.active,
         harvestAndTransport.active,
-      ),
-      1000,
-    ),
-    // baseline: constantDevided(sumArrayData(
-    //   landProcessing.baseline,
-    //   plantingAndMaintenance.baseline,
-    //   irrigation.baseline,
-    //   harvestAndTransport.baseline
-    // ), 1000),
-    scenarioA: constantDevided(
-      sumArrayData(
+      ),1000),
+    scenarioA:
+      constantDevided(sumArrayData(
         landProcessing.scenarioA,
         plantingAndMaintenance.scenarioA,
         irrigation.scenarioA,
         harvestAndTransport.scenarioA,
-      ),
-      1000,
-    ),
-    scenarioB: constantDevided(
-      sumArrayData(
+      ),1000),
+    scenarioB:
+      constantDevided(sumArrayData(
         landProcessing.scenarioB,
         plantingAndMaintenance.scenarioB,
         irrigation.scenarioB,
         harvestAndTransport.scenarioB,
-      ),
-      1000,
-    ),
+      ),1000),
   }),
 );
 
@@ -663,18 +557,9 @@ export const selectNpkApplicationPerScenario = createSelector(
   [selectChemicalDemandPerScenario],
   (chemicalDemand) => ({
     active: constantMultiply(chemicalDemand.active, 0.3),
-    // baseline: constantMultiply(chemicalDemand.baseline, 0.3),
     scenarioA: constantMultiply(chemicalDemand.scenarioA, 0.3),
     scenarioB: constantMultiply(chemicalDemand.scenarioB, 0.3),
   }),
 );
 
-export const selectFertilizerEmissionApplicationPerScenario = createSelector(
-  [selectNpkApplicationPerScenario],
-  (npkApplication) => ({
-    active: constantMultiply(npkApplication.active, 0.49 * 298),
-    // baseline: constantMultiply(npkApplication.baseline, 0.49 * 298),
-    scenarioA: constantMultiply(npkApplication.scenarioA, 0.49 * 298),
-    scenarioB: constantMultiply(npkApplication.scenarioB, 0.49 * 298),
-  }),
-);
+

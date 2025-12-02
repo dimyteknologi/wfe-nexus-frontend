@@ -10,12 +10,14 @@ import {
   TimePeriodData,
   initialTimePeriodDataContext,
   BaselinePayload,
+  DieselPumpState,
 } from "@/lib/constant/inputType.constant";
 
 export interface ContextSpecificState {
   simulationName: string | null;
   food: FoodDemandState;
   agriculture: AgricultureProductionState;
+  diesel: DieselPumpState;
   fertilizer: FertilizerState;
   rainfall: RainfallState;
 }
@@ -23,31 +25,38 @@ export interface ContextSpecificState {
 export const ContextSpecific: ContextSpecificState = {
   simulationName: null,
   food: {
-    populationInitial: { "2015-2030": 950000 },
+    populationInitial: { "2015-2030": 1300 },
     populationGrowth: { "2015-2030": 1.32 },
     riceDemandPerPerson: { "2015-2030": 79.2 },
     convertionFactorToRice: { "2015-2030": 0.63 },
     convertionFactoTOGkg: { "2015-2030": 0.85 },
   },
   agriculture: {
-    areaInpari32: { "2015-2030": 15000 },
-    conversionInpari32: { "2015-2030": 1.32 },
-    areaCiherang: { "2015-2030": 25000 },
-    conversionCiherang: { "2015-2030": 0.88 },
-    areaMekongga: { "2015-2030": 32000 },
-    conversionMekongga: { "2015-2030": 1.7 },
-    areaHipaSeries: { "2015-2030": 12500 },
-    conversionHipaSeries: { "2015-2030": 1.2 },
-    areaLokal: { "2015-2030": 7500 },
-    conversionLokal: { "2015-2030": 2.1 },
+    landProduction: { "2015-2030": 100 },
+    conversionLandProduction: { "2015-2030": 0 },
+    baseYield: { "2015-2030": 5.5 },
+    croppingIntensity: { "2015-2030": 2 },
+    waterIntensity: {"2015-2030": 7800}
+    // areaCiherang: { "2015-2030": 25000 },
+    // conversionCiherang: { "2015-2030": 0.88 },
+    // areaMekongga: { "2015-2030": 32000 },
+    // conversionMekongga: { "2015-2030": 1.7 },
+    // areaHipaSeries: { "2015-2030": 12500 },
+    // conversionHipaSeries: { "2015-2030": 1.2 },
+    // areaLokal: { "2015-2030": 7500 },
+    // conversionLokal: { "2015-2030": 2.1 },
+  },
+  diesel:{
+    installedCapacity: { "2015-2030": 58 },
+    headUnit: { "2015-2030": 30 }
   },
   fertilizer: {
     percentageOfChemical: { "2015-2030": 30 },
     ratioOrganic: { "2015-2030": 17 },
   },
   rainfall: {
-    annualRainfall: { "2015-2030": 150 },
-    areaSize: { "2015-2030": 110 },
+    annualRainfall: { "2015-2030": 710 },
+    areaSize: { "2015-2030": 100 },
   },
 };
 

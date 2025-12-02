@@ -55,16 +55,23 @@ export interface FertilizerState {
   ratioOrganic: TimePeriodDataContext;
 }
 export interface AgricultureProductionState {
-  areaInpari32: TimePeriodDataContext;
-  conversionInpari32: TimePeriodDataContext;
-  areaCiherang: TimePeriodDataContext;
-  conversionCiherang: TimePeriodDataContext;
-  areaHipaSeries: TimePeriodDataContext;
-  conversionHipaSeries: TimePeriodDataContext;
-  areaMekongga: TimePeriodDataContext;
-  conversionMekongga: TimePeriodDataContext;
-  areaLokal: TimePeriodDataContext;
-  conversionLokal: TimePeriodDataContext;
+  landProduction: TimePeriodDataContext;
+  conversionLandProduction: TimePeriodDataContext;
+  baseYield: TimePeriodDataContext;
+  croppingIntensity: TimePeriodDataContext;
+  waterIntensity: TimePeriodDataContext;
+  // areaCiherang: TimePeriodDataContext;
+  // conversionCiherang: TimePeriodDataContext;
+  // areaHipaSeries: TimePeriodDataContext;
+  // conversionHipaSeries: TimePeriodDataContext;
+  // areaMekongga: TimePeriodDataContext;
+  // conversionMekongga: TimePeriodDataContext;
+  // areaLokal: TimePeriodDataContext;
+  // conversionLokal: TimePeriodDataContext;
+}
+export interface DieselPumpState{
+  installedCapacity: TimePeriodDataContext;
+  headUnit: TimePeriodDataContext;
 }
 export interface UpdatePayload {
   path: string[];

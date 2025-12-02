@@ -22,7 +22,7 @@ export const RESOURCE_SUPPLY_INPUT = [
   {
     title: "Solar Water Pump Capacity",
     unit: "kWp",
-    values: [0, 0, 0, 2, 4, 5, 15, 22, 23, 25, 0, 0, 0, 0, 0, 0],
+    values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   },
   {
     title: "Geothermal capacity",

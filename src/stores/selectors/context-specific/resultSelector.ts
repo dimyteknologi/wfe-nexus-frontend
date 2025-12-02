@@ -21,7 +21,7 @@ import {
   sumArrayData,
   selectChemicalDemandPerScenario,
   selectOrganicDemandPerScenario,
-  selectFertilizerEmissionApplicationPerScenario,
+  agricultureLandPerScenario,
 } from "./foodAndSupplyInputDemandSelector";
 import {
   selectSupplyWaterTotalPerScenario,
@@ -32,6 +32,7 @@ import {
   selectChemicalFertillizerSupplyPerScenario,
   selectOrganicFertillizerSupplyPerScenario,
   selectEmisiSekamPerScenario,
+  selectFertilizerEmissionApplicationPerScenario
 } from "./resourceSupplySelector";
 import { selectFoodDemandRicePerScenario } from "./foodDemandSelector";
 
@@ -64,7 +65,7 @@ export const selectRiceProductionPerScenario = createSelector(
 );
 
 export const selectAverageProductivityPerScenario = createSelector(
-  [selectProductionTotalPerScenario, selectLandPaddyFieldPerScenario],
+  [selectProductionTotalPerScenario, agricultureLandPerScenario],
   (productionTotal, paddyYield) => ({
     active: constantDevided(
       calculateDevidedArrays(productionTotal.active, paddyYield.active),
