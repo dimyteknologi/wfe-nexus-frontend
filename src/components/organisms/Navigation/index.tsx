@@ -168,9 +168,9 @@ const Navigation = () => {
                     <LogIn size={16} />
                     Login
                   </Link>
-                  <button className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-2.5 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-md hover:shadow-lg">
+                  {/* <button className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-2.5 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-md hover:shadow-lg">
                     Sign Up
-                  </button>
+                  </button> */}
                 </>
               )}
             </div>
@@ -315,9 +315,9 @@ const Navigation = () => {
                       Login
                     </div>
                   </Link>
-                  <button className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-md">
+                  {/* <button className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-md">
                     Sign Up
-                  </button>
+                  </button> */}
                 </>
               )}
             </div>
