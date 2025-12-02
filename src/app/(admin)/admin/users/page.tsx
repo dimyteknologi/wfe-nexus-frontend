@@ -9,7 +9,7 @@ export default function UsersPage() {
   const [activeTab, setActiveTab] = useState(0);
   const { users, loading, error, deleteUser } = useUsers();
 
-  const handleDelete = async (userId: number, userName: string) => {
+  const handleDelete = async (userId: string, userName: string) => {
     if (confirm(`Are you sure you want to delete ${userName}?`)) {
       try {
         await deleteUser(userId);
@@ -106,13 +106,13 @@ export default function UsersPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${user.role === 'Admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
-                      {user.role}
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${user.role?.name === 'Admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {user.role?.name || 'N/A'}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${user.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {user.status}
+                    <span className="text-gray-600">
+                      {user.city?.name || 'N/A'}
                     </span>
                   </td>
                   <td className="px-6 py-4">

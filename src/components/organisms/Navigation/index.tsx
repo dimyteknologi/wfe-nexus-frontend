@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import { ChevronDown, Menu, X, LogIn } from "lucide-react";
+import { ChevronDown, Menu, X, LogIn, LogOut, User } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
 
 interface NavItem {
   href: string;
@@ -17,6 +18,7 @@ const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const { data: session, status } = useSession();
 
   const navItems: NavItem[] = [
     { href: "/", label: "Home" },
@@ -25,11 +27,11 @@ const Navigation = () => {
       href: "#",
       label: "DSS Interface",
       subItems: [
-        { href: "/dss-interface", label: "Site Specific" },
-        { href: "#", label: "Context Specific" },
+        { href: "/site-specific", label: "Site Specific" },
+        { href: "/context-specific", label: "Context Specific" },
       ],
     },
-    { href: "#", label: "Contact" },
+    // { href: "#", label: "Contact" },
   ];
 
   useEffect(() => {
@@ -71,7 +73,9 @@ const Navigation = () => {
     setMobileMenuOpen(false);
   };
 
-  const handleLogin = () => {};
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
 
   return (
     <>
@@ -138,16 +142,37 @@ const Navigation = () => {
 
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center space-x-3">
-              <Link
-                href="/login"
-                className="text-gray-700 hover:text-green-700 transition-colors flex items-center gap-1 px-4 py-2 rounded-lg hover:bg-green-50"
-              >
-                <LogIn size={16} />
-                Login
-              </Link>
-              <button className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-2.5 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-md hover:shadow-lg">
-                Sign Up
-              </button>
+              {status === "authenticated" ? (
+                <>
+                  <Link
+                    href="/admin"
+                    className="text-gray-700 hover:text-green-700 transition-colors flex items-center gap-1 px-4 py-2 rounded-lg hover:bg-green-50"
+                  >
+                    <User size={16} />
+                    {session?.user?.name || "Profile"}
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="text-gray-700 hover:text-red-700 transition-colors flex items-center gap-1 px-4 py-2 rounded-lg hover:bg-red-50"
+                  >
+                    <LogOut size={16} />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="text-gray-700 hover:text-green-700 transition-colors flex items-center gap-1 px-4 py-2 rounded-lg hover:bg-green-50"
+                  >
+                    <LogIn size={16} />
+                    Login
+                  </Link>
+                  {/* <button className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-5 py-2.5 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-md hover:shadow-lg">
+                    Sign Up
+                  </button> */}
+                </>
+              )}
             </div>
 
             {/* Partner Logos */}
@@ -266,15 +291,35 @@ const Navigation = () => {
 
           <div className="pt-6 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
-              <Link href="/login" onClick={closeAllMenus}>
-                <div className="w-full flex items-center justify-center gap-2 text-gray-700 py-3 border border-gray-300 rounded-lg hover:border-green-600 hover:text-green-700 transition-colors">
-                  <LogIn size={18} />
-                  Login
-                </div>
-              </Link>
-              <button className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-md">
-                Sign Up
-              </button>
+              {status === "authenticated" ? (
+                <>
+                  <Link href="/admin" onClick={closeAllMenus}>
+                    <div className="w-full flex items-center justify-center gap-2 text-gray-700 py-3 border border-gray-300 rounded-lg hover:border-green-600 hover:text-green-700 transition-colors">
+                      <User size={18} />
+                      {session?.user?.name || "Profile"}
+                    </div>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center justify-center gap-2 text-gray-700 py-3 border border-gray-300 rounded-lg hover:border-red-600 hover:text-red-700 transition-colors"
+                  >
+                    <LogOut size={18} />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" onClick={closeAllMenus}>
+                    <div className="w-full flex items-center justify-center gap-2 text-gray-700 py-3 border border-gray-300 rounded-lg hover:border-green-600 hover:text-green-700 transition-colors">
+                      <LogIn size={18} />
+                      Login
+                    </div>
+                  </Link>
+                  {/* <button className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 rounded-lg hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-md">
+                    Sign Up
+                  </button> */}
+                </>
+              )}
             </div>
           </div>
 

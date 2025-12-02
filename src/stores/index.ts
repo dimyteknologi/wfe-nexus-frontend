@@ -5,11 +5,17 @@ import storage from "@/stores/storage";
 import { listenerMiddleware } from "@/stores/listenerMiddleware";
 import { DssPageListener } from "./listener/dssPageListener";
 
+// dummy api services
 import { gdpApi } from "@/stores/api/gdpApi";
 import { livestockApi } from "@/stores/api/livestockApi";
 import { populationApi } from "@/stores/api/populationApi";
 import { fisheryApi } from "@/stores/api/fisheryApi";
 import { agricultureApi } from "@/stores/api/agricultureApi";
+import { importApi } from "@/stores/api/csvApi";
+import { scenarioApi } from "@/stores/api/scenarioApi";
+
+// development api services
+import { authApi } from "@/stores/api/auth";
 
 import scenarioReducer from "@/stores/slicers/dssScenarioSlicer";
 import agricultureReducer from "@/stores/slicers/agricultureSlicer";
@@ -17,7 +23,8 @@ import gdpReducer from "@/stores/slicers/gdrpSlicer";
 import livestockReducer from "@/stores/slicers/livestockSlicer";
 import populationReducer from "@/stores/slicers/populationSlicer";
 import fisheryReducer from "@/stores/slicers/fisherySlicer";
-import simulationReducer from "@/stores/slicers/dssInputSlicer";
+import siteSpecificReducer from "@/stores/slicers/siteSpecificInputSlicer";
+import contextSpecificReducer from "./slicers/contextSpecificInputSlicer";
 import waterDemandReducer from "@/stores/slicers/waterDemandSlicer";
 import energyDemandReducer from "@/stores/slicers/EnergyDemandSlicer";
 import landCoverReducer from "@/stores/slicers/landCoverSlicer";
@@ -43,7 +50,8 @@ export const appReducer = combineReducers({
   user: userReducer,
   scenarios: scenarioReducer,
   dashboard: dashboardReducer,
-  simulation: simulationReducer,
+  siteSpecific: siteSpecificReducer,
+  contextSpecific: contextSpecificReducer,
   gdrp: gdpReducer,
   resource: resourceReducer,
   livestock: livestockReducer,
@@ -58,11 +66,15 @@ export const appReducer = combineReducers({
   dssModal: dssModalReducer,
   alert: alertReducer,
   apArea: apAreaReducer,
+
   [gdpApi.reducerPath]: gdpApi.reducer,
   [agricultureApi.reducerPath]: agricultureApi.reducer,
   [livestockApi.reducerPath]: livestockApi.reducer,
   [populationApi.reducerPath]: populationApi.reducer,
   [fisheryApi.reducerPath]: fisheryApi.reducer,
+  [authApi.reducerPath]: authApi.reducer,
+  [scenarioApi.reducerPath]: scenarioApi.reducer,
+  [importApi.reducerPath]: importApi.reducer,
 });
 
 // custom logic state
@@ -76,7 +88,7 @@ export const appReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["scenarios"],
+  whitelist: ["scenarios", "auth"],
 };
 
 export const store = configureStore({
@@ -91,6 +103,9 @@ export const store = configureStore({
         populationApi.middleware,
         agricultureApi.middleware,
         fisheryApi.middleware,
+        authApi.middleware,
+        importApi.middleware,
+        scenarioApi.middleware
       )
       .prepend(listenerMiddleware.middleware),
 });

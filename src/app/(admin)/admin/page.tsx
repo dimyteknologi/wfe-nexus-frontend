@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function AdminDashboard() {
   const stats = [
@@ -137,40 +138,28 @@ export default function AdminDashboard() {
           </h2>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { label: "Add User", icon: "👤", color: "green" },
-              { label: "Add Organization", icon: "🏢", color: "blue" },
-              { label: "Add Region", icon: "🗺️", color: "purple" }
+              { label: "Manage Users", icon: "👤", color: "green", href: "/admin/users" },
+              { label: "Manage Organizations", icon: "🏢", color: "blue", href: "/admin/organization" },
+              { label: "Manage Cities", icon: "🗺️", color: "purple", href: "/admin/city" },
+              // { label: "Manage Roles", icon: "🔐", color: "orange", href: "/admin/role" },
+              // { label: "Manage Permissions", icon: "🛡️", color: "red", href: "/admin/permission" }
             ].map((action, index) => (
-              <motion.button
-                key={action.label}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`p-4 rounded-xl border border-gray-400 hover:shadow-md transition-all`}
-              >
-                <div className="text-2xl mb-2">{action.icon}</div>
-                <span className="font-medium text-gray-800">
-                  {action.label}
-                </span>
-              </motion.button>
+              <Link key={action.label} href={action.href}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="p-4 rounded-xl border border-gray-400 hover:shadow-md transition-all cursor-pointer"
+                >
+                  <div className="text-2xl mb-2">{action.icon}</div>
+                  <span className="font-medium text-gray-800">
+                    {action.label}
+                  </span>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </motion.div>
       </div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="bg-white rounded-2xl shadow-lg p-6"
-      >
-        <h2 className="text-2xl font-bold text-green-800 mb-6">
-          Performance Overview
-        </h2>
-        <div className="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
-          <p className="text-gray-500">
-            Chart visualization will be implemented here
-          </p>
-        </div>
-      </motion.div>
     </div>
   );
 }

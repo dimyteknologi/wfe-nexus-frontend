@@ -12,13 +12,13 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ProviderComponent>
+     <ProviderComponent>
       <main className="relative min-h-screen bg-gray-50">
         <img
           className="absolute w-full h-full opacity-5 object-cover -z-10"
           src="/assets/image-demo-3.svg"
           alt="background pattern"
-        />
+          />
         <div className="flex">
           <AdminSidebar />
           <div className="flex-1 flex flex-col ml-64">

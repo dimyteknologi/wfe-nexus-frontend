@@ -1,11 +1,11 @@
 import {
-  selectSimulationInputs,
-  selectBaselineInput,
+  selectSiteSpecificActive,
+  selectSiteSpecificBaseline,
 } from "@/stores/selectors/baseSelector";
 import {
   selectComparisonScenarioA,
   selectComparisonScenarioB,
-} from "@/stores/selectors/scenarioProjectionSelector";
+} from "@/stores/selectors/site-specific/scenarioProjectionSelector";
 import { createSelector } from "@reduxjs/toolkit";
 // import { generateDynamicalSeries } from "@/lib/utils/projections";
 import { RESOURCE_DEMAND_UNIT } from "@/lib/constant/resourceDemandUnit.constant";
@@ -127,8 +127,8 @@ const calculateEnergyResourceDynamicInput = (
 
 const selectInputEnergyDomestic = createSelector(
   [
-    selectSimulationInputs,
-    selectBaselineInput,
+    selectSiteSpecificActive,
+    selectSiteSpecificBaseline,
     selectComparisonScenarioA,
     selectComparisonScenarioB,
   ],
@@ -152,8 +152,8 @@ const selectInputEnergyDomestic = createSelector(
 
 const selectInputEnergyIndustry = createSelector(
   [
-    selectSimulationInputs,
-    selectBaselineInput,
+    selectSiteSpecificActive,
+    selectSiteSpecificBaseline,
     selectComparisonScenarioA,
     selectComparisonScenarioB,
   ],
@@ -171,8 +171,8 @@ const selectInputEnergyIndustry = createSelector(
 
 const selectInputWaterIndustry = createSelector(
   [
-    selectSimulationInputs,
-    selectBaselineInput,
+    selectSiteSpecificActive,
+    selectSiteSpecificBaseline,
     selectComparisonScenarioA,
     selectComparisonScenarioB,
   ],
@@ -200,8 +200,8 @@ const selectInputWaterIndustry = createSelector(
 
 const selectInputWaterDomestic = createSelector(
   [
-    selectSimulationInputs,
-    selectBaselineInput,
+    selectSiteSpecificActive,
+    selectSiteSpecificBaseline,
     selectComparisonScenarioA,
     selectComparisonScenarioB,
   ],
@@ -229,8 +229,8 @@ const selectInputWaterDomestic = createSelector(
 
 const selectInputProductivityTarget = createSelector(
   [
-    selectSimulationInputs,
-    selectBaselineInput,
+    selectSiteSpecificActive,
+    selectSiteSpecificBaseline,
     selectComparisonScenarioA,
     selectComparisonScenarioB,
   ],

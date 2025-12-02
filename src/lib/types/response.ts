@@ -2,6 +2,13 @@ export interface IBaseResponse<T> {
   data: T;
 }
 
+export interface IApiResponse<T> {
+  data: T;
+  message?: string;
+  error?: string;
+  statusCode?: number;
+}
+
 export interface IBaseData<TParams = Record<string, unknown>> {
   label: string;
   unit: string;

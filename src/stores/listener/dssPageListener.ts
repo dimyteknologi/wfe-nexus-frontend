@@ -30,7 +30,7 @@ import {
   setData as setDataPopulation,
   setBaseline as setBaselinePopulation,
 } from "@/stores/slicers/populationSlicer";
-import { populateInputsWithBaseline } from "@/stores/slicers/dssInputSlicer";
+import { populateInputsWithBaseline } from "@/stores/slicers/siteSpecificInputSlicer";
 import {
   extractAverageGrowthRates,
   generateApAreaHousing,
@@ -80,7 +80,7 @@ import {
   generateWaterGenerationEnergyDemand,
 } from "@/lib/utils/processingData";
 import { setDataApArea } from "../slicers/intermediateOuput/apAreaSlicer";
-import { selectPopulationScenarioProjectionBaseline } from "../selectors/scenarioProjectionSelector";
+import { selectPopulationScenarioProjectionBaseline } from "../selectors/site-specific/scenarioProjectionSelector";
 import {
   dynamicalInputs,
   RESOURCE_DEMAND_UNIT,
@@ -264,43 +264,6 @@ const resourceConfig: ProcessingConfig = {
   ],
 };
 
-// const energyPvConfig: ProcessingConfig = {
-//   label: "Energy",
-//   unit: '%',
-//   transformations: [
-//     {
-//       sourceParamName: "energy.solarPvAreaIndustrial",
-//       calculationFn: generatePvRooftopAreaIndustrial,
-//       outputParamName: "Solar PV Rooftop Area Industrial"
-//     },
-//     {
-//       sourceParamName: "energy.solarPvAreaHousing",
-//       calculationFn: generatePvRooftopAreaHousing,
-//       outputParamName: "Solar PV Rooftop Area Housing"
-//     },
-//     {
-//       sourceParamName: "",
-//       calculationFn: ,
-//       outputParamName: "Solar PV Rooftop Area Industrial [m2]"
-//     },
-//     {
-//       sourceParamName: "",
-//       calculationFn: ,
-//       outputParamName: "Solar PV Rooftop Area Housing [m2]"
-//     },
-//     {
-//       sourceParamName: "Solar PV Rooftop Area Industrial [m2]",
-//       calculationFn: ,
-//       outputParamName: "Energy production solar PV Industrial [GWh/year]"
-//     },
-//     {
-//       sourceParamName: "Solar PV Rooftop Area Housing [m2]",
-//       calculationFn: ,
-//       outputParamName: "Energy production solar PV Housing [GWh/year]"
-//     }
-//   ]
-// }
-
 const waterDemandConfig: ProcessingConfig = {
   label: "Water Demand",
   unit: "m3/year",
@@ -426,38 +389,6 @@ const addFoodDemandListener = () => {
     },
   });
 };
-
-// const addSolarPvListener = () => {
-//   listenerMiddleware.startListening({
-//     matcher: isAnyOf(
-//       setLandCoverBaseline
-//     ),
-//     effect: async (action, listenerApi) => {
-//       listenerApi.cancelActiveListeners();
-//       const state = listenerApi.getState();
-
-//       const allParameters = [
-//         ...(selectLandCoverBaseline(state)?.parameters || [])
-//       ]
-
-//       const sourceDataForProcessing: IBaselineData = {
-//         label: "Solar Pv",
-//         unit: "[%, m2. GWh/year]",
-//         years: Array.from({ length: 36 }, (_, i) => 2010 + i),
-//         parameters: allParameters
-//       }
-
-//       const result = preprocessData(
-//         sourceDataForProcessing,
-//         energyPvConfig
-//       )
-
-//       if(result?.parameters.length > 0){
-
-//       }
-//     }
-//   })
-// }
 
 const addEnergyDemandListener = () => {
   listenerMiddleware.startListening({

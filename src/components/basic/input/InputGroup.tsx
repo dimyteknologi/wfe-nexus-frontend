@@ -8,6 +8,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
   onChange,
   onBlur,
   values,
+  category,
   errors,
   id,
   information,
@@ -44,7 +45,9 @@ const InputGroup: React.FC<InputGroupProps> = ({
           )}
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      <div
+        className={`grid ${category === "siteSpecific" ? "grid-cols-3" : "grid-cols-1"} gap-2`}
+      >
         {periods.map((period) => {
           const uniqueId = `${id}.${period}`;
           const value = values[uniqueId] ?? "";

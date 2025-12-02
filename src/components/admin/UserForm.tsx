@@ -1,18 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-
-interface UserFormData {
-  name: string;
-  email: string;
-  role: "Admin" | "Moderator" | "User";
-  status: "Active" | "Inactive";
-  phone: string;
-  department: string;
-  joinDate: string;
-}
+import { UserFormData, Role, City, Organization } from "@/lib/types/admin.types";
+import { apiClient } from "@/lib/api/api";
 
 interface UserFormProps {
   initialData?: UserFormData;
@@ -23,7 +15,10 @@ interface UserFormProps {
 const defaultFormData: UserFormData = {
   name: "",
   email: "",
-  role: "User",
+  password: "",
+  roleId: "",
+  cityId: "",
+  institutionId: "",
   status: "Active",
   phone: "",
   department: "",
@@ -33,6 +28,32 @@ const defaultFormData: UserFormData = {
 export function UserForm({ initialData = defaultFormData, isEdit = false, onSubmit }: UserFormProps) {
   const [formData, setFormData] = useState<UserFormData>(initialData);
   const [errors, setErrors] = useState<Partial<UserFormData>>({});
+  
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [loadingOptions, setLoadingOptions] = useState(true);
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const [rolesData, citiesData, orgsData] = await Promise.all([
+          apiClient.get('/role'),
+          apiClient.get('/kota'),
+          apiClient.get('/institusi')
+        ]);
+        setRoles(rolesData);
+        setCities(citiesData);
+        setOrganizations(orgsData);
+      } catch (error) {
+        console.error("Failed to fetch options:", error);
+      } finally {
+        setLoadingOptions(false);
+      }
+    };
+
+    fetchOptions();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -62,11 +83,27 @@ export function UserForm({ initialData = defaultFormData, isEdit = false, onSubm
       newErrors.email = "Email is invalid";
     }
 
-    if (!formData.phone.trim()) {
+    if (!isEdit && !formData.password?.trim()) {
+      newErrors.password = "Password is required";
+    }
+
+    if (!formData.roleId) {
+      newErrors.roleId = "Role is required";
+    }
+
+    if (!formData.cityId) {
+      newErrors.cityId = "City is required";
+    }
+
+    if (!formData.institutionId) {
+      newErrors.institutionId = "Organization is required";
+    }
+
+    if (!formData.phone?.trim()) {
       newErrors.phone = "Phone number is required";
     }
 
-    if (!formData.department.trim()) {
+    if (!formData.department?.trim()) {
       newErrors.department = "Department is required";
     }
 
@@ -179,6 +216,37 @@ export function UserForm({ initialData = defaultFormData, isEdit = false, onSubm
               </motion.p>
             )}
           </div>
+
+          {!isEdit && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password *
+              </label>
+              <motion.input
+                whileFocus={{ scale: 1.02 }}
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
+                  errors.password 
+                    ? "border-red-300 focus:ring-red-500" 
+                    : "border-gray-300 focus:ring-green-500 focus:border-green-500"
+                }`}
+                placeholder="Enter password"
+              />
+              {errors.password && (
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mt-2 text-sm text-red-600"
+                >
+                  {errors.password}
+                </motion.p>
+              )}
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Phone Number *
@@ -245,21 +313,101 @@ export function UserForm({ initialData = defaultFormData, isEdit = false, onSubm
               Account Settings
             </h3>
           </div>
+          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               User Role *
             </label>
             <motion.select
               whileFocus={{ scale: 1.02 }}
-              name="role"
-              value={formData.role}
+              name="roleId"
+              value={formData.roleId}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
+                errors.roleId 
+                  ? "border-red-300 focus:ring-red-500" 
+                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
+              }`}
+              disabled={loadingOptions}
             >
-              <option value="User">User</option>
-              <option value="Moderator">Moderator</option>
-              <option value="Admin">Admin</option>
+              <option value="">Select Role</option>
+              {roles.map(role => (
+                <option key={role.id} value={role.id}>{role.name}</option>
+              ))}
             </motion.select>
+            {errors.roleId && (
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-2 text-sm text-red-600"
+              >
+                {errors.roleId}
+              </motion.p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              City *
+            </label>
+            <motion.select
+              whileFocus={{ scale: 1.02 }}
+              name="cityId"
+              value={formData.cityId}
+              onChange={handleChange}
+              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
+                errors.cityId 
+                  ? "border-red-300 focus:ring-red-500" 
+                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
+              }`}
+              disabled={loadingOptions}
+            >
+              <option value="">Select City</option>
+              {cities.map(city => (
+                <option key={city.id} value={city.id}>{city.name}</option>
+              ))}
+            </motion.select>
+            {errors.cityId && (
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-2 text-sm text-red-600"
+              >
+                {errors.cityId}
+              </motion.p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Organization *
+            </label>
+            <motion.select
+              whileFocus={{ scale: 1.02 }}
+              name="institutionId"
+              value={formData.institutionId}
+              onChange={handleChange}
+              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
+                errors.institutionId 
+                  ? "border-red-300 focus:ring-red-500" 
+                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
+              }`}
+              disabled={loadingOptions}
+            >
+              <option value="">Select Organization</option>
+              {organizations.map(org => (
+                <option key={org.id} value={org.id}>{org.name}</option>
+              ))}
+            </motion.select>
+            {errors.institutionId && (
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-2 text-sm text-red-600"
+              >
+                {errors.institutionId}
+              </motion.p>
+            )}
           </div>
 
           <div>
@@ -334,8 +482,8 @@ export function UserForm({ initialData = defaultFormData, isEdit = false, onSubm
         <ul className="text-sm text-blue-700 space-y-2">
           <li>• Ensure all required fields (marked with *) are filled</li>
           <li>• Use a valid email address for account verification</li>
-          <li>• Assign appropriate roles based on user responsibilities</li>
-          <li>• Set status to "Inactive" for temporary account suspension</li>
+          <li>• Select the correct Role, City, and Organization</li>
+          <li>• Set status to  {"\"Inactive\""} for temporary account suspension</li>
         </ul>
       </motion.div>
     </motion.div>

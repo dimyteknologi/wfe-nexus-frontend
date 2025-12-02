@@ -25,7 +25,7 @@ const useSyncToSlice = <P>(
 ) => {
   const dispatch = useAppDispatch();
   const { isSuccess, data } = queryResult;
-
+  
   useEffect(() => {
     if (isSuccess && data) {
       dispatch(actionCreator(data));

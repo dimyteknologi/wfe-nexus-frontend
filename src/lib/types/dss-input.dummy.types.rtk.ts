@@ -18,6 +18,7 @@ export type InputGroupProps = {
   periods: string[];
   onChange: (id: string, value: string) => void;
   onBlur: (id: string) => void;
+  category: "siteSpecific" | "contextSpecific";
   values: Record<string, string | null>;
   errors: Record<string, string>;
   id: string;
@@ -36,6 +37,7 @@ export type FormContainerProps = {
   initialValues?: InitialValues;
   inputs: Record<string, string | null>;
   errors: Record<string, string>;
+  category: "siteSpecific" | "contextSpecific";
   handleChange: (id: string, value: string) => void;
   handleBlur: (id: string) => void;
   validatePercentage?: (value: string) => string | undefined;

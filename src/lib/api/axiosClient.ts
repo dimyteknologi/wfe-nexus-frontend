@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getSession } from 'next-auth/react';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://103.63.24.47:4000/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://103.63.24.47:4000',
 });
 
 axiosInstance.interceptors.request.use(

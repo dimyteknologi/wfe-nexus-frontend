@@ -1,8 +1,6 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/api/api';
-import { User } from '@/lib/types/admin.types';
+import { User, UserFormData } from '@/lib/types/admin.types';
 
 export function useUsers() {
   const [users, setUsers] = useState<User[]>([]);
@@ -12,8 +10,10 @@ export function useUsers() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const data = await apiClient.get('/users');
-      setUsers(data);
+      const data = await apiClient.get('/user');
+      // Ensure data is an array, handle potential wrapper object
+      const userList = Array.isArray(data) ? data : (data.data || []);
+      setUsers(userList);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch users');
@@ -22,9 +22,17 @@ export function useUsers() {
     }
   };
 
-  const createUser = async (userData: Omit<User, 'id'>) => {
+  const createUser = async (userData: UserFormData) => {
     try {
-      const newUser = await apiClient.post('/users', userData);
+      const payload = {
+        email: userData.email,
+        password: userData.password,
+        name: userData.name,
+        roleId: userData.roleId,
+        cityId: userData.cityId,
+        institutionId: userData.institutionId
+      };
+      const newUser = await apiClient.post('/user', payload);
       setUsers(prev => [...prev, newUser]);
       return newUser;
     } catch (err) {
@@ -32,9 +40,9 @@ export function useUsers() {
     }
   };
 
-  const updateUser = async (id: number, userData: Partial<User>) => {
+  const updateUser = async (id: string, userData: Partial<UserFormData>) => {
     try {
-      const updatedUser = await apiClient.put(`/users/${id}`, userData);
+      const updatedUser = await apiClient.put(`/user/${id}`, userData);
       setUsers(prev => prev.map(user => user.id === id ? updatedUser : user));
       return updatedUser;
     } catch (err) {
@@ -42,9 +50,9 @@ export function useUsers() {
     }
   };
 
-  const deleteUser = async (id: number) => {
+  const deleteUser = async (id: string) => {
     try {
-      await apiClient.delete(`/users/${id}`);
+      await apiClient.delete(`/user/${id}`);
       setUsers(prev => prev.filter(user => user.id !== id));
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to delete user');

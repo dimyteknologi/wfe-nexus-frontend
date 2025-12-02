@@ -17,9 +17,9 @@ import {
   selectFoodSuffiencyScenarioProjectionA,
   selectFoodSuffiencyScenarioProjectionB,
   selectFoodSuffiencyScenarioProjectionBaseline,
-} from "@/stores/selectors/scenarioProjectionSelector";
+} from "@/stores/selectors/site-specific/scenarioProjectionSelector";
 import { dynamicInputPaddyProductivity } from "./dynamicInputSelector";
-import { selectPopulationDataComparison } from "@/stores/selectors/socioEconomySelector";
+import { selectPopulationDataComparison } from "@/stores/selectors/site-specific/socioEconomySelector";
 import { constantMultiply, resultConverter } from "@/lib/utils/formulas";
 import { calculateMultiplyArrays, getParameters } from "./demandSideSelector";
 import { RESOURCE_DEMAND_UNIT } from "@/lib/constant/resourceDemandUnit.constant";
