@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSession, signIn } from "next-auth/react";
-import { clearError, setError, setRememberMe } from "@/stores/slicers/auth/AuthSlice";
+import { useSession, signIn, getSession } from "next-auth/react";
+import { clearError, setError, setRememberMe, setAccessToken } from "@/stores/slicers/auth/AuthSlice";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
 import { LoginFormValues, loginSchema } from "@/lib/schema/loginSchema";
 
@@ -53,6 +53,11 @@ export const useLogin = () => {
       }
 
       if (result?.ok) {
+        const currentSession = await getSession();
+        if (currentSession?.accessToken) {
+          dispatch(setAccessToken(currentSession.accessToken as string));
+        }
+
         const dest = searchParams.get("callbackUrl") || "/";
         router.push(dest);
       }
@@ -62,7 +67,7 @@ export const useLogin = () => {
       dispatch(setError(errorMessage));
       form.setError("password", { type: "manual", message: errorMessage });
     }
-    
+
   };
 
   return {

@@ -5,6 +5,7 @@ interface AuthState {
   isLoading: boolean;
   error: string | null;
   rememberMe: boolean;
+  accessToken: string | null;
 }
 
 const initialState: AuthState = {
@@ -12,6 +13,7 @@ const initialState: AuthState = {
   isLoading: false,
   error: null,
   rememberMe: false,
+  accessToken: null,
 };
 
 export const authSlice = createSlice({
@@ -30,14 +32,19 @@ export const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    setAccessToken: (state, action: PayloadAction<string | null>) => {
+      state.accessToken = action.payload;
+      state.isAuthenticated = !!action.payload;
+    },
     logout: (state) => {
       state.isAuthenticated = false;
       state.error = null;
+      state.accessToken = null;
     },
   },
 });
 
-export const { setLoading, setError, setRememberMe, clearError, logout } =
+export const { setLoading, setError, setRememberMe, clearError, logout, setAccessToken } =
   authSlice.actions;
 
 export const authReducer = authSlice.reducer;
