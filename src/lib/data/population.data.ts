@@ -1,11 +1,4 @@
-import fetchDashboardData from "../api/fetchAllData";
-import {
-  adjustTimeFrame,
-  projectionHistoricalData,
-  computationArrays,
-  TYPE_COMPUTATION_ARRAY,
-  growthArrayCalculation,
-} from "../utils/formulas";
+import fetchDashboardData from "../api/fetchDashboardData";
 import { selectData, TYPE_DATA_SELECT } from "../utils/selectData";
 
 const { populationData } = await fetchDashboardData();
@@ -30,32 +23,6 @@ const getPopMenData = selectData(
   TYPE_DATA_SELECT.SELECT_PARAMETERS,
 );
 
-const timeFrame = adjustTimeFrame({
-  dataYear: getPopYear,
-  finalYear: 2030,
-});
-
-const projectionPopMen = projectionHistoricalData({
-  data: getPopMenData.laki,
-  growth: 10,
-  finalYear: 2030,
-});
-
-const projectionPopWomen = projectionHistoricalData({
-  data: getPopMenData.perempuan,
-  growth: 10,
-  finalYear: 2030,
-});
-
-const totalPop = computationArrays(
-  TYPE_COMPUTATION_ARRAY.ADD,
-  projectionPopMen,
-  projectionPopWomen,
-);
-
-const populationMenGrowth = growthArrayCalculation(projectionPopMen);
-const populationWomanGrowth = growthArrayCalculation(projectionPopWomen);
-
 interface IPopulationFinal {
   name: string;
   unit: string;
@@ -67,13 +34,13 @@ interface IPopulationFinal {
   };
 }
 
-export const populationDataFinal: IPopulationFinal = {
-  name: getPopLabel,
-  unit: getPopUnit,
-  year: timeFrame,
-  data: {
-    totalPopulation: totalPop,
-    populationMenGrowth: populationMenGrowth,
-    populationWomanGrowth: populationWomanGrowth,
-  },
-};
+// export const populationDataFinal: IPopulationFinal = {
+//   name: getPopLabel,
+//   unit: getPopUnit,
+//   year: timeFrame,
+//   data: {
+//     totalPopulation: totalPop,
+//     populationMenGrowth: populationMenGrowth,
+//     populationWomanGrowth: populationWomanGrowth,
+//   },
+// };

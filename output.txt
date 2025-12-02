@@ -1,0 +1,16 @@
+.next/types/app/page.ts(2,24): error TS2307: Cannot find module '../../../src/app/page.js' or its corresponding type declarations.
+.next/types/app/page.ts(5,29): error TS2307: Cannot find module '../../../src/app/page.js' or its corresponding type declarations.
+src/app/(admin)/admin/page.tsx(6,27): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+src/app/(public)/dss-interface/page.tsx(10,48): error TS2307: Cannot find module '../../stores/root-reducer' or its corresponding type declarations.
+src/app/(public)/dss-interface/page.tsx(35,41): error TS7006: Parameter 'state' implicitly has an 'any' type.
+src/app/(public)/dss-interface/page.tsx(37,6): error TS7006: Parameter 'state' implicitly has an 'any' type.
+src/app/(public)/dss-interface/page.tsx(193,36): error TS7006: Parameter 'metric' implicitly has an 'any' type.
+src/app/(public)/dss-interface/page.tsx(193,44): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/lib/api/api.ts(5,7): error TS7022: 'session' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+src/lib/api/api.ts(5,17): error TS2448: Block-scoped variable 'session' used before its declaration.
+src/lib/api/api.ts(18,7): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(input: string | URL | Request, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Object literal may only specify known properties, and 'Authorization' does not exist in type 'RequestInit'.
+  Overload 2 of 2, '(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Object literal may only specify known properties, and 'Authorization' does not exist in type 'RequestInit'.
+src/lib/api/api.ts(18,32): error TS2304: Cannot find name 'token'.

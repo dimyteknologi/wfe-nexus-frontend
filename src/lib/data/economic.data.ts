@@ -1,46 +1,69 @@
-import fetchDashboardData from "../api/fetchAllData";
-import {
-  adjustTimeFrame,
-  computationArrays,
-  growthArrayCalculation,
-  projectionHistoricalData,
-  TYPE_COMPUTATION_ARRAY,
-} from "../utils/formulas";
+import fetchDashboardData from "../api/fetchDashboardData";
+import { average, growthRate } from "../utils/formulas";
 import { selectData, TYPE_DATA_SELECT } from "../utils/selectData";
 
-const { gdpData } = await fetchDashboardData();
+export interface GdpData {
+  data: {
+    table: string;
+    unit: string;
+    year: number[];
+    parameters: Record<string, number[]>;
+  };
+}
 
-const getGdpLabel = selectData(gdpData.data, TYPE_DATA_SELECT.SELECT_TABLE);
+export interface ProcessedGdpData {
+  gdpCategoryA: number[];
+  averageGdpCategoryA: number;
+  meta: {
+    label: string;
+    unit: string;
+    year: number[];
+  };
+}
 
-const getGdpUnit = selectData(gdpData.data, TYPE_DATA_SELECT.SELECT_UNIT);
+export async function processGdpData(): Promise<ProcessedGdpData> {
+  try {
+    const { gdpData } = await fetchDashboardData();
 
-const getGdpYear = selectData(gdpData.data, TYPE_DATA_SELECT.SELECT_YEAR);
+    if (!gdpData?.data) {
+      throw new Error("GDP data structure is invalid");
+    }
 
-const getGdpData = selectData(gdpData.data, TYPE_DATA_SELECT.SELECT_PARAMETERS);
+    const getGdpLabel = selectData(
+      gdpData.data,
+      TYPE_DATA_SELECT.SELECT_TABLE,
+    ) as string;
+    const getGdpUnit = selectData(
+      gdpData.data,
+      TYPE_DATA_SELECT.SELECT_UNIT,
+    ) as string;
+    const getGdpYear = selectData(
+      gdpData.data,
+      TYPE_DATA_SELECT.SELECT_YEAR,
+    ) as number[];
+    const getGdpData = selectData(
+      gdpData.data,
+      TYPE_DATA_SELECT.SELECT_PARAMETERS,
+    ) as Record<string, number[]>;
 
-const timeFrame = adjustTimeFrame({
-  dataYear: getGdpYear,
-  finalYear: 2030,
-});
+    const gdpCategoryA =
+      getGdpData["A.Pertanian, Kehutanan, dan Perikanan"] || [];
 
-const projectionGdpPertanian = projectionHistoricalData({
-  data: getGdpData["A.Pertanian, Kehutanan, dan Perikanan"],
-  growth: 10,
-  finalYear: 2030,
-});
+    const gdpCategoryAGrowth = growthRate(gdpCategoryA);
 
-console.log(getGdpData["B.Pertambangan dan Penggalian"]);
-
-const projectionGdpIndustri = projectionHistoricalData({
-  data: getGdpData["C.Industri Pengolahan"],
-  growth: 10,
-  finalYear: 2030,
-});
-
-const totalGDP = computationArrays(
-  TYPE_COMPUTATION_ARRAY.ADD,
-  projectionGdpPertanian,
-);
-
-const gdpPertanianGrowth = growthArrayCalculation(projectionGdpPertanian);
-const gdpIndustriGrowth = growthArrayCalculation(projectionGdpIndustri);
+    return {
+      gdpCategoryA,
+      averageGdpCategoryA: average(gdpCategoryAGrowth),
+      meta: {
+        label: getGdpLabel,
+        unit: getGdpUnit,
+        year: getGdpYear,
+      },
+    };
+  } catch (error) {
+    console.error("Error processing GDP data:", error);
+    throw new Error(
+      `GDP data processing failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+    );
+  }
+}

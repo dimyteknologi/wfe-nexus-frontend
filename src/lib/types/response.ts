@@ -2,12 +2,36 @@ export interface IBaseResponse<T> {
   data: T;
 }
 
+export interface IApiResponse<T> {
+  data: T;
+  message?: string;
+  error?: string;
+  statusCode?: number;
+}
+
 export interface IBaseData<TParams = Record<string, unknown>> {
-  tabel: string;
+  label: string;
   unit: string;
-  tahun: number[];
+  years: number[];
   parameters: TParams;
 }
+// export interface Params {
+// id: string;
+//   name: string;
+//   values: (number | null)[];
+// }
+
+export interface Params {
+  name: string;
+  average: number;
+  growth: (number | null)[];
+  values: (number | null)[];
+}
+
+export type IApiData = IBaseData<Omit<Params, "average" | "growth">[]>;
+// export type IApiData = IBaseData<Params[]>
+export type IBaselineData = IBaseData<Params[]>;
+export type IApiRes = IBaseResponse<IApiData>;
 
 export interface IPopulationData {
   laki: number[];
@@ -18,6 +42,7 @@ export type IPopResData = IBaseData<IPopulationData>;
 
 export type GDPParameters = {
   [key: string]: (number | null)[];
+  values: number[];
   "A.Pertanian, Kehutanan, dan Perikanan": number[];
   "B.Pertambangan dan Penggalian": number[];
   "C.Industri Pengolahan": number[];
