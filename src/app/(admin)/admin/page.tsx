@@ -141,8 +141,8 @@ export default function AdminDashboard() {
               { label: "Manage Users", icon: "👤", color: "green", href: "/admin/users" },
               { label: "Manage Organizations", icon: "🏢", color: "blue", href: "/admin/organization" },
               { label: "Manage Cities", icon: "🗺️", color: "purple", href: "/admin/city" },
-              { label: "Manage Roles", icon: "🔐", color: "orange", href: "/admin/role" },
-              { label: "Manage Permissions", icon: "🛡️", color: "red", href: "/admin/permission" }
+              // { label: "Manage Roles", icon: "🔐", color: "orange", href: "/admin/role" },
+              // { label: "Manage Permissions", icon: "🛡️", color: "red", href: "/admin/permission" }
             ].map((action, index) => (
               <Link key={action.label} href={action.href}>
                 <motion.div
@@ -160,21 +160,6 @@ export default function AdminDashboard() {
           </div>
         </motion.div>
       </div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="bg-white rounded-2xl shadow-lg p-6"
-      >
-        <h2 className="text-2xl font-bold text-green-800 mb-6">
-          Performance Overview
-        </h2>
-        <div className="h-64 bg-gray-50 rounded-xl flex items-center justify-center">
-          <p className="text-gray-500">
-            Chart visualization will be implemented here
-          </p>
-        </div>
-      </motion.div>
     </div>
   );
 }

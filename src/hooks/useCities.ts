@@ -34,7 +34,7 @@ export function useCities() {
 
   const updateCity = async (id: string, cityData: Partial<CityFormData>) => {
     try {
-      const response = await apiClient.put(`/city/${id}`, cityData);
+      const response = await apiClient.put(`/kota/${id}`, cityData);
       const updatedCity = response.data || response;
       setCities(prev => prev.map(city => city.id === id ? updatedCity : city));
       return updatedCity;
@@ -45,7 +45,7 @@ export function useCities() {
 
   const deleteCity = async (id: string) => {
     try {
-      await apiClient.delete(`/city/${id}`);
+      await apiClient.delete(`/kota/${id}`);
       setCities(prev => prev.filter(city => city.id !== id));
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to delete city');
