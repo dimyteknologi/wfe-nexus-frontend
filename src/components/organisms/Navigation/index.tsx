@@ -141,7 +141,7 @@ const Navigation = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* <div className="hidden md:flex items-center space-x-3">
+            <div className="hidden md:flex items-center space-x-3">
               {status === "authenticated" ? (
                 <>
                   <Link
@@ -173,7 +173,7 @@ const Navigation = () => {
                   </button>
                 </>
               )}
-            </div> */}
+            </div>
 
             {/* Partner Logos */}
             <div className="hidden lg:flex items-center space-x-5 ml-4 pl-4 border-l border-gray-200">
@@ -289,7 +289,7 @@ const Navigation = () => {
             </div>
           </div>
 
-          {/* <div className="pt-6 border-t border-gray-200">
+          <div className="pt-6 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
               {status === "authenticated" ? (
                 <>
@@ -321,7 +321,7 @@ const Navigation = () => {
                 </>
               )}
             </div>
-          </div> */}
+          </div>
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500 mb-4">In partnership with:</p>

@@ -30,10 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ProviderComponent>
-          <main className="bg-white w-full">
-            <Navigation />
-            <div className=" w-full">{children}</div>
-          </main>
+          {children}  
         </ProviderComponent>
       </body>
     </html>

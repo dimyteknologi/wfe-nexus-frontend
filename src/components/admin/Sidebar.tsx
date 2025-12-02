@@ -4,14 +4,15 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { signOut } from "next-auth/react";
 
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: "📊" },
   { href: "/admin/users", label: "Users", icon: "👥" },
   { href: "/admin/organization", label: "Organizations", icon: "🏢" },
   { href: "/admin/city", label: "Cities", icon: "🗺️" },
-  { href: "/admin/role", label: "Roles", icon: "🔐" },
-  { href: "/admin/permission", label: "Permissions", icon: "🛡️" },
+  // { href: "/admin/role", label: "Roles", icon: "🔐" },
+  // { href: "/admin/permission", label: "Permissions", icon: "🛡️" },
 ];
 
 export function AdminSidebar() {
@@ -66,7 +67,15 @@ export function AdminSidebar() {
           </div>
           <div>
             <p className="font-medium text-gray-800">Admin User</p>
-            <p className="text-sm text-gray-500">Administrator</p>
+            <button 
+              onClick={() => signOut({ callbackUrl: '/login' })}
+              className="text-sm text-red-500 hover:text-red-700 font-medium flex items-center"
+            >
+              <span>Logout</span>
+              <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>

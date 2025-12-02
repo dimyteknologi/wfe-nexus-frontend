@@ -1,48 +1,47 @@
 "use client";
 
-// import { motion } from "framer-motion";
+import Alert from "@/components/alert";
 import { useRef, useState, useCallback, useEffect } from "react";
-import { FileUp, File } from "lucide-react";
-import { useInitializeData } from "@/hooks/useInitDummy";
-import SimulationForm from "@/components/form/simulation";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
 import ChartWidget from "@/components/chart/widget";
-import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
-import { selectDisplayedMetrics } from "@/stores/selectors/dssDashboardSelector";
+import SimulationForm from "@/components/form/simulation";
+import { useAppDispatch, useAppSelector } from "../../stores/root-reducer";
+import TableWidget from "@/components/table/widget";
+import Link from "next/link";
+import DSSConceptModal from "@/components/dssConceptModal";
+import ImportModal from "@/components/importModal";
 import {
   setDssConceptModal,
   setImportModal,
   setScenarioModal,
 } from "@/stores/slicers/dssModalSlicer";
-import Link from "next/link";
-import ImportModal from "@/components/importModal";
-import DSSConceptModal from "@/components/dssConceptModal";
-import Alert from "@/components/alert";
+import { File, FileUp } from "lucide-react";
+import { contextSpecificInput } from "@/config/form";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
-import { ALL_METRICS_SITE_SPECIFICS } from "@/lib/constant/metrics";
-import TableWidget from "@/components/table/widget";
-import { siteSpecificInput } from "@/config/form";
+import { ALL_METRICS_CONTEXT_SPECIFICS } from "@/lib/constant/metrics";
+import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSelector";
+import { selectFuelDemandConsumptionPerScenario } from "@/stores/selectors/context-specific/resourceSupplySelector";
+import { selectFuelConsumptionPerScenario } from "@/stores/selectors/context-specific/resultSelector";
+import { agricultureLandPerScenario } from "@/stores/selectors/context-specific/foodAndSupplyInputDemandSelector";
 
-const DSSPage = () => {
-  // init data
-  // useInitializeData();
-
-  const [errors] = useState<Record<string, string>>({});
+const ContextSpecificPage = () => {
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedCity, setSelectedCity] = useState("Kota Karawang");
-
+  const simulationState = useAppSelector((state) => state.contextSpecific);
+  const displayedMetrics = useAppSelector(selectDisplayedMetricsContext);
+  const waterDemand = useAppSelector(selectFuelConsumptionPerScenario);
+  console.log(waterDemand);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
-  const simulationState = useAppSelector((state) => state.siteSpecific);
-  const displayedMetrics = useAppSelector(selectDisplayedMetrics);
-  const yearsArray = Array.from({ length: 36 }, (_, i) => 2010 + i);
+  const yearsArray = Array.from({ length: 10 }, (_, i) => 2015 + i);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
   const isDssConceptOpen = dssModalState.dssConceptModal;
   const uniqueCategories = [
-    ...new Set(ALL_METRICS_SITE_SPECIFICS.map((metric) => metric.category)),
+    ...new Set(ALL_METRICS_CONTEXT_SPECIFICS.map((metric) => metric.category)),
   ];
+
   const handleOpenScenarioTab = useCallback(() => {
     dispatch(setScenarioModal(!isScenarioOpen));
   }, [dispatch, isScenarioOpen]);
@@ -51,7 +50,7 @@ const DSSPage = () => {
     dispatch(setDssConceptModal(!isDssConceptOpen));
   }, [dispatch, isDssConceptOpen]);
 
-  const handleOpenImportTab = useCallback(() => {
+  const  handleOpenImportTab = useCallback(() => {
     dispatch(setImportModal(!isImportOpen));
   }, [dispatch, isImportOpen]);
 
@@ -60,7 +59,7 @@ const DSSPage = () => {
   }, []);
 
   const handlePreset = (category: string) => {
-    dispatch(setChartsToCategoryPreset({ target: "site", category }));
+    dispatch(setChartsToCategoryPreset({ target: "context", category }));
   };
 
   return (
@@ -104,37 +103,6 @@ const DSSPage = () => {
               </div>
             ))}
           </div>
-          <div className="relative p-2">
-            <div
-              className="flex gap-2 items-center cursor-pointer"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              <p className="text-xs">{selectedCity}</p>
-            </div>
-            {isDropdownOpen && (
-              <div className="absolute flex flex-col border border-green-600 p-2 rounded-2xl gap-2 w-42 right-0 top-5 z-50 bg-white shadow-lg">
-                <div
-                  className="flex gap-2 p-2 cursor-pointer hover:bg-green-50 rounded-lg"
-                  onClick={() => {
-                    setSelectedCity("Kota Karawang");
-                    setIsDropdownOpen(false);
-                  }}
-                >
-                  <p className="text-sm">Kota Karawang</p>
-                </div>
-                <div
-                  className="flex gap-2 p-2 cursor-pointer hover:bg-green-50 rounded-lg"
-                  onClick={() => {
-                    setSelectedCity("Kota Sidowarjo");
-                    setIsDropdownOpen(false);
-                  }}
-                >
-                  <p className="text-sm">Kota Sidowarjo</p>
-                </div>
-              </div>
-            )}
-          </div>
-          {/* 
           <div
             className="relative p-2"
             onMouseEnter={mouseHover}
@@ -168,10 +136,9 @@ const DSSPage = () => {
                 </div>
               </div>
             )}
-          </div> */}
+          </div>
         </div>
       </div>
-
       {/* Import Modal */}
       {isImportOpen && (
         <ImportModal
@@ -202,14 +169,14 @@ const DSSPage = () => {
         >
           <ScenarioMenu
             simulationState={simulationState}
-            category="siteSpecific"
+            category="contextSpecific"
             handleOpenScenarioTab={handleOpenScenarioTab}
             errors={errors}
           />
           <SimulationForm
-            category="siteSpecific"
+            category="contextSpecific"
             simulationState={simulationState}
-            FormInputs={siteSpecificInput}
+            FormInputs={contextSpecificInput}
           />
         </div>
 
@@ -226,7 +193,7 @@ const DSSPage = () => {
           >
             {displayedMetrics.map((metric, index) => (
               <ChartWidget
-                category={"site"}
+                category={"context"}
                 key={metric.id}
                 metric={metric}
                 chartIndex={index}
@@ -236,7 +203,7 @@ const DSSPage = () => {
             ))}
             {!isScenarioOpen && (
               <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7">
-                <TableWidget category={"site"} />
+                <TableWidget category={"context"} />
               </div>
             )}
           </div>
@@ -246,4 +213,4 @@ const DSSPage = () => {
   );
 };
 
-export default DSSPage;
+export default ContextSpecificPage;

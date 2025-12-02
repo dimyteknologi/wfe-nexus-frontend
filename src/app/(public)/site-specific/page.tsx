@@ -1,47 +1,48 @@
 "use client";
 
-import Alert from "@/components/alert";
+// import { motion } from "framer-motion";
 import { useRef, useState, useCallback, useEffect } from "react";
+import { FileUp, File } from "lucide-react";
+import { useInitializeData } from "@/hooks/useInitDummy";
+import SimulationForm from "@/components/form/simulation";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
 import ChartWidget from "@/components/chart/widget";
-import SimulationForm from "@/components/form/simulation";
-import { useAppDispatch, useAppSelector } from "../../stores/root-reducer";
-import TableWidget from "@/components/table/widget";
-import Link from "next/link";
-import DSSConceptModal from "@/components/dssConceptModal";
-import ImportModal from "@/components/importModal";
+import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
+import { selectDisplayedMetrics } from "@/stores/selectors/dssDashboardSelector";
 import {
   setDssConceptModal,
   setImportModal,
   setScenarioModal,
 } from "@/stores/slicers/dssModalSlicer";
-import { File, FileUp } from "lucide-react";
-import { contextSpecificInput } from "@/config/form";
+import Link from "next/link";
+import ImportModal from "@/components/importModal";
+import DSSConceptModal from "@/components/dssConceptModal";
+import Alert from "@/components/alert";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
-import { ALL_METRICS_CONTEXT_SPECIFICS } from "@/lib/constant/metrics";
-import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSelector";
-import { selectFuelDemandConsumptionPerScenario } from "@/stores/selectors/context-specific/resourceSupplySelector";
-import { selectFuelConsumptionPerScenario } from "@/stores/selectors/context-specific/resultSelector";
-import { agricultureLandPerScenario } from "@/stores/selectors/context-specific/foodAndSupplyInputDemandSelector";
+import { ALL_METRICS_SITE_SPECIFICS } from "@/lib/constant/metrics";
+import TableWidget from "@/components/table/widget";
+import { siteSpecificInput } from "@/config/form";
 
-const ContextSpecificPage = () => {
-  const [errors, setErrors] = useState<Record<string, string>>({});
+const DSSPage = () => {
+  // init data
+  // useInitializeData();
+
+  const [errors] = useState<Record<string, string>>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const simulationState = useAppSelector((state) => state.contextSpecific);
-  const displayedMetrics = useAppSelector(selectDisplayedMetricsContext);
-  const waterDemand = useAppSelector(selectFuelConsumptionPerScenario);
-  console.log(waterDemand);
+  const [selectedCity, setSelectedCity] = useState("Kota Karawang");
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
-  const yearsArray = Array.from({ length: 10 }, (_, i) => 2015 + i);
+  const simulationState = useAppSelector((state) => state.siteSpecific);
+  const displayedMetrics = useAppSelector(selectDisplayedMetrics);
+  const yearsArray = Array.from({ length: 36 }, (_, i) => 2010 + i);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
   const isDssConceptOpen = dssModalState.dssConceptModal;
   const uniqueCategories = [
-    ...new Set(ALL_METRICS_CONTEXT_SPECIFICS.map((metric) => metric.category)),
+    ...new Set(ALL_METRICS_SITE_SPECIFICS.map((metric) => metric.category)),
   ];
-
   const handleOpenScenarioTab = useCallback(() => {
     dispatch(setScenarioModal(!isScenarioOpen));
   }, [dispatch, isScenarioOpen]);
@@ -59,7 +60,7 @@ const ContextSpecificPage = () => {
   }, []);
 
   const handlePreset = (category: string) => {
-    dispatch(setChartsToCategoryPreset({ target: "context", category }));
+    dispatch(setChartsToCategoryPreset({ target: "site", category }));
   };
 
   return (
@@ -139,6 +140,7 @@ const ContextSpecificPage = () => {
           </div>
         </div>
       </div>
+
       {/* Import Modal */}
       {isImportOpen && (
         <ImportModal
@@ -169,14 +171,14 @@ const ContextSpecificPage = () => {
         >
           <ScenarioMenu
             simulationState={simulationState}
-            category="contextSpecific"
+            category="siteSpecific"
             handleOpenScenarioTab={handleOpenScenarioTab}
             errors={errors}
           />
           <SimulationForm
-            category="contextSpecific"
+            category="siteSpecific"
             simulationState={simulationState}
-            FormInputs={contextSpecificInput}
+            FormInputs={siteSpecificInput}
           />
         </div>
 
@@ -193,7 +195,7 @@ const ContextSpecificPage = () => {
           >
             {displayedMetrics.map((metric, index) => (
               <ChartWidget
-                category={"context"}
+                category={"site"}
                 key={metric.id}
                 metric={metric}
                 chartIndex={index}
@@ -203,7 +205,7 @@ const ContextSpecificPage = () => {
             ))}
             {!isScenarioOpen && (
               <div className="w-full h-full min-h-[150px] sm:min-h-[180px] md:min-h-[200px] max-w-full mx-auto bg-white rounded-lg sm:col-span-2 lg:col-span-2 lg:row-span-1 lg:row-start-1 lg:row-end-3 lg:col-start-7">
-                <TableWidget category={"context"} />
+                <TableWidget category={"site"} />
               </div>
             )}
           </div>
@@ -213,4 +215,4 @@ const ContextSpecificPage = () => {
   );
 };
 
-export default ContextSpecificPage;
+export default DSSPage;
