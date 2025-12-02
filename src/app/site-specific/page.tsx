@@ -29,6 +29,7 @@ const DSSPage = () => {
 
   const [errors] = useState<Record<string, string>>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedCity, setSelectedCity] = useState("Kota Karawang");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
@@ -103,6 +104,37 @@ const DSSPage = () => {
               </div>
             ))}
           </div>
+          <div className="relative p-2">
+            <div
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <p className="text-xs">{selectedCity}</p>
+            </div>
+            {isDropdownOpen && (
+              <div className="absolute flex flex-col border border-green-600 p-2 rounded-2xl gap-2 w-42 right-0 top-5 z-50 bg-white shadow-lg">
+                <div
+                  className="flex gap-2 p-2 cursor-pointer hover:bg-green-50 rounded-lg"
+                  onClick={() => {
+                    setSelectedCity("Kota Karawang");
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  <p className="text-sm">Kota Karawang</p>
+                </div>
+                <div
+                  className="flex gap-2 p-2 cursor-pointer hover:bg-green-50 rounded-lg"
+                  onClick={() => {
+                    setSelectedCity("Kota Sidowarjo");
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  <p className="text-sm">Kota Sidowarjo</p>
+                </div>
+              </div>
+            )}
+          </div>
+          {/* 
           <div
             className="relative p-2"
             onMouseEnter={mouseHover}
@@ -136,7 +168,7 @@ const DSSPage = () => {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
 
