@@ -144,9 +144,9 @@ const LandingPage = () => {
         <div className="container mx-auto p-4 flex flex-col md:flex-row items-center gap-8 justify-between relative z-10">
           <div className="md:w-1/2 mb-10 md:mb-0">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
-              WEF NEXUS{" "}
-              <span className="text-green-600">Decision Support System</span>
+              WEF NEXUS
             </h1>
+            <h1 className="text-5xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight text-green-600">Decision Support System</h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
               Transforming Water-Energy-Food Nexus thinking into actionable
               insights and policies for sustainable development.
@@ -156,10 +156,6 @@ const LandingPage = () => {
                 <Link href={"./site-specific"} className="flex items-center">
                   Get Started <ArrowRight className="h-5 ml-1" />
                 </Link>
-              </button>
-              <button className="border-2 bg-white border-green-700 text-green-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-green-50 transition-all duration-300 flex items-center justify-center gap-2 group">
-                <Play className="h-5 transition-transform group-hover:scale-110" />
-                <span>Watch Demo</span>
               </button>
             </div>
             <div className="mt-8 flex items-center">
@@ -339,11 +335,9 @@ const LandingPage = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button className="bg-white text-green-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 group">
-              Get Started{" "}
-              <ArrowRight className="h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button className="bg-green-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-green-600 transition-colors shadow-lg">
-              Contact us
+              <Link href={"./site-specific"} className="flex items-center">
+                Get Started <ArrowRight className="h-5 ml-1" />
+              </Link>
             </button>
           </div>
         </div>
