@@ -26,7 +26,7 @@ const calculatePvAreaInAreaIndustrial = (
 ) => {
   if (!Array.isArray(data) && !LandCover) return Array(36).fill(0);
   const industrialLand = LandCover?.parameters.find(
-    (param) => param.name === landCoverName,
+    (param) => param.name.toLowerCase() === landCoverName.toLowerCase(),
   );
 
   if (!industrialLand) return [];
@@ -51,7 +51,7 @@ const calculatePvAreaInAreaHousing = (
 ) => {
   if (!Array.isArray(data) && !LandCover) return Array(36).fill(0);
   const industrialLand = LandCover?.parameters.find(
-    (param) => param.name === landCoverName,
+    (param) => param.name.toLowerCase() === landCoverName.toLowerCase(),
   );
 
   if (!industrialLand) return [];

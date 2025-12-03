@@ -145,12 +145,14 @@ const ImportModal: React.FC<ImportModalProps> = ({
         "get-population": population,
         "get-pertanian": agriculture,
         "get-peternakan": livestock,
+        "get-perikanan": perikanan
       } = imported.data;
       
       dispatch(setGdpData(gdp));
       dispatch(setLivestockData(livestock));
       dispatch(setPopulationData(population));
       dispatch(setAgricultureData(agriculture));
+      dispatch(setFisheryData(perikanan));
 
       } else {
         setUploadStatus("error");

@@ -31,8 +31,8 @@ const ContextSpecificPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const simulationState = useAppSelector((state) => state.contextSpecific);
   const displayedMetrics = useAppSelector(selectDisplayedMetricsContext);
-  const waterDemand = useAppSelector(selectFuelConsumptionPerScenario);
-  console.log(waterDemand);
+  // const waterDemand = useAppSelector(selectFuelConsumptionPerScenario);
+  // console.log(waterDemand);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);

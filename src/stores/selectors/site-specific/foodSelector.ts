@@ -70,7 +70,7 @@ const calculateAgricultureLand = (
   projection: IBaselineData | null,
 ): number[] => {
   if (!projection) return [];
-  console.log(projection);
+  
   const agricultureLand = projection.parameters.find(
     (param) =>
       param.name === "Lahan Panen Padi" || param.name === "Agriculture Land",

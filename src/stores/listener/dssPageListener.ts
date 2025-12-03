@@ -18,9 +18,6 @@ import { setBaseline as setEnergyDemandBaseline } from "@/stores/slicers/EnergyD
 import { setBaseline as setWaterDemandBaseline } from "@/stores/slicers/waterDemandSlicer";
 import { setBaseline as setResourceBaseline } from "@/stores/slicers/resourceSlicer";
 import { setBaseline as setFoodDemandBaseline } from "@/stores/slicers/foodDemandSlicer";
-import { setData as setDataDynamicInputEnergy } from "@/stores/slicers/dynamic-input/dynamicEnergyInput";
-import { setData as setDataDynamicInputWater } from "@/stores/slicers/dynamic-input/dynamicWaterInput";
-import { setData as setDataDynamicInputFood } from "@/stores/slicers/dynamic-input/dynamicFoodInput";
 
 import {
   setData as setDataFishery,
@@ -59,7 +56,6 @@ import {
   selectWaterDemandBaseline,
   selectLandPortionBaseline,
   selectEnergyDemandBaseline,
-  selectLandCoverBaseline,
 } from "@/stores/selectors/baseSelector";
 import {
   generateAgricultureEnergyDemand,
@@ -80,7 +76,6 @@ import {
   generateWaterGenerationEnergyDemand,
 } from "@/lib/utils/processingData";
 import { setDataApArea } from "../slicers/intermediateOuput/apAreaSlicer";
-import { selectPopulationScenarioProjectionBaseline } from "../selectors/site-specific/scenarioProjectionSelector";
 import {
   dynamicalInputs,
   RESOURCE_DEMAND_UNIT,
@@ -175,7 +170,7 @@ const energyDemandConfig: ProcessingConfig = {
       outputParamName: "Domestic Energy Demand",
     },
     {
-      sourceParamName: "C.Industri Pengolahan",
+      sourceParamName: "c.industri pengolahan",
       calculationFn: generateIndustrialEnergyDemand,
       outputParamName: "Industry Energy Demand",
     },
@@ -274,7 +269,7 @@ const waterDemandConfig: ProcessingConfig = {
       outputParamName: "Domestic Water Demand",
     },
     {
-      sourceParamName: "C.Industri Pengolahan",
+      sourceParamName: "c.industri pengolahan",
       calculationFn: generateIndustrialWaterDemandProcess,
       outputParamName: "Industrial Water Demand",
     },
@@ -284,7 +279,7 @@ const waterDemandConfig: ProcessingConfig = {
       outputParamName: "Crops Land",
     },
     {
-      sourceParamName: ["ternak sapi", "ternak kambing", "ternak ayam"],
+      sourceParamName: ["sapi", "kambing", "ayam"],
       calculationFn: generateLivestockWaterDemandProcess,
       outputParamName: "Livestock",
     },
@@ -318,9 +313,9 @@ const FISHERY_MAP: Record<string, number> = {
 };
 
 const LIVESTOCK_MAP: Record<string, number> = {
-  "ternak sapi": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_SAPI,
-  "ternak kambing": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_KAMBING,
-  "ternak ayam": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_AYAM,
+  "sapi": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_SAPI,
+  "kambing": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_KAMBING,
+  "ayam": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_AYAM,
 };
 
 const preprocessFisheryData = (data: IApiData): IApiData => ({
@@ -553,6 +548,7 @@ export function DssPageListener() {
         data = preprocessFisheryData(data);
       }
       const baseline = generateBaseline(data);
+      console.log(baseline);
       if (baseline) {
         listenerApi.dispatch(setFisheryBaseline(baseline));
       }

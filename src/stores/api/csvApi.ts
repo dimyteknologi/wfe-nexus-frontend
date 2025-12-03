@@ -10,7 +10,6 @@ export const importApi = createApi({
       query: (file: File) => {
         const formData = new FormData();
         formData.append("file", file);
-        console.log(file);
         return {
           url: "/import/validate",
           method: "POST",

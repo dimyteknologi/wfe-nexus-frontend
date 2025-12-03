@@ -106,7 +106,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
         localWaterSuffiency,
         waterAvailability,
       };
-
+      
       const metricConfig = ALL_METRICS_SITE_SPECIFICS.find(
         (m) => m.id === metricId,
       );

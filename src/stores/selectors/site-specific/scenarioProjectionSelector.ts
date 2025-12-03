@@ -126,7 +126,6 @@ export const selectFisheryProjectionBaseline = createProjectionSelector(
   selectFisheryBaseline,
   selectSiteSpecificBaseline,
 );
-
 // resources fishery selectors generate fisheryData with scenarioA
 export const selectFisheryProjectionA = createProjectionSelector(
   selectFisheryBaseline,
