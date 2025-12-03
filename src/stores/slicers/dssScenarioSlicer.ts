@@ -38,7 +38,10 @@ export const scenarioSlice = createSlice({
   initialState,
   reducers: {
     setScenariosFromStorage: (state, action: PayloadAction<CategoryState>) => {
-      state.data = action.payload;
+      state.data = {
+        siteSpecific: action.payload?.siteSpecific || [],
+        contextSpecific: action.payload?.contextSpecific || [],
+      };
       state.success = "Loaded scenarios";
     },
 

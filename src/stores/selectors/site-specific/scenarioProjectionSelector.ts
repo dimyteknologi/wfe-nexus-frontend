@@ -23,6 +23,7 @@ import {
   selectLivestockBaseline,
 } from "@/stores/selectors/baseSelector";
 import { SiteSpecificState } from "@/stores/slicers/siteSpecificInputSlicer";
+import { ScenarioItem } from "@/stores/slicers/dssScenarioSlicer";
 import { IRootState } from "@/stores";
 import { IBaselineData } from "@/lib/types/response";
 import { Selector } from "react-redux";
@@ -76,16 +77,18 @@ const createApAreaHousingProjectionSelector = (
 
 export const selectComparisonScenarioA = createSelector(
   [selectSavedSiteSpecificScenarios, selectSiteSpecificScenarioAName],
-  (saved, name) =>
-    saved.find((s: SiteSpecificState) => s.simulationName === name)?.data ||
-    null,
+  (saved, name) => {
+    if (!saved) return null;
+    return saved.find((s: ScenarioItem) => s.simulationName === name)?.data || null;
+  },
 );
 
 export const selectComparisonScenarioB = createSelector(
   [selectSavedSiteSpecificScenarios, selectSiteSpecificScenarioBName],
-  (saved, name) =>
-    saved.find((s: SiteSpecificState) => s.simulationName === name)?.data ||
-    null,
+  (saved, name) => {
+    if (!saved) return null;
+    return saved.find((s: ScenarioItem) => s.simulationName === name)?.data || null;
+  },
 );
 
 // resources livestock selectors generate livestockData with input active
