@@ -11,7 +11,7 @@ const menuItems = [
   { href: "/admin/users", label: "Users", icon: "👥" },
   { href: "/admin/organization", label: "Organizations", icon: "🏢" },
   { href: "/admin/city", label: "Cities", icon: "🗺️" },
-  // { href: "/admin/role", label: "Roles", icon: "🔐" },
+  { href: "/admin/role", label: "Roles", icon: "🔐" },
   // { href: "/admin/permission", label: "Permissions", icon: "🛡️" },
 ];
 
@@ -47,11 +47,10 @@ export function AdminSidebar() {
             >
               <Link
                 href={item.href}
-                className={`flex items-center p-4 rounded-xl transition-all duration-300 ${
-                  pathname === item.href
-                    ? "bg-green-100 text-green-800 shadow-md"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-green-700"
-                }`}
+                className={`flex items-center p-4 rounded-xl transition-all duration-300 ${pathname === item.href
+                  ? "bg-green-100 text-green-800 shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-green-700"
+                  }`}
               >
                 <span className="text-xl mr-3">{item.icon}</span>
                 <span className="font-medium">{item.label}</span>
@@ -67,7 +66,7 @@ export function AdminSidebar() {
           </div>
           <div>
             <p className="font-medium text-gray-800">Admin User</p>
-            <button 
+            <button
               onClick={() => signOut({ callbackUrl: '/login' })}
               className="text-sm text-red-500 hover:text-red-700 font-medium flex items-center"
             >
