@@ -1,4 +1,5 @@
 import { listenerMiddleware } from "@/stores/listenerMiddleware";
+import { IRootState } from "@/stores";
 import {
   setData as setDataAgriculture,
   setBaseline as setAgricultureBaseline,
@@ -42,7 +43,7 @@ import {
   generateAvailabilityFactor,
 } from "@/lib/utils/projections";
 import { IApiData, IBaselineData, Params } from "@/lib/types/response";
-import { INITIAL_DATA_CONSTANT } from "@/lib/constant/initialData.constant";
+// import { INITIAL_DATA_CONSTANT } from "@/lib/constant/initialData.constant";
 import {
   average,
   growthDataByvalue,
@@ -85,10 +86,12 @@ import {
   dynamicalInputs,
   RESOURCE_DEMAND_UNIT,
 } from "@/lib/constant/resourceDemandUnit.constant";
+import { getConstants } from "@/lib/utils/constantsHelper";
+import { INITIAL_DATA_CONSTANT } from "@/lib/constant/initialData.constant";
 
 interface TransformationRule {
   sourceParamName: string[] | string;
-  calculationFn: (...values: number[][]) => number[];
+  calculationFn: (...values: any[]) => number[];
   outputParamName: string;
 }
 
@@ -110,7 +113,7 @@ const preprocessData = (
       ? rule.sourceParamName
       : [rule.sourceParamName];
 
-    const sourceValues: number[][] = [];
+    const sourceValues: any[] = [];
 
     for (const name of sourceNames) {
       if (processedResults.has(name)) {
@@ -121,6 +124,25 @@ const preprocessData = (
     }
 
     if (sourceValues.length === sourceNames.length) {
+      // Add extra arguments if the calculation function expects them (e.g., constants)
+      // This part is tricky with the current generic implementation.
+      // We might need to bind the constants to the functions before passing them here,
+      // or pass the constants as part of the config/context.
+      // For now, let's assume the functions in config are already bound or we handle it in the listener.
+      // BUT, since we are defining config outside, we need a way to inject constants.
+      // Let's modify the listener to recreate config with constants or pass constants as extra args.
+      // However, `preprocessData` is generic.
+      // A better approach: Pass a context object to `preprocessData` which contains constants,
+      // and update `preprocessData` to pass this context to `calculationFn` if needed?
+      // Or, simpler: wrapper functions in the listener.
+
+      // Let's try to pass the constants as the last argument if the function needs it.
+      // But `calculationFn` signature varies.
+      // Let's assume we pass `resourceDemandUnit` and `initialData` as the LAST arguments to ALL functions called here?
+      // No, that breaks the signature.
+
+      // Alternative: Re-define the configs inside the listener where we have access to state/constants.
+      // This seems cleanest.
       const calculatedValues = rule.calculationFn(...sourceValues);
       processedResults.set(rule.outputParamName, calculatedValues);
     } else {
@@ -148,45 +170,56 @@ const preprocessData = (
   };
 };
 
-const foodDemandConfig: ProcessingConfig = {
+// We need to generate configs dynamically based on constants
+const getFoodDemandConfig = (
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+): ProcessingConfig => ({
   label: "Food",
   unit: "ton/year",
   transformations: [
     {
       sourceParamName: "Total Populasi",
-      calculationFn: generateFoodDemand,
+      calculationFn: (data: number[]) =>
+        generateFoodDemand(data, resourceDemandUnit),
       outputParamName: "Food Demand",
     },
     {
       sourceParamName: "Total Populasi",
-      calculationFn: generateDomesticFoodDemand,
+      calculationFn: (data: number[]) =>
+        generateDomesticFoodDemand(data, resourceDemandUnit),
       outputParamName: "Food Demand Population",
     },
   ],
-};
+});
 
-const energyDemandConfig: ProcessingConfig = {
+const getEnergyDemandConfig = (
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+): ProcessingConfig => ({
   label: "Energy Demand",
   unit: "GWh/year",
   transformations: [
     {
       sourceParamName: "Total Populasi",
-      calculationFn: generateDomesticEnergyDemand,
+      calculationFn: (data: number[]) =>
+        generateDomesticEnergyDemand(data, resourceDemandUnit),
       outputParamName: "Domestic Energy Demand",
     },
     {
       sourceParamName: "C.Industri Pengolahan",
-      calculationFn: generateIndustrialEnergyDemand,
+      calculationFn: (data: number[]) =>
+        generateIndustrialEnergyDemand(data, resourceDemandUnit),
       outputParamName: "Industry Energy Demand",
     },
     {
       sourceParamName: "Lahan Panen Padi",
-      calculationFn: generateAgricultureEnergyDemand,
+      calculationFn: (data: number[]) =>
+        generateAgricultureEnergyDemand(data, resourceDemandUnit),
       outputParamName: "Agriculture Demand",
     },
     {
       sourceParamName: "Total Water Demand",
-      calculationFn: generateWaterGenerationEnergyDemand,
+      calculationFn: (data: number[]) =>
+        generateWaterGenerationEnergyDemand(data, resourceDemandUnit),
       outputParamName: "Water Generation",
     },
     {
@@ -200,9 +233,12 @@ const energyDemandConfig: ProcessingConfig = {
       outputParamName: "Total Energy Demand",
     },
   ],
-};
+});
 
-const resourceConfig: ProcessingConfig = {
+const getResourceConfig = (
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+  initialData: typeof INITIAL_DATA_CONSTANT,
+): ProcessingConfig => ({
   label: "Resource",
   unit: "m3/year",
   transformations: [
@@ -214,12 +250,19 @@ const resourceConfig: ProcessingConfig = {
         "Agriculture Area",
         "Other Land",
       ],
-      calculationFn: generateCValue,
+      calculationFn: (
+        d1: number[],
+        d2: number[],
+        d3: number[],
+        d4: number[],
+        d5: number[],
+      ) => generateCValue(d1, d2, d3, d4, d5, resourceDemandUnit),
       outputParamName: "C Value",
     },
     {
       sourceParamName: "C Value",
-      calculationFn: generatePotentialWater,
+      calculationFn: (data: number[]) =>
+        generatePotentialWater(data, initialData),
       outputParamName: "Potential Water Supply",
     },
     {
@@ -244,12 +287,12 @@ const resourceConfig: ProcessingConfig = {
     },
     {
       sourceParamName: "AP Area Industrial",
-      calculationFn: generateApWater,
+      calculationFn: (data: number[]) => generateApWater(data, initialData),
       outputParamName: "AP Water Industrial",
     },
     {
       sourceParamName: "AP Area Housing",
-      calculationFn: generateApWater,
+      calculationFn: (data: number[]) => generateApWater(data, initialData),
       outputParamName: "AP Water Housing Area",
     },
     {
@@ -258,44 +301,53 @@ const resourceConfig: ProcessingConfig = {
         "AP Water Industrial",
         "AP Water Housing Area",
       ],
-      calculationFn: generateTotalWater,
+      calculationFn: (d1: number[], d2: number[], d3: number[]) =>
+        generateTotalWater(d1, d2, d3, initialData),
       outputParamName: "Total Water Supply",
     },
   ],
-};
+});
 
-const waterDemandConfig: ProcessingConfig = {
+const getWaterDemandConfig = (
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+): ProcessingConfig => ({
   label: "Water Demand",
   unit: "m3/year",
   transformations: [
     {
       sourceParamName: "Total Populasi",
-      calculationFn: generateDomesticWaterDemandProcess,
+      calculationFn: (data: number[]) =>
+        generateDomesticWaterDemandProcess(data, resourceDemandUnit),
       outputParamName: "Domestic Water Demand",
     },
     {
       sourceParamName: "C.Industri Pengolahan",
-      calculationFn: generateIndustrialWaterDemandProcess,
+      calculationFn: (data: number[]) =>
+        generateIndustrialWaterDemandProcess(data, resourceDemandUnit),
       outputParamName: "Industrial Water Demand",
     },
     {
       sourceParamName: "Lahan Panen Padi",
-      calculationFn: generateCropsLandWaterDemandProcess,
+      calculationFn: (data: number[]) =>
+        generateCropsLandWaterDemandProcess(data, resourceDemandUnit),
       outputParamName: "Crops Land",
     },
     {
       sourceParamName: ["ternak sapi", "ternak kambing", "ternak ayam"],
-      calculationFn: generateLivestockWaterDemandProcess,
+      calculationFn: (d1: number[], d2: number[], d3: number[]) =>
+        generateLivestockWaterDemandProcess(d1, d2, d3, resourceDemandUnit),
       outputParamName: "Livestock",
     },
     {
       sourceParamName: "area perikanan",
-      calculationFn: generateAquacultureWaterDemandProcess,
+      calculationFn: (data: number[]) =>
+        generateAquacultureWaterDemandProcess(data, resourceDemandUnit),
       outputParamName: "Aquaculture",
     },
     {
       sourceParamName: "Domestic Water Demand",
-      calculationFn: generateMunicipalityWaterDemandProcess,
+      calculationFn: (data: number[]) =>
+        generateMunicipalityWaterDemandProcess(data, resourceDemandUnit),
       outputParamName: "Municipality",
     },
     {
@@ -311,39 +363,49 @@ const waterDemandConfig: ProcessingConfig = {
       outputParamName: "Total Water Demand",
     },
   ],
-};
-
-const FISHERY_MAP: Record<string, number> = {
-  "area perikanan": INITIAL_DATA_CONSTANT.PERIKANAN.LUAS_AREA_PERIKANAN,
-};
-
-const LIVESTOCK_MAP: Record<string, number> = {
-  "ternak sapi": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_SAPI,
-  "ternak kambing": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_KAMBING,
-  "ternak ayam": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_AYAM,
-};
-
-const preprocessFisheryData = (data: IApiData): IApiData => ({
-  ...data,
-  parameters: data.parameters.map((item) => ({
-    ...item,
-    values: growthDataByvalue(
-      FISHERY_MAP[item.name],
-      (item.values ?? []).map((val) => val ?? 0),
-    ),
-  })),
 });
 
-const preprocessLivestockData = (data: IApiData): IApiData => ({
-  ...data,
-  parameters: data.parameters.map((item) => ({
-    ...item,
-    values: growthDataByvalue(
-      LIVESTOCK_MAP[item.name],
-      (item.values ?? []).map((val) => val ?? 0),
-    ),
-  })),
-});
+const preprocessFisheryData = (
+  data: IApiData,
+  initialData: typeof INITIAL_DATA_CONSTANT,
+): IApiData => {
+  const FISHERY_MAP: Record<string, number> = {
+    "area perikanan": initialData.PERIKANAN.LUAS_AREA_PERIKANAN,
+  };
+
+  return {
+    ...data,
+    parameters: data.parameters.map((item) => ({
+      ...item,
+      values: growthDataByvalue(
+        FISHERY_MAP[item.name],
+        (item.values ?? []).map((val) => val ?? 0),
+      ),
+    })),
+  };
+};
+
+const preprocessLivestockData = (
+  data: IApiData,
+  initialData: typeof INITIAL_DATA_CONSTANT,
+): IApiData => {
+  const LIVESTOCK_MAP: Record<string, number> = {
+    "ternak sapi": initialData.PETERNAKAN.POPULASI_TERNAK_SAPI,
+    "ternak kambing": initialData.PETERNAKAN.POPULASI_TERNAK_KAMBING,
+    "ternak ayam": initialData.PETERNAKAN.POPULASI_TERNAK_AYAM,
+  };
+
+  return {
+    ...data,
+    parameters: data.parameters.map((item) => ({
+      ...item,
+      values: growthDataByvalue(
+        LIVESTOCK_MAP[item.name],
+        (item.values ?? []).map((val) => val ?? 0),
+      ),
+    })),
+  };
+};
 
 const preprocessPopulationData = (data: IApiData): IApiData => {
   const totalValues = data.parameters.reduce<number[]>((acc, item) => {
@@ -368,7 +430,10 @@ const addFoodDemandListener = () => {
     matcher: isAnyOf(setBaselinePopulation),
     effect: async (action, listenerApi) => {
       listenerApi.cancelActiveListeners();
-      const state = listenerApi.getState();
+      const state = listenerApi.getState() as IRootState;
+      const region = state.siteSpecific.region;
+      const { resourceDemandUnit } = getConstants(region);
+
       const allParameters = [
         ...(selectPopulationBaseline(state)?.parameters || []),
       ];
@@ -381,7 +446,7 @@ const addFoodDemandListener = () => {
 
       const processedResults = preprocessData(
         sourceDataForProcessing,
-        foodDemandConfig,
+        getFoodDemandConfig(resourceDemandUnit),
       );
       if (processedResults?.parameters.length > 0) {
         listenerApi.dispatch(setFoodDemandBaseline(processedResults));
@@ -400,7 +465,10 @@ const addEnergyDemandListener = () => {
     ),
     effect: async (action, listenerApi) => {
       listenerApi.cancelActiveListeners();
-      const state = listenerApi.getState();
+      const state = listenerApi.getState() as IRootState;
+      const region = state.siteSpecific.region;
+      const { resourceDemandUnit } = getConstants(region);
+
       const allParameters = [
         ...(selectGdrpBaseline(state)?.parameters || []),
         ...(selectPopulationBaseline(state)?.parameters || []),
@@ -416,7 +484,7 @@ const addEnergyDemandListener = () => {
       };
       const processedResults = preprocessData(
         sourceDataForProcessing,
-        energyDemandConfig,
+        getEnergyDemandConfig(resourceDemandUnit),
       );
       if (processedResults?.parameters.length > 0) {
         listenerApi.dispatch(setEnergyDemandBaseline(processedResults));
@@ -434,7 +502,10 @@ const addResourceListener = () => {
     ),
     effect: async (action, listenerApi) => {
       listenerApi.cancelActiveListeners();
-      const state = listenerApi.getState();
+      const state = listenerApi.getState() as IRootState;
+      const region = state.siteSpecific.region;
+      const { resourceDemandUnit, initialData } = getConstants(region);
+
       const allParameters = [
         ...(selectLandPortionBaseline(state)?.parameters || []),
         ...(selectAgricultureBaseline(state)?.parameters || []),
@@ -448,7 +519,10 @@ const addResourceListener = () => {
         parameters: allParameters,
       };
 
-      const results = preprocessData(sourceDataForProcessing, resourceConfig);
+      const results = preprocessData(
+        sourceDataForProcessing,
+        getResourceConfig(resourceDemandUnit, initialData),
+      );
       if (results?.parameters.length > 0) {
         listenerApi.dispatch(setResourceBaseline(results));
       }
@@ -467,7 +541,10 @@ const addWaterDemandListener = () => {
     ),
     effect: async (action, listenerApi) => {
       listenerApi.cancelActiveListeners();
-      const state = listenerApi.getState();
+      const state = listenerApi.getState() as IRootState;
+      const region = state.siteSpecific.region;
+      const { resourceDemandUnit } = getConstants(region);
+
       const allParameters = [
         ...(selectGdrpBaseline(state)?.parameters || []),
         ...(selectPopulationBaseline(state)?.parameters || []),
@@ -484,7 +561,7 @@ const addWaterDemandListener = () => {
 
       const processedWaterData = preprocessData(
         sourceDataForProcessing,
-        waterDemandConfig,
+        getWaterDemandConfig(resourceDemandUnit),
       );
       if (processedWaterData?.parameters.length > 0) {
         listenerApi.dispatch(setWaterDemandBaseline(processedWaterData));
@@ -508,7 +585,7 @@ const addPopulateFormListener = () => {
     effect: async (action, listenerApi) => {
       listenerApi.cancelActiveListeners();
 
-      const state = listenerApi.getState();
+      const state = listenerApi.getState() as IRootState;
       const allParameters = [
         ...(selectGdrpBaseline(state)?.parameters || []),
         ...(selectPopulationBaseline(state)?.parameters || []),
@@ -549,8 +626,12 @@ export function DssPageListener() {
     actionCreator: setDataFishery,
     effect: async (action, listenerApi) => {
       let data = action.payload.data;
+      const state = listenerApi.getState() as IRootState;
+      const region = state.siteSpecific.region;
+      const { initialData } = getConstants(region);
+
       if (typeof preprocessFisheryData === "function") {
-        data = preprocessFisheryData(data);
+        data = preprocessFisheryData(data, initialData);
       }
       const baseline = generateBaseline(data);
       if (baseline) {
@@ -563,8 +644,12 @@ export function DssPageListener() {
     actionCreator: setDataLivestock,
     effect: async (action, listenerApi) => {
       let data = action.payload.data;
+      const state = listenerApi.getState() as IRootState;
+      const region = state.siteSpecific.region;
+      const { initialData } = getConstants(region);
+
       if (typeof preprocessLivestockData === "function") {
-        data = preprocessLivestockData(data);
+        data = preprocessLivestockData(data, initialData);
       }
       const baseline = generateBaseline(data);
       if (baseline) {
@@ -598,7 +683,16 @@ export function DssPageListener() {
         listenerApi.dispatch(setAgricultureBaseline(baseline));
       }
 
-      const landCoverData = generateLandCover(2010, 2045);
+      const state = listenerApi.getState() as IRootState;
+      const region = state.siteSpecific.region;
+      const { initialData, resourceDemandUnit } = getConstants(region);
+
+      const landCoverData = generateLandCover(
+        2010,
+        2045,
+        initialData,
+        resourceDemandUnit,
+      );
       const landPortionData = generateLandPortion(landCoverData);
       listenerApi.dispatch(setLandCoverBaseline(landCoverData));
       listenerApi.dispatch(setLandPortionBaseline(landPortionData));

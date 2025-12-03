@@ -104,7 +104,7 @@ const checkType = (label: string) => {
 
 // export const generateFoodDemandWithInput = (
 //   foodDemand: number[],
-
+// 
 // );
 
 export const generateApAreaIndustrial = () => {
@@ -154,6 +154,7 @@ export const generateAvailabillityPerPerson = (
 
 export const generateLocalFoodProductionYear = (
   lahanPanenPadi: Params,
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ): number[] | [] => {
   if (!lahanPanenPadi || !Array.isArray(lahanPanenPadi.values)) {
     return [];
@@ -170,8 +171,8 @@ export const generateLocalFoodProductionYear = (
     if (typeof historicalValue === "number") {
       const production =
         historicalValue *
-        RESOURCE_DEMAND_UNIT.FOOD.PRODUCTIVTY_PADDY_YEAR *
-        RESOURCE_DEMAND_UNIT.FOOD.RASIO_SUSUT_BERAS;
+        resourceDemandUnit.FOOD.PRODUCTIVTY_PADDY_YEAR *
+        resourceDemandUnit.FOOD.RASIO_SUSUT_BERAS;
       productionValues.push(production);
 
       years.push(startYear + i);
@@ -293,26 +294,27 @@ export const generateCValue = (
   dataForest: number[],
   dataAgriculture: number[],
   dataOtherLand: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
   const constantIndustrial = constantMultiply(
     dataIndustrial,
-    RESOURCE_DEMAND_UNIT.C_AREA.INDUSTRIAL_LAND,
+    resourceDemandUnit.C_AREA.INDUSTRIAL_LAND,
   );
   const constantHousting = constantMultiply(
     dataHousing,
-    RESOURCE_DEMAND_UNIT.C_AREA.HOUSING_LAND,
+    resourceDemandUnit.C_AREA.HOUSING_LAND,
   );
   const constantForest = constantMultiply(
     dataForest,
-    RESOURCE_DEMAND_UNIT.C_AREA.FOREST_AREA,
+    resourceDemandUnit.C_AREA.FOREST_AREA,
   );
   const constantAgriculture = constantMultiply(
     dataAgriculture,
-    RESOURCE_DEMAND_UNIT.C_AREA.AGRICULTURE_AREA,
+    resourceDemandUnit.C_AREA.AGRICULTURE_AREA,
   );
   const constantOtherLand = constantMultiply(
     dataOtherLand,
-    RESOURCE_DEMAND_UNIT.C_AREA.OTHER_AREA,
+    resourceDemandUnit.C_AREA.OTHER_AREA,
   );
 
   return sumData(
@@ -327,6 +329,8 @@ export const generateCValue = (
 export const generateLandCover = (
   startYear: number,
   endYear: number,
+  initialData: typeof INITIAL_DATA_CONSTANT,
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ): IApiData => {
   const {
     INDUSTRIAL_LAND,
@@ -334,9 +338,9 @@ export const generateLandCover = (
     FOREST_AREA,
     AGRICULTURE_AREA,
     AVAILABLE_LAND,
-  } = INITIAL_DATA_CONSTANT.LAND_COVER;
+  } = initialData.LAND_COVER;
 
-  const { LAND_COVER_CHANGES } = RESOURCE_DEMAND_UNIT;
+  const { LAND_COVER_CHANGES } = resourceDemandUnit;
 
   let industrial = INDUSTRIAL_LAND;
   let housing = HOUSING_LAND;

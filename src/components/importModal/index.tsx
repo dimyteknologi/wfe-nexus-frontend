@@ -11,6 +11,8 @@ import { setData as setLivestockData } from "@/stores/slicers/livestockSlicer";
 import { setData as setAgricultureData } from "@/stores/slicers/agricultureSlicer";
 import { setData as setPopulationData } from "@/stores/slicers/populationSlicer";
 import { setData as setFisheryData } from "@/stores/slicers/fisherySlicer";
+import { setRegion } from "@/stores/slicers/siteSpecificInputSlicer";
+
 interface ImportModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -24,6 +26,9 @@ const ImportModal: React.FC<ImportModalProps> = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<"KARAWANG" | "SIDOARJO">(
+    "KARAWANG",
+  );
   const dispatch = useAppDispatch();
   const [validateFile] = useValidateFileMutation();
   const [importCsv] = useImportCsvMutation();
@@ -151,6 +156,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
       dispatch(setLivestockData(livestock));
       dispatch(setPopulationData(population));
       dispatch(setAgricultureData(agriculture));
+      dispatch(setRegion(selectedRegion));
 
       } else {
         setUploadStatus("error");
@@ -200,6 +206,23 @@ const ImportModal: React.FC<ImportModalProps> = ({
           >
             <X size={20} />
           </button>
+        </div>
+
+        {/* Region Selector */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Pilih Wilayah
+          </label>
+          <select
+            value={selectedRegion}
+            onChange={(e) =>
+              setSelectedRegion(e.target.value as "KARAWANG" | "SIDOARJO")
+            }
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <option value="KARAWANG">Karawang</option>
+            <option value="SIDOARJO">Sidoarjo</option>
+          </select>
         </div>
 
         {/* Area upload dengan drag and drop */}
