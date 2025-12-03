@@ -548,7 +548,7 @@ export function DssPageListener() {
         data = preprocessFisheryData(data);
       }
       const baseline = generateBaseline(data);
-      console.log(baseline);
+      
       if (baseline) {
         listenerApi.dispatch(setFisheryBaseline(baseline));
       }

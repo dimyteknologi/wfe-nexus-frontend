@@ -86,7 +86,7 @@ export const contextSpecificInput: FormSection[] = [
           "",
       },
       {
-        label: "Conversion",
+        label: "Agriculture Land Conversion",
         min: 2,
         max: 12,
         periods: ["2015-2030"],

@@ -32,8 +32,8 @@ export const ContextSpecific: ContextSpecificState = {
     convertionFactoTOGkg: { "2015-2030": 0.85 },
   },
   agriculture: {
-    landProduction: { "2015-2030": 100 },
-    conversionLandProduction: { "2015-2030": 0 },
+    landProduction: { "2015-2030": 15000 },
+    conversionLandProduction: { "2015-2030": 1.32 },
     baseYield: { "2015-2030": 5.5 },
     croppingIntensity: { "2015-2030": 2 },
     waterIntensity: {"2015-2030": 7800}

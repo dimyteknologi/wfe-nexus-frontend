@@ -18,6 +18,9 @@ import {
   sumArrayData,
   selectNpkApplicationPerScenario,
   agricultureLandPerScenario,
+  selectEnergyLandProcessingDemandAveragePerScenario,
+  selectTotalEnergyDemandPerScenario,
+  selectEnergyIrrigationDemandTotalPerScenario,
 } from "./foodAndSupplyInputDemandSelector";
 import {
   selectContextSpecificActive,
@@ -598,6 +601,116 @@ export const selectFertilizerEmissionApplicationPerScenario = createSelector(
 );
 
 // energy
+
+export const selectLandProcessingExcludeIrrigationPerScenario = createSelector(
+  [selectActualCiPerScenario, selectEnergyLandProcessingDemandTotalPerScenario],
+  (actualCi, landProcessing) => ({
+     active: constantDevided(
+        multiplyArrayData(
+          constantDevided(actualCi.active, 36.9),
+          landProcessing.active
+        ),
+        1000
+      ),
+      scenarioA: constantDevided(
+        multiplyArrayData(
+          constantDevided(actualCi.scenarioA, 36.9),
+          landProcessing.scenarioA
+        ),
+        1000
+      ),
+      scenarioB: constantDevided(
+        multiplyArrayData(
+          constantDevided(actualCi.scenarioB, 36.9),
+          landProcessing.scenarioB
+        ),
+        1000
+      ),
+  })
+)
+
+export const selectPlantingAndMaintenanceExcludeIrrigationPerScenario = createSelector(
+  [selectActualCiPerScenario, selectEnergyPlantingAndMaintenanceDemandTotalPerScenario],
+  (actualCi, plantingMaintenance) => ({
+     active: constantDevided(
+        multiplyArrayData(
+          constantDevided(actualCi.active, 36.9),
+          plantingMaintenance.active
+        ),
+        1000
+      ),
+      scenarioA: constantDevided(
+        multiplyArrayData(
+          constantDevided(actualCi.scenarioA, 36.9),
+          plantingMaintenance.scenarioA
+        ),
+        1000
+      ),
+      scenarioB: constantDevided(
+        multiplyArrayData(
+          constantDevided(actualCi.scenarioB, 36.9),
+          plantingMaintenance.scenarioB
+        ),
+        1000
+      ),
+  })
+);
+
+export const selectHarvestingAndTransportExcludeIrrigationPerScenario =
+  createSelector(
+    [
+      selectActualCiPerScenario,                       
+      selectEnergyIrrigationDemandTotalPerScenario,    
+      selectEnergyHarvestAndTransportDemandTotalPerScenario, 
+      () => RESOURCE_SUPPLY_INPUT
+    ],
+    (actualCi, energyIri, energyHarvest, resourceInput) => {
+      const solarWaterPump =
+        resourceInput.find((item) => item.title === "Geothermal capacity")
+          ?.values ?? Array(16).fill(0);
+      
+          const calculateHarvestingAndTransport = (
+        energyIri: number[],
+        energyHarvest: number[],
+        actualCi: number[],
+        solarWaterPump: number[],
+        divisor: number
+      ): number[] => {
+        return energyIri.map((_, i) => {
+          if (solarWaterPump[i] === 0) {
+            return ((energyIri[i] + energyHarvest[i]) / divisor / 1000) * actualCi[i];
+          }
+          return 0;
+        });
+      };
+
+      return {
+        active: calculateHarvestingAndTransport(
+          energyIri.active,
+          energyHarvest.active,
+          actualCi.active,
+          solarWaterPump,
+           36.9
+        ),
+        scenarioA: calculateHarvestingAndTransport(
+          energyIri.scenarioA,
+          energyHarvest.scenarioA,
+          actualCi.scenarioA,
+          solarWaterPump,
+           36.9
+        ),
+        scenarioB: calculateHarvestingAndTransport(
+          energyIri.scenarioB,
+          energyHarvest.scenarioB,
+          actualCi.scenarioB,
+          solarWaterPump,
+           36.9
+        ),
+      };
+    }
+  );
+
+
 const solarPumpSelector = () =>
   findResourceSupplyByTitle("Solar Water Pump Capacity")?.values ??
   Array(16).fill(0);
@@ -611,6 +724,7 @@ const calculate = (arr: number[]) =>
 export const selectSolarPumpElectricityPerGenerationPerScenario =
   createSelector([solarPumpSelector], (solarPump) => {
     const value = calculate(solarPump);
+  
     return {
       active: value,
       //   baseline: value,
@@ -622,19 +736,18 @@ export const selectSolarPumpElectricityPerGenerationPerScenario =
 export const selectHuskProductionPerScenario = createSelector(
   [selectProductionTotalPerScenario],
   (production) => {
-    const createHuskArray = (value?: number) => {
-      const v = (value ?? 0) * 0.23;
-      return [0, ...Array(15).fill(v)];
+    const shiftAndMultiply = (arr: number[], factor: number) => {
+      return [0, ...arr.map((v) => v * factor)];
     };
 
     return {
-      active: createHuskArray(production.active[0]),
-      // // baseline: createHuskArray(production.baseline[0]),
-      scenarioA: createHuskArray(production.scenarioA[0]),
-      scenarioB: createHuskArray(production.scenarioB[0]),
+      active: shiftAndMultiply(production.active, 0.23),
+      scenarioA: shiftAndMultiply(production.scenarioA, 0.23),
+      scenarioB: shiftAndMultiply(production.scenarioB, 0.23),
     };
-  },
+  }
 );
+
 
 export const selectHuskUtilizationPerScenario = createSelector(
   [selectHuskProductionPerScenario],
@@ -646,7 +759,6 @@ export const selectHuskUtilizationPerScenario = createSelector(
       geotermalcapaccityPercentage,
       100,
     );
-
     return {
       active: multiplyArrayData(huskProduction.active, geotermalcapaccity),
       // //   baseline: multiplyArrayData(huskProduction.baseline, geotermalcapaccity),
@@ -697,22 +809,16 @@ export const selectServiceAreaOfSolarPumpPerScenario = createSelector(
 
 // demand for pumping
 export const selectPumpPowerDemandPerScenario = createSelector(
-  [selectLandPaddyFieldPerScenario],
-  (paddyField) => ({
-    active: constantMultiply(
-      constantDevided(paddyField.active, 50),
-      33.45424107,
-    ),
-    // // baseline: constantMultiply(constantDevided(paddyField.baseline, 50), 33.45424107),
-    scenarioA: constantMultiply(
-      constantDevided(paddyField.scenarioA, 50),
-      33.45424107,
-    ),
-    scenarioB: constantMultiply(
-      constantDevided(paddyField.scenarioB, 50),
-      33.45424107,
-    ),
-  }),
+  [selectContextSpecificActive, selectedContextSpecificA, selectedContextSpecificB],
+  (active, scenarioA, scenarioB) => {
+    const getInputValue = (scenario: ContextSpecificState) =>
+      (scenario?.diesel?.installedCapacity?.["2015-2030"] ?? 0);
+    return {
+    active: Array(16).fill(getInputValue(active)),
+    scenarioA: Array(16).fill(getInputValue(scenarioA)),
+    scenarioB: Array(16).fill(getInputValue(scenarioB)),
+  }
+  },
 );
 
 export const selectEnergyConsumptionDailyPerScenario = createSelector(
@@ -734,10 +840,9 @@ export const selectEnergyConsumptionDailyPerScenario = createSelector(
 export const selectEnergyConsumptionYearlyPerScenario = createSelector(
   [selectEnergyConsumptionDailyPerScenario],
   (energyConsumptioDaily) => ({
-    active: constantMultiply(energyConsumptioDaily.active, 120),
-    // // baseline: constantMultiply(energyConsumptioDaily.baseline, 120),
-    scenarioA: constantMultiply(energyConsumptioDaily.scenarioA, 120),
-    scenarioB: constantMultiply(energyConsumptioDaily.scenarioB, 120),
+    active: constantMultiply(energyConsumptioDaily.active, 60),
+    scenarioA: constantMultiply(energyConsumptioDaily.scenarioA, 60),
+    scenarioB: constantMultiply(energyConsumptioDaily.scenarioB, 60),
   }),
 );
 
@@ -757,7 +862,6 @@ export const SelectEnergyConsumptionFromRenewableEnergyPerScenario =
     ) => {
       const divideActualBy1000 = {
         active: constantDevided(actualGeneration.active, 1000),
-        // //   baseline: constantDevided(actualGeneration.baseline, 1000),
         scenarioA: constantDevided(actualGeneration.scenarioA, 1000),
         scenarioB: constantDevided(actualGeneration.scenarioB, 1000),
       };
@@ -774,15 +878,6 @@ export const SelectEnergyConsumptionFromRenewableEnergyPerScenario =
             divideActualBy1000.active,
           ),
         ),
-
-        //   baseline: minArray(
-        // energyConsum.baseline,
-        // sumArrayData(
-        //   solarPumpGeneration.baseline,
-        //       electricityFromHusk.baseline,
-        //       divideActualBy1000.baseline
-        //     )
-        //   ),
 
         scenarioA: minArray(
           energyConsum.scenarioA,
@@ -877,9 +972,9 @@ export const selectEmisiSekamPerScenario = createSelector(
 
 export const selectDieselDemandPerScenario = createSelector(
   [
-    selectEnergyLandProccessingPerScenario,
-    selectEnergyPlantingAndMaintenancePerScenario,
-    selectEnergyHarvestAndTransportPerScenario,
+    selectLandProcessingExcludeIrrigationPerScenario,
+    selectPlantingAndMaintenanceExcludeIrrigationPerScenario,
+    selectHarvestingAndTransportExcludeIrrigationPerScenario,
     selectFuelDemandConsumptionPerScenario,
   ],
   (energyLand, energyPlanting, energyHarvest, energyFuel) => ({

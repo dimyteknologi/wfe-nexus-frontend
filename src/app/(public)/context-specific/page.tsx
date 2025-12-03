@@ -20,10 +20,7 @@ import { contextSpecificInput } from "@/config/form";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
 import { ALL_METRICS_CONTEXT_SPECIFICS } from "@/lib/constant/metrics";
 import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSelector";
-import { selectFuelDemandConsumptionPerScenario } from "@/stores/selectors/context-specific/resourceSupplySelector";
-import { selectFuelConsumptionPerScenario } from "@/stores/selectors/context-specific/resultSelector";
 import { useInitializeData } from "@/hooks/useInitDummy";
-import { agricultureLandPerScenario } from "@/stores/selectors/context-specific/foodAndSupplyInputDemandSelector";
 
 const ContextSpecificPage = () => {
   useInitializeData();
@@ -31,8 +28,6 @@ const ContextSpecificPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const simulationState = useAppSelector((state) => state.contextSpecific);
   const displayedMetrics = useAppSelector(selectDisplayedMetricsContext);
-  // const waterDemand = useAppSelector(selectFuelConsumptionPerScenario);
-  // console.log(waterDemand);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
