@@ -150,6 +150,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
         "get-population": population,
         "get-pertanian": agriculture,
         "get-peternakan": livestock,
+        "get-perikanan": perikanan
       } = imported.data;
       
       dispatch(setGdpData(gdp));

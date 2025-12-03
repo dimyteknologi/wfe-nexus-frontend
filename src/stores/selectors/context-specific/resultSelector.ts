@@ -217,17 +217,16 @@ export const selectEmissionIntensityPerScenario = createSelector(
   [selectRiceProductionPerScenario, selectTotalEmissionPerScenario],
   (riceProd, totalEmision) => ({
     active: constantMultiply(
-      calculateDevidedArrays(riceProd.active, totalEmision.active),
-      1000,
+      calculateDevidedArrays(totalEmision.active,riceProd.active),
+      10,
     ),
-    // baseline: constantMultiply(calculateDevidedArrays(riceProd.baseline, totalEmision.baseline), 1000),
     scenarioA: constantMultiply(
-      calculateDevidedArrays(riceProd.scenarioA, totalEmision.scenarioA),
-      1000,
+      calculateDevidedArrays(totalEmision.scenarioA, riceProd.scenarioA),
+      10,
     ),
     scenarioB: constantMultiply(
-      calculateDevidedArrays(riceProd.scenarioB, totalEmision.scenarioB),
-      1000,
+      calculateDevidedArrays(totalEmision.scenarioB, riceProd.scenarioB),
+      10,
     ),
   }),
 );
@@ -236,9 +235,10 @@ export const selectEmissionReductionPerScenario = createSelector(
   [selectTotalEmissionPerScenario],
   (total) => {
     const baseline = [
-      291471.527952091, 493957.780570471, 490094.176806213, 486286.151698033,
-      482532.857386152, 478833.45958562, 475187.137360313, 471593.082900802,
-      468050.501306047, 464558.61036883,
+      282.72791607519, 358.825655571352, 358.825655571352,
+      358.825655571352, 358.825655571352, 358.825655571352,
+      358.825655571352, 358.825655571352, 358.825655571352,
+      358.825655571352
     ];
 
     const calculateEmissions = (scenario: number[]) =>
@@ -246,7 +246,6 @@ export const selectEmissionReductionPerScenario = createSelector(
 
     return {
       active: calculateEmissions(total.active),
-      //   baseline: calculateEmissions(total.baseline),
       scenarioA: calculateEmissions(total.scenarioA),
       scenarioB: calculateEmissions(total.scenarioB),
     };
@@ -254,7 +253,7 @@ export const selectEmissionReductionPerScenario = createSelector(
 );
 
 export const selectWaterIntensityPerScenario = createSelector(
-  [selectWaterAllocationForAgriPerScenario, selectLandPaddyFieldPerScenario],
+  [selectWaterAllocationForAgriPerScenario, agricultureLandPerScenario],
   (waterAgri, landPaddy) => ({
     active: constantDevided(
       calculateDevidedArrays(waterAgri.active, landPaddy.active),
@@ -272,19 +271,19 @@ export const selectWaterIntensityPerScenario = createSelector(
 );
 
 export const selectFuelIntensityPerScenario = createSelector(
-  [selectFuelConsumptionPerScenario, selectLandPaddyFieldPerScenario],
+  [selectFuelConsumptionPerScenario, agricultureLandPerScenario],
   (fuelConsump, landPaddy) => ({
     active: constantMultiply(
       calculateDevidedArrays(fuelConsump.active, landPaddy.active),
-      100,
+      10,
     ),
     scenarioA: constantMultiply(
       calculateDevidedArrays(fuelConsump.scenarioA, landPaddy.scenarioA),
-      100,
+      10,
     ),
     scenarioB: constantMultiply(
       calculateDevidedArrays(fuelConsump.scenarioB, landPaddy.scenarioB),
-      100,
+      10,
     ),
   }),
 );

@@ -27,7 +27,7 @@ export const RESOURCE_SUPPLY_INPUT = [
   {
     title: "Geothermal capacity",
     unit: "Mw",
-    values: [0, 0, 0, 0.5, 1, 1, 2, 3, 4, 5, 0, 0, 0, 0, 0, 0],
+    values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   },
   {
     title: "Utilization rate of rice husk for renewable energy",

@@ -52,7 +52,7 @@ export const calculateMultiplyArrays = (
 export const getParameters = (baseData: IBaselineData | null, key: string) => {
   if (!baseData && !key) return Array(36).fill(0);
 
-  const data = baseData?.parameters.find((param) => param.name === key);
+  const data = baseData?.parameters.find((param) => param.name.toLowerCase() === key.toLowerCase());
   if (!data) return Array(36).fill(0);
 
   return data.values.map((val) => val ?? 0);
@@ -169,10 +169,10 @@ export const selectLivestock = createSelector(
   ],
   (baseline, active, scenarioA, scenarioB) => {
     const calculateLivestockData = (baseData: IBaselineData | null) => {
-      const dataCattle = getParameters(baseData, "ternak sapi");
-      const dataGoat = getParameters(baseData, "ternak kambing");
-      const dataPoultry = getParameters(baseData, "ternak ayam");
-
+      const dataCattle = getParameters(baseData, "sapi");
+      const dataGoat = getParameters(baseData, "kambing");
+      const dataPoultry = getParameters(baseData, "ayam");
+      
       const constantLargeCattle = RESOURCE_DEMAND_UNIT.WATER.LARGE_CATTLE;
       const constantSmallCattle = RESOURCE_DEMAND_UNIT.WATER.SMALL_CATTLE;
       const constantPoultry = RESOURCE_DEMAND_UNIT.WATER.POULTRY;

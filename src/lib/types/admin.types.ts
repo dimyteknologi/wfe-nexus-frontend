@@ -51,7 +51,9 @@ export interface Role {
   name: string;
   description?: string;
   permissions?: Permission[];
+  permissionIds?: string[]; // For API requests
   createdAt?: string;
+  status?: "Active" | "Inactive"; // Add this line
 }
 
 export interface Organization {

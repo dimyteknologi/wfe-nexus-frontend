@@ -19,14 +19,14 @@ import { getApAreaGrowth, getPinPoint } from "./processingData";
 
 export const nameToStatePathMap: Record<string, string> = {
   // parameter name : input id
-  "A.Pertanian, Kehutanan, dan Perikanan": "agriculture.growthScenario",
-  "C.Industri Pengolahan": "industry.growth",
+  "a.pertanian, kehutanan, dan perikanan": "agriculture.growthScenario",
+  "c.industri pengolahan": "industry.growth",
   "Lahan Panen Padi": "agriculture.landConversion",
   "area perikanan": "agriculture.aquacultureLandGrowth",
   "Total Populasi": "demography.populationGrowth",
-  "ternak sapi": "livestock.cattleGrowth",
-  "ternak kambing": "livestock.goatGrowth",
-  "ternak ayam": "livestock.poultryGrowth",
+  "sapi": "livestock.cattleGrowth",
+  "kambing": "livestock.goatGrowth",
+  "ayam": "livestock.poultryGrowth",
   // "AP Area Industrial": "water.artificialPondIndustrial",
   // "AP Area Housing": "water.artificialPondHousing",
   // "Housing Land": "water.artificialPondIndustrial",
@@ -63,9 +63,9 @@ export const extractAverageGrowthRates = (
 
 const getInputsByName = (name: string, simulationState: SiteSpecificState) => {
   switch (name) {
-    case "A.Pertanian, Kehutanan, dan Perikanan":
+    case "a.pertanian, kehutanan, dan perikanan":
       return simulationState.agriculture.growthScenario;
-    case "C.Industri Pengolahan":
+    case "c.industri pengolahan":
       return simulationState.industry.growth;
     case "Lahan Panen Padi":
       return simulationState.agriculture.landConversion;
@@ -220,7 +220,7 @@ export const generateScenarioProjection = (
 
     const averageGrowth = average(growthRate(cleanDataSeries));
     const scenarioInputs = getInputsByName(name, simulationState);
-
+    
     let finalProjectedData: number[];
     if (scenarioInputs) {
       const projectionStage1 = Computation.projection({
@@ -465,15 +465,14 @@ export const generateBaseline = (
 
   for (const param of baseData.parameters) {
     const cleanDataSeries = param.values.map((val) => val ?? 0);
-    const growthRates = growthRate(cleanDataSeries);
+    let growthRates = growthRate(cleanDataSeries);
+    
     const averageGrowth = average(growthRates);
-
     const projectedData = Computation.projection({
       data: cleanDataSeries,
       growth: averageGrowth,
       finalYear: finalYear,
     });
-
     // push result to baseline parameters data
     projectedParameters.push({
       name: param.name,
@@ -488,7 +487,6 @@ export const generateBaseline = (
     finalYear: finalYear,
     initialYear: initialYear,
   });
-
   // return baseline data
   return {
     label: `${baseData.label} (${checkType(baseData.label)} Baseline)`,

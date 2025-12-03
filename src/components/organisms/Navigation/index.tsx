@@ -144,13 +144,13 @@ const Navigation = () => {
             <div className="hidden md:flex items-center space-x-3">
               {status === "authenticated" ? (
                 <>
-                  <Link
+                  {/* <Link
                     href="/admin"
                     className="text-gray-700 hover:text-green-700 transition-colors flex items-center gap-1 px-4 py-2 rounded-lg hover:bg-green-50"
                   >
                     <User size={16} />
                     {session?.user?.name || "Profile"}
-                  </Link>
+                  </Link> */}
                   <button
                     onClick={handleLogout}
                     className="text-gray-700 hover:text-red-700 transition-colors flex items-center gap-1 px-4 py-2 rounded-lg hover:bg-red-50"
@@ -293,12 +293,12 @@ const Navigation = () => {
             <div className="flex flex-col space-y-4">
               {status === "authenticated" ? (
                 <>
-                  <Link href="/admin" onClick={closeAllMenus}>
+                  {/* <Link href="/admin" onClick={closeAllMenus}>
                     <div className="w-full flex items-center justify-center gap-2 text-gray-700 py-3 border border-gray-300 rounded-lg hover:border-green-600 hover:text-green-700 transition-colors">
                       <User size={18} />
                       {session?.user?.name || "Profile"}
                     </div>
-                  </Link>
+                  </Link> */}
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center justify-center gap-2 text-gray-700 py-3 border border-gray-300 rounded-lg hover:border-red-600 hover:text-red-700 transition-colors"

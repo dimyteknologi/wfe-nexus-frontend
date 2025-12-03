@@ -22,25 +22,25 @@ const FormContainer: React.FC<FormContainerProps> = ({
                 // merging input
                 const compoundVarieties = [
                   {
-                    areaId: "agriculture.areaInpari32",
-                    conversionId: "agriculture.conversionInpari32",
+                    areaId: "agriculture.landProduction",
+                    conversionId: "agriculture.conversionLandProduction",
                   },
-                  {
-                    areaId: "agriculture.areaCiherang",
-                    conversionId: "agriculture.conversionCiherang",
-                  },
-                  {
-                    areaId: "agriculture.areaHipaSeries",
-                    conversionId: "agriculture.conversionHipaSeries",
-                  },
-                  {
-                    areaId: "agriculture.areaMekongga",
-                    conversionId: "agriculture.conversionMekongga",
-                  },
-                  {
-                    areaId: "agriculture.areaLokal",
-                    conversionId: "agriculture.conversionLokal",
-                  },
+                  // {
+                  //   areaId: "agriculture.areaCiherang",
+                  //   conversionId: "agriculture.conversionCiherang",
+                  // },
+                  // {
+                  //   areaId: "agriculture.areaHipaSeries",
+                  //   conversionId: "agriculture.conversionHipaSeries",
+                  // },
+                  // {
+                  //   areaId: "agriculture.areaMekongga",
+                  //   conversionId: "agriculture.conversionMekongga",
+                  // },
+                  // {
+                  //   areaId: "agriculture.areaLokal",
+                  //   conversionId: "agriculture.conversionLokal",
+                  // },
                 ];
 
                 const compound = compoundVarieties.find(
