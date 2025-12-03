@@ -99,7 +99,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       if (!selectedMetricData) return { series: [], colors: [] };
       const series = [];
       const colors = [];
-      const dynamicColors = ["#67B2D8", "#73AF6F", "#BF1A1A"];
+      const dynamicColors = ["#0004ffff", "#FF6C0C", "#FFE08F"];
       if (selectedMetricData.active?.length > 0) {
         series.push({
           name: "Current",
@@ -130,7 +130,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
                 ? productionSolarCost.slice(0, 10)
                 : additional.data,
           });
-          colors.push(additional.color || "#FF6D1F");
+          colors.push(additional.color || "#060771");
         }
       }
       return { series, colors, type: metricConfig?.type ?? "bar" };
