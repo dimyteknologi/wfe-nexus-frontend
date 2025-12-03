@@ -16,6 +16,7 @@ interface AuthState {
   error: string | null;
   rememberMe: boolean;
   user: UserInfo | null;
+  accessToken: string | null;
 }
 
 const initialState: AuthState = {
@@ -24,6 +25,7 @@ const initialState: AuthState = {
   error: null,
   rememberMe: false,
   user: null,
+  accessToken: null,
 };
 
 export const authSlice = createSlice({
@@ -59,7 +61,7 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setLoading, setError, setRememberMe, setUser, clearError, logout } =
+export const { setLoading, setError, setRememberMe, setUser, clearError, logout, setAccessToken } =
   authSlice.actions;
 
 export const authReducer = authSlice.reducer;

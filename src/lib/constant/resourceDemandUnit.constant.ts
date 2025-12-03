@@ -1,3 +1,42 @@
+export const RESOURCE_DEMAND_UNIT_SIDOWARJO = {
+  WATER: {
+    DOMESTIC_DEMAND: 45.625,
+    INDUSTRIAL_DEMAND: 1.687,
+    CROPS_LAND_DEMAND: 1900,
+    AQUACULTURE_DEMAND: 0.002555,
+    LARGE_CATTLE: 14.6,
+    SMALL_CATTLE: 2.19,
+    POULTRY: 0.219,
+    MUNICIPALITY: 0.22,
+  },
+  ENERGY: {
+    DOMESTIC_DEMAND: 634,
+    INDUSTRIAL_ENERGY_INTENSITY: 50.43,
+    AGRICULTURE_ENERGY_INTENSITY: 3932,
+    ENERGY_FOR_WATER: 0.37,
+  },
+  LAND_COVER_CHANGES: {
+    INDUSTRIAL_LAND: 1,
+    HOUSING_LAND: 1,
+    FOREST_LAND: 0,
+    AGRICULTURE_AREA: 1,
+  },
+  C_AREA: {
+    INDUSTRIAL_LAND: 0.7,
+    HOUSING_LAND: 0.5,
+    FOREST_AREA: 0.2,
+    AGRICULTURE_AREA: 0.3,
+    OTHER_AREA: 0.35,
+  },
+  FOOD: {
+    STAPLE_PER_CAPITA: 105,
+    PERCENTAGE_NON_STAPLE_DEMAND: 0.2,
+    PRODUCTIVTY_PADDY: 1388307,
+    PRODUCTIVTY_PADDY_YEAR: 7.39,
+    RASIO_SUSUT_BERAS: 0.6538461538,
+  },
+};
+
 export const RESOURCE_DEMAND_UNIT = {
   WATER: {
     DOMESTIC_DEMAND: 45.625,
@@ -45,4 +84,14 @@ export const dynamicalInputs = {
   "energy.industrialEnergy": 0,
   "agriculture.productivityTarget":
     RESOURCE_DEMAND_UNIT.FOOD.PRODUCTIVTY_PADDY_YEAR,
+};
+
+export const dynamicalInputsSidowarjo = {
+  "water.domesticWaterDemand":
+    (RESOURCE_DEMAND_UNIT_SIDOWARJO.WATER.DOMESTIC_DEMAND / 365) * 1000,
+  "water.industrialWater": RESOURCE_DEMAND_UNIT_SIDOWARJO.WATER.INDUSTRIAL_DEMAND,
+  "energy.domesticElectricity": 0,
+  "energy.industrialEnergy": 0,
+  "agriculture.productivityTarget":
+    RESOURCE_DEMAND_UNIT_SIDOWARJO.FOOD.PRODUCTIVTY_PADDY_YEAR,
 };
