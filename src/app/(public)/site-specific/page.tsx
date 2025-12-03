@@ -25,7 +25,7 @@ import { siteSpecificInput } from "@/config/form";
 
 const DSSPage = () => {
   // init data
-  // useInitializeData();
+  useInitializeData();
 
   const [errors] = useState<Record<string, string>>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -70,9 +70,8 @@ const DSSPage = () => {
       <div className="relative flex my-2 sm:my-4 justify-between items-center">
         <div className="flex gap-4">
           <button
-            className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs text-white font-bold ${
-              isDssConceptOpen ? "bg-green-700" : "bg-green-600"
-            }`}
+            className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs text-white font-bold ${isDssConceptOpen ? "bg-green-700" : "bg-green-600"
+              }`}
             onClick={handleOpenDssConceptTab}
             aria-expanded={isDssConceptOpen}
             aria-controls="dss-concept-modal"
@@ -80,9 +79,8 @@ const DSSPage = () => {
             DSS Concept
           </button>
           <button
-            className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs text-white font-bold ${
-              isScenarioOpen ? "bg-green-700" : "bg-green-600"
-            }`}
+            className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs text-white font-bold ${isScenarioOpen ? "bg-green-700" : "bg-green-600"
+              }`}
             onClick={handleOpenScenarioTab}
             aria-expanded={isScenarioOpen}
             aria-controls="scenario-menu"
@@ -163,11 +161,10 @@ const DSSPage = () => {
         {/* scenario menu */}
         <div
           id="scenario-menu"
-          className={`${
-            isScenarioOpen
+          className={`${isScenarioOpen
               ? "w-full lg:w-1/3 bg-white border border-gray-200"
               : "w-0 border-none -translate-x-full"
-          } rounded-lg lg:rounded-2xl py-2 md:py-4 transition-all duration-200 overflow-hidden h-[70dvh] flex flex-col items-center`}
+            } rounded-lg lg:rounded-2xl py-2 md:py-4 transition-all duration-200 overflow-hidden h-[70dvh] flex flex-col items-center`}
         >
           <ScenarioMenu
             simulationState={simulationState}
@@ -187,11 +184,10 @@ const DSSPage = () => {
           className={`${isScenarioOpen ? "hidden lg:flex" : "flex"} w-full bg-white overflow-auto h-[70dvh] rounded-2xl`}
         >
           <div
-            className={`w-full p-2 overflow-auto lg:overflow-visible ${
-              isScenarioOpen
+            className={`w-full p-2 overflow-auto lg:overflow-visible ${isScenarioOpen
                 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"
-            } gap-2 sm:gap-3 md:gap-4 lg:gap-6`}
+              } gap-2 sm:gap-3 md:gap-4 lg:gap-6`}
           >
             {displayedMetrics.map((metric, index) => (
               <ChartWidget
