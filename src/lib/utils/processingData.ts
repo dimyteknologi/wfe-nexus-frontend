@@ -10,28 +10,43 @@ import {
 } from "./formulas";
 
 //  WATER DEMAND
-export const generateDomesticWaterDemandProcess = (data: number[]) => {
-  const constant = RESOURCE_DEMAND_UNIT.WATER.DOMESTIC_DEMAND;
+export const generateDomesticWaterDemandProcess = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constant = resourceDemandUnit.WATER.DOMESTIC_DEMAND;
   return constantMultiply(data, constant);
 };
 
-export const generateIndustrialWaterDemandProcess = (data: number[]) => {
-  const constant = RESOURCE_DEMAND_UNIT.WATER.INDUSTRIAL_DEMAND;
+export const generateIndustrialWaterDemandProcess = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constant = resourceDemandUnit.WATER.INDUSTRIAL_DEMAND;
   return constantMultiply(data, constant);
 };
 
-export const generateCropsLandWaterDemandProcess = (data: number[]) => {
-  const constant = RESOURCE_DEMAND_UNIT.WATER.CROPS_LAND_DEMAND;
+export const generateCropsLandWaterDemandProcess = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constant = resourceDemandUnit.WATER.CROPS_LAND_DEMAND;
   return constantMultiply(data, constant);
 };
 
-export const generateAquacultureWaterDemandProcess = (data: number[]) => {
-  const constant = RESOURCE_DEMAND_UNIT.WATER.AQUACULTURE_DEMAND;
+export const generateAquacultureWaterDemandProcess = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constant = resourceDemandUnit.WATER.AQUACULTURE_DEMAND;
   return constantMultiply(data, constant);
 };
 
-export const generateMunicipalityWaterDemandProcess = (data: number[]) => {
-  const constant = RESOURCE_DEMAND_UNIT.WATER.MUNICIPALITY;
+export const generateMunicipalityWaterDemandProcess = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constant = resourceDemandUnit.WATER.MUNICIPALITY;
   return constantMultiply(data, constant);
 };
 
@@ -39,10 +54,11 @@ export const generateLivestockWaterDemandProcess = (
   dataCattle: number[],
   dataGoat: number[],
   dataPoultry: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
-  const constantLargeCattle = RESOURCE_DEMAND_UNIT.WATER.LARGE_CATTLE;
-  const constantSmallCattle = RESOURCE_DEMAND_UNIT.WATER.SMALL_CATTLE;
-  const constantPoultry = RESOURCE_DEMAND_UNIT.WATER.POULTRY;
+  const constantLargeCattle = resourceDemandUnit.WATER.LARGE_CATTLE;
+  const constantSmallCattle = resourceDemandUnit.WATER.SMALL_CATTLE;
+  const constantPoultry = resourceDemandUnit.WATER.POULTRY;
   const waterDemandLargeCattle = constantMultiply(
     dataCattle,
     constantLargeCattle,
@@ -61,71 +77,105 @@ export const generateLivestockWaterDemandProcess = (
 };
 
 // ENERGY DEMAND
-export const generateDomesticEnergyDemand = (data: number[]) => {
-  const constant = RESOURCE_DEMAND_UNIT.ENERGY.DOMESTIC_DEMAND;
+export const generateDomesticEnergyDemand = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constant = resourceDemandUnit.ENERGY.DOMESTIC_DEMAND;
   const result = constantMultiply(data, constant);
 
   return result.map((data) => data / 1000000);
 };
 
-export const generateIndustrialEnergyDemand = (data: number[]) => {
-  const constant = RESOURCE_DEMAND_UNIT.ENERGY.INDUSTRIAL_ENERGY_INTENSITY;
+export const generateIndustrialEnergyDemand = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constant = resourceDemandUnit.ENERGY.INDUSTRIAL_ENERGY_INTENSITY;
   const result = constantMultiply(data, constant);
 
   return result.map((data) => data / 1000000);
 };
 
-export const generateAgricultureEnergyDemand = (data: number[]) => {
-  const constant = RESOURCE_DEMAND_UNIT.ENERGY.AGRICULTURE_ENERGY_INTENSITY;
+export const generateAgricultureEnergyDemand = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constant = resourceDemandUnit.ENERGY.AGRICULTURE_ENERGY_INTENSITY;
   const result = constantMultiply(data, constant);
 
   return result.map((data) => data / 1000000);
 };
 
-export const generateWaterGenerationEnergyDemand = (data: number[]) => {
-  const constant = RESOURCE_DEMAND_UNIT.ENERGY.ENERGY_FOR_WATER;
+export const generateWaterGenerationEnergyDemand = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constant = resourceDemandUnit.ENERGY.ENERGY_FOR_WATER;
   const result = constantMultiply(data, constant);
 
   return result.map((data) => data / 1000000);
 };
 
 // FOOD DEMAND
-export const generateFoodDemand = (data: number[]) => {
-  const constantStaple = RESOURCE_DEMAND_UNIT.FOOD.STAPLE_PER_CAPITA;
+export const generateFoodDemand = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constantStaple = resourceDemandUnit.FOOD.STAPLE_PER_CAPITA;
   const constantNonStaple =
-    RESOURCE_DEMAND_UNIT.FOOD.PERCENTAGE_NON_STAPLE_DEMAND;
+    resourceDemandUnit.FOOD.PERCENTAGE_NON_STAPLE_DEMAND;
 
   return data.map(
     (data) => (data * constantStaple * (1 + constantNonStaple)) / 1000,
   );
 };
 
-export const generateDomesticFoodDemand = (data: number[]) => {
-  const constantStaple = RESOURCE_DEMAND_UNIT.FOOD.STAPLE_PER_CAPITA;
+export const generateDomesticFoodDemand = (
+  data: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
+) => {
+  const constantStaple = resourceDemandUnit.FOOD.STAPLE_PER_CAPITA;
   return data.map((data) => (data * constantStaple) / 1000);
 };
 
 // LAND COVER
-const generateIndustrialLand = (data: number[], finalYear: number) => {
-  const constanta = INITIAL_DATA_CONSTANT.LAND_COVER.INDUSTRIAL_LAND;
+const generateIndustrialLand = (
+  data: number[],
+  finalYear: number,
+  initialData: typeof INITIAL_DATA_CONSTANT,
+) => {
+  const constanta = initialData.LAND_COVER.INDUSTRIAL_LAND;
   const growth = constanta + 1;
   return Computation.projection({ data, growth, finalYear });
 };
 
-const generateHousingLand = (data: number[], finalYear: number) => {
-  const constanta = INITIAL_DATA_CONSTANT.LAND_COVER.HOUSING_LAND;
+const generateHousingLand = (
+  data: number[],
+  finalYear: number,
+  initialData: typeof INITIAL_DATA_CONSTANT,
+) => {
+  const constanta = initialData.LAND_COVER.HOUSING_LAND;
   const growth = constanta + 1;
   return Computation.projection({ data, growth, finalYear });
 };
 
-const generateForestArea = (data: number[], finalYear: number) => {
-  const constanta = INITIAL_DATA_CONSTANT.LAND_COVER.FOREST_AREA;
+const generateForestArea = (
+  data: number[],
+  finalYear: number,
+  initialData: typeof INITIAL_DATA_CONSTANT,
+) => {
+  const constanta = initialData.LAND_COVER.FOREST_AREA;
   const growth = constanta + 1;
   return Computation.projection({ data, growth, finalYear });
 };
 
-const generateAgriculturetArea = (data: number[], finalYear: number) => {
-  const constanta = INITIAL_DATA_CONSTANT.LAND_COVER.AGRICULTURE_AREA;
+const generateAgriculturetArea = (
+  data: number[],
+  finalYear: number,
+  initialData: typeof INITIAL_DATA_CONSTANT,
+) => {
+  const constanta = initialData.LAND_COVER.AGRICULTURE_AREA;
   const growth = 1 - constanta;
   return Computation.projection({ data, growth, finalYear });
 };
@@ -306,37 +356,45 @@ export const generateCValue = (
   dataHousing: number[],
   dataForest: number[],
   dataAgriculture: number[],
+  resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
   const result = [];
   for (let i = 0; i < dataAgriculture.length; i++) {
     const value =
-      (dataIndustrial[i] ?? 0) * RESOURCE_DEMAND_UNIT.C_AREA.INDUSTRIAL_LAND +
-      (dataHousing[i] ?? 0) * RESOURCE_DEMAND_UNIT.C_AREA.HOUSING_LAND +
-      (dataForest[i] ?? 0) * RESOURCE_DEMAND_UNIT.C_AREA.FOREST_AREA +
-      (dataAgriculture[i] ?? 0) * RESOURCE_DEMAND_UNIT.C_AREA.AGRICULTURE_AREA;
+      (dataIndustrial[i] ?? 0) * resourceDemandUnit.C_AREA.INDUSTRIAL_LAND +
+      (dataHousing[i] ?? 0) * resourceDemandUnit.C_AREA.HOUSING_LAND +
+      (dataForest[i] ?? 0) * resourceDemandUnit.C_AREA.FOREST_AREA +
+      (dataAgriculture[i] ?? 0) * resourceDemandUnit.C_AREA.AGRICULTURE_AREA;
     result.push(value);
   }
 
   return result;
 };
 
-export const generatePotentialWater = (data: number[]) => {
-  return constantMultiply(data, 3760534400);
+export const generatePotentialWater = (
+  data: number[],
+  initialData: typeof INITIAL_DATA_CONSTANT,
+) => {
+  return constantMultiply(data, initialData.WATER.POTENTIAL_WATER_FACTOR);
 };
 
 export const generateTotalWater = (
   dataWaterSupply: number[],
   dataApWaterIndustrial: number[],
   dataApWaterHousing: number[],
+  initialData: typeof INITIAL_DATA_CONSTANT,
 ) => {
   return sumData(
-    constantAdd(dataWaterSupply, 36528322 + 61508750),
+    constantAdd(dataWaterSupply, initialData.WATER.BASE_WATER_SUPPLY),
     sumData(dataApWaterIndustrial, dataApWaterHousing),
   );
 };
 
-export const generateApWater = (data: number[]) => {
-  return constantMultiply(data, 1500 * 2);
+export const generateApWater = (
+  data: number[],
+  initialData: typeof INITIAL_DATA_CONSTANT,
+) => {
+  return constantMultiply(data, initialData.WATER.AP_WATER_FACTOR);
 };
 
 export const generateEnergySupply = (

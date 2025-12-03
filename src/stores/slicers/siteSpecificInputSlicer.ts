@@ -68,6 +68,7 @@ export interface DssSiteSpecificState {
   baseline: SiteSpecificState;
   scenario_a: string | null;
   scenario_b: string | null;
+  region: "KARAWANG" | "SIDOARJO";
 }
 
 const initialState: DssSiteSpecificState = {
@@ -75,6 +76,7 @@ const initialState: DssSiteSpecificState = {
   baseline: SiteSpecific,
   scenario_a: null,
   scenario_b: null,
+  region: "KARAWANG",
 };
 
 const DssSiteSpecific = createSlice({
@@ -97,6 +99,9 @@ const DssSiteSpecific = createSlice({
     },
     resetSimulation: (state) => {
       state.active.simulationName = null;
+    },
+    setRegion: (state, action: PayloadAction<"KARAWANG" | "SIDOARJO">) => {
+      state.region = action.payload;
     },
     setAllActiveInputs: (state, action: PayloadAction<SiteSpecificState>) => {
       state.active = action.payload;
@@ -151,5 +156,6 @@ export const {
   updateSimulationName,
   populateInputsWithBaseline,
   setAllActiveInputs,
+  setRegion,
 } = DssSiteSpecific.actions;
 export default DssSiteSpecific.reducer;
