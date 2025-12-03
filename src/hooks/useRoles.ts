@@ -24,7 +24,13 @@ export function useRoles() {
 
   const createRole = async (roleData: Omit<Role, 'id'>) => {
     try {
-      const response = await apiClient.post('/role', roleData);
+      // Format the request body to match API requirements
+      const requestBody = {
+        name: roleData.name,
+        permissionIds: roleData.permissionIds || []
+      };
+      
+      const response = await apiClient.post('/role', requestBody);
       const newRole = response.data || response;
       setRoles(prev => [...prev, newRole]);
       return newRole;

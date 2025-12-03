@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Role } from "@/lib/types/admin.types";
+import { Role, Permission } from "@/lib/types/admin.types";
+import { usePermissions } from "@/hooks/usePermissions";
 
 interface RoleFormProps {
   initialData?: Partial<Role>;
@@ -15,12 +16,14 @@ const defaultFormData: Partial<Role> = {
   name: "",
   description: "",
   permissions: [],
+  permissionIds: [],
   status: "Active",
 };
 
 export function RoleForm({ initialData = defaultFormData, isEdit = false, onSubmit }: RoleFormProps) {
   const [formData, setFormData] = useState<Partial<Role>>(initialData);
   const [errors, setErrors] = useState<Partial<Record<keyof Role, string>>>({});
+  const { permissions, loading: permissionsLoading } = usePermissions();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -35,6 +38,20 @@ export function RoleForm({ initialData = defaultFormData, isEdit = false, onSubm
         [name]: undefined
       }));
     }
+  };
+
+  const handlePermissionChange = (permissionId: string) => {
+    setFormData(prev => {
+      const currentPermissionIds = prev.permissionIds || [];
+      const isSelected = currentPermissionIds.includes(permissionId);
+      
+      return {
+        ...prev,
+        permissionIds: isSelected
+          ? currentPermissionIds.filter(id => id !== permissionId)
+          : [...currentPermissionIds, permissionId]
+      };
+    });
   };
 
   const validateForm = (): boolean => {
@@ -170,6 +187,45 @@ export function RoleForm({ initialData = defaultFormData, isEdit = false, onSubm
               <option value="Inactive">Inactive</option>
             </motion.select>
           </div>
+        </div>
+
+        {/* Permissions Section */}
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold text-green-800 mb-4 flex items-center">
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+              <span className="text-lg">🔑</span>
+            </div>
+            Permissions
+          </h3>
+          
+          {permissionsLoading ? (
+            <div className="text-center py-8 text-gray-500">Loading permissions...</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {permissions.map((permission) => (
+                <motion.label
+                  key={permission.id}
+                  whileHover={{ scale: 1.02 }}
+                  className="flex items-start space-x-3 p-4 border border-gray-200 rounded-xl hover:border-green-300 hover:bg-green-50 transition-all cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.permissionIds?.includes(permission.id) || false}
+                    onChange={() => handlePermissionChange(permission.id)}
+                    className="mt-1 w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900">
+                      {permission.permissionName}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {permission.permissionCode}
+                    </div>
+                  </div>
+                </motion.label>
+              ))}
+            </div>
+          )}
         </div>
 
         <motion.div

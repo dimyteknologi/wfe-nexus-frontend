@@ -10,7 +10,7 @@ export function usePermissions() {
   const fetchPermissions = async () => {
     try {
       setLoading(true);
-      const data = await apiClient.get('/permission');
+      const data = await apiClient.get('/permissions');
       const permissionList = Array.isArray(data) ? data : (data.data || []);
       setPermissions(permissionList);
       setError(null);
@@ -23,7 +23,7 @@ export function usePermissions() {
 
   const createPermission = async (permissionData: PermissionFormData) => {
     try {
-      const newPermission = await apiClient.post('/permission', permissionData);
+      const newPermission = await apiClient.post('/permissions', permissionData);
       setPermissions(prev => [...prev, newPermission]);
       return newPermission;
     } catch (err) {
@@ -33,7 +33,7 @@ export function usePermissions() {
 
   const updatePermission = async (id: string, permissionData: Partial<PermissionFormData>) => {
     try {
-      const updatedPermission = await apiClient.put(`/permission/${id}`, permissionData);
+      const updatedPermission = await apiClient.put(`/permissions/${id}`, permissionData);
       setPermissions(prev => prev.map(permission => permission.id === id ? updatedPermission : permission));
       return updatedPermission;
     } catch (err) {
@@ -43,7 +43,7 @@ export function usePermissions() {
 
   const deletePermission = async (id: string) => {
     try {
-      await apiClient.delete(`/permission/${id}`);
+      await apiClient.delete(`/permissions/${id}`);
       setPermissions(prev => prev.filter(permission => permission.id !== id));
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to delete permission');
@@ -52,7 +52,7 @@ export function usePermissions() {
 
   const assignPermissionsToRole = async (payload: AssignPermissionPayload) => {
     try {
-      await apiClient.post('/permission/assign-to-role', payload);
+      await apiClient.post('/permissions/assign-to-role', payload);
       // Refetch permissions to get updated role assignments
       await fetchPermissions();
     } catch (err) {
