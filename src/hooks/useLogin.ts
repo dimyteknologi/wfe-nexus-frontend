@@ -35,16 +35,12 @@ export const useLogin = () => {
     dispatch(clearError());
 
     try {
-      console.log("Attempting NextAuth signIn...");
-
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
         callbackUrl: "/",
       });
-
-      console.log("Result:", result);
 
       if (result?.error) {
         throw new Error(result.error);
@@ -53,8 +49,6 @@ export const useLogin = () => {
       if (result?.ok) {
         const { getSession } = await import("next-auth/react");
         const session = await getSession();
-        
-        console.log("Session after login:", session);
       
         if (session?.user) {
           dispatch(setUser({

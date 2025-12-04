@@ -409,7 +409,6 @@ const addFoodDemandListener = () => {
       const state = listenerApi.getState() as IRootState;
       const region = state.siteSpecific.region;
       const { resourceDemandUnit } = getConstants(region);
-      console.log("resourceDemandUnit", resourceDemandUnit);
 
       const allParameters = [
         ...(selectPopulationBaseline(state)?.parameters || []),

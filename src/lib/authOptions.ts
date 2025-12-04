@@ -24,10 +24,6 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          console.log("=== Login Attempt ===");
-          console.log("Email:", credentials?.email);
-          console.log("API URL:", `${API_URL}/auth/login`);
-          
           const loginRes = await axios.post(
             `${API_URL}/auth/login`,
             {
@@ -36,9 +32,6 @@ export const authOptions: NextAuthOptions = {
             }
           );
           
-          console.log("Login response status:", loginRes.status);
-          console.log("Login response data:", loginRes.data);
-          
           const token = loginRes.data.access_token;
           if (!token) {
             console.error("Login failed: No token received in response");
@@ -46,9 +39,7 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
-          console.log("Token received, attempting to decode...");
           const decodedToken = jwtDecode<CustomJwtPayload>(token);
-          console.log("Decoded token:", decodedToken);
           
           const userId = decodedToken.sub as string;
 
@@ -63,7 +54,6 @@ export const authOptions: NextAuthOptions = {
             permissions: decodedToken.permissions,
           };
           
-          console.log("Returning user object:", userObject);
           return userObject;
         } catch (error) {
           console.error("=== Login Error ===");
