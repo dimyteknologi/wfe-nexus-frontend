@@ -14,6 +14,7 @@ export const generateDomesticWaterDemandProcess = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.WATER) return data.map(() => 0);
   const constant = resourceDemandUnit.WATER.DOMESTIC_DEMAND;
   return constantMultiply(data, constant);
 };
@@ -22,6 +23,7 @@ export const generateIndustrialWaterDemandProcess = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.WATER) return data.map(() => 0);
   const constant = resourceDemandUnit.WATER.INDUSTRIAL_DEMAND;
   return constantMultiply(data, constant);
 };
@@ -30,6 +32,7 @@ export const generateCropsLandWaterDemandProcess = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.WATER) return data.map(() => 0);
   const constant = resourceDemandUnit.WATER.CROPS_LAND_DEMAND;
   return constantMultiply(data, constant);
 };
@@ -38,6 +41,7 @@ export const generateAquacultureWaterDemandProcess = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.WATER) return data.map(() => 0);
   const constant = resourceDemandUnit.WATER.AQUACULTURE_DEMAND;
   return constantMultiply(data, constant);
 };
@@ -46,6 +50,7 @@ export const generateMunicipalityWaterDemandProcess = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.WATER) return data.map(() => 0);
   const constant = resourceDemandUnit.WATER.MUNICIPALITY;
   return constantMultiply(data, constant);
 };
@@ -56,6 +61,7 @@ export const generateLivestockWaterDemandProcess = (
   dataPoultry: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.WATER) return dataCattle.map(() => 0);
   const constantLargeCattle = resourceDemandUnit.WATER.LARGE_CATTLE;
   const constantSmallCattle = resourceDemandUnit.WATER.SMALL_CATTLE;
   const constantPoultry = resourceDemandUnit.WATER.POULTRY;
@@ -81,6 +87,7 @@ export const generateDomesticEnergyDemand = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.ENERGY) return data.map(() => 0);
   const constant = resourceDemandUnit.ENERGY.DOMESTIC_DEMAND;
   const result = constantMultiply(data, constant);
 
@@ -91,6 +98,7 @@ export const generateIndustrialEnergyDemand = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.ENERGY) return data.map(() => 0);
   const constant = resourceDemandUnit.ENERGY.INDUSTRIAL_ENERGY_INTENSITY;
   const result = constantMultiply(data, constant);
 
@@ -101,6 +109,7 @@ export const generateAgricultureEnergyDemand = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.ENERGY) return data.map(() => 0);
   const constant = resourceDemandUnit.ENERGY.AGRICULTURE_ENERGY_INTENSITY;
   const result = constantMultiply(data, constant);
 
@@ -111,6 +120,7 @@ export const generateWaterGenerationEnergyDemand = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.ENERGY) return data.map(() => 0);
   const constant = resourceDemandUnit.ENERGY.ENERGY_FOR_WATER;
   const result = constantMultiply(data, constant);
 
@@ -122,6 +132,7 @@ export const generateFoodDemand = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.FOOD) return data.map(() => 0);
   const constantStaple = resourceDemandUnit.FOOD.STAPLE_PER_CAPITA;
   const constantNonStaple =
     resourceDemandUnit.FOOD.PERCENTAGE_NON_STAPLE_DEMAND;
@@ -135,6 +146,7 @@ export const generateDomesticFoodDemand = (
   data: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.FOOD) return data.map(() => 0);
   const constantStaple = resourceDemandUnit.FOOD.STAPLE_PER_CAPITA;
   return data.map((data) => (data * constantStaple) / 1000);
 };

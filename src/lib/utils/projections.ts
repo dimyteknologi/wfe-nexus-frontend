@@ -156,7 +156,7 @@ export const generateLocalFoodProductionYear = (
   lahanPanenPadi: Params,
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ): number[] | [] => {
-  if (!lahanPanenPadi || !Array.isArray(lahanPanenPadi.values)) {
+  if (!lahanPanenPadi || !Array.isArray(lahanPanenPadi.values) || !resourceDemandUnit?.FOOD) {
     return [];
   }
 
@@ -296,6 +296,7 @@ export const generateCValue = (
   dataOtherLand: number[],
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ) => {
+  if (!resourceDemandUnit?.C_AREA) return dataIndustrial.map(() => 0);
   const constantIndustrial = constantMultiply(
     dataIndustrial,
     resourceDemandUnit.C_AREA.INDUSTRIAL_LAND,
@@ -332,6 +333,14 @@ export const generateLandCover = (
   initialData: typeof INITIAL_DATA_CONSTANT,
   resourceDemandUnit: typeof RESOURCE_DEMAND_UNIT,
 ): IApiData => {
+  if (!initialData?.LAND_COVER || !resourceDemandUnit?.LAND_COVER_CHANGES) {
+    return {
+      label: "Land Cover",
+      unit: "[ha]",
+      years: [],
+      parameters: [],
+    };
+  }
   const {
     INDUSTRIAL_LAND,
     HOUSING_LAND,

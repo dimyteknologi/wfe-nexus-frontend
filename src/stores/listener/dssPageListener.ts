@@ -119,25 +119,6 @@ const preprocessData = (
     }
 
     if (sourceValues.length === sourceNames.length) {
-      // Add extra arguments if the calculation function expects them (e.g., constants)
-      // This part is tricky with the current generic implementation.
-      // We might need to bind the constants to the functions before passing them here,
-      // or pass the constants as part of the config/context.
-      // For now, let's assume the functions in config are already bound or we handle it in the listener.
-      // BUT, since we are defining config outside, we need a way to inject constants.
-      // Let's modify the listener to recreate config with constants or pass constants as extra args.
-      // However, `preprocessData` is generic.
-      // A better approach: Pass a context object to `preprocessData` which contains constants,
-      // and update `preprocessData` to pass this context to `calculationFn` if needed?
-      // Or, simpler: wrapper functions in the listener.
-
-      // Let's try to pass the constants as the last argument if the function needs it.
-      // But `calculationFn` signature varies.
-      // Let's assume we pass `resourceDemandUnit` and `initialData` as the LAST arguments to ALL functions called here?
-      // No, that breaks the signature.
-
-      // Alternative: Re-define the configs inside the listener where we have access to state/constants.
-      // This seems cleanest.
       const calculatedValues = rule.calculationFn(...sourceValues);
       processedResults.set(rule.outputParamName, calculatedValues);
     } else {
@@ -201,7 +182,8 @@ const getEnergyDemandConfig = (
     },
     {
       sourceParamName: "c.industri pengolahan",
-      calculationFn: generateIndustrialEnergyDemand,
+      calculationFn: (data: number[]) =>
+        generateIndustrialEnergyDemand(data, resourceDemandUnit),
       outputParamName: "Industry Energy Demand",
     },
     {
@@ -316,7 +298,8 @@ const getWaterDemandConfig = (
     },
     {
       sourceParamName: "c.industri pengolahan",
-      calculationFn: generateIndustrialWaterDemandProcess,
+      calculationFn: (data: number[]) =>
+        generateIndustrialWaterDemandProcess(data, resourceDemandUnit),
       outputParamName: "Industrial Water Demand",
     },
     {
@@ -327,7 +310,8 @@ const getWaterDemandConfig = (
     },
     {
       sourceParamName: ["sapi", "kambing", "ayam"],
-      calculationFn: generateLivestockWaterDemandProcess,
+      calculationFn: (d1: number[], d2: number[], d3: number[]) =>
+        generateLivestockWaterDemandProcess(d1, d2, d3, resourceDemandUnit),
       outputParamName: "Livestock",
     },
     {
@@ -365,10 +349,16 @@ const preprocessFisheryData = (
     "area perikanan": initialData.PERIKANAN.LUAS_AREA_PERIKANAN,
   };
 
-const LIVESTOCK_MAP: Record<string, number> = {
-  "sapi": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_SAPI,
-  "kambing": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_KAMBING,
-  "ayam": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_AYAM,
+  return {
+    ...data,
+    parameters: data.parameters.map((item) => ({
+      ...item,
+      values: growthDataByvalue(
+        FISHERY_MAP[item.name],
+        (item.values ?? []).map((val) => val ?? 0),
+      ),
+    })),
+  };
 };
 
 const preprocessLivestockData = (
@@ -419,6 +409,7 @@ const addFoodDemandListener = () => {
       const state = listenerApi.getState() as IRootState;
       const region = state.siteSpecific.region;
       const { resourceDemandUnit } = getConstants(region);
+      console.log("resourceDemandUnit", resourceDemandUnit);
 
       const allParameters = [
         ...(selectPopulationBaseline(state)?.parameters || []),

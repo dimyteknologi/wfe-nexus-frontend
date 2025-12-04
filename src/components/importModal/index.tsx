@@ -157,7 +157,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
       dispatch(setLivestockData(livestock));
       dispatch(setPopulationData(population));
       dispatch(setAgricultureData(agriculture));
-      dispatch(setRegion(selectedRegion));
+      // dispatch(setRegion(selectedRegion));
 
       } else {
         setUploadStatus("error");
@@ -210,7 +210,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
         </div>
 
         {/* Region Selector */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Pilih Wilayah
           </label>
@@ -224,7 +224,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
             <option value="KARAWANG">Karawang</option>
             <option value="SIDOARJO">Sidoarjo</option>
           </select>
-        </div>
+        </div> */}
 
         {/* Area upload dengan drag and drop */}
         <div
