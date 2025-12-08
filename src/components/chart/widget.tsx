@@ -37,14 +37,16 @@ const ChartWidget = ({
     [metric.id, category],
   );
 
+  if(metric.id === 'productionSolar'){
+    categories = Array.from({ length: 10 }, (_, i) => 2025 + i);
+  }
+  
   const { series, type, colors } = useAppSelector(selectSeriesForThisChart);
-
   const availableMetricsGrouped = useAppSelector(
     category === "site"
       ? selectAvailableMetricsGrouped
       : selectAvailableMetricsGroupedContext,
   );
-
   const handleSelectionChange = (selectedId: string) => {
     dispatch(
       updateChartMetric({

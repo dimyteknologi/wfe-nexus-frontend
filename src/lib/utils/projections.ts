@@ -461,7 +461,7 @@ export const generateBaseline = (
 
   for (const param of baseData.parameters) {
     const cleanDataSeries = param.values.map((val) => val ?? 0);
-    let growthRates = growthRate(cleanDataSeries);
+    const growthRates = growthRate(cleanDataSeries);
     
     const averageGrowth = average(growthRates);
     const projectedData = Computation.projection({

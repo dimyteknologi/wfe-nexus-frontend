@@ -54,6 +54,10 @@ export interface FertilizerState {
   percentageOfChemical: TimePeriodDataContext;
   ratioOrganic: TimePeriodDataContext;
 }
+export interface SolarPvState{
+  installedCapacity: TimePeriodDataContextSolarPv;
+  fee: TimePeriodDataContextSolarPv;
+}
 export interface AgricultureProductionState {
   landProduction: TimePeriodDataContext;
   conversionLandProduction: TimePeriodDataContext;
@@ -83,7 +87,9 @@ export const initialTimePeriodData: TimePeriodData = {
   "2041-2045": 0,
 };
 export type TimePeriodContext = "2015-2030";
+export type TimePeriodContextSolarPV = "2025-2034";
 export type TimePeriodDataContext = Record<TimePeriodContext, number | null>;
-export const initialTimePeriodDataContext: TimePeriodDataContext = {
-  "2015-2030": 0,
-};
+export type TimePeriodDataContextSolarPv = Record<TimePeriodContextSolarPV, number | null>;
+// export const initialTimePeriodDataContext: TimePeriodDataContext = {
+//   "2015-2030": 0,
+// };

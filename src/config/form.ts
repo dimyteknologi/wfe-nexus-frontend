@@ -86,7 +86,7 @@ export const contextSpecificInput: FormSection[] = [
           "",
       },
       {
-        label: "Agriculture Land Conversion",
+        label: "Land Conversion",
         min: 2,
         max: 12,
         periods: ["2015-2030"],
@@ -286,6 +286,31 @@ export const contextSpecificInput: FormSection[] = [
         id: "rainfall.areaSize",
         information:
           "Average rainfall duration in days, used to calculate water availability for agriculture.",
+      },
+    ],
+  },
+  {
+    title: "Solar PV",
+    inputs: [
+      {
+        label: "Solar PV Installed Capacity",
+        min: 0,
+        max: 500,
+        periods: ["2025-2034"],
+        withValidation: false,
+        id: "solarPV.installedCapacity",
+        information:
+          "",
+      },
+      {
+        label: "Solar PV Fee (Rp/ha/musim tanam)",
+        min: 0,
+        max: 365,
+        periods: ["2025-2034"],
+        withValidation: false,
+        id: "solarPV.fee",
+        information:
+          "",
       },
     ],
   },

@@ -35,11 +35,11 @@ import {
   selectFertilizerEmissionApplicationPerScenario
 } from "./resourceSupplySelector";
 import { selectFoodDemandRicePerScenario } from "./foodDemandSelector";
+import { selectBiayaBbmDieselPerScenario, selectCollectedFeePerScenario, selectCumulativeDepresiasi, selectCumulativeOfInstallmentCost } from "./solarPumpEconomicSelector";
 
 export const selectRiceProductionPerScenario = createSelector(
   [
     selectContextSpecificActive,
-    // selectContextSpecificBaseline,
     selectedContextSpecificA,
     selectedContextSpecificB,
     selectProductionTotalPerScenario,
@@ -51,7 +51,6 @@ export const selectRiceProductionPerScenario = createSelector(
 
     return {
       active: constantMultiply(productionTotal.active, getInputs(active)),
-      // baseline: constantMultiply(productionTotal.baseline, getInputs(baseline)),
       scenarioA: constantMultiply(
         productionTotal.scenarioA,
         getInputs(scenarioA),
@@ -71,7 +70,6 @@ export const selectAverageProductivityPerScenario = createSelector(
       calculateDevidedArrays(productionTotal.active, paddyYield.active),
       100,
     ),
-    // baseline: constantDevided(calculateDevidedArrays(productionTotal.baseline, paddyYield.baseline), 100),
     scenarioA: constantDevided(
       calculateDevidedArrays(productionTotal.scenarioA, paddyYield.scenarioA),
       100,
@@ -91,7 +89,6 @@ export const selectWaterConsumptionPerScenario = createSelector(
 
     return {
       active: minArray(waterDemand.active, supplyWater.active),
-      // baseline: minArray(waterDemand.baseline, supplyWater.baseline),
       scenarioA: minArray(waterDemand.scenarioA, supplyWater.scenarioA),
       scenarioB: minArray(waterDemand.scenarioB, supplyWater.scenarioB),
     };
@@ -105,7 +102,6 @@ export const selectFuelConsumptionPerScenario = createSelector(
       a.map((val, i) => Math.min(val, b[i]));
     return {
       active: resultConverter(minArray(demand.active, supply.active)),
-      // baseline: resultConverter(minArray(demand.baseline, supply.baseline)),
       scenarioA: resultConverter(minArray(demand.scenarioA, supply.scenarioA)),
       scenarioB: resultConverter(minArray(demand.scenarioB, supply.scenarioB)),
     };
@@ -119,7 +115,6 @@ export const selectRenewableConsumptionPerScenario = createSelector(
   ],
   (solarPump, electricityFromHusk) => ({
     active: sumArrayData(solarPump.active, electricityFromHusk.active),
-    // baseline: sumArrayData(solarPump.baseline, electricityFromHusk.baseline),
     scenarioA: sumArrayData(solarPump.scenarioA, electricityFromHusk.scenarioA),
     scenarioB: sumArrayData(solarPump.scenarioB, electricityFromHusk.scenarioB),
   }),
@@ -132,7 +127,6 @@ export const selectChemicalFertillizerPerScenario = createSelector(
       a.map((val, i) => Math.min(val, b[i]));
     return {
       active: resultConverter(minArray(demand.active, supply.active)),
-      // baseline: resultConverter(minArray(demand.baseline, supply.baseline)),
       scenarioA: resultConverter(minArray(demand.scenarioA, supply.scenarioA)),
       scenarioB: resultConverter(minArray(demand.scenarioB, supply.scenarioB)),
     };
@@ -146,7 +140,6 @@ export const selectOrganicFertillizerPerScenario = createSelector(
       a.map((val, i) => Math.min(val, b[i]));
     return {
       active: resultConverter(minArray(demand.active, supply.active)),
-      // baseline: resultConverter(minArray(demand.baseline, supply.baseline)),
       scenarioA: resultConverter(minArray(demand.scenarioA, supply.scenarioA)),
       scenarioB: resultConverter(minArray(demand.scenarioB, supply.scenarioB)),
     };
@@ -160,7 +153,6 @@ export const selectEnergyEmissionsPerScenario = createSelector(
       constantMultiply(fuelConsumption.active, 1000 * 2.61),
       1000,
     ),
-    // baseline: constantDevided(constantMultiply(fuelConsumption.baseline, (1000 * 2.61)), 1000),
     scenarioA: constantDevided(
       constantMultiply(fuelConsumption.scenarioA, 1000 * 2.61),
       1000,
@@ -180,7 +172,6 @@ export const selectTotalEmissionPerScenario = createSelector(
   ],
   (energy, sekam, fertilizer) => ({
     active: sumArrayData(energy.active, sekam.active, fertilizer.active),
-    // baseline: sumArrayData(energy.baseline, sekam.baseline, fertilizer.baseline),
     scenarioA: sumArrayData(
       energy.scenarioA,
       sekam.scenarioA,
@@ -201,7 +192,6 @@ export const selectFoodSuffiencyPerScenario = createSelector(
       calculateDevidedArrays(riceProd.active, foodRiceDemand.active),
       100,
     ),
-    // baseline: constantDevided(calculateDevidedArrays(riceProd.baseline, foodRiceDemand.baseline), 100),
     scenarioA: constantDevided(
       calculateDevidedArrays(riceProd.scenarioA, foodRiceDemand.scenarioA),
       100,
@@ -286,4 +276,61 @@ export const selectFuelIntensityPerScenario = createSelector(
       10,
     ),
   }),
+);
+
+export const selectTotalCumulativeCostPerScenario = createSelector(
+  [selectCumulativeOfInstallmentCost, selectCumulativeDepresiasi],
+  (installment, depresiasi) => {
+  // () => {
+
+    // return {
+    //   active: Array(16).fill(0),
+    //   scenarioA: Array(16).fill(0),
+    //   scenarioB: Array(16).fill(0),
+    // }
+  return {
+      active: sumArrayData(installment.active, depresiasi.active),
+      scenarioA: sumArrayData(installment.scenarioA, depresiasi.scenarioA),
+      scenarioB: sumArrayData(installment.scenarioB, depresiasi.scenarioB)
+    }
+  },
+);
+
+const calculateTotalRevenue = (
+  bbmDiesel: number[],
+  collectedFee: number[],
+): number[] => {
+  const sum = sumArrayData(bbmDiesel, collectedFee);
+
+  const arr = sum.reduce<number[]>((acc, value, index) => {
+    if (index === 0) acc.push(value);
+    else acc.push(acc[index - 1] + value);
+    return acc;
+  }, []);
+
+  return arr;
+};
+
+export const selectTotalCumulativeRevenuePerScenario = createSelector(
+  [selectBiayaBbmDieselPerScenario, selectCollectedFeePerScenario],
+  (bbmDiesel, collectedFee) => {
+
+    // return {
+    //   active: Array(16).fill(0),
+    //   scenarioA: Array(16).fill(0),
+    //   scenarioB: Array(16).fill(0),
+    // }
+
+    return {
+      active: calculateTotalRevenue(bbmDiesel.active, collectedFee.active),
+      scenarioA: calculateTotalRevenue(
+        bbmDiesel.scenarioA,
+        collectedFee.scenarioA,
+      ),
+      scenarioB: calculateTotalRevenue(
+        bbmDiesel.scenarioB,
+        collectedFee.scenarioB,
+      ),
+    }
+  },
 );

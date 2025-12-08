@@ -3,37 +3,27 @@ import {
   calculateDevidedArrays,
   multiplyArrayData,
   selectChemicalDemandPerScenario,
-  // selectCiherang,
   selectEnergyHarvestAndTransportDemandTotalPerScenario,
   selectEnergyLandProcessingDemandTotalPerScenario,
   selectEnergyPlantingAndMaintenanceDemandTotalPerScenario,
-  // selectHipaSeries,
-  // selectInpari32,
-  agricultureLandPaddyPerscenario,
-  selectLandPaddyFieldPerScenario,
-  // selectLokal,
-  // selectMekongga,
   selectOrganicDemandPerScenario,
   selectWaterDemandPerScenario,
   sumArrayData,
   selectNpkApplicationPerScenario,
   agricultureLandPerScenario,
-  selectEnergyLandProcessingDemandAveragePerScenario,
-  selectTotalEnergyDemandPerScenario,
   selectEnergyIrrigationDemandTotalPerScenario,
 } from "./foodAndSupplyInputDemandSelector";
 import {
   selectContextSpecificActive,
-  // selectContextSpecificBaseline,
 } from "../baseSelector";
 import {
   selectedContextSpecificA,
   selectedContextSpecificB,
+  selectSolarPumpInputCapacitySelector,
 } from "./scenarioProjectionSelector";
 import {
   constantDevided,
   constantMultiply,
-  resultConverter,
 } from "@/lib/utils/formulas";
 import { RESOURCE_SUPPLY_INPUT } from "@/lib/constant/resourceSupplyInput.constant";
 import { ContextSpecific, ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
@@ -374,24 +364,17 @@ export const selectWaterGapPerScenario = createSelector(
 );
 
 export const selectSolarWaterPumpPerScenario = createSelector(
-  [],
-  () => {
-    const solarWaterPump =
-      findResourceSupplyByTitle("Solar Water Pump Capacity")?.values ??
-      Array(16).fill(0);
-
+  [selectSolarPumpInputCapacitySelector],
+  (solarPump) => {
     const factor = (0.8 * 6 * 365 * 3600) / (9.81 * 30);
-
-    const computed = constantMultiply(solarWaterPump, factor);
-
+    
     return {
-      active: computed,
-      scenarioA: computed,
-      scenarioB: computed,
+      active: constantMultiply(solarPump.active, factor),
+      scenarioA: constantMultiply(solarPump.scenarioA, factor),
+      scenarioB: constantMultiply(solarPump.scenarioB, factor),
     };
   }
 );
-
 
 export const selectSupplyWaterTotalPerScenario = createSelector(
   [
@@ -711,27 +694,20 @@ export const selectHarvestingAndTransportExcludeIrrigationPerScenario =
   );
 
 
-const solarPumpSelector = () =>
-  findResourceSupplyByTitle("Solar Water Pump Capacity")?.values ??
-  Array(16).fill(0);
-
-const calculate = (arr: number[]) =>
-  constantDevided(
-    constantMultiply(constantMultiply(constantMultiply(arr, 5), 0.8), 120),
-    1_000_000,
-  );
 
 export const selectSolarPumpElectricityPerGenerationPerScenario =
-  createSelector([solarPumpSelector], (solarPump) => {
-    const value = calculate(solarPump);
-  
+  createSelector([selectSolarPumpInputCapacitySelector], (solarPump) => {
+    const calculate = (arr: number[]) =>
+      constantDevided(
+        constantMultiply(constantMultiply(constantMultiply(arr, 5), 0.8), 120),
+        1_000_000,
+      );
     return {
-      active: value,
-      //   baseline: value,
-      scenarioA: value,
-      scenarioB: value,
+      active: calculate(solarPump.active),
+      scenarioA: calculate(solarPump.scenarioA),
+      scenarioB: calculate(solarPump.scenarioB),
     };
-  });
+});
 
 export const selectHuskProductionPerScenario = createSelector(
   [selectProductionTotalPerScenario],
@@ -795,15 +771,12 @@ export const selectElectricityFromHuskPerScenario = createSelector(
 
 export const selectServiceAreaOfSolarPumpPerScenario = createSelector(
   [
-    () =>
-      findResourceSupplyByTitle("Solar Water Pump Capacity")?.values ??
-      Array(16).fill(0),
+    selectSolarPumpInputCapacitySelector
   ],
   (solarpump) => ({
-    active: constantMultiply(constantDevided(solarpump, 33.45424107), 50),
-    // baseline: constantMultiply(constantDevided(solarpump, 33.45424107), 50),
-    scenarioA: constantMultiply(constantDevided(solarpump, 33.45424107), 50),
-    scenarioB: constantMultiply(constantDevided(solarpump, 33.45424107), 50),
+    active: constantMultiply(constantDevided(solarpump.active, 29.27246094), 50),
+    scenarioA: constantMultiply(constantDevided(solarpump.scenarioA, 29.27246094), 50),
+    scenarioB: constantMultiply(constantDevided(solarpump.scenarioB, 29.27246094), 50),
   }),
 );
 

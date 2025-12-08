@@ -10,6 +10,7 @@ export const PLANTING_SESSIONS = {
   LOKAL: FOOD_AND_YIELD.LOKAL.PLANTING_SESSION_PER_YEAR,
 } as const;
 
+
 const calculateAveragePlantingSession = (
   // shares: Record<string, number[]>,
   shares: number[],
@@ -27,15 +28,13 @@ const calculateAveragePlantingSession = (
 
     result[i] = Number(
       (
-        shares[i] * plantingSessions.INPARI32 +
-        shares[i] * plantingSessions.CIHERANG +
-        shares[i] * plantingSessions.MEKONGGA +
-        shares[i] * plantingSessions.HIPASERRIES +
-        shares[i]  * plantingSessions.LOKAL
+       (plantingSessions.INPARI32 +
+       plantingSessions.CIHERANG +
+       plantingSessions.MEKONGGA +
+       plantingSessions.HIPASERRIES + plantingSessions.LOKAL)/5
       ).toFixed(10),
     );
   }
-
   return result;
 };
 
@@ -46,7 +45,6 @@ export const selectAveragePlantingSessions = createSelector(
       comparison.active,
       PLANTING_SESSIONS,
     ),
-    // baseline: calculateAveragePlantingSession(comparison.baseline, PLANTING_SESSIONS),
     scenarioA: calculateAveragePlantingSession(
       comparison.scenarioA,
       PLANTING_SESSIONS,

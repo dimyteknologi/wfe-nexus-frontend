@@ -1,8 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import {
   selectContextSpecificActive,
-  // selectSiteSpecificActive,
-  // selectContextSpecificBaseline,
 } from "../baseSelector";
 import {
   selectedContextSpecificA,
@@ -11,7 +9,6 @@ import {
 import {
   constantDevided,
   constantMultiply,
-  resultConverter,
 } from "@/lib/utils/formulas";
 import { FOOD_AND_YIELD } from "@/lib/constant/initialDataContext.constans";
 import { ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
@@ -389,25 +386,6 @@ export const selectWaterDemandPerScenario = createSelector(
     scenarioB: multiplyArrayData(waterDemand.scenarioB, paddyField.scenarioB),
   }),
 );
-// export const selectWaterDemandPerScenario = createSelector(
-//   [selectWaterDemandAveragePerScenario, selectLandPaddyFieldPerScenario, selectContextSpecificActive, selectedContextSpecificA, selectedContextSpecificB],
-//   (waterDemand, paddyField, activeState, scenarioA, scenarioB) => 
-//   {
-//     const getCroppingInput = (scenario: ContextSpecificState) =>
-//       (scenario?.agriculture?.croppingIntensity?.["2015-2030"] ?? 0);
-
-//     return {
-//       active: constantMultiply(multiplyArrayData(waterDemand.active, paddyField.active),getCroppingInput(activeState)),
-//       scenarioA: constantMultiply(multiplyArrayData(waterDemand.active, paddyField.active),getCroppingInput(scenarioA)),
-//       scenarioB: constantMultiply(multiplyArrayData(waterDemand.active, paddyField.active),getCroppingInput(scenarioB)), 
-//     }
-//   }
-  //   ({
-  //   active: constantMultiply(multiplyArrayData(waterDemand.active, paddyField.active),activeState.),
-  //   scenarioA: constantMultiply(multiplyArrayData(waterDemand.scenarioA, paddyField.scenarioA),2),
-  //   scenarioB: constantMultiply(multiplyArrayData(waterDemand.scenarioB, paddyField.scenarioB),2),
-  // }),
-// );
 
 export const selectChemicalDemandPerScenario = createSelector(
   [selectChemicalDemandAveragePerScenario, agricultureLandPerScenario],

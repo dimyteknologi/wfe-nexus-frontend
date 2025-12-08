@@ -1,8 +1,4 @@
 import { createSelector } from "@reduxjs/toolkit";
-import {
-  selectTotalCumulativeCostPerScenario,
-  selectTotalCumulativeRevenuePerScenario,
-} from "./solarPumpEconomicSelector";
 import { selectProductionTotalPerScenario } from "./resourceSupplySelector";
 import {
   selectRiceProductionPerScenario,
@@ -18,6 +14,8 @@ import {
   selectEmissionReductionPerScenario,
   selectWaterIntensityPerScenario,
   selectFuelIntensityPerScenario,
+  selectTotalCumulativeCostPerScenario,
+  selectTotalCumulativeRevenuePerScenario,
 } from "./resultSelector";
 import {
   selectContextSpecificAName,
@@ -75,7 +73,8 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       scenarioB,
     ) => {
       const metricsMap: Record<string, ComparisonData> = {
-        productionSolar: productionSolarRevenue,
+        productionSolar: productionSolarCost,
+        productionSolarRevenue,
         productionTotal,
         productionRice,
         productionAverage,
@@ -125,14 +124,46 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
         for (const additional of metricConfig.additionalSeries) {
           series.push({
             name: additional.name,
-            data:
-              metricId === "productionSolar"
-                ? productionSolarCost.slice(0, 10)
+            data: metricId === "productionSolar"
+                ? productionSolarRevenue?.active?.slice(0, 10)
                 : additional.data,
           });
           colors.push(additional.color || "#FF6D1F");
         }
       }
+      // if (metricConfig?.additionalSeries) {
+      //   for (const additional of metricConfig.additionalSeries) {
+      //     if (metricId === "productionSolar") {
+      //       series.push(
+      //         {
+      //           name: `${additional.name} (Active)`,
+      //           data: productionSolarCost?.active?.slice(0, 10) ?? [],
+      //         },
+      //         {
+      //           name: `${additional.name} (Scenario A)`,
+      //           data: productionSolarCost?.scenarioA?.slice(0, 10) ?? [],
+      //         },
+      //         {
+      //           name: `${additional.name} (Scenario B)`,
+      //           data: productionSolarCost?.scenarioB?.slice(0, 10) ?? [],
+      //         }
+      //       );
+
+      //       colors.push(
+      //         additional.color || "#FF6D1F",
+      //         additional.color || "#FF6D1F",
+      //         additional.color || "#FF6D1F"
+      //       );
+      //     } else {
+      //       series.push({
+      //         name: additional.name,
+      //         data: additional.data,
+      //       });
+
+      //       colors.push(additional.color || "#FF6D1F");
+      //     }
+      //   }
+      // }
       return { series, colors, type: metricConfig?.type ?? "bar" };
     },
   );

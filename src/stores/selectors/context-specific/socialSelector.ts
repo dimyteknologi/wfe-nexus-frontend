@@ -28,7 +28,6 @@ const calculateSocial = (value: number, growthPercent: number) => {
 export const selectSocialDataComparison = createSelector(
   [
     selectContextSpecificActive,
-    // selectContextSpecificBaseline,
     selectedContextSpecificA,
     selectedContextSpecificB,
   ],
@@ -38,11 +37,6 @@ export const selectSocialDataComparison = createSelector(
         activeState.food.populationInitial["2015-2030"],
         activeState.food.populationGrowth["2015-2030"],
       ),
-
-      // baseline: calculateSocial(
-      //   baselineState.food.populationInitial["2015-2030"],
-      //   baselineState.food.populationGrowth["2015-2030"]
-      // ),
 
       scenarioA: calculateSocial(
         scenarioA ? scenarioA.food.populationInitial["2015-2030"] : 0,

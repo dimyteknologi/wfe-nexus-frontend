@@ -46,7 +46,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     error,
   } = useAppSelector((state) => state.scenarios);
   const [simulationName, setSimulationName] = useState("");
-  const { contextSpecific } = useAppSelector((state) => state.scenarios);
+  const { contextSpecific } = useAppSelector((state) => state.scenarios.data);
   const [createScenario] = useCreateScenarioMutation();
   const { data: siteScenarios = [] } = useGetScenariosQuery({});
   const [isHover, setIsHover] = useState(false);
@@ -176,7 +176,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     } else {
       data = contextSpecific ?? [];
     }
-
+    
     return data.filter(
       (s, index, arr) =>
         index === arr.findIndex((t) => t.simulationName === s.simulationName)

@@ -8,9 +8,9 @@ import {
   RainfallState,
   initialTimePeriodData,
   TimePeriodData,
-  initialTimePeriodDataContext,
   BaselinePayload,
   DieselPumpState,
+  SolarPvState,
 } from "@/lib/constant/inputType.constant";
 
 export interface ContextSpecificState {
@@ -20,6 +20,7 @@ export interface ContextSpecificState {
   diesel: DieselPumpState;
   fertilizer: FertilizerState;
   rainfall: RainfallState;
+  solarPV: SolarPvState;
 }
 
 export const ContextSpecific: ContextSpecificState = {
@@ -32,8 +33,8 @@ export const ContextSpecific: ContextSpecificState = {
     convertionFactoTOGkg: { "2015-2030": 0.85 },
   },
   agriculture: {
-    landProduction: { "2015-2030": 15000 },
-    conversionLandProduction: { "2015-2030": 1.32 },
+    landProduction: { "2015-2030": 100 },
+    conversionLandProduction: { "2015-2030": 0 },
     baseYield: { "2015-2030": 5.5 },
     croppingIntensity: { "2015-2030": 2 },
     waterIntensity: {"2015-2030": 7800}
@@ -57,6 +58,10 @@ export const ContextSpecific: ContextSpecificState = {
   rainfall: {
     annualRainfall: { "2015-2030": 710 },
     areaSize: { "2015-2030": 100 },
+  },
+  solarPV: {
+    installedCapacity: { "2025-2034": 63 },
+    fee: { "2025-2034": 150000 },
   },
 };
 
