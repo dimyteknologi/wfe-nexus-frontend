@@ -36,3 +36,4 @@ export const convertScenariosVersion = () => (dispatch: typeof store.dispatch) =
       }
     }
 }
+

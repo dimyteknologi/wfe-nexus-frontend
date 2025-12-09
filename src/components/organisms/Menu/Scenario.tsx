@@ -59,7 +59,8 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   );
 
   useEffect(() => {
-    convertScenariosVersion();
+    // convertScenariosVersion();
+    localStorage.clear();
   }, []);
 
   useEffect(() => {

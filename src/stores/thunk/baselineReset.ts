@@ -13,25 +13,16 @@ import {
 import { BaselinePayload } from "@/lib/constant/inputType.constant";
 import { extractAverageGrowthRates } from "@/lib/utils/projections";
 export const CONTEXT_BASELINE_PAYLOAD = {
-  "food.populationInitial": 950000,
+  "food.populationInitial": 1300,
   "food.populationGrowth": 1.32,
   "food.riceDemandPerPerson": 79.2,
   "food.convertionFactorToRice": 0.63,
   "food.convertionFactoTOGkg": 0.85,
-
-  // "agriculture.areaInpari32": 15000,
-  // "agriculture.conversionInpari32": 1.32,
-  // "agriculture.areaCiherang": 25000,
-  // "agriculture.conversionCiherang": 0.88,
-  // "agriculture.areaMekongga": 32000,
-  // "agriculture.conversionMekongga": 1.7,
-  // "agriculture.areaHipaSeries": 12500,
-  // "agriculture.conversionHipaSeries": 1.2,
-  // "agriculture.areaLokal": 7500,
-  // "agriculture.conversionLokal": 2.1,
   "agriculture.landProduction": 100,
   "agriculture.conversionLandProduction": 0,
-
+  "agriculture.baseYield": 5.5,
+  "agriculture.croppingIntensity": 2,
+  "agriculture.waterIntensity": 7800,
 
   "diesel.installedCapacity": 58,
   "diesel.headUnit": 30,
@@ -42,8 +33,8 @@ export const CONTEXT_BASELINE_PAYLOAD = {
   "fertilizer.percentageOfChemical": 30,
   "fertilizer.ratioOrganic": 17,
 
-  "rainfall.annualRainfall": 150,
-  "rainfall.areaSize": 110,
+  "rainfall.annualRainfall": 710,
+  "rainfall.areaSize": 100,
 };
 type ResetCategory = "siteSpecific" | "contextSpecific";
 
