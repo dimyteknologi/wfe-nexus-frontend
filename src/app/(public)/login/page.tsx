@@ -30,6 +30,7 @@ const LoginPage = () => {
           className="w-full h-full object-cover"
           src="./assets/image-demo-3.svg"
           alt="background pattern"
+          fill
         />
       </div>
 
@@ -133,14 +134,7 @@ const LoginPage = () => {
                 </label>
               </div>
 
-              <div className="text-sm">
-                <Link
-                  href="#"
-                  className="font-medium text-green-700 hover:text-green-600 transition-colors"
-                >
-                  Lupa kata sandi?
-                </Link>
-              </div>
+              
             </div>
           </div>
 
@@ -169,19 +163,6 @@ const LoginPage = () => {
           </div>
         </form>
 
-        <div className="mt-8 bg-green-50/50 p-4 rounded-lg border border-green-100">
-          <p className="text-xs text-center text-green-800">
-            Dengan masuk, Anda menyetujui{" "}
-            <Link href="#" className="font-medium underline">
-              Syarat & Ketentuan
-            </Link>{" "}
-            dan{" "}
-            <Link href="#" className="font-medium underline">
-              Kebijakan Privasi
-            </Link>{" "}
-            kami.
-          </p>
-        </div>
       </div>
 
       <style jsx>{`
