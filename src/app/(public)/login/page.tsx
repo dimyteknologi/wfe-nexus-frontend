@@ -2,8 +2,8 @@
 
 import { ArrowRight, Eye, EyeOff, Shield } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { useLogin } from "@/hooks/useLogin";
+import Image from "next/image";
 
 const LoginPage = () => {
   const {
@@ -26,7 +26,7 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8 relative">
       <div className="absolute inset-0 opacity-10">
-        <img
+        <Image
           className="w-full h-full object-cover"
           src="./assets/image-demo-3.svg"
           alt="background pattern"

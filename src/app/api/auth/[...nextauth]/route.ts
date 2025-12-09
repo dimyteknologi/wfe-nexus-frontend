@@ -1,8 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import Error from "next/error";
 
 interface CustomJwtPayload extends JwtPayload {
   email: string;

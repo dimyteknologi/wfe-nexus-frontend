@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useOrganizations } from '@/hooks/useOrganizations';
 
 export default function OrganizationsPage() {
-  const [activeTab, setActiveTab] = useState(0);
   const { organizations, loading, error, deleteOrganization } = useOrganizations();
 
   const handleDelete = async (orgId: string, orgName: string) => {

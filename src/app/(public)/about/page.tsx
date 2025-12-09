@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const AboutPage = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -36,7 +37,7 @@ const AboutPage = () => {
 
   return (
     <div className="relative opacity-90  pt-24">
-      <img
+      <Image
         className="absolute w-full h-full opacity-10 object-cover -z-1"
         src="./assets/image-demo-3.svg"
         alt="background pattern"

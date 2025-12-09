@@ -12,7 +12,7 @@ export const loadScenarios = () => (dispatch: typeof store.dispatch) => {
     const parsed = JSON.parse(raw);
     dispatch(setScenariosFromStorage(parsed));
   } catch (err) {
-    dispatch(setError("Fail loading scenarios"));
+    dispatch(setError(`Fail loading scenarios: ${err}`));
   }
 };
 

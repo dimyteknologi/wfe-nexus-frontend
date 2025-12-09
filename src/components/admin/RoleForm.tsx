@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Role, Permission } from "@/lib/types/admin.types";
+import { Role } from "@/lib/types/admin.types";
 import { usePermissions } from "@/hooks/usePermissions";
 
 interface RoleFormProps {

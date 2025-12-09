@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useUsers } from '@/hooks/useUsers';
 
 export default function UsersPage() {
-  const [activeTab, setActiveTab] = useState(0);
   const { users, loading, error, deleteUser } = useUsers();
 
   const handleDelete = async (userId: string, userName: string) => {

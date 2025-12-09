@@ -143,7 +143,7 @@ export default function AdminDashboard() {
               { label: "Manage Cities", icon: "🗺️", color: "purple", href: "/admin/city" },
               // { label: "Manage Roles", icon: "🔐", color: "orange", href: "/admin/role" },
               // { label: "Manage Permissions", icon: "🛡️", color: "red", href: "/admin/permission" }
-            ].map((action, index) => (
+            ].map((action) => (
               <Link key={action.label} href={action.href}>
                 <motion.div
                   whileHover={{ scale: 1.05 }}

@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRoles } from '@/hooks/useRoles';
 
 export default function RolesPage() {
-  const [activeTab, setActiveTab] = useState(0);
   const { roles, loading, error, deleteRole } = useRoles();
 
   const handleDelete = async (roleId: string, roleName: string) => {

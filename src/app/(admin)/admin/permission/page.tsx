@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePermissions } from '@/hooks/usePermissions';
 
 export default function PermissionsPage() {
-  const [activeTab, setActiveTab] = useState(0);
   const { permissions, loading, error, deletePermission } = usePermissions();
 
   const handleDelete = async (permissionId: string, permissionName: string) => {

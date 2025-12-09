@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useCities } from '@/hooks/useCities';
 
 export default function CitiesPage() {
-  const [activeTab, setActiveTab] = useState(0);
   const { cities, loading, error, deleteCity } = useCities();
 
   const handleDelete = async (cityId: string, cityName: string) => {

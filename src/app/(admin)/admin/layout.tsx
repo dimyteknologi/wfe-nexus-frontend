@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { AdminHeader } from "@/components/admin/Header";
 import { AdminSidebar } from "@/components/admin/Sidebar";
 import ProviderComponent from "@/stores/provider";
+import Image from "next/image";
 
 export default function AdminLayout({
   children,
@@ -14,7 +15,7 @@ export default function AdminLayout({
   return (
      <ProviderComponent>
       <main className="relative min-h-screen bg-gray-50">
-        <img
+        <Image
           className="absolute w-full h-full opacity-5 object-cover -z-10"
           src="/assets/image-demo-3.svg"
           alt="background pattern"
