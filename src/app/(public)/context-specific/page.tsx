@@ -24,7 +24,6 @@ import { useInitializeData } from "@/hooks/useInitDummy";
 
 const ContextSpecificPage = () => {
   useInitializeData();
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const simulationState = useAppSelector((state) => state.contextSpecific);
   const displayedMetrics = useAppSelector(selectDisplayedMetricsContext);
@@ -165,7 +164,6 @@ const ContextSpecificPage = () => {
             simulationState={simulationState}
             category="contextSpecific"
             handleOpenScenarioTab={handleOpenScenarioTab}
-            errors={errors}
           />
           <SimulationForm
             category="contextSpecific"

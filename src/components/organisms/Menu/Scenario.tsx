@@ -2,9 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
 import {
   updateSimulationSelect as updateSimulationSelectSiteSpecific,
-  // SimulationState,
-  // updateSimulationName,
-  // resetSimulation,
 } from "@/stores/slicers/siteSpecificInputSlicer";
 import {
   SiteSpecificState,
@@ -17,34 +14,25 @@ import {
   updateSimulationSelect as updateSimulationSelectContextSpecific,
 } from "@/stores/slicers/contextSpecificInputSlicer";
 import { resetToBaseline } from "@/stores/thunk/baselineReset";
-// import { addScenario, loadScenarios } from "@/stores/slicers/dssScenarioSlicer";
 import { addScenario } from "@/stores/thunk/addScenario";
-import { convertScenariosVersion, loadScenarios } from "@/stores/thunk/loadScenario";
+import { loadScenarios } from "@/stores/thunk/loadScenario";
 import { X, Play, ChevronDown, RefreshCcw, Info } from "lucide-react";
 import { normalizeKey } from "@/lib/utils";
 import { setAlert } from "@/stores/slicers/alertSlicer";
-import { ScenarioItem } from "@/stores/slicers/dssScenarioSlicer";
 import { useCreateScenarioMutation, useGetScenariosQuery } from "@/stores/api/scenarioApi";
 
 interface ScenarioMenuProps {
   simulationState: DssSiteSpecificState | DssContextSpecificState;
   category: "siteSpecific" | "contextSpecific";
   handleOpenScenarioTab: () => void;
-  errors: Record<string, string>;
 }
 
 const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   handleOpenScenarioTab,
   category,
-  errors,
   simulationState,
 }) => {
   const dispatch = useAppDispatch();
-  const {
-    data: scenarios,
-    success,
-    error,
-  } = useAppSelector((state) => state.scenarios);
   const [simulationName, setSimulationName] = useState("");
   const { contextSpecific } = useAppSelector((state) => state.scenarios.data);
   const [createScenario] = useCreateScenarioMutation();
@@ -89,35 +77,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     [],
   );
 
-  // const handleSaveSimulation = () => {
-  //   if (Object.keys(errors).length === 0) {
-  //     dispatch(updateSimulationName(simulationName));
-  //     dispatch(
-  //       addScenario({ simulationName, category, data: simulationState.active }),
-  //     );
-  //     dispatch(
-  //       setAlert({
-  //         message: success ?? "Success to save scenario!",
-  //         type: "success",
-  //       }),
-  //     );
-  //     dispatch(resetToBaseline(category));
-  //     setSimulationName("");
-  //   } else {
-  //     dispatch(
-  //       setAlert({
-  //         message: error ?? "Failed to save scenario!",
-  //         type: "error",
-  //       }),
-  //     );
-  //   }
-  // };
-
   const handleSaveSimulation = async () => {
-    if (Object.keys(errors).length !== 0) {
-      dispatch(setAlert({ message: "Failed to save scenario!", type: "error" }));
-      return;
-    }
 
     try {
       dispatch(updateSimulationName(simulationName));
@@ -146,7 +106,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
       dispatch(resetToBaseline(category));
       setSimulationName("");
 
-    } catch (err) {
+    } catch (_err) {
       dispatch(
         setAlert({
           message: "Failed to save scenario!",
@@ -156,19 +116,6 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     }
   };
 
-  // const scenarioOptions = useMemo(() => {
-  //   if (!scenarios) {
-  //     return [];
-  //   }
-  //   const data =
-  //     category == "siteSpecific"
-  //       ? scenarios.siteSpecific
-  //       : scenarios.contextSpecific;
-  //   return data?.filter(
-  //     (s: ScenarioItem, index: number, arr: ScenarioItem[]) =>
-  //       index === arr.findIndex((t) => t.simulationName === s.simulationName),
-  //   );
-  // }, [scenarios]);
   const scenarioOptions = useMemo(() => {
     let data: SiteSpecificState[] | ContextSpecificState[] = [];
 
@@ -184,8 +131,6 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     );
   }, [category, siteScenarios, contextSpecific]);
 
-
-  const isSaveDisabled = Object.keys(errors).length > 0 || !simulationName;
 
   return (
     <div className="w-full sticky top-0 z-10 backdrop-blur-lg bg-white/80 supports-[backdrop-filter]:bg-white/60 border-b border-gray-300 pb-2 md:pb-4 px-2 sm:px-4 md:px-6">
@@ -256,11 +201,11 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
             <div className="group w-full sm:w-auto">
               <button
                 onClick={handleSaveSimulation}
-                className={`w-full sm:w-auto p-2 sm:p-3 rounded-lg md:rounded-xl font-medium transition-all transform hover:scale-105 ${isSaveDisabled
+                className={`w-full sm:w-auto p-2 sm:p-3 rounded-lg md:rounded-xl font-medium transition-all transform hover:scale-105 ${!simulationName
                   ? "bg-gray-200 cursor-not-allowed text-gray-400"
                   : "bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-lg"
                   }`}
-                disabled={isSaveDisabled}
+                disabled={!simulationName}
                 aria-label="Save current simulation"
               >
                 <Play className="w-4 h-4 md:w-5 md:h-5 mx-auto sm:mx-0" />

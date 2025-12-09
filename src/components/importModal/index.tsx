@@ -4,8 +4,6 @@ import { useState, useCallback } from "react";
 import { FileUp, X } from "lucide-react";
 import { useImportCsvMutation, useValidateFileMutation } from "@/stores/api/csvApi";
 import { useAppDispatch } from "@/stores/root-reducer";
-import { useAppSelector } from "@/stores/root-reducer";
-import { selectImpactOfEnergyAvailabillityProductionPerScenario } from "@/stores/selectors/context-specific/resourceSupplySelector";
 import { setData as setGdpData } from "@/stores/slicers/gdrpSlicer";
 import { setData as setLivestockData } from "@/stores/slicers/livestockSlicer";
 import { setData as setAgricultureData } from "@/stores/slicers/agricultureSlicer";

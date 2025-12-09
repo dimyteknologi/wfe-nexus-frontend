@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import { ChevronDown, Menu, X, LogIn, LogOut, User } from "lucide-react";
+import { ChevronDown, Menu, X, LogIn, LogOut } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 
 interface NavItem {
@@ -18,7 +18,7 @@ const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   const navItems: NavItem[] = [
     { href: "/", label: "Home" },

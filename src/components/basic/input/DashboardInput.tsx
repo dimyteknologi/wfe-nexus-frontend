@@ -7,7 +7,7 @@ interface IDashboardInputProps
 const DashboardInput = ({
   title,
   error,
-  className,
+  // className,
   onChange,
   ...otherProps
 }: IDashboardInputProps) => {

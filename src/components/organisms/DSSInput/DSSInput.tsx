@@ -8,7 +8,6 @@ const FormContainer: React.FC<FormContainerProps> = ({
   errors,
   handleChange,
   handleBlur,
-  validatePercentage,
   sections,
   category,
 }) => {
@@ -25,22 +24,6 @@ const FormContainer: React.FC<FormContainerProps> = ({
                     areaId: "agriculture.landProduction",
                     conversionId: "agriculture.conversionLandProduction",
                   },
-                  // {
-                  //   areaId: "agriculture.areaCiherang",
-                  //   conversionId: "agriculture.conversionCiherang",
-                  // },
-                  // {
-                  //   areaId: "agriculture.areaHipaSeries",
-                  //   conversionId: "agriculture.conversionHipaSeries",
-                  // },
-                  // {
-                  //   areaId: "agriculture.areaMekongga",
-                  //   conversionId: "agriculture.conversionMekongga",
-                  // },
-                  // {
-                  //   areaId: "agriculture.areaLokal",
-                  //   conversionId: "agriculture.conversionLokal",
-                  // },
                 ];
 
                 const compound = compoundVarieties.find(

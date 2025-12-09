@@ -26,8 +26,6 @@ import { siteSpecificInput } from "@/config/form";
 const DSSPage = () => {
   // init data
   useInitializeData();
-
-  const [errors] = useState<Record<string, string>>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -169,7 +167,6 @@ const DSSPage = () => {
             simulationState={simulationState}
             category="siteSpecific"
             handleOpenScenarioTab={handleOpenScenarioTab}
-            errors={errors}
           />
           <SimulationForm
             category="siteSpecific"

@@ -2,7 +2,6 @@
 
 import TiltCard from "@/components/card/tiltCard";
 import {
-  Play,
   ArrowRight,
   BarChart3,
   Globe,

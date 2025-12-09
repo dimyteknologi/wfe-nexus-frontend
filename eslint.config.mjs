@@ -11,6 +11,20 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  // custom rules for noop storage
+  // {
+  //   rules: {
+  //     "@typescript-eslint/no-unused-vars": [
+  //       "error",
+  //       {
+  //         argsIgnorePattern: "^_",
+  //         varsIgnorePattern: "^_",
+  //         caughtErrorsIgnorePattern: "^_",
+  //         ignoreRestSiblings: true
+  //       }
+  //     ]
+  //   }
+  // }
 ];
 
 export default eslintConfig;

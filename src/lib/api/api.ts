@@ -28,7 +28,7 @@ export const apiClient = {
     }
     try {
       return JSON.parse(text);
-    } catch (e) {
+    } catch (_e) {
       console.error(`JSON Parse Error for ${endpoint}:`, text);
       throw new Error('Invalid JSON response from server');
     }
@@ -48,13 +48,13 @@ export const apiClient = {
     });
     const text = await response.text();
     if (!response.ok) {
-      console.error(`API Error (${response.status}) for ${endpoint}:`, text);
+      // console.error(`API Error (${response.status}) for ${endpoint}:`, text);
       throw new Error(text || `Failed to create data: ${response.status}`);
     }
     try {
       return JSON.parse(text);
-    } catch (e) {
-      console.error(`JSON Parse Error for ${endpoint}:`, text);
+    } catch (_e) {
+      // console.error(`JSON Parse Error for ${endpoint}:`, text);
       throw new Error('Invalid JSON response from server');
     }
   },
@@ -73,13 +73,13 @@ export const apiClient = {
     });
     const text = await response.text();
     if (!response.ok) {
-      console.error(`API Error (${response.status}) for ${endpoint}:`, text);
+      // console.error(`API Error (${response.status}) for ${endpoint}:`, text);
       throw new Error(text || `Failed to update data: ${response.status}`);
     }
     try {
       return JSON.parse(text);
-    } catch (e) {
-      console.error(`JSON Parse Error for ${endpoint}:`, text);
+    } catch (_e) {
+      // console.error(`JSON Parse Error for ${endpoint}:`, text);
       throw new Error('Invalid JSON response from server');
     }
   },
@@ -96,13 +96,13 @@ export const apiClient = {
     });
     const text = await response.text();
     if (!response.ok) {
-      console.error(`API Error (${response.status}) for ${endpoint}:`, text);
+      // console.error(`API Error (${response.status}) for ${endpoint}:`, text);
       throw new Error(text || `Failed to delete data: ${response.status}`);
     }
     try {
       return JSON.parse(text);
-    } catch (e) {
-      console.error(`JSON Parse Error for ${endpoint}:`, text);
+    } catch (_e) {
+      // console.error(`JSON Parse Error for ${endpoint}:`, text);
       throw new Error('Invalid JSON response from server');
     }
   },

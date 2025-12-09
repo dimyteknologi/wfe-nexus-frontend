@@ -11,7 +11,7 @@ import {
 import { ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
 
 const calculateAdd = (arr: number[]) =>  {
-  let result: number[] = [];
+  const result: number[] = [];
   for (let i = 0; i < arr.length; i++) {
     if (i === 0) result[i] = arr[i]
     else result[i] = result[i-1] + arr[i]
