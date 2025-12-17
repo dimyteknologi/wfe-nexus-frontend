@@ -1,20 +1,10 @@
 import { motion } from "framer-motion";
-
-const demandList = [
-  "Water demand per capita [liters/capita/day]",
-  "Water demand per unit of industrial production [m³/billion IDR]",
-  "Water demand for agricultural land [mm/day/ha]",
-  "Water demand for inland fisheries [mm/day/ha]",
-  "Water demand for livestock [mm/day/head]",
-  "Water demand for urban land [% of domestic demand]",
-  "Rate of agricultural and forest land conversion [%/year]",
-  "Food demand per capita [kg/capita/year]",
-  "Energy demand per capita [kWh/capita/year]",
-  "Rice shrinkage ratio from unhulled rice (GKG) [%]",
-  "Energy intensity for the economy [kWh/billion IDR]",
-];
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ContentRelatedAssumption() {
+  const { t } = useTranslation();
+  const { relatedAssumption } = t.dssModal;
+
   return (
     <div className="bg-white rounded-2xl p-8">
       <motion.h2
@@ -22,7 +12,7 @@ export default function ContentRelatedAssumption() {
         animate={{ opacity: 1, y: 0 }}
         className="text-3xl font-bold text-green-800 mb-6 pb-2 border-b border-green-100"
       >
-        Related Assumptions
+        {relatedAssumption.title}
       </motion.h2>
 
       <motion.p
@@ -31,8 +21,7 @@ export default function ContentRelatedAssumption() {
         transition={{ delay: 0.2 }}
         className="text-lg text-gray-700 mb-2 leading-relaxed"
       >
-        Several assumptions related to resource needs (water, energy, food)
-        within a region include:
+        {relatedAssumption.intro}
       </motion.p>
 
       <motion.div
@@ -41,7 +30,7 @@ export default function ContentRelatedAssumption() {
         transition={{ delay: 0.2 }}
         className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
       >
-        {demandList.map((item, index) => (
+        {relatedAssumption.items.map((item, index) => (
           <motion.div
             key={index}
             initial={{ opacity: 0, x: -20 }}

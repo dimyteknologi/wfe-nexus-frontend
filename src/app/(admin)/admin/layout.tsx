@@ -19,6 +19,7 @@ export default function AdminLayout({
           className="absolute w-full h-full opacity-5 object-cover -z-10"
           src="/assets/image-demo-3.svg"
           alt="background pattern"
+          fill
           />
         <div className="flex">
           <AdminSidebar />

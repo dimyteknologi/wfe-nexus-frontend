@@ -5,7 +5,12 @@ import Link from "next/link";
 import { useLogin } from "@/hooks/useLogin";
 import Image from "next/image";
 
+import { useTranslation } from "@/hooks/useTranslation"; // Add import
+
 const LoginPage = () => {
+    const { t } = useTranslation(); // Use hook
+    const { login } = t;
+
   const {
     showPassword,
     authError,
@@ -42,7 +47,7 @@ const LoginPage = () => {
             </div>
           </div>
           <h2 className="mt-6 text-center text-3xl font-bold text-gray-800">
-            Masuk ke Akun Anda
+            {login.title}
           </h2>
           {/* <p className="mt-2 text-center text-sm text-gray-600">
             Atau{" "}
@@ -62,7 +67,7 @@ const LoginPage = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Alamat Email
+                {login.emailLabel}
               </label>
               <input
                 id="email"
@@ -71,7 +76,7 @@ const LoginPage = () => {
                 required
                 {...register("email")}
                 className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:z-10 transition-colors"
-                placeholder="nama@domain.com"
+                placeholder={login.emailPlaceholder}
               />
               {errors.email && (
                 <p className="text-red-500 text-xs mt-1">
@@ -85,7 +90,7 @@ const LoginPage = () => {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Kata Sandi
+                {login.passwordLabel}
               </label>
               <div className="relative">
                 <input
@@ -95,7 +100,7 @@ const LoginPage = () => {
                   required
                   {...register("password")}
                   className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:z-10 transition-colors pr-12"
-                  placeholder="Masukkan kata sandi"
+                  placeholder={login.passwordPlaceholder}
                 />
                 <button
                   type="button"
@@ -130,7 +135,7 @@ const LoginPage = () => {
                   htmlFor="rememberMe"
                   className="ml-2 block text-sm text-gray-700"
                 >
-                  Ingat saya
+                  {login.rememberMe}
                 </label>
               </div>
 
@@ -151,11 +156,11 @@ const LoginPage = () => {
               {isSubmitting ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Memproses...
+                  {login.processingButton}
                 </div>
               ) : (
                 <div className="flex items-center">
-                  Masuk{" "}
+                  {login.submitButton}{" "}
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </div>
               )}

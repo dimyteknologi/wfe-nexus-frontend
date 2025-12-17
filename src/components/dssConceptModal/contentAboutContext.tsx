@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
 import React from "react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const ContentAboutContext = () => {
- return (
+  const { t } = useTranslation();
+  const { aboutContext } = t.dssModal;
+
+  return (
     <div className="space-y-8">
       <div className="bg-white rounded-2xl p-8">
         <motion.h2
@@ -11,7 +15,7 @@ const ContentAboutContext = () => {
           transition={{ delay: 0.1 }}
           className="text-3xl font-bold text-green-800 mb-6 pb-2 border-b border-green-100"
         >
-          About the DSS Tool
+          {aboutContext.title}
         </motion.h2>
 
         <motion.p
@@ -20,14 +24,7 @@ const ContentAboutContext = () => {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-6 leading-relaxed"
         >
-          The Decision Support System (DSS) Tool is developed using an
-          interlinkages-based approach, emphasizing the interconnections among
-          the water–energy–food sectors for agricultural areas characterized by
-          abundant surface water resources, challenges in water transportation,
-          the availability of renewable energy sources (RES) such as solar
-          energy for micro-scale applications, and geothermal energy for
-          regional power generation. These resources are sourced from the
-          Samosir and Ulubelu areas in Lampung.
+          {aboutContext.p1}
         </motion.p>
 
         <motion.p
@@ -36,17 +33,7 @@ const ContentAboutContext = () => {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-6 leading-relaxed"
         >
-          In a specific context, users can define agricultural land area, solar
-          power plant capacity, and geothermal power plant capacity as the main
-          input variables that determine agricultural performance and
-          microeconomic outcomes. Solar power generation reduces reliance on
-          fossil fuel–based water pumps, while geothermal energy contributes to
-          reducing energy consumption for post-harvest drying processes. Both
-          interventions directly affect farmers’ income and profit performance.
-          In addition, the financial sustainability of operating solar power
-          plants is also considered, in order to assess the extent to which
-          local communities or regions are capable of managing the long-term
-          operation of solar power plants and water pumping systems.
+          {aboutContext.p2}
         </motion.p>
 
         <motion.p
@@ -55,15 +42,7 @@ const ContentAboutContext = () => {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-6 leading-relaxed"
         >
-          Using a systems thinking perspective and a system dynamics modeling
-          approach (Forrester, 1961; Vennix, 1996; Senge, 2000; Sterman, 2000;
-          Morecroft, 2015), the DSS Tool is designed to illustrate the impacts
-          of demand scenarios in the agricultural sector (particularly rice
-          farming), as well as in the water and energy resource sectors. The
-          energy sector includes geothermal and solar photovoltaic (PV) systems
-          for agricultural water pumping, while the water sector includes
-          surface water and transported water supplied through fossil fuel–based
-          pumps and solar PV–based pumps.
+          {aboutContext.p3}
         </motion.p>
 
         <motion.p
@@ -72,8 +51,7 @@ const ContentAboutContext = () => {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-2 leading-relaxed"
         >
-          The conceptual framework of sectoral interlinkages within the DSS Tool
-          is illustrated as follows:
+          {aboutContext.conceptTitle}
         </motion.p>
 
         <motion.div
@@ -85,11 +63,11 @@ const ContentAboutContext = () => {
           <img
             className="w-full h-auto"
             src={"./assets/context-concept-diagram.png"}
-            alt="DSS Conceptual Framework"
+            alt={aboutContext.conceptDiagramAlt}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
             <span className="text-white text-sm">
-              Conceptual framework of sectoral interlinkages
+              {aboutContext.conceptFramework}
             </span>
           </div>
         </motion.div>
@@ -100,7 +78,7 @@ const ContentAboutContext = () => {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-2 leading-relaxed"
         >
-          The DSS concept is developed at the micro level by considering local agricultural dynamics and characteristics (productivity, land, and practical management), water resources (surface water and groundwater), and energy sources (fossil-based and renewable), within the following scope:
+         {aboutContext.scopeIntro}
         </motion.p>
 
        <motion.h3
@@ -109,7 +87,7 @@ const ContentAboutContext = () => {
           transition={{ delay: 0.6 }}
           className="text-xl font-semibold text-green-800 mb-4 mt-10 pb-2 border-b border-green-100"
         >
-          Sectoral Scope and Boundaries
+          {aboutContext.sectoralScopeTitle}
         </motion.h3>
         <motion.div
           initial={{ opacity: 0 }}
@@ -122,10 +100,10 @@ const ContentAboutContext = () => {
               <thead>
                 <tr className="">
                   <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500">
-                    Sector
+                    {aboutContext.table.sector}
                   </th>
                   <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500">
-                    Scope and Boundary
+                     {aboutContext.table.scope}
                   </th>
                 </tr>
               </thead>
@@ -133,13 +111,13 @@ const ContentAboutContext = () => {
                 {/* Agriculture */}
                 <tr className="hover:bg-green-50 transition-colors duration-150 group">
                   <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
-                    Agriculture
+                     {aboutContext.table.agriculture.name}
                   </td>
                   <td className="px-6 py-4 text-gray-700">
                     <ul className="list-disc pl-5 space-y-1">
-                      <li className="text-gray-600">Area</li>
-                      <li className="text-gray-600">Productivity</li>
-                      <li className="text-gray-600">Production</li>
+                       {aboutContext.table.agriculture.items.map((item, i) => (
+                          <li key={i} className="text-gray-600">{item}</li>
+                       ))}
                     </ul>
                   </td>
                 </tr>
@@ -147,12 +125,13 @@ const ContentAboutContext = () => {
                 {/* Demography */}
                 <tr className="hover:bg-green-50 transition-colors duration-150 group">
                   <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
-                    Demography
+                    {aboutContext.table.demography.name}
                   </td>
                   <td className="px-6 py-4 text-gray-700">
                     <ul className="list-disc pl-5 space-y-1">
-                      <li className="text-gray-600">Total Population</li>
-                      <li className="text-gray-600">Rice demand</li>
+                       {aboutContext.table.demography.items.map((item, i) => (
+                          <li key={i} className="text-gray-600">{item}</li>
+                       ))}
                     </ul>
                   </td>
                 </tr>
@@ -160,33 +139,27 @@ const ContentAboutContext = () => {
                 {/* Water */}
                 <tr className="hover:bg-green-50 transition-colors duration-150 group">
                   <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
-                    Water
+                    {aboutContext.table.water.name}
                   </td>
                   <td className="px-6 py-4 text-gray-700">
                     <ul className="list-disc pl-5 space-y-1">
                       <li className="text-gray-600">
-                        <span className="font-medium">General:</span> Total
-                        calculation of local water demand and supply
+                         {aboutContext.table.water.general}
                       </li>
                       <li className="text-gray-600">
-                        <span className="font-medium">Demand:</span>
+                        <span className="font-medium">{aboutContext.table.water.demand}</span>
                         <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                          <li>Agriculture demand</li>
-                          <li>Agricultural demand</li>
-                          <li>
-                            Geothermal demand (applied only when using surface
-                            water)
-                          </li>
+                           {aboutContext.table.water.demandItems.map((item, i) => (
+                              <li key={i}>{item}</li>
+                           ))}
                         </ul>
                       </li>
                       <li className="text-gray-600">
-                        <span className="font-medium">Supply:</span>
+                        <span className="font-medium">{aboutContext.table.water.supply}</span>
                         <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                          <li>Rainfall water</li>
-                          <li>
-                            Transported water using pumps (fossil fuel–based or
-                            solar PV–based)
-                          </li>
+                           {aboutContext.table.water.supplyItems.map((item, i) => (
+                              <li key={i}>{item}</li>
+                           ))}
                         </ul>
                       </li>
                     </ul>
@@ -196,26 +169,27 @@ const ContentAboutContext = () => {
                 {/* Energy */}
                 <tr className="hover:bg-green-50 transition-colors duration-150 group">
                   <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
-                    Energy
+                    {aboutContext.table.energy.name}
                   </td>
                   <td className="px-6 py-4 text-gray-700">
                     <ul className="list-disc pl-5 space-y-1">
                       <li className="text-gray-600">
-                        <span className="font-medium">General:</span> Limited to
-                        agriculture purposes
+                         {aboutContext.table.energy.general}
                       </li>
                       <li className="text-gray-600">
-                        <span className="font-medium">Demand:</span>
+                        <span className="font-medium">{aboutContext.table.energy.demand}</span>
                         <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                          <li>Agriculture demand</li>
+                           {aboutContext.table.energy.demandItems.map((item, i) => (
+                              <li key={i}>{item}</li>
+                           ))}
                         </ul>
                       </li>
                       <li className="text-gray-600">
-                        <span className="font-medium">Supply:</span>
+                        <span className="font-medium">{aboutContext.table.energy.supply}</span>
                         <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                          <li>Fossil fuel supply</li>
-                          <li>Solar PV</li>
-                          <li>Excess steam from geothermal</li>
+                           {aboutContext.table.energy.supplyItems.map((item, i) => (
+                              <li key={i}>{item}</li>
+                           ))}
                         </ul>
                       </li>
                     </ul>
@@ -225,24 +199,27 @@ const ContentAboutContext = () => {
                 {/* Food */}
                 <tr className="hover:bg-green-50 transition-colors duration-150 group">
                   <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
-                    Food
+                    {aboutContext.table.food.name}
                   </td>
                   <td className="px-6 py-4 text-gray-700">
                     <ul className="list-disc pl-5 space-y-1">
                       <li className="text-gray-600">
-                        <span className="font-medium">General:</span> Rice only
+                         {aboutContext.table.food.general}
                       </li>
                       <li className="text-gray-600">
-                        <span className="font-medium">Demand:</span>
+                        <span className="font-medium">{aboutContext.table.food.demand}</span>
                         <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                          <li>Domestic demand</li>
+                           {aboutContext.table.food.demandItems.map((item, i) => (
+                              <li key={i}>{item}</li>
+                           ))}
                         </ul>
                       </li>
                       <li className="text-gray-600">
-                        <span className="font-medium">Supply:</span>
+                        <span className="font-medium">{aboutContext.table.food.supply}</span>
                         <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                          <li>Local production</li>
-                          <li>Production surplus or deficit</li>
+                           {aboutContext.table.food.supplyItems.map((item, i) => (
+                              <li key={i}>{item}</li>
+                           ))}
                         </ul>
                       </li>
                     </ul>

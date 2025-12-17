@@ -41,6 +41,7 @@ const AboutPage = () => {
         className="absolute w-full h-full opacity-10 object-cover -z-1"
         src="./assets/image-demo-3.svg"
         alt="background pattern"
+        fill
       />
       {/* Header Section */}
       <section className="container mx-auto px-6 py-12">

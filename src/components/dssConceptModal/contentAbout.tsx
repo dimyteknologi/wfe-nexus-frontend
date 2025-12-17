@@ -1,6 +1,10 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ContentAbout() {
+  const { t } = useTranslation();
+  const { about } = t.dssModal;
+
   return (
     <div className="space-y-8">
       <div className="bg-white rounded-2xl p-8">
@@ -10,7 +14,7 @@ export default function ContentAbout() {
           transition={{ delay: 0.1 }}
           className="text-3xl font-bold text-green-800 mb-6 pb-2 border-b border-green-100"
         >
-          About the DSS Tool
+          {about.title}
         </motion.h2>
 
         <motion.p
@@ -19,17 +23,7 @@ export default function ContentAbout() {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-6 leading-relaxed"
         >
-          The{" "}
-          <span className="font-bold text-green-700">
-            Decision Support System (DSS) Tool
-          </span>{" "}
-          is developed through an{" "}
-          <span className="font-bold text-blue-600">
-            interlinkages-based approach
-          </span>
-          , emphasizing the interactions among the water–food–energy sectors
-          under dynamic social and economic conditions as key drivers of
-          regional development performance.
+          {about.p1}
         </motion.p>
 
         <motion.p
@@ -38,21 +32,7 @@ export default function ContentAbout() {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-6 leading-relaxed"
         >
-          Using a
-          <span className="font-bold text-blue-600">
-            {" "}
-            systems thinking perspective
-          </span>{" "}
-          and{" "}
-          <span className="font-bold text-blue-600">
-            {" "}
-            system dynamics modeling approach{" "}
-          </span>{" "}
-          (Forester, 1961; Vennix, 1996; Senge, 2000; Sterman, 2000; Morecroft,
-          2015), the DSS Tool is designed to illustrate the impacts of demand
-          scenarios for the economic sector (industry and services), agriculture
-          production (rice, livestock, and inland fisheries), and population
-          growth on the local capacity to meet water, food, and energy needs.
+          {about.p2}
         </motion.p>
 
         <motion.p
@@ -61,17 +41,7 @@ export default function ContentAbout() {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-6 leading-relaxed"
         >
-          It also incorporates sector-specific scenarios such as the development{" "}
-          <span className="font-bold text-blue-600">
-            of recharge areas for water production (artificial ponds,
-            conservation measures), solar PV deployment,
-          </span>{" "}
-          and{" "}
-          <span className="font-bold text-blue-600">
-            agricultural productivity improvements
-          </span>
-          , with the aim of enhancing local water, energy, and food resilience
-          in the future.
+          {about.p3}
         </motion.p>
 
         <motion.p
@@ -80,8 +50,7 @@ export default function ContentAbout() {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-2 leading-relaxed"
         >
-          The conceptual framework of the sectoral interlinkages within the DSS
-          Tool is illustrated as follows:
+          {about.p4}
         </motion.p>
 
         <motion.div
@@ -93,11 +62,11 @@ export default function ContentAbout() {
           <img
             className="w-full h-auto"
             src={"./assets/concept-diagram.png"}
-            alt="DSS Conceptual Framework"
+            alt={about.conceptDiagramAlt}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
             <span className="text-white text-sm">
-              Conceptual framework of sectoral interlinkages
+              {about.conceptFramework}
             </span>
           </div>
         </motion.div>
@@ -108,20 +77,7 @@ export default function ContentAbout() {
           transition={{ delay: 0.5 }}
           className="text-lg text-gray-700 mb-8 leading-relaxed"
         >
-          The diagram above illustrates the{" "}
-          <span className="font-bold text-blue-600">
-            interconnected dynamics
-          </span>{" "}
-          within the
-          <span className="font-bold text-green-700">
-            Water–Energy–Food (WEF) Nexus
-          </span>
-          , emphasizing the feedback relationships between resource
-          availability, consumption, and production. Each component influences
-          the others through{" "}
-          <span className="font-bold text-blue-600">reinforcing</span> and{" "}
-          <span className="font-bold text-blue-600">balancing loops</span>,
-          shaping sustainability outcomes over time. The modules including:
+          {about.p5}
         </motion.p>
 
         <motion.p
@@ -130,8 +86,7 @@ export default function ContentAbout() {
           transition={{ delay: 0.1 }}
           className="text-lg text-gray-700 mb-2 leading-relaxed"
         >
-          Several assumptions related to resource needs (water, energy, food)
-          within a region include:
+          {about.p6}
         </motion.p>
 
         <motion.div
@@ -141,79 +96,52 @@ export default function ContentAbout() {
           className="bg-blue-50 p-6 rounded-xl border border-blue-100 mb-6 space-y-4"
         >
           <div className="text-gray-700 leading-relaxed">
-            <h3 className="font-bold text-lg mb-1">1. Food Module</h3>
+            <h3 className="font-bold text-lg mb-1">{about.modules.food.title}</h3>
             <p>
-              <span className="font-semibold text-blue-600">Components:</span>{" "}
-              Local food production (rice, livestock, fish, etc.), food
-              availability, Self-Sufficiency Level (SSL), and Availability per
-              Person (APP).
+              {about.modules.food.components}
             </p>
             <p>
-              <span className="font-semibold text-green-600">
-                Dependencies:
-              </span>{" "}
-              Food production depends on water availability for irrigation and
-              energy for pumping, processing, and transportation.
+              {about.modules.food.dependencies}
             </p>
           </div>
 
           <div className="text-gray-700 leading-relaxed">
-            <h3 className="font-bold text-lg mb-1">2. Water Module</h3>
+            <h3 className="font-bold text-lg mb-1">{about.modules.water.title}</h3>
             <p>
-              <span className="font-semibold text-blue-600">Components:</span>{" "}
-              Water storage, irrigation supply, domestic and industrial demand.
+              {about.modules.water.components}
             </p>
             <p>
-              <span className="font-semibold text-green-600">Linkages:</span>{" "}
-              Water supply gives availability for economy and population to
-              grow.
+              {about.modules.water.linkages}
             </p>
           </div>
 
           <div className="text-gray-700 leading-relaxed">
-            <h3 className="font-bold text-lg mb-1">3. Energy Module</h3>
+            <h3 className="font-bold text-lg mb-1">{about.modules.energy.title}</h3>
             <p>
-              <span className="font-semibold text-blue-600">Components:</span>{" "}
-              Energy supply (including renewables), consumption by agricultural
-              and water sectors.
+              {about.modules.energy.components}
             </p>
             <p>
-              <span className="font-semibold text-green-600">
-                Interactions:
-              </span>{" "}
-              Energy generation often requires water (e.g., hydropower, cooling
-              systems), creating interdependencies across modules.
+              {about.modules.energy.interactions}
             </p>
           </div>
 
           <div className="text-gray-700 leading-relaxed">
-            <h3 className="font-bold text-lg mb-1">4. Economy Module</h3>
+            <h3 className="font-bold text-lg mb-1">{about.modules.economy.title}</h3>
             <p>
-              <span className="font-semibold text-blue-600">Components:</span>{" "}
-              GDRP for manufacture, agriculture, and others.
+              {about.modules.economy.components}
             </p>
             <p>
-              <span className="font-semibold text-green-600">
-                Interactions:
-              </span>{" "}
-              As driver for resources (food, water, energy) demand and feedback
-              in terms of availability for growing economy.
+              {about.modules.economy.interactions}
             </p>
           </div>
 
           <div className="text-gray-700 leading-relaxed">
-            <h3 className="font-bold text-lg mb-1">5. Population Module</h3>
+            <h3 className="font-bold text-lg mb-1">{about.modules.population.title}</h3>
             <p>
-              <span className="font-semibold text-blue-600">Components:</span>{" "}
-              Population and its growth.
+              {about.modules.population.components}
             </p>
             <p>
-              <span className="font-semibold text-green-600">
-                Interactions:
-              </span>{" "}
-              As driver for resources (food, water, energy) demand for
-              population and feedback in terms of availability for growing
-              economy that affect the population growth.
+              {about.modules.population.interactions}
             </p>
           </div>
         </motion.div>
@@ -224,8 +152,7 @@ export default function ContentAbout() {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-2 leading-relaxed"
         >
-          The interaction among the sectors will form the loop between each
-          module, including:
+          {about.p7}
         </motion.p>
 
         <motion.div
@@ -239,99 +166,28 @@ export default function ContentAbout() {
               <thead>
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-indigo-500">
-                    Loop
+                    {about.tableLoops.loop}
                   </th>
                   <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-indigo-500">
-                    Involved Module
+                    {about.tableLoops.involvedModule}
                   </th>
                   <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-indigo-500">
-                    Description
+                    {about.tableLoops.description}
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {/* Loop B1 */}
-                <tr className="hover:bg-indigo-50 transition-colors duration-150">
-                  <td className="px-6 py-4 font-bold text-indigo-800">B1</td>
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    Economy ➔ Water ➔ Economy
-                  </td>
-                  <td className="px-6 py-4 text-gray-600 leading-relaxed">
-                    GDRP affects water demand; water supply in turn affects the
-                    economy`s capacity to grow.
-                  </td>
-                </tr>
-
-                {/* Loop B2 */}
-                <tr className="hover:bg-indigo-50 transition-colors duration-150">
-                  <td className="px-6 py-4 font-bold text-indigo-800">B2</td>
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    Economy ➔ Energy ➔ Economy
-                  </td>
-                  <td className="px-6 py-4 text-gray-600 leading-relaxed">
-                    GDRP affects energy demand; energy supply in turn affects
-                    the economy`s capacity to grow.
-                  </td>
-                </tr>
-
-                {/* Loop B3 */}
-                <tr className="hover:bg-indigo-50 transition-colors duration-150">
-                  <td className="px-6 py-4 font-bold text-indigo-800">B3</td>
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    Food ➔ Water ➔ Food
-                  </td>
-                  <td className="px-6 py-4 text-gray-600 leading-relaxed">
-                    Food production volume affects water demand for irrigation;
-                    water supply affects food production capacity.
-                  </td>
-                </tr>
-
-                {/* Loop B4 */}
-                <tr className="hover:bg-indigo-50 transition-colors duration-150">
-                  <td className="px-6 py-4 font-bold text-indigo-800">B4</td>
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    Food ➔ Energy ➔ Food
-                  </td>
-                  <td className="px-6 py-4 text-gray-600 leading-relaxed">
-                    Food production volume affects energy demand for production;
-                    energy supply affects food production capacity.
-                  </td>
-                </tr>
-
-                {/* Reinforcing Loop R1 */}
-                <tr className="hover:bg-red-50 transition-colors duration-150">
-                  <td className="px-6 py-4 font-bold text-red-800">R1</td>
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    Population
-                  </td>
-                  <td className="px-6 py-4 text-gray-600 leading-relaxed">
-                    Population and its own growth acts as a reinforcing loop.
-                  </td>
-                </tr>
-
-                {/* Loop B5 */}
-                <tr className="hover:bg-indigo-50 transition-colors duration-150">
-                  <td className="px-6 py-4 font-bold text-indigo-800">B5</td>
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    Population ➔ Water ➔ Population
-                  </td>
-                  <td className="px-6 py-4 text-gray-600 leading-relaxed">
-                    Population affects water demand; water supply sufficiency
-                    and quality affect population growth.
-                  </td>
-                </tr>
-
-                {/* Loop B6 */}
-                <tr className="hover:bg-indigo-50 transition-colors duration-150">
-                  <td className="px-6 py-4 font-bold text-indigo-800">B6</td>
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    Population ➔ Food ➔ Population
-                  </td>
-                  <td className="px-6 py-4 text-gray-600 leading-relaxed">
-                    Population affects food demand; food supply affects
-                    population growth due to sufficiency.
-                  </td>
-                </tr>
+                {about.tableLoops.rows.map((row) => (
+                  <tr key={row.id} className="hover:bg-indigo-50 transition-colors duration-150">
+                    <td className={`px-6 py-4 font-bold ${row.id === 'R1' ? 'text-red-800' : 'text-indigo-800'}`}>{row.id}</td>
+                    <td className="px-6 py-4 font-medium text-gray-800">
+                      {row.module}
+                    </td>
+                    <td className="px-6 py-4 text-gray-600 leading-relaxed">
+                      {row.desc}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -343,7 +199,7 @@ export default function ContentAbout() {
           transition={{ delay: 0.6 }}
           className="text-xl font-semibold text-green-800 mb-4 mt-10 pb-2 border-b border-green-100"
         >
-          Sectoral Scope and Boundaries
+          {about.sectoralScopeTitle}
         </motion.h3>
         <motion.div
           initial={{ opacity: 0 }}
@@ -356,126 +212,34 @@ export default function ContentAbout() {
               <thead>
                 <tr className="">
                   <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500">
-                    Sector
+                    {about.tableScope.sector}
                   </th>
                   <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500">
-                    Scope and Boundary
+                    {about.tableScope.scope}
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {/* Economy Section */}
-                <tr className="hover:bg-green-50 transition-colors duration-150 group">
-                  <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900">
-                    Economy
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">
-                    17 GRDP economic sectors with deeper focus on the
-                    agricultural sector
-                  </td>
-                </tr>
-
-                {/* Agriculture */}
-                <tr className="hover:bg-green-50 transition-colors duration-150 group">
-                  <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900">
-                    Agriculture
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li className="text-gray-600">
-                        Rice as the main staple food, with extensive land use
-                      </li>
-                      <li className="text-gray-600">
-                        Livestock as staple food support
-                      </li>
-                      <li className="text-gray-600">
-                        Inland fisheries as staple food support
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-
-                {/* Demography */}
-                <tr className="hover:bg-green-50 transition-colors duration-150 group">
-                  <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900">
-                    Demography
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li className="text-gray-600">Total Population</li>
-                      <li className="text-gray-600">Population growth rate</li>
-                    </ul>
-                  </td>
-                </tr>
-
-                {/* Water */}
-                <tr className="hover:bg-green-50 transition-colors duration-150 group">
-                  <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900">
-                    Water
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li className="text-gray-600">
-                        <span className="font-medium">General:</span> Total
-                        calculation of local water demand and supply
-                      </li>
-                      <li className="text-gray-600">
-                        <span className="font-medium">Demand:</span> Domestic,
-                        Economy (Industrial), Urban system
-                      </li>
-                      <li className="text-gray-600">
-                        <span className="font-medium">Supply:</span> Surface
-                        Water, Ground Water, Regional supply
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-
-                {/* Energy */}
-                <tr className="hover:bg-green-50 transition-colors duration-150 group">
-                  <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900">
-                    Energy
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li className="text-gray-600">
-                        <span className="font-medium">General:</span> Only cover
-                        electricity—due to data limitation
-                      </li>
-                      <li className="text-gray-600">
-                        <span className="font-medium">Demand:</span> Domestic,
-                        Economy (Industrial)
-                      </li>
-                      <li className="text-gray-600">
-                        <span className="font-medium">Supply:</span> Local
-                        production, Regional supply
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-
-                {/* Food */}
-                <tr className="hover:bg-green-50 transition-colors duration-150 group">
-                  <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900">
-                    Food
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li className="text-gray-600">
-                        <span className="font-medium">General:</span> Covers
-                        only staple food (rice)
-                      </li>
-                      <li className="text-gray-600">
-                        <span className="font-medium">Demand:</span> Domestic,
-                        Economy (Industrial and or services)
-                      </li>
-                      <li className="text-gray-600">
-                        <span className="font-medium">Supply:</span> Local
-                        production, Production surplus or deficit
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
+                {about.tableScope.rows.map((row, index) => (
+                  <tr key={index} className="hover:bg-green-50 transition-colors duration-150 group">
+                    <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900">
+                      {row.sector}
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">
+                      {Array.isArray(row.scope) ? (
+                        <ul className="list-disc pl-5 space-y-1">
+                          {row.scope.map((item, i) => (
+                            <li key={i} className="text-gray-600">
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        row.scope
+                      )}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -487,11 +251,7 @@ export default function ContentAbout() {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-700 mb-6 leading-relaxed"
         >
-          The use of the <span className="font-bold text-green-700">DSS</span>{" "}
-          begins with inputting a dataset of regional conditions, followed by
-          configuring the assumptions and trends of the model in the area,
-          mapping these assumptions and trends into model scenarios, and
-          validating historical behavior.
+          {about.p8}
         </motion.p>
       </div>
     </div>

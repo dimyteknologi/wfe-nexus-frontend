@@ -1,6 +1,23 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
+import ContentAboutContext from "./contentAboutContext"; // Import to reuse ContentAboutContext logic if needed, but here we just render table manually or partial re-use? 
+// The original code duplicated the table structure manually.
+// To keep it simple and safe, I will just render the table manually referencing the About Context Table in the dictionary if possible, OR just re-render the components.
+
+// Wait, the dictionary keys for scenarioBuildingContext table are "See About Table".
+// In the original file, it was just a manual copy-paste of a similar table.
+// However, the content was actually slightly different or subset?
+// Checking the original file: It had "Agriculture", "Demography", "Water", "Energy", "Food" rows.
+// This is exactly the same as the "Sectoral Scope and Boundaries" table in About Context.
+// So I can reuse the data from `t.dssModal.aboutContext.table`.
 
 const ContentScenarioBuildingContext = () => {
+ const { t } = useTranslation();
+ const { scenarioBuildingContext, aboutContext } = t.dssModal;
+
+ // Use aboutContext table data
+ const tableData = aboutContext.table;
+
  return (
     <div className="bg-white rounded-2xl p-8">
       <motion.h2
@@ -8,7 +25,7 @@ const ContentScenarioBuildingContext = () => {
         animate={{ opacity: 1, y: 0 }}
         className="text-3xl font-bold text-green-800 mb-6 pb-2 border-b border-green-100"
       >
-        Scenario Building
+        {scenarioBuildingContext.title}
       </motion.h2>
 
       <motion.p
@@ -17,8 +34,7 @@ const ContentScenarioBuildingContext = () => {
         transition={{ delay: 0.1 }}
         className="text-lg text-gray-700 mb-8 leading-relaxed"
       >
-        Scenarios related to demand and supply, for each resource sector,
-        include:
+        {scenarioBuildingContext.intro}
       </motion.p>
 
       <motion.div
@@ -32,10 +48,10 @@ const ContentScenarioBuildingContext = () => {
             <thead>
               <tr className="">
                 <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500">
-                  Sector
+                  {tableData.sector}
                 </th>
                 <th className="px-6 py-4 text-left font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-green-500">
-                  Scope and Boundary
+                  {tableData.scope}
                 </th>
               </tr>
             </thead>
@@ -43,13 +59,13 @@ const ContentScenarioBuildingContext = () => {
               {/* Agriculture */}
               <tr className="hover:bg-green-50 transition-colors duration-150 group">
                 <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
-                  Agriculture
+                  {tableData.agriculture.name}
                 </td>
                 <td className="px-6 py-4 text-gray-700">
                   <ul className="list-disc pl-5 space-y-1">
-                    <li className="text-gray-600">Area</li>
-                    <li className="text-gray-600">Productivity</li>
-                    <li className="text-gray-600">Production</li>
+                     {tableData.agriculture.items.map((item, i) => (
+                        <li key={i} className="text-gray-600">{item}</li>
+                     ))}
                   </ul>
                 </td>
               </tr>
@@ -57,12 +73,13 @@ const ContentScenarioBuildingContext = () => {
               {/* Demography */}
               <tr className="hover:bg-green-50 transition-colors duration-150 group">
                 <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
-                  Demography
+                  {tableData.demography.name}
                 </td>
                 <td className="px-6 py-4 text-gray-700">
                   <ul className="list-disc pl-5 space-y-1">
-                    <li className="text-gray-600">Total Population</li>
-                    <li className="text-gray-600">Rice demand</li>
+                     {tableData.demography.items.map((item, i) => (
+                        <li key={i} className="text-gray-600">{item}</li>
+                     ))}
                   </ul>
                 </td>
               </tr>
@@ -70,33 +87,27 @@ const ContentScenarioBuildingContext = () => {
               {/* Water */}
               <tr className="hover:bg-green-50 transition-colors duration-150 group">
                 <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
-                  Water
+                  {tableData.water.name}
                 </td>
                 <td className="px-6 py-4 text-gray-700">
                   <ul className="list-disc pl-5 space-y-1">
                     <li className="text-gray-600">
-                      <span className="font-medium">General:</span> Total
-                      calculation of local water demand and supply
+                       {tableData.water.general}
                     </li>
                     <li className="text-gray-600">
-                      <span className="font-medium">Demand:</span>
+                      <span className="font-medium">{tableData.water.demand}</span>
                       <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                        <li>Agriculture demand</li>
-                        <li>Agricultural demand</li>
-                        <li>
-                          Geothermal demand (applied only when using surface
-                          water)
-                        </li>
+                         {tableData.water.demandItems.map((item, i) => (
+                            <li key={i}>{item}</li>
+                         ))}
                       </ul>
                     </li>
                     <li className="text-gray-600">
-                      <span className="font-medium">Supply:</span>
+                      <span className="font-medium">{tableData.water.supply}</span>
                       <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                        <li>Rainfall water</li>
-                        <li>
-                          Transported water using pumps (fossil fuel–based or
-                          solar PV–based)
-                        </li>
+                         {tableData.water.supplyItems.map((item, i) => (
+                            <li key={i}>{item}</li>
+                         ))}
                       </ul>
                     </li>
                   </ul>
@@ -106,26 +117,27 @@ const ContentScenarioBuildingContext = () => {
               {/* Energy */}
               <tr className="hover:bg-green-50 transition-colors duration-150 group">
                 <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
-                  Energy
+                  {tableData.energy.name}
                 </td>
                 <td className="px-6 py-4 text-gray-700">
                   <ul className="list-disc pl-5 space-y-1">
                     <li className="text-gray-600">
-                      <span className="font-medium">General:</span> Limited to
-                      agriculture purposes
+                       {tableData.energy.general}
                     </li>
                     <li className="text-gray-600">
-                      <span className="font-medium">Demand:</span>
+                      <span className="font-medium">{tableData.energy.demand}</span>
                       <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                        <li>Agriculture demand</li>
+                         {tableData.energy.demandItems.map((item, i) => (
+                            <li key={i}>{item}</li>
+                         ))}
                       </ul>
                     </li>
                     <li className="text-gray-600">
-                      <span className="font-medium">Supply:</span>
+                      <span className="font-medium">{tableData.energy.supply}</span>
                       <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                        <li>Fossil fuel supply</li>
-                        <li>Solar PV</li>
-                        <li>Excess steam from geothermal</li>
+                         {tableData.energy.supplyItems.map((item, i) => (
+                            <li key={i}>{item}</li>
+                         ))}
                       </ul>
                     </li>
                   </ul>
@@ -135,24 +147,27 @@ const ContentScenarioBuildingContext = () => {
               {/* Food */}
               <tr className="hover:bg-green-50 transition-colors duration-150 group">
                 <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
-                  Food
+                  {tableData.food.name}
                 </td>
                 <td className="px-6 py-4 text-gray-700">
                   <ul className="list-disc pl-5 space-y-1">
                     <li className="text-gray-600">
-                      <span className="font-medium">General:</span> Rice only
+                       {tableData.food.general}
                     </li>
                     <li className="text-gray-600">
-                      <span className="font-medium">Demand:</span>
+                      <span className="font-medium">{tableData.food.demand}</span>
                       <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                        <li>Domestic demand</li>
+                         {tableData.food.demandItems.map((item, i) => (
+                            <li key={i}>{item}</li>
+                         ))}
                       </ul>
                     </li>
                     <li className="text-gray-600">
-                      <span className="font-medium">Supply:</span>
+                      <span className="font-medium">{tableData.food.supply}</span>
                       <ul className="list-[circle] pl-5 mt-1 space-y-1">
-                        <li>Local production</li>
-                        <li>Production surplus or deficit</li>
+                         {tableData.food.supplyItems.map((item, i) => (
+                            <li key={i}>{item}</li>
+                         ))}
                       </ul>
                     </li>
                   </ul>

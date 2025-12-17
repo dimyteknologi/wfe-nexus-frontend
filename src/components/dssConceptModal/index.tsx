@@ -18,6 +18,7 @@ import ContentAboutContext from "./contentAboutContext";
 import ContentRelatedAssumptionContext from "./contentRelatedAssumptionContext";
 import ContentScenarioBuildingContext from "./contentScenarioBuildingContext";
 import { usePathname } from "next/navigation";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface DSSConceptModalProps {
   isOpen: boolean;
@@ -53,10 +54,20 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
     }, 300);
   };
 
+  const { t } = useTranslation();
+
   const tabs = [
-    { id: 0, title: "ABOUT", icon: <BookOpen size={16} /> },
-    { id: 1, title: "RELATED ASSUMPTION", icon: <Lightbulb size={16} /> },
-    { id: 2, title: "SCENARIO BUILDING", icon: <BarChart3 size={16} /> },
+    { id: 0, title: t.dssModal.tabs.about, icon: <BookOpen size={16} /> },
+    {
+      id: 1,
+      title: t.dssModal.tabs.relatedAssumption,
+      icon: <Lightbulb size={16} />,
+    },
+    {
+      id: 2,
+      title: t.dssModal.tabs.scenarioBuilding,
+      icon: <BarChart3 size={16} />,
+    },
   ];
 
   if (!isOpen) return null;
