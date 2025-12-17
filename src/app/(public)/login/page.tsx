@@ -44,7 +44,7 @@ const LoginPage = () => {
           <h2 className="mt-6 text-center text-3xl font-bold text-gray-800">
             Masuk ke Akun Anda
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          {/* <p className="mt-2 text-center text-sm text-gray-600">
             Atau{" "}
             <Link
               href="#"
@@ -52,7 +52,7 @@ const LoginPage = () => {
             >
               daftar akun baru
             </Link>
-          </p>
+          </p> */}
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>

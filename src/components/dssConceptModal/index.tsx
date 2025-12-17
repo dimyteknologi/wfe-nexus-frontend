@@ -14,6 +14,10 @@ import {
 import ContentAbout from "./contentAbout";
 import ContentRelatedAssumption from "./contentRelatedAssumtion";
 import ContentScenarioBuilding from "./contentScenarioBuilding";
+import ContentAboutContext from "./contentAboutContext";
+import ContentRelatedAssumptionContext from "./contentRelatedAssumptionContext";
+import ContentScenarioBuildingContext from "./contentScenarioBuildingContext";
+import { usePathname } from "next/navigation";
 
 interface DSSConceptModalProps {
   isOpen: boolean;
@@ -26,6 +30,8 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
+  const isContextSpecific = pathname?.includes("/context-specific");
 
   useEffect(() => {
     if (isOpen) {
@@ -137,11 +143,26 @@ const DSSConceptModal: React.FC<DSSConceptModalProps> = ({
                     transition={{ duration: 0.3 }}
                     className="max-w-4xl mx-auto"
                   >
-                    {activeTab === 0 && <ContentAbout />}
+                    {activeTab === 0 &&
+                      (isContextSpecific ? (
+                        <ContentAboutContext />
+                      ) : (
+                        <ContentAbout />
+                      ))}
 
-                    {activeTab === 1 && <ContentRelatedAssumption />}
+                    {activeTab === 1 &&
+                      (isContextSpecific ? (
+                        <ContentRelatedAssumptionContext />
+                      ) : (
+                        <ContentRelatedAssumption />
+                      ))}
 
-                    {activeTab === 2 && <ContentScenarioBuilding />}
+                    {activeTab === 2 &&
+                      (isContextSpecific ? (
+                        <ContentScenarioBuildingContext />
+                      ) : (
+                        <ContentScenarioBuilding />
+                      ))}
                   </motion.div>
                 </AnimatePresence>
               </div>

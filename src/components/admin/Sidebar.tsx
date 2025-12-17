@@ -67,7 +67,7 @@ export function AdminSidebar() {
           <div>
             <p className="font-medium text-gray-800">Admin User</p>
             <button
-              onClick={() => signOut({ callbackUrl: '/login' })}
+              onClick={() => signOut({ callbackUrl: '/' })}
               className="text-sm text-red-500 hover:text-red-700 font-medium flex items-center"
             >
               <span>Logout</span>
