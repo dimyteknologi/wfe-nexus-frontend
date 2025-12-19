@@ -1,13 +1,18 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "@/hooks/useTranslation";
 
+interface Row {
+  sector: string;
+  items: string[];
+}
+
 const ContentScenarioBuildingContext = () => {
- const { t } = useTranslation();
- const { scenarioBuildingContext, scenarioBuilding } = t.dssModal;
+  const { t } = useTranslation();
+  const { scenarioBuildingContext } = t.dssModal;
 
- const tableData = scenarioBuildingContext.table;
+  const tableData = scenarioBuildingContext.table;
 
- return (
+  return (
     <div className="bg-white rounded-2xl p-8">
       <motion.h2
         initial={{ opacity: 0, y: -10 }}
@@ -45,7 +50,7 @@ const ContentScenarioBuildingContext = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {tableData.rows.map((row: any, index: number) => (
+              {tableData.rows.map((row: Row, index: number) => (
                 <tr key={index} className="hover:bg-green-50 transition-colors duration-150 group">
                   <td className="px-6 py-4 font-medium text-green-800 group-hover:text-green-900 align-top">
                     {row.sector}

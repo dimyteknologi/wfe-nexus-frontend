@@ -18,5 +18,6 @@ export const addScenario =
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (err) {
       dispatch(setError("Fail saving scenario"));
+      console.log(err);
     }
   };
