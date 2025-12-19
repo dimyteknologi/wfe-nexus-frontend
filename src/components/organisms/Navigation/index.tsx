@@ -77,7 +77,7 @@ const Navigation = () => {
   };
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: "/" });
+    await signOut({ callbackUrl: window.location.origin });
   };
 
   return (

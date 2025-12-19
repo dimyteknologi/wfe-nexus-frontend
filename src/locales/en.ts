@@ -179,8 +179,20 @@ export const en = {
     },
     scenarioBuildingContext: {
         title: "Scenario Building",
-        intro: "Scenarios related to demand and supply, for each resource sector, include:",
-        table: "See About Table" 
+        intro: "For the specific context, the case examined focuses on villages/districts dominated by agricultural land within a small-island ecosystem that has abundant water resources (lakes) but faces difficulties in water transportation, as well as possessing geothermal potential that can be utilized for electricity generation and direct use. The available scenario setups to be simulated include:",
+        table: {
+        sector: "Sector",
+        scope: "Scope and Boundary",
+        rows: [
+          { sector: "Food Demand Side", items: [ "Population initial", "Population growth", "Rice demand per kapita", "Conversion factor GKP to GKG", "Conversion factor GKG to rice"] },
+          { sector: "Agriculture Production", items: ["Agriculture land", "Land conversion growth", "Base yield", "Cropping intensity target", "Water intensity input"] },
+          { sector: "Diesel Pump", items: ["Capacity", "Water head unit"] },
+          { sector: "Fertilizer", items: ["Percentage of chemical fertilizer", "Ratio organic to chemical mass"] },
+          { sector: "Rainfall", items: ["Rainfall", "Rainfall intensity per year", "Day of rain within a year"]},
+          { sector: "Solar PV Water Pump", items: ["Solar PV installed capacity", "Solar PV Fee (Charged to farmers)"] },
+          { sector: "Geothermal", items: ["Geothermal", "Capacity", "Utilization of excess steam"]}
+        ]
+      }
     }
   },
   login: {

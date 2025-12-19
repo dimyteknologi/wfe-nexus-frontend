@@ -27,7 +27,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Production Total [ton/year]-GKG",
     unit: "[ton/year]-GKG",
     type: "bar",
-    content: "",
+    content: "Number of productions for Gabah kering giling (GKG) in a year",
   },
   {
     category: "PRODUCTION",
@@ -35,7 +35,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Rice Production [ton/year]-rice",
     unit: "[ton/year]-rice",
     type: "bar",
-    content: "",
+    content: "Number of production rice in a year",
   },
   {
     category: "PRODUCTION",
@@ -66,7 +66,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Water Consumption [m3/year]",
     unit: "[m3/year]",
     type: "bar",
-    content: "",
+    content: "Water consumption for all agriculture area in a year ",
   },
   {
     category: "RESOURCE",
@@ -74,7 +74,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Fuel Consumption [KL/year]",
     unit: "[KL/year]",
     type: "bar",
-    content: "",
+    content: "Fuel consumption for all agriculture process in a year",
   },
   {
     category: "RESOURCE",
@@ -82,7 +82,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Chemical Fertilizer [ton/year]",
     unit: "[KWh/year]",
     type: "bar",
-    content: "",
+    content: "Chemical fertilizer consumption for all agriculture area in a year",
   },
   {
     category: "RESOURCE",
@@ -90,7 +90,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Renewable Consumption [KWh/year]",
     unit: "[KWh/year]",
     type: "bar",
-    content: "",
+    content: "Renewable consumption for all agriculture process in a year",
   },
   {
     category: "RESOURCE",
@@ -106,7 +106,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Total Emissions [ton/year]",
     unit: "[ton/year]",
     type: "bar",
-    content: "",
+    content: "Number of emissions from agriculture practices, most comes from energy and fertilizer",
     additionalSeries: [
       {
         name: "Emissions from Energy Baseline [ton/year]",
@@ -126,7 +126,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Food Sufficiency []",
     unit: "[]",
     type: "line",
-    content: "",
+    content: "Ratio between rice supply and demand",
     additionalSeries: [
       {
         name: "Food Sufficiency Baseline []",
@@ -146,7 +146,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Emissions Intensity from production [kg/ton]",
     unit: "[kg/ton]",
     type: "line",
-    content: "",
+    content: "Ratio of emissions to rice production ",
     additionalSeries: [
       {
         name: "Emissions Intensity from production Baseline [kg/ton]",
@@ -166,7 +166,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Emissions Reduction",
     unit: "%",
     type: "line",
-    content: "",
+    content: "Percentage of emissions reduction once solar PV and geothermal installed and operated",
   },
   {
     category: "IMPACT",
@@ -174,7 +174,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Water Intensity [m3/ha/year]",
     unit: "[m3/ha/year]",
     type: "line",
-    content: "",
+    content: "Water intensity average for agriculture area in a year",
     additionalSeries: [
       {
         name: "Water Intensity baseline [m3/ha/year]",
@@ -193,7 +193,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Fuel intensity [L/ha/tear]",
     unit: "[L/ha/tear]",
     type: "line",
-    content: "",
+    content: "Fuel intensity average for agriculture area in a year",
     additionalSeries: [
       {
         name: "Fuel intensity Baseline [L/ha/tear]",

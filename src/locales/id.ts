@@ -178,9 +178,21 @@ export const id = {
       }
     },
     scenarioBuildingContext: {
-        title: "Pembuatan Skenario",
-        intro: "Skenario terkait permintaan dan pasokan, untuk setiap sektor sumber daya, meliputi:",
-        table: "Lihat Tabel Tentang" 
+      title: "Pembuatan Skenario",
+      intro: "Untuk konteks spesifik, kasus yang ditelaah berfokus pada desa/kecamatan yang didominasi oleh lahan pertanian dalam ekosistem pulau kecil yang memiliki sumber daya air melimpah (danau) namun menghadapi kesulitan dalam transportasi air, serta memiliki potensi panas bumi yang dapat dimanfaatkan untuk pembangkit listrik dan penggunaan langsung. Pengaturan skenario yang tersedia untuk disimulasikan meliputi:",
+      table: {
+        sector: "Sektor",
+        scope: "Lingkup dan Batasan",
+        rows: [
+          { sector: "Sisi Permintaan Pangan", items: ["Populasi awal", "Pertumbuhan populasi", "Permintaan beras per kapita", "Faktor konversi GKP ke GKG", "Faktor konversi GKG ke beras"] },
+          { sector: "Produksi Pertanian", items: ["Lahan pertanian", "Pertumbuhan konversi lahan", "Yield dasar", "Target intensitas pertanaman", "Input intensitas air"] },
+          { sector: "Pompa Diesel", items: ["Kapasitas", "Unit head air"] },
+          { sector: "Pupuk", items: ["Persentase pupuk kimia", "Rasio massa organik terhadap kimia"] },
+          { sector: "Curah Hujan", items: ["Curah hujan", "Intensitas curah hujan per tahun", "Hari hujan dalam setahun"] },
+          { sector: "Pompa Air PV Surya", items: ["Kapasitas terpasang PV Surya", "Biaya PV Surya (Dibebankan ke petani)"] },
+          { sector: "Panas Bumi", items: ["Panas Bumi", "Kapasitas", "Pemanfaatan uap berlebih"] }
+        ]
+      }
     }
   },
   login: {

@@ -28,7 +28,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "food.populationInitial",
         information:
-          "Initial population of the area in 2025, used to calculate food demand.",
+          "The number of populations in the village or district.",
       },
       {
         label: "Population Growth [%/year]",
@@ -38,7 +38,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "food.populationGrowth",
         information:
-          "Scenario for population growth rate of area in %/year, divided into three period phases; 2025-2030, 2031-2040, and 2041-2045. The number is average value between 2010-2024.",
+          "The number of population growth for the village or district",
       },
       {
         label: "Rice Demand Per Person [kg/kap/year]",
@@ -48,7 +48,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "food.riceDemandPerPerson",
         information:
-          "Average rice demand per person in kg/kap/year, used to calculate total rice demand.",
+          "Number of rice consumption per capita",
       },
       {
         label: "Convertion Factor GKG to rice [dmnl]",
@@ -58,7 +58,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "food.convertionFactorToRice",
         information:
-          "Conversion factor from GKG (Greenhouse Gas Equivalent) to rice production, used to calculate the impact of rice production on GHG emissions.",
+          "Conversion Factor Gabah Kering GIling (GKG) to rice",
       },
       {
         label: "Convertion Factor GKP to GKG [dmnl]",
@@ -68,7 +68,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "food.convertionFactoTOGkg",
         information:
-          "Conversion factor from GKP (Greenhouse Gas Production) to GKG (Greenhouse Gas Equivalent), used to calculate the impact of rice production on GHG emissions.",
+          "Conversion Factor Gabah Kering Panen (GKP) to Gabah Kering GIling (GKG)",
       },
     ],
   },
@@ -83,7 +83,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "agriculture.landProduction",
         information:
-          "",
+          "The number of agriculture land in village/district in hectares",
       },
       {
         label: "Land Conversion",
@@ -93,7 +93,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "agriculture.conversionLandProduction",
         information:
-          "",
+          "The land conversion trend of agriculture land in village/district in %/year",
       },
       {
         label: "Base Yield [ton/ha]",
@@ -103,7 +103,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "agriculture.baseYield",
         information:
-          "",
+          "Potential yield of rice seeds if all resources available",
       },
       {
         label: "Cropping Intensity [1/year]",
@@ -113,7 +113,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "agriculture.croppingIntensity",
         information:
-          "",
+          "Target of cropping intensity base on type of seeds; the actual cropping intensity will be determined by water availability ",
       },
       {
         label: "Water intensity [m3/ha/season]",
@@ -123,7 +123,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "agriculture.waterIntensity",
         information:
-          "",
+          "Unit of water consumption for agriculture area",
       },
       // Ciherang
       // {
@@ -225,7 +225,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "diesel.installedCapacity",
         information:
-          "",
+          "The water pump power in Kilo Watt",
       },
       {
         label: "Head Unit [m]",
@@ -235,7 +235,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "diesel.headUnit",
         information:
-          "",
+          "Total height of water to be transported",
       },
     ],
   },
@@ -250,7 +250,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "fertilizer.percentageOfChemical",
         information:
-          "Percentage of chemical fertilizer used in agriculture, used to calculate fertilizer demand.",
+          "Percentage of chemical fertilizer usage from total consumption of fertilizer",
       },
       {
         label: "Ratio Organic Fertilizer to Chemical Fertilizer [dmnl]",
@@ -260,7 +260,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "fertilizer.ratioOrganic",
         information:
-          "Ratio of organic fertilizer to chemical fertilizer used in agriculture, used to calculate fertilizer demand.",
+          "Means that organic fertilizer will be X times from chemical fertilizer, for instance if the ratio value is 17, then 1 ton of chemical equal to 17 ton of organic according to the fertilizer content.",
       },
     ],
   },
@@ -275,7 +275,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "rainfall.annualRainfall",
         information:
-          "Average rainfall intensity in mm/day, used to calculate water availability for agriculture.",
+          "The annual rainfall intensity within the area",
       },
       {
         label: "Rainfall Duration [days]",
@@ -285,7 +285,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "rainfall.areaSize",
         information:
-          "Average rainfall duration in days, used to calculate water availability for agriculture.",
+          "The annual rainfall intensity within the area",
       },
     ],
   },
@@ -300,7 +300,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "solarPV.installedCapacity",
         information:
-          "",
+          "The number of capacity of Solar PV Installed",
       },
       {
         label: "Solar PV Fee (Rp/ha/musim tanam)",
@@ -310,7 +310,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "solarPV.fee",
         information:
-          "",
+          "The number of fee charged for farmer using solar PV",
       },
     ],
   },

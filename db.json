@@ -640,5 +640,28 @@
       ]
     }
   },
-  "scenario": []
+  "scenario": [],
+  "role": [
+    {
+      "id": "1",
+      "name": "Administrator",
+      "description": "Full access to all resources",
+      "permissions": []
+    },
+    {
+      "id": "2",
+      "name": "User",
+      "description": "Limited access",
+      "permissions": []
+    }
+  ],
+  "user": [
+    {
+      "id": "1",
+      "name": "Admin User",
+      "email": "admin@example.com",
+      "roleId": "1",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ]
 }
