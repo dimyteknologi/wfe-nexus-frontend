@@ -320,7 +320,7 @@ const LIVESTOCK_MAP: Record<string, number> = {
 
 const preprocessFisheryData = (data: IApiData): IApiData => ({
   ...data,
-  parameters: data.parameters.map((item) => ({
+  parameters: (data?.parameters ?? []).map((item) => ({
     ...item,
     values: growthDataByvalue(
       FISHERY_MAP[item.name],
@@ -331,7 +331,7 @@ const preprocessFisheryData = (data: IApiData): IApiData => ({
 
 const preprocessLivestockData = (data: IApiData): IApiData => ({
   ...data,
-  parameters: data.parameters.map((item) => ({
+  parameters: (data?.parameters ?? []).map((item) => ({
     ...item,
     values: growthDataByvalue(
       LIVESTOCK_MAP[item.name],
@@ -341,7 +341,7 @@ const preprocessLivestockData = (data: IApiData): IApiData => ({
 });
 
 const preprocessPopulationData = (data: IApiData): IApiData => {
-  const totalValues = data.parameters.reduce<number[]>((acc, item) => {
+  const totalValues = (data?.parameters ?? []).reduce<number[]>((acc, item) => {
     (item.values ?? []).forEach((val, idx) => {
       acc[idx] = (acc[idx] ?? 0) + (val ?? 0);
     });
@@ -351,7 +351,7 @@ const preprocessPopulationData = (data: IApiData): IApiData => {
   return {
     ...data,
     parameters: [
-      ...data.parameters,
+      ...(data?.parameters ?? []),
       { name: "Total Populasi", values: totalValues },
     ],
   };

@@ -20,10 +20,10 @@ import { contextSpecificInput } from "@/config/form";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
 import { ALL_METRICS_CONTEXT_SPECIFICS } from "@/lib/constant/metrics";
 import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSelector";
-import { useInitializeData } from "@/hooks/useInitDummy";
+// import { useInitializeData } from "@/hooks/useInitDummy";
 
 const ContextSpecificPage = () => {
-  useInitializeData();
+  // useInitializeData();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const simulationState = useAppSelector((state) => state.contextSpecific);
   const displayedMetrics = useAppSelector(selectDisplayedMetricsContext);

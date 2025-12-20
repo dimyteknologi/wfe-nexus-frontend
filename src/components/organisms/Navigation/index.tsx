@@ -30,7 +30,9 @@ const Navigation = () => {
       href: "#",
       label: t.navigation.dssInterface,
       subItems: [
-        { href: "/site-specific", label: t.navigation.siteSpecific },
+        ...(status === "authenticated"
+          ? [{ href: "/site-specific", label: t.navigation.siteSpecific }]
+          : []),
         { href: "/context-specific", label: t.navigation.contextSpecific },
       ],
     },
