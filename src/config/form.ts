@@ -314,6 +314,41 @@ export const contextSpecificInput: FormSection[] = [
       },
     ],
   },
+   {
+    title: "Geothermal",
+    inputs: [
+      {
+        label: "Installed Unit [unit]",
+        min: 0,
+        max: 500,
+        periods: ["2025-2034"],
+        withValidation: false,
+        id: "geothermal.installedCapacity",
+        information:
+          "The number of installed unit of Geothermal",
+      },
+      {
+        label: "Capacity per unit [MW/unit]",
+        min: 0,
+        max: 300,
+        periods: ["2025-2034"],
+        withValidation: false,
+        id: "geothermal.capacityPerUnit",
+        information:
+          "The number of fee charged for farmer using solar PV",
+      },
+      {
+        label: "Utilization of surface water for geothermal [ ]",
+        min: 0,
+        max: 1,
+        periods: ["2025-2034"],
+        withValidation: false,
+        id: "geothermal.utilizationOfSurfaceWater",
+        information:
+          "0 means water sources from deep water table, 1 means water from surface water",
+      },
+    ],
+  }
 ];
 
 export const siteSpecificInput: FormSection[] = [

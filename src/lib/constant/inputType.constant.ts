@@ -81,6 +81,13 @@ export interface UpdatePayload {
   path: string[];
   value: number | string | null;
 }
+
+export interface GeothermalState{
+  installedUnit: TimePeriodDataContextGeothermal;
+  capacityPerUnit: TimePeriodDataContextGeothermal;
+  utilizationOfSurfaceWater: TimePeriodDataContextGeothermal;
+}
+
 export const initialTimePeriodData: TimePeriodData = {
   "2025-2030": 0,
   "2031-2040": 0,
@@ -88,8 +95,10 @@ export const initialTimePeriodData: TimePeriodData = {
 };
 export type TimePeriodContext = "2015-2030";
 export type TimePeriodContextSolarPV = "2025-2034";
+export type TimePeriodContextGeothermal = "2025-2034";
 export type TimePeriodDataContext = Record<TimePeriodContext, number | null>;
 export type TimePeriodDataContextSolarPv = Record<TimePeriodContextSolarPV, number | null>;
+export type TimePeriodDataContextGeothermal = Record<TimePeriodContextGeothermal, number | null>;
 // export const initialTimePeriodDataContext: TimePeriodDataContext = {
 //   "2015-2030": 0,
 // };

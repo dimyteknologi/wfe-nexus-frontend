@@ -6,11 +6,10 @@ import {
   AgricultureProductionState,
   FertilizerState,
   RainfallState,
-  initialTimePeriodData,
-  TimePeriodData,
   BaselinePayload,
   DieselPumpState,
   SolarPvState,
+  GeothermalState,
 } from "@/lib/constant/inputType.constant";
 
 export interface ContextSpecificState {
@@ -21,6 +20,7 @@ export interface ContextSpecificState {
   fertilizer: FertilizerState;
   rainfall: RainfallState;
   solarPV: SolarPvState;
+  geothermal: GeothermalState;
 }
 
 export const ContextSpecific: ContextSpecificState = {
@@ -62,6 +62,11 @@ export const ContextSpecific: ContextSpecificState = {
   solarPV: {
     installedCapacity: { "2025-2034": 63 },
     fee: { "2025-2034": 150000 },
+  },
+  geothermal: {
+    installedUnit: { "2025-2034": 0 },
+    capacityPerUnit: { "2025-2034": 50 },
+    utilizationOfSurfaceWater: { "2025-2034": 1 },
   },
 };
 
