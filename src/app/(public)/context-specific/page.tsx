@@ -20,12 +20,17 @@ import { contextSpecificInput } from "@/config/form";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
 import { ALL_METRICS_CONTEXT_SPECIFICS } from "@/lib/constant/metrics";
 import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSelector";
+import { selectFuelIntensityPerScenario } from "@/stores/selectors/context-specific/resultSelector";
+import { selectActualCiPerScenario } from "@/stores/selectors/context-specific/resourceSupplySelector";
+import { selectDieselDemandPerScenario } from "@/stores/selectors/context-specific/resourceSupplySelector";
+import { selectWaterDemandAveragePerScenario } from "@/stores/selectors/context-specific/foodAndSupplyInputDemandSelector";
 // import { useInitializeData } from "@/hooks/useInitDummy";
 
 const ContextSpecificPage = () => {
   // useInitializeData();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const simulationState = useAppSelector((state) => state.contextSpecific);
+  console.log(useAppSelector(selectActualCiPerScenario));
   const displayedMetrics = useAppSelector(selectDisplayedMetricsContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();

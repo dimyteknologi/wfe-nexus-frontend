@@ -1,5 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { selectProductionTotalPerScenario } from "./resourceSupplySelector";
+import { selectActualCiPerScenario, selectProductionTotalPerScenario } from "./resourceSupplySelector";
 import {
   selectRiceProductionPerScenario,
   selectAverageProductivityPerScenario,
@@ -33,6 +33,7 @@ type ComparisonData = {
 export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
   createSelector(
     [
+      selectActualCiPerScenario,
       selectTotalCumulativeCostPerScenario,
       selectTotalCumulativeRevenuePerScenario,
       selectProductionTotalPerScenario,
@@ -53,6 +54,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       selectContextSpecificBName,
     ],
     (
+      actualCi,
       productionSolarCost,
       productionSolarRevenue,
       productionTotal,
@@ -73,6 +75,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       scenarioB,
     ) => {
       const metricsMap: Record<string, ComparisonData> = {
+        actualCi,
         productionSolar: productionSolarCost,
         productionSolarRevenue,
         productionTotal,
@@ -170,6 +173,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
 
 export const selectAllMetricsDataMap = createSelector(
   [
+    selectActualCiPerScenario,
     selectProductionTotalPerScenario,
     selectRiceProductionPerScenario,
     selectAverageProductivityPerScenario,
@@ -188,6 +192,7 @@ export const selectAllMetricsDataMap = createSelector(
     selectTotalCumulativeRevenuePerScenario,
   ],
   (
+    actualCi,
     productionTotal,
     productionRice,
     productionAverage,
@@ -206,6 +211,7 @@ export const selectAllMetricsDataMap = createSelector(
     solarRevenue,
   ) => {
     const metricsMap: Record<string, ComparisonData> = {
+      actualCi,
       productionTotal,
       productionRice,
       productionAverage,

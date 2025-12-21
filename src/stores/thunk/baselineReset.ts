@@ -35,6 +35,9 @@ export const CONTEXT_BASELINE_PAYLOAD = {
 
   "rainfall.annualRainfall": 710,
   "rainfall.areaSize": 100,
+  "geothermal.installedUnit": 0,
+  "geothermal.capacityPerUnit": 50,
+  "geothermal.utilizationOfSurfaceWater": 1
 };
 type ResetCategory = "siteSpecific" | "contextSpecific";
 

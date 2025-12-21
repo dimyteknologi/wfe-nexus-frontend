@@ -100,10 +100,11 @@ export const selectFuelConsumptionPerScenario = createSelector(
   (demand, supply) => {
     const minArray = (a: number[], b: number[]) =>
       a.map((val, i) => Math.min(val, b[i]));
+    console.log(supply.active, demand.active);
     return {
-      active: resultConverter(minArray(demand.active, supply.active)),
-      scenarioA: resultConverter(minArray(demand.scenarioA, supply.scenarioA)),
-      scenarioB: resultConverter(minArray(demand.scenarioB, supply.scenarioB)),
+      active: minArray(demand.active, supply.active),
+      scenarioA: minArray(demand.scenarioA, supply.scenarioA),
+      scenarioB: minArray(demand.scenarioB, supply.scenarioB),
     };
   },
 );
@@ -314,12 +315,6 @@ const calculateTotalRevenue = (
 export const selectTotalCumulativeRevenuePerScenario = createSelector(
   [selectBiayaBbmDieselPerScenario, selectCollectedFeePerScenario],
   (bbmDiesel, collectedFee) => {
-
-    // return {
-    //   active: Array(16).fill(0),
-    //   scenarioA: Array(16).fill(0),
-    //   scenarioB: Array(16).fill(0),
-    // }
 
     return {
       active: calculateTotalRevenue(bbmDiesel.active, collectedFee.active),

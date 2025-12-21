@@ -39,26 +39,11 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
   },
   {
     category: "PRODUCTION",
-    id: "productionSolar",
-    title: "Solar Panel Pump Financial Performance",
+    id: "actualCi",
+    title: "Cropping Intensity Actual",
     unit: "",
     type: "line",
-    content: "",
-    additionalSeries: [
-      {
-        name: "Total Cumulative Cost",
-        type: "line",
-        data: [],
-      },
-    ],
-  },
-  {
-    category: "PRODUCTION",
-    id: "productionAverage",
-    title: "Average Productivity [ton/ha/year]",
-    unit: " [ton/ha/year]",
-    type: "bar",
-    content: "",
+    content: ""
   },
   {
     category: "RESOURCE",
@@ -186,6 +171,30 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
         ],
       },
     ],
+  },
+
+  {
+    category: "IMPACT",
+    id: "productionSolar",
+    title: "Solar Panel Pump Financial Performance",
+    unit: "",
+    type: "line",
+    content: "",
+    additionalSeries: [
+      {
+        name: "Total Cumulative Cost",
+        type: "line",
+        data: [],
+      },
+    ],
+  },
+  {
+    category: "IMPACT",
+    id: "productionAverage",
+    title: "Average Productivity [ton/ha/year]",
+    unit: " [ton/ha/year]",
+    type: "bar",
+    content: "",
   },
   {
     category: "IMPACT",

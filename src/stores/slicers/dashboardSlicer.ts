@@ -27,10 +27,10 @@ const DEFAULT_CHARTS_BY_CATEGORY_SITE: Record<string, string[]> = {
 
 const DEFAULT_CHARTS_BY_CATEGORY_CONTEXT: Record<string, string[]> = {
   DEFAULT: [
-    "productionTotal",
     "waterConsumption",
     "totalemissionImpact",
     "productionRice",
+    "actualCi"
   ],
   PRODUCTION: [
     "productionTotal",
@@ -40,12 +40,13 @@ const DEFAULT_CHARTS_BY_CATEGORY_CONTEXT: Record<string, string[]> = {
   ],
   RESOURCE: [
     "fuelConsumption",
-    "chemicalFertilizerConsumption",
+    // "chemicalFertilizerConsumption",
     "renewableConsumption",
-    "organicFertilizereConsumption",
+    // "organicFertilizereConsumption",
   ],
   IMPACT: [
     "totalemissionImpact",
+    "productionTotal",
     "foodSuffiencyImpact",
     "emissionIntensityProductionImpact",
     "emissionReductionImpact",
