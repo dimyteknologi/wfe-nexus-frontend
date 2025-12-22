@@ -1,7 +1,9 @@
 import { createSelector } from "@reduxjs/toolkit";
 import {
   selectProductionTotalPerScenario,
+  selectSolarWaterPumpPerScenario,
   selectWaterAllocationForAgriPerScenario,
+  selectWaterPumpDieselPerScenario,
 } from "./resourceSupplySelector";
 import { selectContextSpecificActive } from "../baseSelector";
 import {
@@ -11,12 +13,10 @@ import {
 import {
   constantDevided,
   constantMultiply,
-  resultConverter,
 } from "@/lib/utils/formulas";
 import { ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
 import {
   calculateDevidedArrays,
-  selectLandPaddyFieldPerScenario,
   selectWaterDemandPerScenario,
   sumArrayData,
   selectChemicalDemandPerScenario,
@@ -100,7 +100,6 @@ export const selectFuelConsumptionPerScenario = createSelector(
   (demand, supply) => {
     const minArray = (a: number[], b: number[]) =>
       a.map((val, i) => Math.min(val, b[i]));
-    console.log(supply.active, demand.active);
     return {
       active: minArray(demand.active, supply.active),
       scenarioA: minArray(demand.scenarioA, supply.scenarioA),
@@ -127,9 +126,9 @@ export const selectChemicalFertillizerPerScenario = createSelector(
     const minArray = (a: number[], b: number[]) =>
       a.map((val, i) => Math.min(val, b[i]));
     return {
-      active: resultConverter(minArray(demand.active, supply.active)),
-      scenarioA: resultConverter(minArray(demand.scenarioA, supply.scenarioA)),
-      scenarioB: resultConverter(minArray(demand.scenarioB, supply.scenarioB)),
+      active: minArray(demand.active, supply.active),
+      scenarioA: minArray(demand.scenarioA, supply.scenarioA),
+      scenarioB: minArray(demand.scenarioB, supply.scenarioB),
     };
   },
 );
@@ -140,9 +139,9 @@ export const selectOrganicFertillizerPerScenario = createSelector(
     const minArray = (a: number[], b: number[]) =>
       a.map((val, i) => Math.min(val, b[i]));
     return {
-      active: resultConverter(minArray(demand.active, supply.active)),
-      scenarioA: resultConverter(minArray(demand.scenarioA, supply.scenarioA)),
-      scenarioB: resultConverter(minArray(demand.scenarioB, supply.scenarioB)),
+      active: minArray(demand.active, supply.active),
+      scenarioA: minArray(demand.scenarioA, supply.scenarioA),
+      scenarioB: minArray(demand.scenarioB, supply.scenarioB),
     };
   },
 );
@@ -164,6 +163,20 @@ export const selectEnergyEmissionsPerScenario = createSelector(
     ),
   }),
 );
+
+export const selectWaterTransportedPerScenario = createSelector(
+  [
+    selectSolarWaterPumpPerScenario,
+    selectWaterPumpDieselPerScenario
+  ],
+  (solarWater, dieselWater) => {
+    return {
+      active: sumArrayData(solarWater.active, dieselWater.active),
+      scenarioA: sumArrayData(solarWater.scenarioA, dieselWater.scenarioA),
+      scenarioB: sumArrayData(solarWater.scenarioB, dieselWater.scenarioB),
+    }
+  }
+)
 
 export const selectTotalEmissionPerScenario = createSelector(
   [

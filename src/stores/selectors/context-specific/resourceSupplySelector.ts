@@ -27,7 +27,8 @@ import {
 } from "@/lib/utils/formulas";
 import { RESOURCE_SUPPLY_INPUT } from "@/lib/constant/resourceSupplyInput.constant";
 import { ContextSpecific, ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
-import { FOOD_AND_YIELD } from "@/lib/constant/initialDataContext.constans";
+import { FOOD_AND_YIELD, GEOTHERMAL_INITIAL_DATA } from "@/lib/constant/initialDataContext.constans";
+import { getGeothermalPotentialGeneration, getRatioSteamToElecticityGeneraion } from "./geothermalImpactSelector";
 
 export const findResourceSupplyByTitle = (title: string) => {
   return RESOURCE_SUPPLY_INPUT.find((item) => item.title === title);
@@ -154,15 +155,16 @@ const calculateImpactWaterGeothermal = (
   return allocationGeo.map((alloc, i) => {
     const demand = demandGeo[i] ?? 0;
 
-    if (demand === 0) return 0;
+    if (demand === 0) return 1;
 
     const ratio = alloc / demand;
 
-    if (ratio === 0) return 0;
+    // if (ratio === 0) return 0;
 
-    if (ratio >= 1) return 1;
+    // if (ratio >= 1) return 1;
 
-    return 1 / (1 + Math.exp(-(ratio * 10 - 5)));
+    // return 1 / (1 + Math.exp(-(ratio * 10 - 5)));
+    return ratio;
   });
 };
 
@@ -193,55 +195,52 @@ const getRainfallDebit = (input?: ContextSpecificState) :number[] =>  {
   return Array(16).fill((annualRainfall / 1000) * areaSize * 10000);
 };
 
-export const selectInstalledCapacityPerScenario = createSelector(
-  [() => RESOURCE_SUPPLY_INPUT],
-  (resourceInput) => {
-    const geothermal =
-      resourceInput.find((item) => item.title === "Geothermal capacity")
-        ?.values ?? Array(16).fill(0);
+// export const selectInstalledCapacityPerScenario = createSelector(
+//   [() => RESOURCE_SUPPLY_INPUT],
+//   (resourceInput) => {
+//     const geothermal =
+//       resourceInput.find((item) => item.title === "Geothermal capacity")
+//         ?.values ?? Array(16).fill(0);
 
-    return {
-      active: geothermal,
-      //   baseline: geothermal,
-      scenarioA: geothermal,
-      scenarioB: geothermal,
-    };
-  },
-);
-
-export const selectMaximalGenerationPerScenario = createSelector(
-  [selectInstalledCapacityPerScenario],
-  (installedCapacityPerScenario) => ({
-    active: constantMultiply(installedCapacityPerScenario.active, 8760),
-    scenarioA: constantMultiply(installedCapacityPerScenario.scenarioA, 8760),
-    scenarioB: constantMultiply(installedCapacityPerScenario.scenarioB, 8760),
-  }),
-);
+//     return {
+//       active: geothermal,
+//       scenarioA: geothermal,
+//       scenarioB: geothermal,
+//     };
+//   },
+// );
 
 export const selectPotentialGenerationPerScenario = createSelector(
-  [selectMaximalGenerationPerScenario],
-  (maximalGenerationPerScenario) => ({
-    active: constantMultiply(maximalGenerationPerScenario.active, 0.92),
-    scenarioA: constantMultiply(maximalGenerationPerScenario.scenarioA, 0.92),
-    scenarioB: constantMultiply(maximalGenerationPerScenario.scenarioB, 0.92),
+  [selectContextSpecificActive,
+  selectedContextSpecificA,
+  selectedContextSpecificB],
+  (active, scenarioA, scenarioB) => ({
+    active: getGeothermalPotentialGeneration(active),
+    scenarioA: getGeothermalPotentialGeneration(scenarioA),
+    scenarioB: getGeothermalPotentialGeneration(scenarioB),
   }),
 );
 
 export const selectWaterDemandforGeothermalPerScenario = createSelector(
-  [selectPotentialGenerationPerScenario],
-  (potentialGenerationPerScenario) => {
+  [selectPotentialGenerationPerScenario,
+  selectContextSpecificActive,
+  selectedContextSpecificA,
+  selectedContextSpecificB],
+  (potentialGenerationPerScenario, active, scenarioA, scenarioB) => {
     const factor = 0.72 * 3.785;
+    const utilizationOfSurfaceWater = (input?: ContextSpecificState) => {
+      return input?.geothermal?.utilizationOfSurfaceWater?.["2025-2034"] ?? 0
+    };
     return {
-      active: constantMultiply(potentialGenerationPerScenario.active, factor),
-      // baseline: constantMultiply(potentialGenerationPerScenario.baseline, factor),
-      scenarioA: constantMultiply(
+      active: constantMultiply(constantMultiply(potentialGenerationPerScenario.active, factor), utilizationOfSurfaceWater(active)),
+      scenarioA: constantMultiply(constantMultiply(
         potentialGenerationPerScenario.scenarioA,
-        factor,
-      ),
-      scenarioB: constantMultiply(
+        factor
+      ),utilizationOfSurfaceWater(scenarioA)),
+      scenarioB: constantMultiply(constantMultiply(
         potentialGenerationPerScenario.scenarioB,
         factor,
-      ),
+      ),utilizationOfSurfaceWater(scenarioB))
     };
   },
 );
@@ -294,7 +293,6 @@ export const selectWaterAvailableSurfacePerScenario = createSelector(
   selectSurfaceWaterPerScenario,
   (surfaceWater) => ({
     active: constantMultiply(surfaceWater.active, 1.0),
-    // baseline: constantMultiply(surfaceWater.baseline, 1.00),
     scenarioA: constantMultiply(surfaceWater.scenarioA, 1.0),
     scenarioB: constantMultiply(surfaceWater.scenarioB, 1.0),
   }),
@@ -368,18 +366,13 @@ export const selectWaterGapPerScenario = createSelector(
   selectWaterPumpDieselPerScenario,
   selectWaterAvailableSurfacePerScenario,
   (waterDemandForAgriculture,waterDiesel, waterSurface) => ({
-    active: minArrayData(waterDemandForAgriculture.active, sumArrayData(
-      waterDiesel.active,
-      waterSurface.active,
-    )),
-    scenarioA: minArrayData(waterDemandForAgriculture.scenarioA,sumArrayData(
-      waterDiesel.scenarioA,
-      waterSurface.scenarioA,
-    )),
-    scenarioB: minArrayData(waterDemandForAgriculture.scenarioB, sumArrayData(
-      waterDiesel.scenarioB,
-      waterSurface.scenarioB,
-    ))
+    active: minArrayData(waterDemandForAgriculture.active, waterSurface.active),
+    // scenarioA: minArrayData(waterDemandForAgriculture.scenarioA,sumArrayData(
+    //   waterDiesel.scenarioA,
+    //   waterSurface.scenarioA,
+    // )),
+    scenarioA: minArrayData(waterDemandForAgriculture.scenarioA, waterSurface.scenarioA),
+    scenarioB: minArrayData(waterDemandForAgriculture.scenarioB, waterSurface.scenarioB),
   }),
 );
 
@@ -387,21 +380,19 @@ export const selectSolarWaterPumpPerScenario = createSelector(
   selectSolarPumpInputCapacitySelector,
   selectWaterGapPerScenario,
   (solarPump, waterGap) => {
-    const factor = (6 * 365 * 3600) / (9.81 * 30);
+    const numeratorFactor = 6 * 365 * 3600;
+    const denominatorFactor = 9.81 * 30;
+
+    const calculate = (pump: number[], gap: number[]) =>
+      minValueArrayData(
+        constantMultiply(pump, numeratorFactor / denominatorFactor),
+        gap
+      );
 
     return {
-      active: minValueArrayData(
-        constantMultiply(solarPump.active, factor),
-        waterGap.active
-      ),
-      scenarioA: minValueArrayData(
-        constantMultiply(solarPump.scenarioA, factor),
-        waterGap.scenarioA
-      ),
-      scenarioB: minValueArrayData(
-        constantMultiply(solarPump.scenarioB, factor),
-        waterGap.scenarioB
-      ),
+      active: calculate(solarPump.active, waterGap.active),
+      scenarioA: calculate(solarPump.scenarioA, waterGap.scenarioA),
+      scenarioB: calculate(solarPump.scenarioB, waterGap.scenarioB),
     };
   }
 );
@@ -479,11 +470,6 @@ export const selectWaterAllocationForGeoPerScenario = createSelector(
       demandGeothermal.active,
       availability.active,
     ),
-    // baseline: calculateGeothermalAllocation(
-    //     supplyWater.baseline,
-    //     demandGeothermal.baseline,
-    //     availability.baseline
-    // ),
     scenarioA: calculateGeothermalAllocation(
       supplyWater.scenarioA,
       demandGeothermal.scenarioA,
@@ -531,6 +517,92 @@ export const selectImpactOfWaterAvailabilityForGeothermal = createSelector(
       demandGeo.scenarioB,
     ),
   }),
+);
+
+
+// geothermal impact
+export const selectGeothermalActualGenerationPerScenario = createSelector(
+  [
+    selectContextSpecificActive,
+    selectedContextSpecificA,
+    selectedContextSpecificB,
+    selectImpactOfWaterAvailabilityForGeothermal
+  ],
+  (active, scenarioA, scenarioB, waterImpactGeo) => {
+    return {
+      active: multiplyArrayData(
+        waterImpactGeo.active,
+        getGeothermalPotentialGeneration(active)
+      ),
+
+      scenarioA: multiplyArrayData(
+        waterImpactGeo.scenarioA,
+        getGeothermalPotentialGeneration(scenarioA)
+      ),
+
+      scenarioB: multiplyArrayData(
+        waterImpactGeo.scenarioB,
+        getGeothermalPotentialGeneration(scenarioB)
+      ),
+    };
+  }
+);
+
+
+export const selectPotentialExcessSteamToUse = createSelector(
+  [
+    selectContextSpecificActive,
+    selectedContextSpecificA,
+    selectedContextSpecificB,
+    selectGeothermalActualGenerationPerScenario
+  ],
+  (active, scenarioA, scenarioB, geoActualGeneration) => {
+    const conversionFactor = 0.7 * 2450 / 1000 / 3600;
+    
+    return {
+      active: constantMultiply(
+        multiplyArrayData(
+          geoActualGeneration.active, 
+          getRatioSteamToElecticityGeneraion(active)
+        ),
+        conversionFactor
+      ),
+
+      scenarioA: constantMultiply(
+        multiplyArrayData(
+          geoActualGeneration.scenarioA,
+          getRatioSteamToElecticityGeneraion(scenarioA)
+        ),
+        conversionFactor
+      ),
+
+      scenarioB: constantMultiply(
+        multiplyArrayData(
+          geoActualGeneration.scenarioB,
+          getRatioSteamToElecticityGeneraion(scenarioB)
+        ),
+        conversionFactor
+      ),
+    };
+  }
+);
+
+export const potentialDryingAgriAndFinalProcessing = createSelector(
+  [
+    selectContextSpecificActive,
+    selectedContextSpecificA,
+    selectedContextSpecificB,
+    selectPotentialExcessSteamToUse
+  ],
+  (active, scenarioA, scenarioB, potentialExcessSteamToUse) => {
+    const constantFactor = GEOTHERMAL_INITIAL_DATA.STANDARD_ENERGY_FOR_RICE_DRYING;
+  
+    return {
+      active: constantDevided(constantMultiply(potentialExcessSteamToUse.active, 1000000), constantFactor),
+      scenarioA: constantDevided(constantMultiply(potentialExcessSteamToUse.scenarioA, 1000000), constantFactor),
+      scenarioB: constantDevided(constantMultiply(potentialExcessSteamToUse.scenarioB, 1000000), constantFactor),
+    };
+  }
 );
 
 // circular dependency from sigmoid function

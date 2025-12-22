@@ -323,7 +323,7 @@ export const contextSpecificInput: FormSection[] = [
         max: 500,
         periods: ["2025-2034"],
         withValidation: false,
-        id: "geothermal.installedCapacity",
+        id: "geothermal.installedUnit",
         information:
           "The number of installed unit of Geothermal",
       },

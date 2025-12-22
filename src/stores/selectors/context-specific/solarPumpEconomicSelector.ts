@@ -1,5 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { constantMultiply, resultConverter } from "@/lib/utils/formulas";
+import { constantMultiply } from "@/lib/utils/formulas";
 import { selectServiceAreaOfSolarPumpPerScenario } from "./resourceSupplySelector";
 import { selectedContextSpecificA, selectedContextSpecificB, selectSolarPumpInputCapacitySelector } from "./scenarioProjectionSelector";
 import { selectContextSpecificActive } from "../baseSelector";
@@ -129,23 +129,20 @@ export const selectCollectedFeePerScenario = createSelector(
     const getInput = (scenario: ContextSpecificState) =>
     scenario?.solarPV?.fee?.["2025-2034"] ?? 0;
     return {
-      active: resultConverter(
+      active: 
         multiplyArrayData(
           constantMultiply(serviceArea.active, getInput(active)),
           averagePlanting.active,
         ),
-      ),
-      scenarioA: resultConverter(
+      scenarioA: 
         multiplyArrayData(
           constantMultiply(serviceArea.scenarioA, getInput(scenarioA)),
           averagePlanting.scenarioA,
-        ),
       ),
-      scenarioB: resultConverter(
+      scenarioB: 
         multiplyArrayData(
           constantMultiply(serviceArea.scenarioB, getInput(scenarioB)),
           averagePlanting.scenarioB,
-        ),
       ),
     };
   },

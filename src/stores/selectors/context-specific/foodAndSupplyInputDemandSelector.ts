@@ -224,19 +224,26 @@ export const agricultureLandPerScenario = createSelector(
 export const agricultureLandPaddyPerscenario = createSelector(
   [agricultureLandPerScenario],
   (agriculture) => ({
-    active: Array(16).fill(100),
-    scenarioA: Array(16).fill(100),
-    scenarioB: Array(16).fill(100),
+    active: agriculture.active,
+    scenarioA: agriculture.scenarioA,
+    scenarioB: agriculture.scenarioB,
   })
 )
 
 export const selectWaterDemandAveragePerScenario = createSelector(
-  [agricultureLandPaddyPerscenario],
-  (shares) => ({
-    active: constantMultiply(calculateDemand(shares.active, "WATER_CONSUMPTION_UNIT"),2),
-    scenarioA: constantMultiply(calculateDemand(shares.scenarioA, "WATER_CONSUMPTION_UNIT"),2),
-    scenarioB: constantMultiply(calculateDemand(shares.scenarioB, "WATER_CONSUMPTION_UNIT"),2),
-  }),
+  [agricultureLandPaddyPerscenario,
+    selectContextSpecificActive,
+    selectedContextSpecificA,
+    selectedContextSpecificB],
+  (shares, active, scenarioA, scenarioB) => {
+    const getInputValue = (scenario: ContextSpecificState) =>
+    (scenario?.agriculture?.croppingIntensity?.["2015-2030"] ?? 0);
+
+    return {
+    active: constantMultiply(calculateDemand(shares.active, "WATER_CONSUMPTION_UNIT"), getInputValue(active)),
+    scenarioA: constantMultiply(calculateDemand(shares.scenarioA, "WATER_CONSUMPTION_UNIT"), getInputValue(scenarioA)),
+    scenarioB: constantMultiply(calculateDemand(shares.scenarioB, "WATER_CONSUMPTION_UNIT"), getInputValue(scenarioB)),
+  }},
 );
 
 export const selectChemicalDemandAveragePerScenario = createSelector(
@@ -381,7 +388,6 @@ export const selectWaterDemandPerScenario = createSelector(
   [selectWaterDemandAveragePerScenario, agricultureLandPerScenario],
   (waterDemand, paddyField) => ({
     active: multiplyArrayData(waterDemand.active, paddyField.active),
-    // baseline: multiplyArrayData(waterDemand.baseline, paddyField.baseline),
     scenarioA: multiplyArrayData(waterDemand.scenarioA, paddyField.scenarioA),
     scenarioB: multiplyArrayData(waterDemand.scenarioB, paddyField.scenarioB),
   }),

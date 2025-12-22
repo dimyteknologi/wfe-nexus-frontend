@@ -60,13 +60,13 @@ export const ContextSpecific: ContextSpecificState = {
     areaSize: { "2015-2030": 100 },
   },
   solarPV: {
-    installedCapacity: { "2025-2034": 63 },
+    installedCapacity: { "2025-2034": 0 },
     fee: { "2025-2034": 150000 },
   },
   geothermal: {
     installedUnit: { "2025-2034": 0 },
     capacityPerUnit: { "2025-2034": 50 },
-    utilizationOfSurfaceWater: { "2025-2034": 1 },
+    utilizationOfSurfaceWater: { "2025-2034": 0 },
   },
 };
 

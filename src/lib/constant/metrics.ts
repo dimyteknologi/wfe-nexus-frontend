@@ -31,6 +31,14 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
   },
   {
     category: "PRODUCTION",
+    id: "productionAverage",
+    title: "Average Productivity [ton/ha/year]",
+    unit: " [ton/ha/year]",
+    type: "bar",
+    content: "",
+  },
+  {
+    category: "PRODUCTION",
     id: "productionRice",
     title: "Rice Production [ton/year]-rice",
     unit: "[ton/year]-rice",
@@ -44,6 +52,25 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     unit: "",
     type: "line",
     content: ""
+  },
+
+    // "waterTransported",
+    // "potentialExcess",
+  {
+    category: "RESOURCE",
+    id: "waterTransported",
+    title: "Water Transported [m3/year]",
+    unit: "[m3/year]",
+    type: "bar",
+    content: "Water Transported for all agriculture area in a year ",
+  },
+  {
+    category: "RESOURCE",
+    id: "potentialExcess",
+    title: "Potential excess steam for drying agri product",
+    unit: "[equivalent with ton/year rice]",
+    type: "bar",
+    content: "",
   },
   {
     category: "RESOURCE",
@@ -61,14 +88,14 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     type: "bar",
     content: "Fuel consumption for all agriculture process in a year",
   },
-  {
-    category: "RESOURCE",
-    id: "chemicalFertilizerConsumption",
-    title: "Chemical Fertilizer [ton/year]",
-    unit: "[KWh/year]",
-    type: "bar",
-    content: "Chemical fertilizer consumption for all agriculture area in a year",
-  },
+  // {
+  //   category: "RESOURCE",
+  //   id: "chemicalFertilizerConsumption",
+  //   title: "Chemical Fertilizer [ton/year]",
+  //   unit: "[KWh/year]",
+  //   type: "bar",
+  //   content: "Chemical fertilizer consumption for all agriculture area in a year",
+  // },
   {
     category: "RESOURCE",
     id: "renewableConsumption",
@@ -77,14 +104,14 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     type: "bar",
     content: "Renewable consumption for all agriculture process in a year",
   },
-  {
-    category: "RESOURCE",
-    id: "organicFertilizereConsumption",
-    title: "Organic Fertilize [ton/year]",
-    unit: "[ton/year]",
-    type: "bar",
-    content: "",
-  },
+  // {
+  //   category: "RESOURCE",
+  //   id: "organicFertilizereConsumption",
+  //   title: "Organic Fertilize [ton/year]",
+  //   unit: "[ton/year]",
+  //   type: "bar",
+  //   content: "",
+  // },
   {
     category: "IMPACT",
     id: "totalemissionImpact",
@@ -187,14 +214,6 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
         data: [],
       },
     ],
-  },
-  {
-    category: "IMPACT",
-    id: "productionAverage",
-    title: "Average Productivity [ton/ha/year]",
-    unit: " [ton/ha/year]",
-    type: "bar",
-    content: "",
   },
   {
     category: "IMPACT",
