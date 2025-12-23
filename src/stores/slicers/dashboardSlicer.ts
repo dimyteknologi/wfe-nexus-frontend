@@ -53,7 +53,7 @@ const DEFAULT_CHARTS_BY_CATEGORY_CONTEXT: Record<string, string[]> = {
     "foodSuffiencyImpact",
     "emissionIntensityProductionImpact",
     "emissionReductionImpact",
-    "waterIntensityImpact",
+    // "waterIntensityImpact",
     "fuelIntensityImpact",
   ],
 };

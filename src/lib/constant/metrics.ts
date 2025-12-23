@@ -180,26 +180,25 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     type: "line",
     content: "Percentage of emissions reduction once solar PV and geothermal installed and operated",
   },
-  {
-    category: "IMPACT",
-    id: "waterIntensityImpact",
-    title: "Water Intensity [m3/ha/year]",
-    unit: "[m3/ha/year]",
-    type: "line",
-    content: "Water intensity average for agriculture area in a year",
-    additionalSeries: [
-      {
-        name: "Water Intensity baseline [m3/ha/year]",
-        type: "line",
-        data: [
-          7808.12844036697, 7808.12844036697, 7808.12844036697,
-          7808.12844036697, 7808.12844036697, 7808.12844036697,
-          7808.12844036697, 7808.12844036697, 7808.12844036697, 7808.12844036697,
-        ],
-      },
-    ],
-  },
-
+  // {
+  //   category: "IMPACT",
+  //   id: "waterIntensityImpact",
+  //   title: "Water Intensity [m3/ha/year]",
+  //   unit: "[m3/ha/year]",
+  //   type: "line",
+  //   content: "Water intensity average for agriculture area in a year",
+  //   additionalSeries: [
+  //     {
+  //       name: "Water Intensity baseline [m3/ha/year]",
+  //       type: "line",
+  //       data: [
+  //         7808.12844036697, 7808.12844036697, 7808.12844036697,
+  //         7808.12844036697, 7808.12844036697, 7808.12844036697,
+  //         7808.12844036697, 7808.12844036697, 7808.12844036697, 7808.12844036697,
+  //       ],
+  //     },
+  //   ],
+  // },
   {
     category: "IMPACT",
     id: "productionSolar",

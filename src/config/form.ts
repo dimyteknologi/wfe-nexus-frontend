@@ -239,31 +239,31 @@ export const contextSpecificInput: FormSection[] = [
       },
     ],
   },
-  {
-    title: "Fertilizer",
-    inputs: [
-      {
-        label: "Percentage of Chemical Fertilizer [%]",
-        min: 0,
-        max: 100,
-        periods: ["2015-2030"],
-        withValidation: false,
-        id: "fertilizer.percentageOfChemical",
-        information:
-          "Percentage of chemical fertilizer usage from total consumption of fertilizer",
-      },
-      {
-        label: "Ratio Organic Fertilizer to Chemical Fertilizer [dmnl]",
-        min: 0,
-        max: 1,
-        periods: ["2015-2030"],
-        withValidation: false,
-        id: "fertilizer.ratioOrganic",
-        information:
-          "Means that organic fertilizer will be X times from chemical fertilizer, for instance if the ratio value is 17, then 1 ton of chemical equal to 17 ton of organic according to the fertilizer content.",
-      },
-    ],
-  },
+  // {
+  //   title: "Fertilizer",
+  //   inputs: [
+  //     {
+  //       label: "Percentage of Chemical Fertilizer [%]",
+  //       min: 0,
+  //       max: 100,
+  //       periods: ["2015-2030"],
+  //       withValidation: false,
+  //       id: "fertilizer.percentageOfChemical",
+  //       information:
+  //         "Percentage of chemical fertilizer usage from total consumption of fertilizer",
+  //     },
+  //     {
+  //       label: "Ratio Organic Fertilizer to Chemical Fertilizer [dmnl]",
+  //       min: 0,
+  //       max: 1,
+  //       periods: ["2015-2030"],
+  //       withValidation: false,
+  //       id: "fertilizer.ratioOrganic",
+  //       information:
+  //         "Means that organic fertilizer will be X times from chemical fertilizer, for instance if the ratio value is 17, then 1 ton of chemical equal to 17 ton of organic according to the fertilizer content.",
+  //     },
+  //   ],
+  // },
   {
     title: "Rainfall",
     inputs: [

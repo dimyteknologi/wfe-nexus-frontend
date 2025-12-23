@@ -26,7 +26,7 @@ import {
   constantMultiply,
 } from "@/lib/utils/formulas";
 import { RESOURCE_SUPPLY_INPUT } from "@/lib/constant/resourceSupplyInput.constant";
-import { ContextSpecific, ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
+import { ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
 import { FOOD_AND_YIELD, GEOTHERMAL_INITIAL_DATA } from "@/lib/constant/initialDataContext.constans";
 import { getGeothermalPotentialGeneration, getRatioSteamToElecticityGeneraion } from "./geothermalImpactSelector";
 
@@ -36,7 +36,6 @@ export const findResourceSupplyByTitle = (title: string) => {
 
 export const divideEnergy = (data: Record<string, number[]>) => ({
   active: constantDevided(constantDevided(data.active, 36.9), 1000),
-  //   baseline: constantDevided(constantDevided(data.baseline, 36.9), 1000),
   scenarioA: constantDevided(constantDevided(data.scenarioA, 36.9), 1000),
   scenarioB: constantDevided(constantDevided(data.scenarioB, 36.9), 1000),
 });
