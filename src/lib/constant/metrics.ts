@@ -51,7 +51,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Cropping Intensity Actual",
     unit: "",
     type: "line",
-    content: ""
+    content: "Cropping intensity actual for agriculture area; determined by water sufficiency from all sources"
   },
 
     // "waterTransported",
@@ -62,12 +62,12 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Water Transported [m3/year]",
     unit: "[m3/year]",
     type: "bar",
-    content: "Water Transported for all agriculture area in a year ",
+    content: "The volume of water transported from surface (lake, dam, river) into the agriculture area using water pump that could be from diesel pump or solar PV based",
   },
   {
     category: "RESOURCE",
     id: "potentialExcess",
-    title: "Potential excess steam for drying agri product",
+    title: "The number of paddy production that can be dried using excess steam from geothermal operation after harvesting, equivalent in ton/year unit",
     unit: "[equivalent with ton/year rice]",
     type: "bar",
     content: "",
@@ -78,7 +78,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Water Consumption [m3/year]",
     unit: "[m3/year]",
     type: "bar",
-    content: "Water consumption for all agriculture area in a year ",
+    content: "Water consumption for all agriculture area in a year from all sources (surface water—river, dam; rain, and transported water from other sources)",
   },
   {
     category: "RESOURCE",
@@ -86,7 +86,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Fuel Consumption [KL/year]",
     unit: "[KL/year]",
     type: "bar",
-    content: "Fuel consumption for all agriculture process in a year",
+    content: "Fuel consumption for all agriculture process in a year, used for land preparation, planting, fertilizing, harvesting and post-harvest",
   },
   // {
   //   category: "RESOURCE",
@@ -102,7 +102,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Renewable Consumption [KWh/year]",
     unit: "[KWh/year]",
     type: "bar",
-    content: "Renewable consumption for all agriculture process in a year",
+    content: "Electricity production from solar PV in the area",
   },
   // {
   //   category: "RESOURCE",
@@ -115,13 +115,13 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
   {
     category: "IMPACT",
     id: "totalemissionImpact",
-    title: "Total Emissions [ton/year]",
-    unit: "[ton/year]",
+    title: "Total Emissions [ton CO2 equivalent/year]",
+    unit: "[ton CO2 equivalent/year]",
     type: "bar",
     content: "Number of emissions from agriculture practices, most comes from energy and fertilizer",
     additionalSeries: [
       {
-        name: "Emissions from Energy Baseline [ton/year]",
+        name: "Emissions from Energy Baseline [ton CO2 equivalent/year]",
         type: "bar",
         data: [
           282.72791607519, 358.825655571352, 358.825655571352,
@@ -158,7 +158,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Emissions Intensity from production [kg/ton]",
     unit: "[kg/ton]",
     type: "line",
-    content: "Ratio of emissions to rice production ",
+    content: "Number of emissions produce per rice production",
     additionalSeries: [
       {
         name: "Emissions Intensity from production Baseline [kg/ton]",
@@ -202,7 +202,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
   {
     category: "IMPACT",
     id: "productionSolar",
-    title: "Solar Panel Pump Financial Performance",
+    title: "Calculation of cumulative solar pump cost (for investment and monthly operational and maintenance cost) and cumulative revenue of operation from solar PV fee from farmers",
     unit: "",
     type: "line",
     content: "",
@@ -220,7 +220,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     title: "Fuel intensity [L/ha/tear]",
     unit: "[L/ha/tear]",
     type: "line",
-    content: "Fuel intensity average for agriculture area in a year",
+    content: "Fuel intensity average for agriculture area in a year; determine by seed type, and cropping intensity",
     additionalSeries: [
       {
         name: "Fuel intensity Baseline [L/ha/tear]",

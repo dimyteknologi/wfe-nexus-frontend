@@ -28,7 +28,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "food.populationInitial",
         information:
-          "The number of populations in the village or district.",
+          "The number of populations, could be a district or village; people unit. The range for a village is between 1000 – 3000 people",
       },
       {
         label: "Population Growth [%/year]",
@@ -38,7 +38,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "food.populationGrowth",
         information:
-          "The number of population growth for the village or district",
+          "The number of population growth for the village or district; in %/year unit; the range are between 0.5%-3% a year",
       },
       {
         label: "Rice Demand Per Person [kg/kap/year]",
@@ -48,7 +48,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "food.riceDemandPerPerson",
         information:
-          "Number of rice consumption per capita",
+          "Number of rice consumption per capita, based on national value in 2023; the range are between 50 – 120 kg/cap/year",
       },
       {
         label: "Convertion Factor GKG to rice [dmnl]",
@@ -83,27 +83,27 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "agriculture.landProduction",
         information:
-          "The number of agriculture land in village/district in hectares",
+          "Area of agriculture land in village/district in hectares; the range are between 40 – 200 ha for a village area ",
       },
       {
-        label: "Land Conversion",
+        label: "Land Conversion [%/year]",
         min: 2,
         max: 12,
         periods: ["2015-2030"],
         withValidation: false,
         id: "agriculture.conversionLandProduction",
         information:
-          "The land conversion trend of agriculture land in village/district in %/year",
+          "The land conversion trend of agriculture land in village/district in %/year; default value is 0 %/year",
       },
       {
-        label: "Base Yield [ton/ha]",
+        label: "Base Yield [ton/ha/season]",
         min: 2,
         max: 12,
         periods: ["2015-2030"],
         withValidation: false,
         id: "agriculture.baseYield",
         information:
-          "Potential yield of rice seeds if all resources available",
+          "Potential yield of rice seeds if all resources sufficient (water, fertilizer, energy, workforce, etc.). The number is based on seed variety/yield, where the range is between 5.5 – 7.5 ton/ha",
       },
       {
         label: "Cropping Intensity [1/year]",
@@ -113,7 +113,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "agriculture.croppingIntensity",
         information:
-          "Target of cropping intensity base on type of seeds; the actual cropping intensity will be determined by water availability ",
+          "Target of cropping intensity base on type of seeds; the actual cropping intensity will be determined by water availability; the range are between 1 – 2 times a year",
       },
       {
         label: "Water intensity [m3/ha/season]",
@@ -123,7 +123,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "agriculture.waterIntensity",
         information:
-          "Unit of water consumption for agriculture area",
+          "Unit of water consumption for agriculture area for a cropping season based on seeds type/yield, with range are between 6,500 – 10,000 m3/ha/season. (Min: 2 ; Max:12)",
       },
       // Ciherang
       // {
@@ -218,14 +218,14 @@ export const contextSpecificInput: FormSection[] = [
     title: "Diesel Pump",
     inputs: [
       {
-        label: "Installed Capacity [KWp]",
+        label: "Installed Capacity [KW]",
         min: 0,
         max: 100,
         periods: ["2015-2030"],
         withValidation: false,
         id: "diesel.installedCapacity",
         information:
-          "The water pump power in Kilo Watt",
+          "The water pump power in Kilo Watt; for 100 ha agriculture land the water pump capacity varies between 40 -60 KW, depend on head unit and distance from water sources to distribution initial point or reservoir",
       },
       {
         label: "Head Unit [m]",
@@ -235,7 +235,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "diesel.headUnit",
         information:
-          "Total height of water to be transported",
+          "Height of water to be transported, measure from the height between water surface and water reservoir; for effective transportation the head unit are between 20 – 50 m",
       },
     ],
   },
@@ -275,7 +275,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "rainfall.annualRainfall",
         information:
-          "The annual rainfall intensity within the area",
+          "The annual rainfall intensity within the area of district/village; the range for Indonesia between 200 – 1200 mm/year",
       },
       {
         label: "Rainfall Duration [days]",
@@ -285,7 +285,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "rainfall.areaSize",
         information:
-          "The annual rainfall intensity within the area",
+          "The day of rainy days in a year; the range are between 60 – 200 days in a year ",
       },
     ],
   },
@@ -300,7 +300,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "solarPV.installedCapacity",
         information:
-          "The number of capacity of Solar PV Installed",
+          "The number of capacity of Solar PV Installed; for 100 ha the range are between 60 – 90 KWp, depend on head unit and distance from water sources to distribution initial point or reservoir",
       },
       {
         label: "Solar PV Fee (Rp/ha/musim tanam)",
@@ -310,7 +310,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "solarPV.fee",
         information:
-          "The number of fee charged for farmer using solar PV",
+          "The number of fee charged for farmer using solar PV for irrigation purpose based on possessed agriculture area per farmer; with range are between 20,000 – 200,000 IDR/ha/season. The total number collected is the number of area times the fee.",
       },
     ],
   },

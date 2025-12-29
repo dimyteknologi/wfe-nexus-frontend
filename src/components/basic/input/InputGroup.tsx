@@ -54,7 +54,9 @@ const InputGroup: React.FC<InputGroupProps> = ({
 
           return (
             <div key={uniqueId} className="flex flex-col">
-              <span className="text-xs text-gray-500 mb-1">{period}</span>
+              {category !== "contextSpecific" && (
+                <span className="text-xs text-gray-500 mb-1">{period}</span>
+              )}
               <input
                 type="number"
                 className={`border rounded p-2 ${
