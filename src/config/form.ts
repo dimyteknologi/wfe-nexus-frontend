@@ -50,26 +50,26 @@ export const contextSpecificInput: FormSection[] = [
         information:
           "Number of rice consumption per capita, based on national value in 2023; the range are between 50 – 120 kg/cap/year",
       },
-      {
-        label: "Convertion Factor GKG to rice [dmnl]",
-        min: 0.5,
-        max: 1.5,
-        periods: ["2015-2030"],
-        withValidation: false,
-        id: "food.convertionFactorToRice",
-        information:
-          "Conversion Factor Gabah Kering GIling (GKG) to rice",
-      },
-      {
-        label: "Convertion Factor GKP to GKG [dmnl]",
-        min: 0.5,
-        max: 1.5,
-        periods: ["2015-2030"],
-        withValidation: false,
-        id: "food.convertionFactoTOGkg",
-        information:
-          "Conversion Factor Gabah Kering Panen (GKP) to Gabah Kering GIling (GKG)",
-      },
+      // {
+      //   label: "Convertion Factor GKG to rice [dmnl]",
+      //   min: 0.5,
+      //   max: 1.5,
+      //   periods: ["2015-2030"],
+      //   withValidation: false,
+      //   id: "food.convertionFactorToRice",
+      //   information:
+      //     "Conversion Factor Gabah Kering GIling (GKG) to rice",
+      // },
+      // {
+      //   label: "Convertion Factor GKP to GKG [dmnl]",
+      //   min: 0.5,
+      //   max: 1.5,
+      //   periods: ["2015-2030"],
+      //   withValidation: false,
+      //   id: "food.convertionFactoTOGkg",
+      //   information:
+      //     "Conversion Factor Gabah Kering Panen (GKP) to Gabah Kering GIling (GKG)",
+      // },
     ],
   },
   {
