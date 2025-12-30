@@ -164,12 +164,13 @@ const SimulationForm: React.FC<SimulationFormProps> = ({
   const handleBlur = useCallback(
     (id: string) => {
       const value = getValueFromNestedState(localInputs, id);
-      const numericValue = parseFloat(value ? value.toString() : "");
+      const numericValue = parseFloat(value ? value.toString() : category == "siteSpecific" ? "" : "0");
       // update error state
       const config = findInputConfig(id);
 
       // update clamp value
       let finalValue = numericValue;
+      console.log(finalValue, config);
       if (config && config.min !== undefined && config.max !== undefined) {
         finalValue = Math.max(config.min, Math.min(numericValue, config.max));
       }

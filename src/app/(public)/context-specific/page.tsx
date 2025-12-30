@@ -20,6 +20,7 @@ import { contextSpecificInput } from "@/config/form";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
 import { ALL_METRICS_CONTEXT_SPECIFICS } from "@/lib/constant/metrics";
 import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSelector";
+
 // import { useInitializeData } from "@/hooks/useInitDummy";
 
 const ContextSpecificPage = () => {
@@ -30,7 +31,7 @@ const ContextSpecificPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
-  const yearsArray = Array.from({ length: 10 }, (_, i) => 2015 + i);
+  const yearsArray = Array.from({ length: 6 }, (_, i) => 2025 + i);
   const isImportOpen = dssModalState.importModal;
   const isScenarioOpen = dssModalState.scenarioModal;
   const isDssConceptOpen = dssModalState.dssConceptModal;

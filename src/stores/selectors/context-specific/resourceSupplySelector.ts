@@ -253,7 +253,6 @@ export const selectTotalWaterDemandPerScenario = createSelector(
       waterDemandForAgriculture.active,
       geothermalWaterDemandPerScenario.active,
     ),
-    // baseline: sumArrayData(waterDemandForAgriculture.baseline, geothermalWaterDemandPerScenario.baseline),
     scenarioA: sumArrayData(
       waterDemandForAgriculture.scenarioA,
       geothermalWaterDemandPerScenario.scenarioA,
@@ -297,14 +296,29 @@ export const selectWaterAvailableSurfacePerScenario = createSelector(
   }),
 );
 
+const calcDieselPumpCapacity = (
+  input?: ContextSpecificState
+): number[] => {
+  if (!input) return Array(16).fill(0);
+
+  const installedCapacity =
+    input.diesel?.installedCapacity?.["2015-2030"] ?? 0;
+
+  const factor = (60 * 6 * 3600) / (9.81 * 30);
+
+  return Array(16).fill(installedCapacity * factor);
+};
+
 export const selectWaterPumpDieselPerScenario = createSelector(
-  [selectContextSpecificActive,selectedContextSpecificA,selectedContextSpecificB],
-  (activeState, scenarioA, scenarioB) => ({
-    active: getWaterPumpDiesel(activeState),
-    scenarioA: getWaterPumpDiesel(scenarioA),
-    scenarioB: getWaterPumpDiesel(scenarioB),
+  selectContextSpecificActive,
+  selectedContextSpecificA,
+  selectedContextSpecificB,
+  (active, scenarioA, scenarioB) => ({
+    active: calcDieselPumpCapacity(active),
+    scenarioA: calcDieselPumpCapacity(scenarioA),
+    scenarioB: calcDieselPumpCapacity(scenarioB),
   })
-)
+);
 
 // current static value 0
 const groundWaters = Array(16).fill(0);
@@ -335,6 +349,17 @@ export const selectGroundWaterWithdrawalPerScenario = createSelector(
   },
 );
 
+export const selectTotalAvailableWaterPerScenario = createSelector(
+  selectWaterAvailableSurfacePerScenario,
+  selectGroundWaterPerScenario,
+  selectGroundWaterWithdrawalPerScenario,
+  (surface, ground, withdrawal) => ({
+    active: sumArrayData(surface.active, ground.active, withdrawal.active),
+    scenarioA: sumArrayData(surface.scenarioA, ground.scenarioA, withdrawal.scenarioA),
+    scenarioB: sumArrayData(surface.scenarioB, ground.scenarioB, withdrawal.scenarioB),
+  })
+);
+
 // sum Available surface water, Ground water, Ground water withdrawal
 export const selectSumWaterGroundWaterWithdrawal = createSelector(
   selectWaterAvailableSurfacePerScenario,
@@ -346,7 +371,6 @@ export const selectSumWaterGroundWaterWithdrawal = createSelector(
       groundWater.active,
       groundWaterWithdrawal.active,
     ),
-    // baseline: sumArrayData(surfaceWater.baseline, groundWater.baseline, groundWaterWithdrawal.baseline),
     scenarioA: sumArrayData(
       surfaceWater.scenarioA,
       groundWater.scenarioA,
@@ -366,10 +390,6 @@ export const selectWaterGapPerScenario = createSelector(
   selectWaterAvailableSurfacePerScenario,
   (waterDemandForAgriculture,waterDiesel, waterSurface) => ({
     active: minArrayData(waterDemandForAgriculture.active, waterSurface.active),
-    // scenarioA: minArrayData(waterDemandForAgriculture.scenarioA,sumArrayData(
-    //   waterDiesel.scenarioA,
-    //   waterSurface.scenarioA,
-    // )),
     scenarioA: minArrayData(waterDemandForAgriculture.scenarioA, waterSurface.scenarioA),
     scenarioB: minArrayData(waterDemandForAgriculture.scenarioB, waterSurface.scenarioB),
   }),
@@ -384,10 +404,10 @@ export const selectSolarWaterPumpPerScenario = createSelector(
 
     const calculate = (pump: number[], gap: number[]) =>
       minValueArrayData(
-        constantMultiply(pump, numeratorFactor / denominatorFactor),
+        constantDevided(constantMultiply(constantMultiply(pump,0.8), numeratorFactor),denominatorFactor),
         gap
       );
-
+      console
     return {
       active: calculate(solarPump.active, waterGap.active),
       scenarioA: calculate(solarPump.scenarioA, waterGap.scenarioA),
@@ -399,18 +419,18 @@ export const selectSolarWaterPumpPerScenario = createSelector(
 
 export const selectSupplyWaterTotalPerScenario = createSelector(
   [
-    // selectSolarWaterPumpPerScenario,
+    selectSolarWaterPumpPerScenario,
     selectWaterAvailableSurfacePerScenario,
     selectWaterPumpDieselPerScenario
   ],
-  (surfaceWater, waterDiesel) => ({
-    active: sumArrayData(surfaceWater.active, waterDiesel.active),
+  (solarWater,surfaceWater, waterDiesel) => ({
+    active: sumArrayData(solarWater.active, surfaceWater.active, waterDiesel.active),
     scenarioA: sumArrayData(
-      surfaceWater.scenarioA,
+      solarWater.scenarioA, surfaceWater.scenarioA,
       waterDiesel.scenarioA,
     ),
     scenarioB: sumArrayData(
-      surfaceWater.scenarioB,
+      solarWater.scenarioB, surfaceWater.scenarioB,
       waterDiesel.scenarioB,
     ),
   }),
@@ -798,7 +818,7 @@ export const selectSolarPumpElectricityPerGenerationPerScenario =
     const calculate = (arr: number[]) =>
       constantDevided(
         constantMultiply(constantMultiply(constantMultiply(arr, 5), 0.8), 120),
-        1_000_000,
+        1000000,
       );
     return {
       active: calculate(solarPump.active),
@@ -855,7 +875,6 @@ export const selectElectricityFromHuskPerScenario = createSelector(
       constantMultiply(huskUtil.active, 3.8892 * 1000 * 0.25),
       1000000,
     ),
-    // // baseline: constantDevided(constantMultiply(huskUtil.baseline, 3.8892 * 1000 * 0.25),1000000),
     scenarioA: constantDevided(
       constantMultiply(huskUtil.scenarioA, 3.8892 * 1000 * 0.25),
       1000000,

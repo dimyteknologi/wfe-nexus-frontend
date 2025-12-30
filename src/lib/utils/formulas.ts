@@ -212,7 +212,7 @@ export const constantAdd = (data: number[], constant: number) => {
 };
 
 export const resultConverter = (data: number[]) => {
-  return data.map((d) => parseFloat(d.toFixed(2)));
+  return data.map((d) => parseFloat(d.toFixed(8)));
 };
 
 export const sumArrays = (...arrays: number[][]) => {

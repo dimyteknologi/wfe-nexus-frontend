@@ -111,21 +111,21 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       if (selectedMetricData.active?.length > 0) {
         series.push({
           name: "Current",
-          data: selectedMetricData.active.slice(0, 10),
+          data: selectedMetricData?.active?.slice(0, 6) ?? Array(6).fill(0),
         });
         colors.push(dynamicColors[0]);
       }
       if (selectedMetricData.scenarioA?.length > 0 && scenarioA) {
         series.push({
           name: scenarioA,
-          data: selectedMetricData.scenarioA.slice(0, 10),
+          data: selectedMetricData.scenarioA.slice(0, 6),
         });
         colors.push(dynamicColors[1]);
       }
       if (selectedMetricData.scenarioB?.length > 0 && scenarioB) {
         series.push({
           name: scenarioB,
-          data: selectedMetricData.scenarioB.slice(0, 10),
+          data: selectedMetricData.scenarioB.slice(0, 6),
         });
         colors.push(dynamicColors[2]);
       }
@@ -134,8 +134,8 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
           series.push({
             name: additional.name,
             data: metricId === "productionSolar"
-                ? productionSolarRevenue?.active?.slice(0, 10)
-                : additional.data,
+                ? productionSolarRevenue?.active?.slice(0, 6)
+                : additional.data.slice(0, 6),
           });
           colors.push(additional.color || "#FF6D1F");
         }
