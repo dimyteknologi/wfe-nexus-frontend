@@ -18,17 +18,17 @@ import { useTranslation } from "@/hooks/useTranslation";
 const organization = [
   {
     id: 1,
-    name: "Kementrian PPN/Bappenas",
+    name: "Kementerian PPN/Bappenas",
     imgSrc: "./assets/logo-bappenas.svg",
   },
-  { id: 2, name: "Kementrian ESDM", imgSrc: "./assets/logo-esdm.svg" },
+  { id: 2, name: "Kementerian ESDM", imgSrc: "./assets/logo-esdm.svg" },
   {
     id: 3,
-    name: "Karawang",
+    name: "Pemerintah Kabupaten Karawang",
     imgSrc: "./assets/logo-karawang.svg",
   },
-  { id: 4, name: "Samosir", imgSrc: "./assets/logo-samosir.svg" },
-  { id: 5, name: "Tanggamus", imgSrc: "./assets/logo-tanggamus.svg" },
+  { id: 4, name: "Pemerintah Kabupaten Samosir", imgSrc: "./assets/logo-samosir.svg" },
+  { id: 5, name: "Pemerintah Kabupaten Tanggamus", imgSrc: "./assets/logo-tanggamus.svg" },
 ];
 
 const LandingPage = () => {

@@ -94,7 +94,13 @@ const Navigation = () => {
         <div className="container mx-auto px-4 flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-xl font-bold text-green-700">Nexus Logo</span>
+            <Image
+              src="/assets/nexus-logo.png"
+              alt="Nexus Logo"
+              width={120}
+              height={40}
+              className="object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
