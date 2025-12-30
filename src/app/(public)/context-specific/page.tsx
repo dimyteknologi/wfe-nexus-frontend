@@ -15,6 +15,7 @@ import {
   setImportModal,
   setScenarioModal,
 } from "@/stores/slicers/dssModalSlicer";
+import { setPowerGeneration, PowerGenerationType } from "@/stores/slicers/powerGenerationSlicer";
 import { File, FileUp } from "lucide-react";
 import { contextSpecificInput } from "@/config/form";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
@@ -25,6 +26,8 @@ import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSe
 const ContextSpecificPage = () => {
   // useInitializeData();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isPowerGenDropdownOpen, setIsPowerGenDropdownOpen] = useState(false);
+  const selectedPowerGen = useAppSelector((state) => state.powerGeneration.selectedType);
   const simulationState = useAppSelector((state) => state.contextSpecific);
   const displayedMetrics = useAppSelector(selectDisplayedMetricsContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,6 +61,18 @@ const ContextSpecificPage = () => {
     dispatch(setChartsToCategoryPreset({ target: "context", category }));
   };
 
+  const powerGenOptions = [
+    { value: "both" as const, label: "Solar PV + Geothermal" },
+    { value: "solar" as const, label: "Solar PV Only" },
+    { value: "geothermal" as const, label: "Geothermal Only" },
+    { value: "none" as const, label: "None" },
+  ];
+
+  const handlePowerGenSelect = (option: PowerGenerationType) => {
+    dispatch(setPowerGeneration(option));
+    setIsPowerGenDropdownOpen(false);
+  };
+
   return (
     <div className="w-full px-6 pt-28 overflow-hidden">
       <Alert />
@@ -82,6 +97,54 @@ const ContextSpecificPage = () => {
           >
             Scenario Menu
           </button>
+          {/* Power Generation Toggle */}
+          <div className="relative">
+            <button
+              className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg text-xs text-white font-bold bg-blue-600 hover:bg-blue-700 transition-colors flex items-center gap-2"
+              onClick={() => setIsPowerGenDropdownOpen(!isPowerGenDropdownOpen)}
+              aria-expanded={isPowerGenDropdownOpen}
+            >
+              {powerGenOptions.find(opt => opt.value === selectedPowerGen)?.label}
+              <svg
+                className={`w-4 h-4 transition-transform ${isPowerGenDropdownOpen ? "rotate-180" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {isPowerGenDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden">
+                {powerGenOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => handlePowerGenSelect(option.value)}
+                    className={`w-full text-left px-4 py-3 text-sm hover:bg-blue-50 transition-colors ${
+                      selectedPowerGen === option.value
+                        ? "bg-blue-100 text-blue-700 font-semibold"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    {option.label}
+                    {selectedPowerGen === option.value && (
+                      <svg
+                        className="inline-block w-4 h-4 ml-2"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex gap-4 items-center">
           <div className="flex gap-4">

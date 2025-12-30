@@ -14,6 +14,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
   information,
   min,
   max,
+  disabled = false,
 }) => {
   const [isHover, setIsHover] = useState(false);
 
@@ -31,7 +32,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
             <Info size={15} />
           </div>
           {isHover && (
-            <div className="absolute z-500 right-0 top-0 w-75 translate-y-5 bg-white border-2 border-green-600 rounded-xl p-2 shadow-xl">
+            <div className="absolute z-500 right-0 top-0 w-75 lg:w-52 translate-y-5 bg-white border-2 border-green-600 rounded-xl p-2 shadow-xl">
               <p className="text-xs">
                 <span className="text-black">Description:</span> {information}
               </p>
@@ -61,10 +62,11 @@ const InputGroup: React.FC<InputGroupProps> = ({
                 type="number"
                 className={`border rounded p-2 ${
                   errors[uniqueId] ? "border-red-500" : "border-gray-300"
-                }`}
+                } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}`}
                 value={value}
                 onChange={(e) => onChange(uniqueId, e.target.value)}
                 onBlur={() => onBlur(uniqueId)}
+                disabled={disabled}
               />
               {errors[uniqueId] && (
                 <span className="text-red-500 text-xs mt-1">
