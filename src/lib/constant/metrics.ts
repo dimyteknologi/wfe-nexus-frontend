@@ -67,10 +67,10 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
   {
     category: "RESOURCE",
     id: "potentialExcess",
-    title: "The number of paddy production that can be dried using excess steam from geothermal operation after harvesting, equivalent in ton/year unit",
+    title: "Potential excess steam for drying agriculture product",
     unit: "[equivalent with ton/year rice]",
     type: "bar",
-    content: "",
+    content: "The number of paddy production that can be dried using excess steam from geothermal operation after harvesting, equivalent in ton/year unit",
   },
   {
     category: "RESOURCE",
@@ -202,10 +202,10 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
   {
     category: "IMPACT",
     id: "productionSolar",
-    title: "Calculation of cumulative solar pump cost (for investment and monthly operational and maintenance cost) and cumulative revenue of operation from solar PV fee from farmers",
+    title: "Solar Panel Pump Financial performance",
     unit: "",
     type: "line",
-    content: "",
+    content: "Calculation of cumulative solar pump cost (for investment and monthly operational and maintenance cost) and cumulative revenue of operation from solar PV fee from farmers",
     additionalSeries: [
       {
         name: "Total Cumulative Cost",

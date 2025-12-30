@@ -164,7 +164,7 @@ const SimulationForm: React.FC<SimulationFormProps> = ({
   const handleBlur = useCallback(
     (id: string) => {
       const value = getValueFromNestedState(localInputs, id);
-      const numericValue = parseFloat(value ? value.toString() : "");
+      const numericValue = parseFloat(value !== null && value !== undefined ? value.toString() : "");
       // update error state
       const config = findInputConfig(id);
 
