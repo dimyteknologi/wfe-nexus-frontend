@@ -25,6 +25,7 @@ export type InputGroupProps = {
   information: string;
   min: number;
   max: number;
+  disabled?: boolean;
 };
 
 export type SectionCardProps = {

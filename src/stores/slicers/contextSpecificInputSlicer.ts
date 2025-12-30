@@ -35,7 +35,7 @@ export const ContextSpecific: ContextSpecificState = {
   agriculture: {
     landProduction: { "2015-2030": 100 },
     conversionLandProduction: { "2015-2030": 0 },
-    baseYield: { "2015-2030": 5.5 },
+    baseYield: { "2015-2030": 7.5 },
     croppingIntensity: { "2015-2030": 2 },
     waterIntensity: {"2015-2030": 7800}
     // areaCiherang: { "2015-2030": 25000 },

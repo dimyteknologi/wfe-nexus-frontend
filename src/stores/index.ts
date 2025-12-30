@@ -37,6 +37,7 @@ import resourceReducer from "@/stores/slicers/resourceSlicer";
 import { apAreaReducer } from "./slicers/intermediateOuput";
 import { userReducer } from "./slicers/userSlicer";
 import { authReducer } from "@/stores/slicers/auth/AuthSlice";
+import { powerGenerationReducer } from "./slicers/powerGenerationSlicer";
 
 DssPageListener();
 // addGdpListeners();
@@ -66,6 +67,7 @@ export const appReducer = combineReducers({
   dssModal: dssModalReducer,
   alert: alertReducer,
   apArea: apAreaReducer,
+  powerGeneration: powerGenerationReducer,
 
   [gdpApi.reducerPath]: gdpApi.reducer,
   [agricultureApi.reducerPath]: agricultureApi.reducer,

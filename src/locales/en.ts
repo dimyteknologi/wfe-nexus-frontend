@@ -217,7 +217,7 @@ export const en = {
       joinSuffix: "organizations using our platform",
       collaboration: "Collaboration Simulation",
       activeUser: "Active User",
-      collaboratedWith: "Collaborated with government leading organizations"
+      collaboratedWith: "Collaborated with government leading organizations in piloting"
     },
     features: {
       badge: "Powerful Features",

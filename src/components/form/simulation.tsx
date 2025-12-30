@@ -18,6 +18,7 @@ import {
   DssContextSpecificState,
   setAllActiveInputs as setActiveInputContext,
 } from "@/stores/slicers/contextSpecificInputSlicer";
+import { useAppSelector } from "@/stores/root-reducer";
 
 // const getValueFromNestedState = (state: SimulationState, path: string): string => {
 //   return path.split('.').reduce((acc: SimulationState | undefined, part) => acc && acc[part], state) ?? '';
@@ -51,6 +52,7 @@ const SimulationForm: React.FC<SimulationFormProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [localInputs, setLocalInputs] = useState(simulationState.active);
   const debouncedInputs = useDebounce(localInputs, 750);
+  const powerGenType = useAppSelector((state) => state.powerGeneration.selectedType);
 
   useEffect(() => {
     setLocalInputs(simulationState.active);
@@ -69,6 +71,45 @@ const SimulationForm: React.FC<SimulationFormProps> = ({
       }
     }
   }, [debouncedInputs, dispatch, category]);
+
+  // Effect to reset Solar PV and Geothermal values to 0 based on power generation selection
+  useEffect(() => {
+    if (category !== "contextSpecific") return;
+
+    setLocalInputs((prevState: SiteSpecificState | ContextSpecificState) => {
+      const newState = JSON.parse(JSON.stringify(prevState)) as ContextSpecificState;
+
+      // Reset Solar PV values to 0
+      if (powerGenType === "geothermal" || powerGenType === "none") {
+        if (newState.solarPV) {
+          Object.keys(newState.solarPV).forEach((key) => {
+            const value = newState.solarPV[key as keyof typeof newState.solarPV];
+            if (typeof value === "object" && value !== null) {
+              Object.keys(value).forEach((period) => {
+                (value as Record<string, number>)[period] = 0;
+              });
+            }
+          });
+        }
+      }
+
+      // Reset Geothermal values to 0
+      if (powerGenType === "solar" || powerGenType === "none") {
+        if (newState.geothermal) {
+          Object.keys(newState.geothermal).forEach((key) => {
+            const value = newState.geothermal[key as keyof typeof newState.geothermal];
+            if (typeof value === "object" && value !== null) {
+              Object.keys(value).forEach((period) => {
+                (value as Record<string, number>)[period] = 0;
+              });
+            }
+          });
+        }
+      }
+
+      return newState;
+    });
+  }, [powerGenType, category]);
 
   const flattenedInputs = useMemo(() => {
     const flatData: Record<string, string | null> = {};

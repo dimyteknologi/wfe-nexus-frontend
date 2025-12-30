@@ -2,6 +2,7 @@ import InputGroup from "@/components/basic/input/InputGroup";
 import SectionCard from "@/components/card/SectionCard";
 import { FormContainerProps } from "@/lib/types/dss-input.dummy.types.rtk";
 import React from "react";
+import { useAppSelector } from "@/stores/root-reducer";
 
 const FormContainer: React.FC<FormContainerProps> = ({
   inputs,
@@ -11,6 +12,21 @@ const FormContainer: React.FC<FormContainerProps> = ({
   sections,
   category,
 }) => {
+  const powerGenType = useAppSelector((state) => state.powerGeneration.selectedType);
+
+  // Determine which inputs should be disabled based on power generation selection
+  const isInputDisabled = (inputId: string): boolean => {
+    if (category !== "contextSpecific") return false;
+
+    const isSolarPV = inputId.startsWith("solarPV");
+    const isGeothermal = inputId.startsWith("geothermal");
+
+    if (powerGenType === "solar" && isGeothermal) return true;
+    if (powerGenType === "geothermal" && isSolarPV) return true;
+    if (powerGenType === "none" && (isSolarPV || isGeothermal)) return true;
+
+    return false;
+  };
   return (
     <div className="w-full overflow-y-scroll">
       <div className="pl-2 sm:pl-4 mt-2 relative w-full">
@@ -48,6 +64,7 @@ const FormContainer: React.FC<FormContainerProps> = ({
                         information={input.information}
                         min={input.min}
                         max={input.max}
+                        disabled={isInputDisabled(input.id)}
                       />
                       {conversionInput && (
                         <InputGroup
@@ -62,6 +79,7 @@ const FormContainer: React.FC<FormContainerProps> = ({
                           information={conversionInput.information}
                           min={conversionInput.min}
                           max={conversionInput.max}
+                          disabled={isInputDisabled(conversionInput.id)}
                         />
                       )}
                     </div>
@@ -87,6 +105,7 @@ const FormContainer: React.FC<FormContainerProps> = ({
                     information={input.information}
                     min={input.min}
                     max={input.max}
+                    disabled={isInputDisabled(input.id)}
                   />
                 );
               })}

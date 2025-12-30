@@ -217,12 +217,12 @@ export const id = {
       joinSuffix: "organisasi yang menggunakan platform kami",
       collaboration: "Simulasi Kolaborasi",
       activeUser: "Pengguna Aktif",
-      collaboratedWith: "Berkolaborasi dengan organisasi pemerintah terkemuka"
+      collaboratedWith: "Berkolaborasi dengan organisasi pemerintah dalam hal piloting"
     },
     features: {
       badge: "Fitur Canggih",
       title: "Segala yang Anda Butuhkan untuk Keputusan Terinformasi",
-      subtitle: "Platform kami menyediakan alat komprehensif untuk menganalisis dan mengoptimalkan Nexus Air-Energi-Pangan",
+      subtitle: "Platform kami menyediakan alat komprehensif untuk menganalisis dan mengoptimalkan Water-Energy-Food Nexus",
       items: {
          analytics: { title: "Analitik Tingkat Lanjut", desc: "Manfaatkan analitik konteks dan situs untuk mendapatkan wawasan mendalam tentang saling ketergantungan dan dampak nexus." },
          modeling: { title: "Pemodelan Skenario", desc: "Buat dan bandingkan beberapa skenario untuk mengevaluasi keputusan kebijakan dalam kondisi yang berbeda." },
