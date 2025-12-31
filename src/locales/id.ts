@@ -249,6 +249,77 @@ export const id = {
        button: "Mulai Sekarang"
     }
   },
+  about: {
+    header: {
+      badge: "Inisiatif Pemerintah",
+      title: "Tentang WEF Nexus DSS",
+      subtitle: "Platform inovatif untuk mendukung pengambilan keputusan terpadu dalam mengelola sumber daya air, energi, dan pangan"
+    },
+    tabs: {
+      nexus: "TENTANG WEF NEXUS",
+      dss: "TENTANG ALAT DSS",
+      developers: "PENGEMBANG"
+    },
+    nexusTab: {
+      title: "Pendekatan WEF Nexus Terpadu",
+      intro: "Water-Energy-Food (WEF) Nexus adalah pendekatan terpadu untuk mengelola dan memahami keterkaitan antara sistem air, energi, dan pangan. Pertama kali dibahas di World Economic Forum (WEF) pada tahun 2008 untuk mengatasi tantangan global di masa depan.",
+      waterSecurity: {
+        title: "Ketahanan Air",
+        description: "Kapasitas populasi untuk menjaga akses berkelanjutan terhadap kuantitas air berkualitas yang memadai (UN-Water, 2013)"
+      },
+      energySecurity: {
+        title: "Ketahanan Energi",
+        description: "Ketersediaan berkelanjutan sumber energi dengan harga terjangkau (IEA, 1974)"
+      },
+      foodSecurity: {
+        title: "Ketahanan Pangan",
+        description: "Ketika semua orang setiap saat memiliki akses fisik dan ekonomi terhadap pangan yang cukup, aman dan bergizi (The WFS, 1996)"
+      },
+      implementationTitle: "Implementasi di Indonesia",
+      implementationText: "Di Indonesia, konsep ini dipromosikan dalam rencana jangka panjang dan menengah, dengan penekanan pada kedaulatan air, pangan, dan energi sebagai gateway kesejahteraan masyarakat, dengan program nasional untuk mencapai swasembada Pangan, Energi, dan Air (RPJMN 2025-2029).",
+      indicatorsTitle: "Indikator Utama:",
+      indicators: [
+        "Indeks ketahanan pangan",
+        "Pertumbuhan PDB pertanian",
+        "Indeks ketahanan air",
+        "Kapasitas penyimpanan air",
+        "Akses rumah tangga perkotaan terhadap air minum",
+        "Indeks kualitas air"
+      ]
+    },
+    dssTab: {
+      title: "Alat Sistem Pendukung Keputusan",
+      intro: "Alat DSS dikembangkan untuk menyediakan simulasi kondisi Air, Energi, dan Pangan dalam suatu wilayah dalam kerangka waktu tertentu dengan fleksibilitas pada berbagai skenario pembangunan sosial dan ekonomi. Dapat digunakan oleh berbagai pengguna termasuk pemerintah pusat dan daerah, akademisi, mitra pembangunan, LSM, dan masyarakat umum.",
+      systemsTitle: "Pendekatan Sistem",
+      systemsText: "Menggunakan pendekatan berbasis sistem (Systems Thinking/System Dynamics), WEF Nexus mengakomodasi interaksi antara sektor air, energi, dan pangan/lahan, bersama dengan berbagai putaran umpan balik yang terbentuk dalam sektor WEF dan antara sektor sosial-ekonomi, untuk menggambarkan kompleksitas WEF Nexus.",
+      benefitsTitle: "Manfaat Utama:",
+      benefits: [
+        "Mengeksplorasi berbagai jalur pembangunan masa depan",
+        "Mengilustrasikan potensi sinergi dan trade-off dalam sektor WEF",
+        "Memberikan masukan untuk perumusan kebijakan regional"
+      ],
+      usersTitle: "Untuk siapa DSS ini?",
+      users: [
+        "Pemerintah Pusat dan Daerah",
+        "Akademisi dan Peneliti",
+        "Mitra Pembangunan",
+        "Organisasi Non-Pemerintah (LSM)",
+        "Masyarakat Umum"
+      ]
+    },
+    developersTab: {
+      title: "Tim Pengembang",
+      intro: "Dikembangkan melalui proses partisipatif yang melibatkan berbagai pemangku kepentingan—di sisi pemerintah—termasuk Kementerian Perencanaan Pembangunan Nasional (Bappenas), Kementerian Pertanian, Kementerian Energi dan Sumber Daya Mineral (ESDM), beberapa perwakilan dari pemerintah daerah, dan akademisi; semuanya diorkestrasikan oleh UNDP Indonesia.",
+      collaborativeTitle: "Proses Kolaboratif",
+      collaborativeText: "Pengembangan WEF Nexus DSS melibatkan kolaborasi erat antara berbagai institusi untuk memastikan alat ini dapat memenuhi kebutuhan pengguna dan memiliki dampak nyata pada perencanaan pembangunan.",
+      processItems: [
+        "Kolaborasi Multi-Pemangku Kepentingan",
+        "Pendekatan Partisipatif",
+        "Pengembangan Iteratif"
+      ],
+      partnershipText: "Bermitra dengan:"
+    }
+  },
   footer: {
      tagline: "Mengubah pemikiran WEF Nexus menjadi wawasan dan kebijakan yang dapat ditindaklanjuti.",
      product: {

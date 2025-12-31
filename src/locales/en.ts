@@ -249,6 +249,77 @@ export const en = {
        button: "Get Started"
     }
   },
+  about: {
+    header: {
+      badge: "Government Initiative",
+      title: "About WEF Nexus DSS",
+      subtitle: "Innovative platform to support integrated decision-making in managing water, energy, and food resources"
+    },
+    tabs: {
+      nexus: "ABOUT WEF NEXUS",
+      dss: "ABOUT DSS TOOLS",
+      developers: "DEVELOPERS"
+    },
+    nexusTab: {
+      title: "Integrated WEF Nexus Approach",
+      intro: "The Water-Energy-Food (WEF) Nexus is an integrated approach to managing and understanding the interconnectedness between water, energy, and food systems. First discussed at the World Economic Forum (WEF) in 2008 to address future global challenges.",
+      waterSecurity: {
+        title: "Water Security",
+        description: "The capacity of a population to safeguard sustainable access to adequate quantities of acceptable quality water (UN-Water, 2013)"
+      },
+      energySecurity: {
+        title: "Energy Security",
+        description: "Uninterrupted availability of energy sources at an affordable price (IEA, 1974)"
+      },
+      foodSecurity: {
+        title: "Food Security",
+        description: "When all people at all times have physical and economic access to sufficient, safe and nutritious food (The WFS, 1996)"
+      },
+      implementationTitle: "Implementation in Indonesia",
+      implementationText: "In Indonesia, this concept is promoted in our long-term and mid-term plans, with emphasis on water, food, and energy sovereignty as a gateway for society's wellbeing, with a national program to achieve self-sufficiency in Food, Energy, and Water (RPJMN 2025-2029).",
+      indicatorsTitle: "Key Indicators:",
+      indicators: [
+        "Food security index",
+        "Growth of agriculture GDP",
+        "Water security index",
+        "Water storage capacity",
+        "Urban household access to drinking water",
+        "Water quality index"
+      ]
+    },
+    dssTab: {
+      title: "Decision Support System Tools",
+      intro: "DSS Tools are developed to provide simulations of Water, Energy, and Food conditions within an area under a certain timeframe with flexibility on different social and economy development scenarios. It can be used by different users including central and local government, academia, development partners, NGOs, and the public.",
+      systemsTitle: "Systems Approach",
+      systemsText: "Using a systems-based approach (Systems Thinking/System Dynamics), the WEF Nexus accommodates the interactions among the water, energy, and food/land sectors, along with various feedback loops formed within the WEF sectors and between socio-economic sectors, to illustrate the complexity of the WEF Nexus.",
+      benefitsTitle: "Key Benefits:",
+      benefits: [
+        "Explore various future development pathways",
+        "Illustrate potential synergies and trade-offs within WEF sectors",
+        "Provide input for regional policy formulation"
+      ],
+      usersTitle: "Who is this DSS for?",
+      users: [
+        "Central and Local Government",
+        "Academia and Researchers",
+        "Development Partners",
+        "Non-Governmental Organizations (NGOs)",
+        "General Public"
+      ]
+    },
+    developersTab: {
+      title: "Development Team",
+      intro: "Developed through a participatory process involving a diverse range of stakeholders—on the government side—including the Ministry of National Development Planning (Bappenas), the Ministry of Agriculture, the Ministry of Energy and Mineral Resources (ESDM), several representatives from local governments, and academics; all orchestrated by UNDP Indonesia.",
+      collaborativeTitle: "Collaborative Process",
+      collaborativeText: "The development of WEF Nexus DSS involves close collaboration between various institutions to ensure this tool can meet user needs and have a real impact on development planning.",
+      processItems: [
+        "Multi-Stakeholder Collaboration",
+        "Participatory Approach",
+        "Iterative Development"
+      ],
+      partnershipText: "In partnership with:"
+    }
+  },
   footer: {
      tagline: "Transforming WEF Nexus thinking into actionable insights and policies.",
      product: {
