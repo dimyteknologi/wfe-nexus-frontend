@@ -140,7 +140,7 @@ const SnapshotTableWidget: React.FC<TableProps> = ({ category }) => {
     if (category === "site") {
       return Array.from({ length: 36 }, (_, i) => String(2010 + i));
     }
-    return Array.from({ length: 10 }, (_, i) => String(2015 + i));
+    return Array.from({ length: 10 }, (_, i) => String(2025 + i));
   }, [category]);
 
   /** ---- TABLE DATA ---- */
