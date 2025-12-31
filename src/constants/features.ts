@@ -9,6 +9,7 @@ import {
   Shield 
 } from "lucide-react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const LANDING_FEATURES = (t: any): Feature[] => [
   {
     icon: React.createElement(BarChart3, { className: "w-6 h-6" }),

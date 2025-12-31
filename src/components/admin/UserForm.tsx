@@ -522,7 +522,7 @@ export function UserForm({ initialData = defaultFormData, isEdit = false, onSubm
               </li>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span>Set status to "Inactive" for temporary account suspension</span>
+                <span>Set status to &quot;Inactive&quot; for temporary account suspension</span>
               </li>
             </ul>
           </motion.div>

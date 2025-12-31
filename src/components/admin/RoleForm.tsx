@@ -7,7 +7,7 @@ import { Role } from "@/lib/types/admin.types";
 import { usePermissions } from "@/hooks/usePermissions";
 import Button from "@/components/atoms/Button";
 import Badge from "@/components/atoms/Badge";
-import { UserCog, ArrowLeft, Key, CheckCircle2 } from "lucide-react";
+import { UserCog, ArrowLeft, Key } from "lucide-react";
 import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 
 interface RoleFormProps {

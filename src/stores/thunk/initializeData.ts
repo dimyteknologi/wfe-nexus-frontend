@@ -36,9 +36,11 @@ export const initializeData = createAsyncThunk(
       dispatch(setLivestockData({ data: livestock } as unknown as IApiRes));
       dispatch(setPopulationData({ data: population } as unknown as IApiRes));
       
+      return { success: true };
     } catch (error) {
-      console.error("Failed to initialize data", error);
-      throw error;
+      console.warn("Failed to initialize data from API. The application will continue with default/empty data.", error);
+      // Don't throw - let the app continue with default/empty data
+      return { success: false, error };
     }
   }
 );

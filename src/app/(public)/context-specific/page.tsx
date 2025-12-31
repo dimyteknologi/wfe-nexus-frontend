@@ -1,31 +1,33 @@
 "use client";
 
 import Alert from "@/components/alert";
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback } from "react";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
 import ChartWidget from "@/features/simulation/components/SimulationChart/widget";
 import SimulationForm from "@/features/simulation/components/SimulationForm";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
 import TableWidget from "@/features/simulation/components/SimulationTable/widget";
-import Link from "next/link";
-import DSSConceptModal from "@/components/dssConceptModal";
 import ImportModal from "@/components/importModal";
+import DSSConceptModal from "@/components/dssConceptModal";
+
+import { contextSpecificInput } from "@/config/form";
+import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
 import {
   setDssConceptModal,
   setImportModal,
   setScenarioModal,
 } from "@/stores/slicers/dssModalSlicer";
-import { setPowerGeneration, setAllActiveInputs } from "@/stores/slicers/contextSpecificInputSlicer";
-import { File, FileUp } from "lucide-react";
-import { contextSpecificInput } from "@/config/form";
-import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
+import {
+  setPowerGeneration,
+  setAllActiveInputs,
+} from "@/stores/slicers/contextSpecificInputSlicer";
 import { ALL_METRICS_CONTEXT_SPECIFICS } from "@/lib/constant/metrics";
 import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSelector";
 // import { useInitializeData } from "@/hooks/useInitDummy";
 
 const ContextSpecificPage = () => {
   // useInitializeData();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const [isPowerGenDropdownOpen, setIsPowerGenDropdownOpen] = useState(false);
   const simulationState = useAppSelector((state) => state.contextSpecific);
   const selectedPowerGen = simulationState.powerGeneration;
@@ -52,10 +54,6 @@ const ContextSpecificPage = () => {
   const handleOpenImportTab = useCallback(() => {
     dispatch(setImportModal(!isImportOpen));
   }, [dispatch, isImportOpen]);
-
-  const mouseHover = useCallback(() => {
-    setIsDropdownOpen((current) => !current);
-  }, []);
 
   const handlePreset = (category: string) => {
     dispatch(setChartsToCategoryPreset({ target: "context", category }));

@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRight, Eye, EyeOff, Shield } from "lucide-react";
-import Link from "next/link";
 import { useLogin } from "@/hooks/useLogin";
 import Image from "next/image";
 import Button from "@/components/atoms/Button";

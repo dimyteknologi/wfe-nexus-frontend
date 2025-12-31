@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Droplet, Zap, Leaf, Check, ChevronRight, Users, CheckCircle, Code } from "lucide-react";
+import { Droplet, Zap, Leaf, Check, ChevronRight, CheckCircle } from "lucide-react";
 import SecurityCard from "@/components/molecules/SecurityCard";
 import Badge from "@/components/atoms/Badge";
 import { useTranslation } from "@/hooks/useTranslation";

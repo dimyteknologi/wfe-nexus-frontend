@@ -2,18 +2,10 @@
 
 import {
   ArrowRight,
-  BarChart3,
-  Globe,
-  Zap,
-  Users,
-  Shield,
-  FileText,
-  Database,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
-import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
 import FeatureCard from "@/components/molecules/FeatureCard";
 import StepCard from "@/components/molecules/StepCard";

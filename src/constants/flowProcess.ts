@@ -2,6 +2,7 @@ import React from "react";
 import { ProcessStep } from "@/types/data";
 import { Database, BarChart3, Globe, Zap } from "lucide-react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const FLOW_PROCESS = (t: any): ProcessStep[] => [
   {
     step: "1",
