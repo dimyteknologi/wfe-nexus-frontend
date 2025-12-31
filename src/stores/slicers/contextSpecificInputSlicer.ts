@@ -60,7 +60,7 @@ export const ContextSpecific: ContextSpecificState = {
     areaSize: { "2015-2030": 100 },
   },
   solarPV: {
-    installedCapacity: { "2025-2034": 0 },
+    installedCapacity: { "2025-2034": 63 },
     fee: { "2025-2034": 150000 },
   },
   geothermal: {
@@ -75,6 +75,7 @@ export interface DssContextSpecificState {
   // baseline: ContextSpecificState;
   scenario_a: string | null;
   scenario_b: string | null;
+  powerGeneration: "solar" | "geothermal" | "both" | "none";
 }
 
 const initialState: DssContextSpecificState = {
@@ -82,6 +83,7 @@ const initialState: DssContextSpecificState = {
   // baseline: ContextSpecific,
   scenario_a: null,
   scenario_b: null,
+  powerGeneration: "both",
 };
 
 const DssContextSpecific = createSlice({
@@ -152,6 +154,12 @@ const DssContextSpecific = createSlice({
         }
       }
     },
+    setPowerGeneration: (
+      state,
+      action: PayloadAction<"solar" | "geothermal" | "both" | "none">
+    ) => {
+      state.powerGeneration = action.payload;
+    },
   },
 });
 
@@ -162,6 +170,7 @@ export const {
   populateInputsWithBaseline,
   singleInput,
   resetSimulation,
+  setPowerGeneration,
 } = DssContextSpecific.actions;
 
 export default DssContextSpecific.reducer;
