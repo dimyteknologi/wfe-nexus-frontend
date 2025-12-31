@@ -1,5 +1,5 @@
-import InputGroup from "@/components/basic/input/InputGroup";
-import SectionCard from "@/components/card/SectionCard";
+import InputGroup from "@/features/simulation/components/basic/input/InputGroup";
+import SectionCard from "@/features/simulation/components/SectionCard";
 import { FormContainerProps } from "@/lib/types/dss-input.dummy.types.rtk";
 import React from "react";
 

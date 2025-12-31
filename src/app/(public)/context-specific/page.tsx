@@ -3,10 +3,10 @@
 import Alert from "@/components/alert";
 import { useRef, useState, useCallback, useEffect } from "react";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
-import ChartWidget from "@/components/chart/widget";
-import SimulationForm from "@/components/form/simulation";
+import ChartWidget from "@/features/simulation/components/SimulationChart/widget";
+import SimulationForm from "@/features/simulation/components/SimulationForm";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
-import TableWidget from "@/components/table/widget";
+import TableWidget from "@/features/simulation/components/SimulationTable/widget";
 import Link from "next/link";
 import DSSConceptModal from "@/components/dssConceptModal";
 import ImportModal from "@/components/importModal";

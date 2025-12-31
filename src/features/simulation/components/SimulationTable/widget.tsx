@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import Table from "@/components/table";
-import MultiSelect, { SelectOption } from "@/components/select/multi-select";
+import Table from "./index";
+import MultiSelect, { SelectOption } from "../SimulationSelect/multi-select";
 import { Column } from "@/lib/types/table.typers";
 import {
   ALL_METRICS_SITE_SPECIFICS,

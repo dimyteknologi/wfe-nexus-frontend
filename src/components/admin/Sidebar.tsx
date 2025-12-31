@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
 import { Home, Users, Building2, MapPin, Shield, LogOut } from "lucide-react";
+import Image from "next/image";
 
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: Home },
@@ -33,8 +34,14 @@ export function AdminSidebar() {
           transition={{ delay: 0.2 }}
           className="flex items-center space-x-3"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center shadow-lg">
-            <Shield className="w-6 h-6 text-white" />
+          <div className="w-20 h-20 rounded-lg flex items-center justify-center shadow-lg">
+             <Image
+              src="/assets/nexus-logo.png"
+              alt="Nexus Logo"
+              width={120}
+              height={40}
+              className="object-contain"
+            />
           </div>
           <div>
             <h2 className="text-xl font-bold text-white">Admin Panel</h2>
