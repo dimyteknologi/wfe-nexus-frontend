@@ -13,7 +13,10 @@ const ProviderComponent = ({ children }: IProps) => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-         <SessionProvider>
+         <SessionProvider 
+           refetchOnWindowFocus={false}
+           refetchInterval={0}
+         >
             {children}
          </SessionProvider>
       </PersistGate>

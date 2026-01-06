@@ -82,6 +82,13 @@ const handler = NextAuth({
 
   session: { strategy: "jwt" },
 
+  pages: {
+    signIn: '/login',
+    error: '/login',
+  },
+
+  secret: process.env.NEXTAUTH_SECRET || 'dev-secret-key-please-change-in-production',
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
