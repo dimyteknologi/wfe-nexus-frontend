@@ -84,13 +84,6 @@ const LandingPage = () => {
                   />
                 ))}
               </div>
-              <p className="ml-4 text-gray-600">
-                {landing.hero.joinText}{" "}
-                <span className="font-semibold text-green-700">
-                  {landing.hero.joinCount}
-                </span>{" "}
-                {landing.hero.joinSuffix}
-              </p>
             </div>
           </div>
 

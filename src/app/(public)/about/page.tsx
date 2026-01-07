@@ -130,23 +130,39 @@ const AboutPage = () => {
                 <h2 className="text-3xl font-bold text-green-700 mb-6">
                   {t.about.nexusTab.title}
                 </h2>
-                <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                  {t.about.nexusTab.intro}
-                  managing and understanding the interconnectedness between
-                  water, energy, and food systems. First discussed at the World
-                  Economic Forum (WEF) in 2008 to address future global
-                  challenges.
-                </p>
+                {t.about.nexusTab.intro.map((intro, index) => (
+                  <p key={index} className="text-lg text-gray-700 mb-8 leading-relaxed">
+                    {intro}
+                  </p>
+                ))}
 
+               <div className="mb-8">
+                  <h3 className="text-2xl font-semibold text-green-700 mb-6">
+                    {t.about.nexusTab.implementationPrincipleTitle}
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {t.about.nexusTab.implementationPrinciple.map((principle, index) => (
+                      <div 
+                        key={index} 
+                        className="flex items-start p-4 bg-white rounded-lg shadow-md transition-shadow duration-200"
+                      >
+                        <div className="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-3 mt-0.5">
+                          {index + 1}
+                        </div>
+                        <span className="text-gray-700 leading-relaxed">{principle}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <p className="text-lg text-gray-700 mb-4 leading-relaxed">
+                  {t.about.nexusTab.implementationSecurityIntro}
+                </p>
                 <div className="grid md:grid-cols-3 gap-6 mb-8">
                   {securityTypes.map((type, index) => (
                     <SecurityCard key={index} {...type} />
                   ))}
                 </div>
-
-                <h3 className="text-2xl font-semibold text-green-700 mb-4">
-                  {t.about.nexusTab.implementationTitle}
-                </h3>
                 <p className="text-lg text-gray-700 mb-6 leading-relaxed">
                   {t.about.nexusTab.implementationText}
                 </p>

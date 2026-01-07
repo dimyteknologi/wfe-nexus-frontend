@@ -6,10 +6,8 @@ import {
   Zap, 
   Users, 
   FileText, 
-  Shield 
 } from "lucide-react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const LANDING_FEATURES = (t: any): Feature[] => [
   {
     icon: React.createElement(BarChart3, { className: "w-6 h-6" }),
@@ -45,12 +43,5 @@ export const LANDING_FEATURES = (t: any): Feature[] => [
     description: t.landing.features.items.reporting.desc,
     image: "./assets/reporting-demo.svg",
     color: "from-indigo-500 to-blue-500",
-  },
-  {
-    icon: React.createElement(Shield, { className: "w-6 h-6" }),
-    title: t.landing.features.items.security.title,
-    description: t.landing.features.items.security.desc,
-    image: "./assets/security-demo.svg",
-    color: "from-red-500 to-rose-500",
   },
 ];

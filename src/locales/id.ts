@@ -212,17 +212,14 @@ export const id = {
       title2: "Sistem Pendukung Keputusan",
       subtitle: "Mengubah pemikiran Water-Energy-Food Nexus menjadi wawasan dan kebijakan yang dapat ditindaklanjuti untuk pembangunan berkelanjutan.",
       cta: "Mulai Sekarang",
-      joinText: "Bergabung dengan",
-      joinCount: "500+",
-      joinSuffix: "organisasi yang menggunakan platform kami",
       collaboration: "Simulasi Kolaborasi",
       activeUser: "Pengguna Aktif",
-      collaboratedWith: "Berkolaborasi dengan organisasi pemerintah dalam hal piloting"
+      collaboratedWith: "Berkolaborasi dengan organisasi pemerintah dalam merintis pembangunan."
     },
     features: {
       badge: "Fitur Canggih",
       title: "Segala yang Anda Butuhkan untuk Keputusan Terinformasi",
-      subtitle: "Platform kami menyediakan alat komprehensif untuk menganalisis dan mengoptimalkan Water-Energy-Food Nexus",
+      subtitle: "Platform kami menyediakan alat komprehensif untuk menganalisis dan mengoptimalkan alokasi Keterkaitan Air-Energi-Pangan (Water-Energy-Food Nexus) untuk masalah spesifik lokasi dan konteks.",
       items: {
          analytics: { title: "Analitik Tingkat Lanjut", desc: "Manfaatkan analitik konteks dan situs untuk mendapatkan wawasan mendalam tentang saling ketergantungan dan dampak nexus." },
          modeling: { title: "Pemodelan Skenario", desc: "Buat dan bandingkan beberapa skenario untuk mengevaluasi keputusan kebijakan dalam kondisi yang berbeda." },
@@ -262,7 +259,22 @@ export const id = {
     },
     nexusTab: {
       title: "Pendekatan WEF Nexus Terpadu",
-      intro: "Water-Energy-Food (WEF) Nexus adalah pendekatan terpadu untuk mengelola dan memahami keterkaitan antara sistem air, energi, dan pangan. Pertama kali dibahas di World Economic Forum (WEF) pada tahun 2008 untuk mengatasi tantangan global di masa depan.",
+      intro: [
+        "Water-Energy-Food (WEF) Nexus adalah pendekatan terpadu untuk mengelola dan memahami keterkaitan antara sistem air, energi, dan pangan. Pertama kali dibahas di World Economic Forum (WEF) pada tahun 2008 untuk mengatasi tantangan global di masa depan.", 
+        "Untuk Konteks Indonesia, WEF Nexus didefinisikan sebagai strategi terpadu yang mengelola sumber daya air, energi, dan pangan secara terkoordinasi, dengan tujuan menyeimbangkan permintaan yang bersaing, melindungi ekosistem, dan mempromosikan ketahanan inklusif dalam konteks urbanisasi yang cepat, industrialisasi, dan perubahan iklim.",
+        "Definisi ini menempatkan WEF Nexus bukan hanya sebagai konsep teoritis, tetapi sebagai kerangka pendukung keputusan dan tata kelola—sebuah alat untuk mengidentifikasi, mengevaluasi, dan mengimplementasikan intervensi yang memberikan manfaat lintas sektoral. Melalui pendekatan ini, WEF Nexus menjadi fondasi untuk mencapai tujuan jangka panjang Indonesia dalam memastikan keamanan sumber daya, ketahanan iklim, dan kemakmuran berkelanjutan menuju Indonesia Emas 2045.",
+      ],
+      implementationPrincipleTitle: "Diimplementasikan melalui 7 prinsip utama meliputi:",
+      implementationPrinciple: [
+        "Integrasi lintas sektor dan lintas skala",
+        "Efisiensi dan produktivitas sumber daya",
+        "Kesetaraan dan inklusivitas",
+        "Keberlanjutan dan perlindungan ekosistem",
+        "Integrasi lintas bidang: kepemilikan lahan, gender, dan perencanaan tata ruang",
+        "Ketahanan dan manajemen adaptif",
+        "Partisipasi multi-pemangku kepentingan dan koherensi tata kelola",
+      ],
+      implementationSecurityIntro: "dan disatukan ke dalam beberapa kebijakan pembangunan nasional, termasuk Rencana Jangka Panjang (RPJP) Indonesia 2020-2045, Rencana Jangka Menengah (RPJP) Indonesia 2025-2029, Tujuan Pembangunan Berkelanjutan (2030), dan Kedua Kebijakan Ditetapkan (2nd NDC) Indonesia dengan Target Net Zero Emissions pada tahun 2060, diimplementasikan melalui 3 program prioritas nasional utama, yaitu:",
       waterSecurity: {
         title: "Ketahanan Air",
         description: "Kapasitas populasi untuk menjaga akses berkelanjutan terhadap kuantitas air berkualitas yang memadai (UN-Water, 2013)"
@@ -275,7 +287,6 @@ export const id = {
         title: "Ketahanan Pangan",
         description: "Ketika semua orang setiap saat memiliki akses fisik dan ekonomi terhadap pangan yang cukup, aman dan bergizi (The WFS, 1996)"
       },
-      implementationTitle: "Implementasi di Indonesia",
       implementationText: "Di Indonesia, konsep ini dipromosikan dalam rencana jangka panjang dan menengah, dengan penekanan pada kedaulatan air, pangan, dan energi sebagai gateway kesejahteraan masyarakat, dengan program nasional untuk mencapai swasembada Pangan, Energi, dan Air (RPJMN 2025-2029).",
       indicatorsTitle: "Indikator Utama:",
       indicators: [

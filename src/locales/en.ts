@@ -212,24 +212,20 @@ export const en = {
       title2: "Decision Support System",
       subtitle: "Transforming Water-Energy-Food Nexus thinking into actionable insights and policies for sustainable development.",
       cta: "Get Started",
-      joinText: "Join",
-      joinCount: "500+",
-      joinSuffix: "organizations using our platform",
       collaboration: "Collaboration Simulation",
       activeUser: "Active User",
-      collaboratedWith: "Collaborated with government leading organizations in piloting"
+      collaboratedWith: "Collaborated with government organizations in piloting development"
     },
     features: {
       badge: "Powerful Features",
       title: "Everything You Need for Informed Decisions",
-      subtitle: "Our platform provides comprehensive tools to analyze and optimize the Water-Energy-Food Nexus",
+      subtitle: "Our platform provides comprehensive tools to analyze and optimize the Water-Energy-Food Nexus allocation for site and context specific issues.",
       items: {
-         analytics: { title: "Advanced Analytics", desc: "Leverage context and site analytics to gain deep insights into nexus interdependencies and impacts." },
+         analytics: { title: "Comprehensive Analytics", desc: "Integrate socio-economy aspect in resources management of Water-Energy-Food interdependencies for analyzing regional and sustainable development." },
          modeling: { title: "Scenario Modeling", desc: "Create and compare multiple scenarios to evaluate policy decisions under different conditions." },
          simulation: { title: "Real-time Simulation", desc: "Simulation key indicators in real-time with dynamic visualization." },
-         collaboration: { title: "Stakeholder Collaboration", desc: "Enable seamless collaboration between multiple stakeholders with role-based access." },
-         reporting: { title: "Comprehensive Reporting", desc: "Generate detailed reports with visualizations in multiple formats for decision makers." },
-         security: { title: "Data Security", desc: "Enterprise-grade security with encryption and compliance with global data protection standards." }
+         collaboration: { title: "Stakeholder Collaboration", desc: "Developed through collaboration between multiple stakeholders based on role and responsibility." },
+         reporting: { title: "Ease of Customization", desc: "Equipped with customization function to simulate your data." }
       }
     },
     howItWorks: {
@@ -262,7 +258,22 @@ export const en = {
     },
     nexusTab: {
       title: "Integrated WEF Nexus Approach",
-      intro: "The Water-Energy-Food (WEF) Nexus is an integrated approach to managing and understanding the interconnectedness between water, energy, and food systems. First discussed at the World Economic Forum (WEF) in 2008 to address future global challenges.",
+      intro: [
+        "The Water-Energy-Food (WEF) Nexus is an integrated approach to managing and understanding the interconnectedness between water, energy, and food systems. First discussed at the World Economic Forum (WEF) in 2008 to address future global challenges. managing and understanding the interconnectedness between water, energy, and food systems. First discussed at the World Economic Forum (WEF) in 2008 to address future global challenges.", 
+        "For Indonesia Context, The WEF Nexus defined as an integrated strategy that manages water, energy, and food resources in a coordinated manner, with the aim of balancing competing demands, protecting ecosystems, and promoting inclusive resilience in the context of rapid urbanization, industrialization, and climate change.",
+        "This definition positions the WEF Nexus not merely as a theoretical concept, but as a decision-support and governance framework—a tool for identifying, evaluating, and implementing interventions that deliver cross-sectoral co-benefits. Through this approach, the WEF Nexus becomes a foundation for achieving Indonesia’s long-term goals of ensuring resource security, climate resilience, and sustainable prosperity toward Indonesia Emas 2045.",
+      ],
+      implementationPrincipleTitle: "Implemented through 7 main principles including:",
+      implementationPrinciple: [
+        "Cross-sectoral and cross-scale integration",
+        "Resource efficiency and productivity",
+        "Equity and inclusiveness",
+        "Sustainability and ecosystem protection",
+        "Cross-cutting integration: land tenure, gender, and spatial planning",
+        "Resilience and adaptive management",
+        "Multi-stakeholder participation and governance coherence",
+      ],
+      implementationSecurityIntro: "and mainstreamed into several national development policies, including Long Term Plan (RPJP) Indonesia 2020-2045, Medium Term Plan (RPJP) Indonesia 2025-2029, sustainable Development Goals of 2030, and Second National Determined Contribution (2nd NDC) of Indonesia with Net Zero Emissions target in 2060, implemented through 3 main national priority programs, namely:",
       waterSecurity: {
         title: "Water Security",
         description: "The capacity of a population to safeguard sustainable access to adequate quantities of acceptable quality water (UN-Water, 2013)"
@@ -275,7 +286,6 @@ export const en = {
         title: "Food Security",
         description: "When all people at all times have physical and economic access to sufficient, safe and nutritious food (The WFS, 1996)"
       },
-      implementationTitle: "Implementation in Indonesia",
       implementationText: "In Indonesia, this concept is promoted in our long-term and mid-term plans, with emphasis on water, food, and energy sovereignty as a gateway for society's wellbeing, with a national program to achieve self-sufficiency in Food, Energy, and Water (RPJMN 2025-2029).",
       indicatorsTitle: "Key Indicators:",
       indicators: [
