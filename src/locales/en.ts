@@ -286,36 +286,37 @@ export const en = {
         title: "Food Security",
         description: "When all people at all times have physical and economic access to sufficient, safe and nutritious food (The WFS, 1996)"
       },
-      implementationText: "In Indonesia, this concept is promoted in our long-term and mid-term plans, with emphasis on water, food, and energy sovereignty as a gateway for society's wellbeing, with a national program to achieve self-sufficiency in Food, Energy, and Water (RPJMN 2025-2029).",
-      indicatorsTitle: "Key Indicators:",
+      indicatorsTitle: "Several key indicators for WEF Nexus included:",
       indicators: [
-        "Food security index",
-        "Growth of agriculture GDP",
-        "Water security index",
-        "Water storage capacity",
-        "Urban household access to drinking water",
-        "Water quality index"
-      ]
+        "Water Security Index",
+        "Energy Security Index",
+        "Food Security Index",
+        "Renewable Energy share",
+        "Water Quality Index",
+        "Pipe Water and Sanitation Access",
+        "Electricity Access",
+        "Emissions Reduction",
+        "Environmental Quality Index"
+      ],
+      futherInformation:"For further information regarding Indonesia WEF Nexus roadmap can be refer to this link:",
+      futherInformationLink:"https://linktr.ee/WEFNexus"
     },
     dssTab: {
       title: "Decision Support System Tools",
-      intro: "DSS Tools are developed to provide simulations of Water, Energy, and Food conditions within an area under a certain timeframe with flexibility on different social and economy development scenarios. It can be used by different users including central and local government, academia, development partners, NGOs, and the public.",
+      intro: "DSS Tools are developed to provide simulations of Water, Energy, and Food projection within an area under a certain timeframe under different social and economy development scenarios. Currently, DSS tools developed for:",
+      introList: [
+       "Site specific analysis, developed to simulate the impact of Water, Energy, and Food indicators in regency/municipality area under different of industrial, agriculture, and WEF resources scenarios; and",
+       "Context specific; developed to simulate the impact of development and utilization of geothermal power plant or solar PV based water pump to agriculture practice and productivity within a village or district area."
+      ],
+      introEnd: "It can be used especially by local government to assist in analytical process during planning process, to provide input for regional policy formulation. It can also expanded to other users, such as central government, academia, development partners, NGOs, and the public.",
       systemsTitle: "Systems Approach",
-      systemsText: "Using a systems-based approach (Systems Thinking/System Dynamics), the WEF Nexus accommodates the interactions among the water, energy, and food/land sectors, along with various feedback loops formed within the WEF sectors and between socio-economic sectors, to illustrate the complexity of the WEF Nexus.",
+      systemsText: "Using a systems-based approach (Systems Thinking/System Dynamics), the WEF Nexus accommodates the interactions among the water, energy, and food/land sectors, along with various feedback loops formed within the WEF sectors and between socio-economic sectors, to accommodate the complexity of the WEF Nexus.",
       benefitsTitle: "Key Benefits:",
       benefits: [
         "Explore various future development pathways",
         "Illustrate potential synergies and trade-offs within WEF sectors",
         "Provide input for regional policy formulation"
       ],
-      usersTitle: "Who is this DSS for?",
-      users: [
-        "Central and Local Government",
-        "Academia and Researchers",
-        "Development Partners",
-        "Non-Governmental Organizations (NGOs)",
-        "General Public"
-      ]
     },
     developersTab: {
       title: "Development Team",

@@ -7,6 +7,7 @@ import { Droplet, Zap, Leaf, Check, ChevronRight, CheckCircle } from "lucide-rea
 import SecurityCard from "@/components/molecules/SecurityCard";
 import Badge from "@/components/atoms/Badge";
 import { useTranslation } from "@/hooks/useTranslation";
+import Link from "next/link";
 
 const AboutPage = () => {
   const { t } = useTranslation();
@@ -163,11 +164,7 @@ const AboutPage = () => {
                     <SecurityCard key={index} {...type} />
                   ))}
                 </div>
-                <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                  {t.about.nexusTab.implementationText}
-                </p>
-
-                <div className="bg-gray-50 p-6 rounded-xl">
+                <div className="bg-gray-50 p-6 rounded-xl mb-4">
                   <h4 className="text-xl font-semibold mb-4 text-green-700">
                     {t.about.nexusTab.indicatorsTitle}
                   </h4>
@@ -180,6 +177,14 @@ const AboutPage = () => {
                     ))}
                   </div>
                 </div>
+                <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                  {t.about.nexusTab.futherInformation}
+                  <span className="ml-2">
+                  <Link href={t.about.nexusTab.futherInformationLink} target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline">
+                    {t.about.nexusTab.futherInformationLink}
+                  </Link>
+                  </span>
+                </p> 
               </div>
             </motion.div>
           )}
@@ -195,48 +200,58 @@ const AboutPage = () => {
               <h2 className="text-3xl font-bold text-green-700 mb-6">
                 {t.about.dssTab.title}
               </h2>
-              <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                {t.about.dssTab.intro}
-              </p>
+              
+              <div className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl mb-6 border-l-4 border-green-600">
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  {t.about.dssTab.intro}
+                </p>
+              </div>
 
-              <div className="flex flex-col md:flex-row gap-8 mb-8">
-                <div className="md:w-1/2">
-                  <h3 className="text-2xl font-semibold text-green-700 mb-4">
-                    {t.about.dssTab.systemsTitle}
-                  </h3>
-                  <p className="text-gray-700 mb-6 leading-relaxed">
-                    {t.about.dssTab.systemsText}
-                  </p>
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                {t.about.dssTab.introList.map((item, index) => (
+                  <div 
+                    key={index} 
+                    className="flex items-start p-5 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-100"
+                  >
+                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 text-white rounded-lg flex items-center justify-center font-bold mr-4 shadow-md">
+                      {index + 1}
+                    </div>
+                    <p className="text-gray-700 leading-relaxed pt-1.5">{item}</p>
+                  </div>
+                ))}
+              </div>
 
-                  <div className="bg-blue-50 p-5 rounded-xl">
-                    <h4 className="text-xl font-semibold mb-3 text-blue-900">
-                      {t.about.dssTab.benefitsTitle}
-                    </h4>
-                    <ul className="space-y-3">
-                      {t.about.dssTab.benefits.map((benefit: string, index: number) => (
-                        <li key={index} className="flex items-start">
-                          <ChevronRight className="w-5 h-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" />
-                          <span className="text-gray-700">{benefit}</span>
-                        </li>
-                      ))}
-                    </ul>
+              <div className="bg-blue-50 p-6 rounded-xl mb-12 border-l-4 border-blue-600">
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  {t.about.dssTab.introEnd}
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-12 items-start mb-8">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-2xl font-bold text-green-700 mb-4 flex items-center">
+                      {t.about.dssTab.systemsTitle}
+                    </h3>
+                    <p className="text-gray-700 text-lg leading-relaxed">
+                      {t.about.dssTab.systemsText}
+                    </p>
                   </div>
                 </div>
 
-                <div className="md:w-1/2">
-                  <div className="bg-green-700 text-white p-6 rounded-xl h-full">
-                    <h3 className="text-2xl font-semibold mb-4">
-                      {t.about.dssTab.usersTitle}
-                    </h3>
-                    <ul className="space-y-4">
-                      {t.about.dssTab.users.map((user: string, index: number) => (
-                        <li key={index} className="flex items-center">
-                          <Check className="w-5 h-5 text-green-300 mr-3 flex-shrink-0" />
-                          <span>{user}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl shadow-sm border border-blue-100">
+                  <h4 className="text-xl font-bold mb-6 text-blue-800 flex items-center">
+                    <CheckCircle className="w-6 h-6 mr-2" />
+                    {t.about.dssTab.benefitsTitle}
+                  </h4>
+                  <ul className="space-y-4">
+                    {t.about.dssTab.benefits.map((benefit: string, index: number) => (
+                      <li key={index} className="flex items-start bg-white p-3 rounded-lg shadow-sm">
+                        <ChevronRight className="w-5 h-5 text-blue-600 mt-1 mr-2 flex-shrink-0" />
+                        <span className="text-gray-700 font-medium">{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </motion.div>

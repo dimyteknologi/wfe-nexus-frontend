@@ -287,36 +287,37 @@ export const id = {
         title: "Ketahanan Pangan",
         description: "Ketika semua orang setiap saat memiliki akses fisik dan ekonomi terhadap pangan yang cukup, aman dan bergizi (The WFS, 1996)"
       },
-      implementationText: "Di Indonesia, konsep ini dipromosikan dalam rencana jangka panjang dan menengah, dengan penekanan pada kedaulatan air, pangan, dan energi sebagai gateway kesejahteraan masyarakat, dengan program nasional untuk mencapai swasembada Pangan, Energi, dan Air (RPJMN 2025-2029).",
-      indicatorsTitle: "Indikator Utama:",
+      indicatorsTitle: "Beberapa indikator utama untuk WEF Nexus meliputi:",
       indicators: [
-        "Indeks ketahanan pangan",
-        "Pertumbuhan PDB pertanian",
-        "Indeks ketahanan air",
-        "Kapasitas penyimpanan air",
-        "Akses rumah tangga perkotaan terhadap air minum",
-        "Indeks kualitas air"
-      ]
+        "Indeks Ketahanan Air",
+        "Indeks Ketahanan Energi",
+        "Indeks Ketahanan Pangan",
+        "Pangsa Energi Terbarukan",
+        "Indeks Kualitas Air",
+        "Akses Air Pipa dan Sanitasi",
+        "Akses Listrik",
+        "Pengurangan Emisi",
+        "Indeks Kualitas Lingkungan"
+      ],
+      futherInformation:"Untuk informasi lebih lanjut mengenai peta jalan WEF Nexus Indonesia dapat merujuk ke tautan ini:",
+      futherInformationLink:"https://linktr.ee/WEFNexus"
     },
     dssTab: {
       title: "Alat Sistem Pendukung Keputusan",
-      intro: "Alat DSS dikembangkan untuk menyediakan simulasi kondisi Air, Energi, dan Pangan dalam suatu wilayah dalam kerangka waktu tertentu dengan fleksibilitas pada berbagai skenario pembangunan sosial dan ekonomi. Dapat digunakan oleh berbagai pengguna termasuk pemerintah pusat dan daerah, akademisi, mitra pembangunan, LSM, dan masyarakat umum.",
+      intro: "Alat DSS dikembangkan untuk menyediakan simulasi proyeksi Air, Energi, dan Pangan dalam suatu wilayah dalam kerangka waktu tertentu di bawah berbagai skenario pembangunan sosial dan ekonomi. Saat ini, alat DSS dikembangkan untuk:",
+      introList: [
+       "Analisis spesifik lokasi, dikembangkan untuk mensimulasikan dampak indikator Air, Energi, dan Pangan di wilayah kabupaten/kota di bawah berbagai skenario industri, pertanian, dan sumber daya WEF; dan",
+       "Spesifik konteks; dikembangkan untuk mensimulasikan dampak pengembangan dan pemanfaatan pembangkit listrik tenaga panas bumi atau pompa air berbasis PV surya terhadap praktik dan produktivitas pertanian dalam wilayah desa atau kecamatan."
+      ],
+      introEnd: "Dapat digunakan khususnya oleh pemerintah daerah untuk membantu proses analisis selama proses perencanaan, untuk memberikan masukan bagi perumusan kebijakan daerah. Juga dapat diperluas ke pengguna lain, seperti pemerintah pusat, akademisi, mitra pembangunan, LSM, dan masyarakat umum.",
       systemsTitle: "Pendekatan Sistem",
-      systemsText: "Menggunakan pendekatan berbasis sistem (Systems Thinking/System Dynamics), WEF Nexus mengakomodasi interaksi antara sektor air, energi, dan pangan/lahan, bersama dengan berbagai putaran umpan balik yang terbentuk dalam sektor WEF dan antara sektor sosial-ekonomi, untuk menggambarkan kompleksitas WEF Nexus.",
+      systemsText: "Menggunakan pendekatan berbasis sistem (Systems Thinking/System Dynamics), WEF Nexus mengakomodasi interaksi antara sektor air, energi, dan pangan/lahan, bersama dengan berbagai putaran umpan balik yang terbentuk dalam sektor WEF dan antara sektor sosial-ekonomi, untuk mengakomodasi kompleksitas WEF Nexus.",
       benefitsTitle: "Manfaat Utama:",
       benefits: [
         "Mengeksplorasi berbagai jalur pembangunan masa depan",
         "Mengilustrasikan potensi sinergi dan trade-off dalam sektor WEF",
         "Memberikan masukan untuk perumusan kebijakan regional"
       ],
-      usersTitle: "Untuk siapa DSS ini?",
-      users: [
-        "Pemerintah Pusat dan Daerah",
-        "Akademisi dan Peneliti",
-        "Mitra Pembangunan",
-        "Organisasi Non-Pemerintah (LSM)",
-        "Masyarakat Umum"
-      ]
     },
     developersTab: {
       title: "Tim Pengembang",
