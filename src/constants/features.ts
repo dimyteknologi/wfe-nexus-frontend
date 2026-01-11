@@ -1,5 +1,6 @@
 import React from "react";
 import { Feature } from "@/types/data";
+import { TranslationType } from "@/types/translation";
 import { 
   BarChart3, 
   Globe, 
@@ -8,7 +9,7 @@ import {
   FileText, 
 } from "lucide-react";
 
-export const LANDING_FEATURES = (t: any): Feature[] => [
+export const LANDING_FEATURES = (t: TranslationType): Feature[] => [
   {
     icon: React.createElement(BarChart3, { className: "w-6 h-6" }),
     title: t.landing.features.items.analytics.title,

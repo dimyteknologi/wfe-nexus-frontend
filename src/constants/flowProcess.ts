@@ -1,9 +1,9 @@
 import React from "react";
 import { ProcessStep } from "@/types/data";
+import { TranslationType } from "@/types/translation";
 import { Database, BarChart3, Globe, Zap } from "lucide-react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const FLOW_PROCESS = (t: any): ProcessStep[] => [
+export const FLOW_PROCESS = (t: TranslationType): ProcessStep[] => [
   {
     step: "1",
     title: t.landing.howItWorks.steps.step1.title,
