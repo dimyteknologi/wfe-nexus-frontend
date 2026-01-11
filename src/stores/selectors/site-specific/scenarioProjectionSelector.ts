@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import {
   generateApAreaProjection,
+  generateLahanPanenPadi,
   generatePvAreaProjection,
   generateScenarioProjection,
 } from "@/lib/utils/projections";
@@ -35,6 +36,15 @@ const createProjectionSelector = (
   createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
     if (!baseData || !inputs) return null;
     return generateScenarioProjection(baseData, inputs);
+  });
+
+const createProjectionSelectorLahanPanenPadi = (
+  selectBaseline: Selector<IRootState, IBaselineData | null>,
+  selectInputs: Selector<IRootState, SiteSpecificState | null>,
+) =>
+  createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
+    if (!baseData || !inputs) return null;
+    return generateLahanPanenPadi(baseData, inputs, 2045);
   });
 
 const createApAreaIndustrialProjectionSelector = (
@@ -259,31 +269,6 @@ export const selectPopulationScenarioProjectionB = createProjectionSelector(
   selectComparisonScenarioB,
 );
 
-// agriculture selectors generate agriculture with baselineInput
-export const selectAgricultureScenarioProjectionBaseline =
-  createProjectionSelector(
-    selectAgricultureBaseline,
-    selectSiteSpecificBaseline,
-  );
-
-// agriculture selectors generate agriculture with activeInput
-export const selectAgricultureScenarioProjection = createProjectionSelector(
-  selectAgricultureBaseline,
-  selectActiveScenarioInput,
-);
-
-// agriculture selectors generate agriculture with scenarioA
-export const selectAgricultureScenarioProjectionA = createProjectionSelector(
-  selectAgricultureBaseline,
-  selectComparisonScenarioA,
-);
-
-// agriculture selectors generate agriculture with ScenarioB
-export const selectAgricultureScenarioProjectionB = createProjectionSelector(
-  selectAgricultureBaseline,
-  selectComparisonScenarioB,
-);
-
 // agriculture selectors generate land conversion with activeInput
 export const selectLandCoverProjectionBaseline = createProjectionSelector(
   selectLandCoverBaseline,
@@ -305,6 +290,31 @@ export const selectLandCoverProjectionA = createProjectionSelector(
 // agriculture selectors generate land conversion with scenarioB
 export const selectLandCoverProjectionB = createProjectionSelector(
   selectLandCoverBaseline,
+  selectComparisonScenarioB,
+);
+
+// agriculture selectors generate agriculture with baselineInput
+export const selectAgricultureScenarioProjectionBaseline =
+  createProjectionSelectorLahanPanenPadi(
+    selectLandCoverBaseline,
+    selectSiteSpecificBaseline,
+  );
+
+// agriculture selectors generate agriculture with activeInput
+export const selectAgricultureScenarioProjection = createProjectionSelectorLahanPanenPadi(
+  selectLandCoverProjection,
+  selectActiveScenarioInput,
+);
+
+// agriculture selectors generate agriculture with scenarioA
+export const selectAgricultureScenarioProjectionA = createProjectionSelectorLahanPanenPadi(
+  selectLandCoverProjectionA,
+  selectComparisonScenarioA,
+);
+
+// agriculture selectors generate agriculture with ScenarioB
+export const selectAgricultureScenarioProjectionB = createProjectionSelectorLahanPanenPadi(
+  selectLandCoverProjectionB,
   selectComparisonScenarioB,
 );
 

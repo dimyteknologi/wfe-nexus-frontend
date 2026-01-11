@@ -425,6 +425,46 @@ export const siteSpecificInput: FormSection[] = [
         information:
           "Scenario for agriculture productivity for paddy production between 2025-2045 in ton/ha/year. The number is average value between 2010-2024.",
       },
+      {
+        label: "Paddy yield [ton/ha/year]",
+        min: 2,
+        max: 12,
+        periods: timePeriods,
+        withValidation: true,
+        id: "agriculture.paddyYield",
+        information:
+          "Scenario for agriculture for paddy yield between 2025-2045 in ton/ha/year. The number is average value between 2010-2024.",
+      },
+      {
+        label: "Agriculture Area 2010 [ha]",
+        min: 0,
+        max: 200000,
+        periods: timePeriods,
+        withValidation: false,
+        id: "agriculture.area2010",
+        information:
+          "Scenario for agriculture area in 2010 in hectares. The number is average value between 2010-2024.",
+      },
+      {
+        label: "Cropping Intensity [season/year]",
+        min: 0,
+        max: 5,
+        periods: timePeriods,
+        withValidation: false,
+        id: "agriculture.croppingIntensity",
+        information:
+          "Scenario for agriculture cropping intensity in seasons per year. The number is average value between 2010-2024.",
+      },
+      {
+        label: "Water intensity for agriculture [m3/ha/season]",
+        min: 0,
+        max: 5,
+        periods: timePeriods,
+        withValidation: false,
+        id: "agriculture.waterIntensity",
+        information:
+          "Scenario for agriculture water intensity in m3/ha/season. The number is average value between 2010-2024.",
+      },
     ],
   },
   {

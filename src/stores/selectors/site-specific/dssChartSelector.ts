@@ -22,6 +22,7 @@ import {
 import {
   AnnualWaterSupplyComparison,
   LocalWaterSuffiencyComparison,
+  totalWaterSupplyComparsion,
   WaterAvailabilityPerPerson,
 } from "@/stores/selectors/site-specific/waterSelector";
 import {
@@ -36,6 +37,7 @@ import {
   // selectIndustryInputs,
 } from "@/stores/selectors/baseSelector";
 import { ALL_METRICS_SITE_SPECIFICS } from "@/lib/constant/metrics";
+import { selectTotalWaterDemand, selectTotalWaterDemandComparisson } from "./demandSideSelector";
 // import { selectTotalWaterDemand } from "./demandSideSelector";
 
 type ScenarioKey = "active" | "baseline" | "scenarioA" | "scenarioB";
@@ -61,6 +63,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       AnnualWaterSupplyComparison,
       LocalWaterSuffiencyComparison,
       WaterAvailabilityPerPerson,
+      selectTotalWaterDemandComparisson,
       selectSiteSpecificScenarioAName,
       selectSiteSpecificScenarioBName,
       // selectSiteSpecificBaseline,
@@ -83,6 +86,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       annualWaterSuply,
       localWaterSuffiency,
       waterAvailability,
+      waterSupply,
       siteNameA,
       siteNameB,
       // siteBaseline,
@@ -105,6 +109,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
         annualWaterSuply,
         localWaterSuffiency,
         waterAvailability,
+        localWaterDemand:waterSupply
       };
       
       const metricConfig = ALL_METRICS_SITE_SPECIFICS.find(

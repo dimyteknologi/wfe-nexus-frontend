@@ -379,6 +379,14 @@ export const ALL_METRICS_SITE_SPECIFICS: Metric[] = [
     content: "The ratio between local water production and its demand",
   },
   {
+    category: "WATER",
+    id: "localWaterDemand",
+    title: "Local Water Demand [milion m3/year]",
+    unit: "%",
+    type: "line",
+    content: "total Local Water Demand",
+  },
+  {
     id: "waterAvailability",
     title: "Water Availability per person [m3/cap/year]",
     category: "WATER",

@@ -11,7 +11,6 @@ import {
   BaselinePayload,
   initialTimePeriodData,
 } from "@/lib/constant/inputType.constant";
-import { ContextSpecificState } from "./contextSpecificInputSlicer";
 
 export interface SiteSpecificState {
   simulationName: string | null;
@@ -30,6 +29,10 @@ export const SiteSpecific: SiteSpecificState = {
     landConversion: { ...initialTimePeriodData },
     aquacultureLandGrowth: { ...initialTimePeriodData },
     productivityTarget: { ...initialTimePeriodData },
+    paddyYield: { ...initialTimePeriodData },
+    area2010: { ...initialTimePeriodData },
+    croppingIntensity: { "2025-2030": 1.95, "2031-2040": 1.95, "2041-2045": 1.95 },
+    waterIntensity: { ...initialTimePeriodData },
   },
   livestock: {
     cattleGrowth: { ...initialTimePeriodData },

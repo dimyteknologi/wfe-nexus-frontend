@@ -6,7 +6,7 @@ import { useImportCsvMutation, useValidateFileMutation } from "@/stores/api/csvA
 import { useAppDispatch } from "@/stores/root-reducer";
 import { setData as setGdpData } from "@/stores/slicers/gdrpSlicer";
 import { setData as setLivestockData } from "@/stores/slicers/livestockSlicer";
-import { setData as setAgricultureData } from "@/stores/slicers/agricultureSlicer";
+// import { setData as setAgricultureData } from "@/stores/slicers/agricultureSlicer";
 import { setData as setPopulationData } from "@/stores/slicers/populationSlicer";
 import { setData as setFisheryData } from "@/stores/slicers/fisherySlicer";
 interface ImportModalProps {
@@ -141,7 +141,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
       const {
         "get-gdp": gdp,
         "get-population": population,
-        "get-pertanian": agriculture,
+        // "get-pertanian": agriculture,
         "get-peternakan": livestock,
         "get-perikanan": perikanan
       } = imported.data;
@@ -149,7 +149,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
       dispatch(setGdpData(gdp));
       dispatch(setLivestockData(livestock));
       dispatch(setPopulationData(population));
-      dispatch(setAgricultureData(agriculture));
+      // dispatch(setAgricultureData(agriculture));
       dispatch(setFisheryData(perikanan));
 
       } else {

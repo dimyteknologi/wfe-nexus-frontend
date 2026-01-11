@@ -73,9 +73,9 @@ const calculateAgricultureLand = (
   
   const agricultureLand = projection.parameters.find(
     (param) =>
-      param.name === "Lahan Panen Padi" || param.name === "Agriculture Land",
+      param.name === "Agriculture Area" || param.name === "Agriculture Area",
   );
-
+  
   if (!agricultureLand) return [];
   if (!agricultureLand?.values) return [];
   const safeValues = agricultureLand.values.map((val) => val ?? 0);
@@ -85,10 +85,10 @@ const calculateAgricultureLand = (
 
 export const selectAgricultureLandComparison = createSelector(
   [
-    selectAgricultureScenarioProjection,
-    selectAgricultureScenarioProjectionBaseline,
-    selectAgricultureScenarioProjectionA,
-    selectAgricultureScenarioProjectionB,
+    selectLandCoverProjection,
+    selectLandCoverProjectionBaseline,
+    selectLandCoverProjectionA,
+    selectLandCoverProjectionB,
   ],
   (projActive, projBase, projA, projB) => {
     return {
