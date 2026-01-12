@@ -384,7 +384,7 @@ export const ALL_METRICS_SITE_SPECIFICS: Metric[] = [
     title: "Local Water Demand [milion m3/year]",
     unit: "%",
     type: "line",
-    content: "total Local Water Demand",
+    content: "The number of local water demand in the area for domestic, industrial, economy, and agriculture in m3/year unit",
   },
   {
     id: "waterAvailability",
