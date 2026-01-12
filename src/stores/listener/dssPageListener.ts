@@ -627,7 +627,7 @@ export function DssPageListener() {
   listenerMiddleware.startListening({
     actionCreator: setLandCoverBaseline,
     effect: async (action, listenerApi) => {
-      let data = action.payload;
+      const data = action.payload;
       const baseline = generateLahanPanenPadi(data, SiteSpecific, 2045);
       if (baseline) {
         listenerApi.dispatch(setAgricultureBaseline(baseline));

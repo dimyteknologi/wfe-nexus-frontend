@@ -706,8 +706,8 @@ export const generateScenarioProjection = (
 
   for (const param of historicalData.parameters) {
     const { name, values: originalDataSeries } = param;
-    let cleanDataSeries: number[];
-    let averageGrowth: number;
+    // let cleanDataSeries: number[];
+    // let averageGrowth: number;
     // if(name == 'Agriculture Area'){
     //   cleanDataSeries = generateLandCover(2010, 2045, transformPeriodInputs(simulationState.agriculture.area2010, 108695))
     //                           .parameters?.find((item) => item.name == 'Agriculture Area')?.values.slice(0,15) ?? Array(16).fill(0);
@@ -715,11 +715,11 @@ export const generateScenarioProjection = (
     //   console.log(cleanDataSeries);
     //   averageGrowth = average(growthRate(cleanDataSeries));
     // }else{
-      cleanDataSeries = originalDataSeries
+      const cleanDataSeries = originalDataSeries
         .map((val) => val ?? 0)
         .slice(0, 15);
 
-      averageGrowth = average(growthRate(cleanDataSeries));
+      const averageGrowth = average(growthRate(cleanDataSeries));
     // }
      const scenarioInputs = getInputsByName(name, simulationState);
       
