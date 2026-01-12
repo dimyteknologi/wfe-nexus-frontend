@@ -23,7 +23,6 @@ import {
 } from "@/stores/slicers/contextSpecificInputSlicer";
 import { ALL_METRICS_CONTEXT_SPECIFICS } from "@/lib/constant/metrics";
 import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSelector";
-// import { useInitializeData } from "@/hooks/useInitDummy";
 
 const ContextSpecificPage = () => {
   // useInitializeData();
