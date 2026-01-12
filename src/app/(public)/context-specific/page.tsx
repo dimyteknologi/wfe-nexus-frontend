@@ -41,7 +41,7 @@ const ContextSpecificPage = () => {
   const uniqueCategories = [
     ...new Set(ALL_METRICS_CONTEXT_SPECIFICS.map((metric) => metric.category)),
   ];
-
+  
   const handleOpenScenarioTab = useCallback(() => {
     dispatch(setScenarioModal(!isScenarioOpen));
   }, [dispatch, isScenarioOpen]);

@@ -422,15 +422,15 @@ export const selectSupplyWaterTotalPerScenario = createSelector(
   ],
   (solarPump, surfaceWater, waterDiesel) => {
     return {
-    active: sumArrayData(surfaceWater.active, waterDiesel.active),
-    scenarioA: sumArrayData(
+    active: sumArrayData(solarPump.active, sumArrayData(surfaceWater.active, waterDiesel.active)),
+    scenarioA: sumArrayData(solarPump.scenarioA, sumArrayData(
       surfaceWater.scenarioA,
       waterDiesel.scenarioA,
-    ),
-    scenarioB: sumArrayData(
+    )),
+    scenarioB: sumArrayData(solarPump.scenarioB, sumArrayData(
       surfaceWater.scenarioB,
       waterDiesel.scenarioB,
-    ),
+    )),
   }},
 );
 
