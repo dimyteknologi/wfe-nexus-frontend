@@ -29,6 +29,8 @@ import {
   selectFisheryProjectionBaseline,
   selectFisheryProjectionA,
   selectFisheryProjectionB,
+  selectComparisonScenarioA,
+  selectComparisonScenarioB,
 } from "@/stores/selectors/site-specific/scenarioProjectionSelector";
 
 import { IBaselineData } from "@/lib/types/response";
@@ -141,14 +143,16 @@ export const selectCropsLandWater = createSelector(
     selectAgricultureScenarioProjectionB,
     selectSiteSpecificActive,
     selectSiteSpecificBaseline,
-    selectSiteSpecificScenarioAName,
-    selectSiteSpecificScenarioBName
+    selectComparisonScenarioA,
+    selectComparisonScenarioB
   ],
   (active, baseline, scenarioA, scenarioB, activeInput, baselineInput, scenarioAInput, scenarioBInput) =>  {
     
-    const processScenario = (data: IBaselineData | null, input: SiteSpecificState) => {
-      if (!data && !input) return Array(36).fill(0);
+    const processScenario = (data: IBaselineData | null, input: SiteSpecificState | null) => {
+      if (!data || !input) return Array(36).fill(0);
       const cropsInput = input?.agriculture?.waterIntensity;
+      if (!cropsInput) return Array(36).fill(0);
+      
       const baseValue = cropsInput["2025-2030"] || 1;
       const rawData = getParameters(data, "Lahan Panen Padi");
       const result = constantMultiply(
