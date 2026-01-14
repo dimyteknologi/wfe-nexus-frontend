@@ -40,6 +40,7 @@ const DSSPage = () => {
   const uniqueCategories = [
     ...new Set(ALL_METRICS_SITE_SPECIFICS.map((metric) => metric.category)),
   ];
+
   const handleOpenScenarioTab = useCallback(() => {
     dispatch(setScenarioModal(!isScenarioOpen));
   }, [dispatch, isScenarioOpen]);

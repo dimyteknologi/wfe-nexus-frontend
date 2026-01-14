@@ -58,6 +58,7 @@ import {
   selectWaterDemandBaseline,
   selectLandPortionBaseline,
   selectEnergyDemandBaseline,
+  selectSiteSpecificBaseline,
 } from "@/stores/selectors/baseSelector";
 import {
   generateAgricultureEnergyDemand,
@@ -82,6 +83,7 @@ import {
   dynamicalInputs,
   RESOURCE_DEMAND_UNIT,
 } from "@/lib/constant/resourceDemandUnit.constant";
+import { IRootState } from "..";
 
 interface TransformationRule {
   sourceParamName: string[] | string;
@@ -617,7 +619,9 @@ export function DssPageListener() {
   listenerMiddleware.startListening({
     actionCreator: setDataGdrp,
     effect: async (action, listenerApi) => {
-      const landCoverData = generateLandCover(2010, 2045);
+      const state = listenerApi.getState() as IRootState;
+      const inputs = selectSiteSpecificBaseline(state);
+      const landCoverData = generateLandCover(2010, 2045, inputs);
       const landPortionData = generateLandPortion(landCoverData);
       listenerApi.dispatch(setLandCoverBaseline(landCoverData));
       listenerApi.dispatch(setLandPortionBaseline(landPortionData));

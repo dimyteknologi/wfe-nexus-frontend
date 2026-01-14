@@ -16,13 +16,12 @@ import { TimePeriod, BaselinePayload } from "../constant/inputType.constant";
 import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
 import { RESOURCE_DEMAND_UNIT } from "../constant/resourceDemandUnit.constant";
 import { getApAreaGrowth, getPinPoint } from "./processingData";
-import e from "express";
 
 export const nameToStatePathMap: Record<string, string> = {
   // parameter name : input id
   "a.pertanian, kehutanan, dan perikanan": "agriculture.growthScenario",
   "c.industri pengolahan": "industry.growth",
-  "Lahan Panen Padi": "agriculture.landConversion",
+  "Agriculture Area": "agriculture.landConversion",
   "area perikanan": "agriculture.aquacultureLandGrowth",
   "Total Populasi": "demography.populationGrowth",
   "sapi": "livestock.cattleGrowth",
@@ -68,7 +67,7 @@ const getInputsByName = (name: string, simulationState: SiteSpecificState) => {
       return simulationState.agriculture.growthScenario;
     case "c.industri pengolahan":
       return simulationState.industry.growth;
-    case "Lahan Panen Padi":
+    case "Agriculture Area":
       return simulationState.agriculture.landConversion;
     // case "Agriculture Area":
     //   return simulationState.agriculture.area2010;
@@ -392,6 +391,7 @@ export const generateLahanPanenPadi = (
 export const generateLandCover = (
   startYear: number,
   endYear: number,
+  inputs: SiteSpecificState | null,
 ): IApiData => {
   const {
     INDUSTRIAL_LAND,
@@ -406,7 +406,7 @@ export const generateLandCover = (
   let industrial = INDUSTRIAL_LAND;
   let housing = HOUSING_LAND;
   let forest = FOREST_AREA;
-  let agriculture = AGRICULTURE_AREA;
+  let agriculture = Number(inputs?.agriculture.area2010["2025-2030"] || 0);
   const industrialValues: number[] = [];
   const housingValues: number[] = [];
   const forestValues: number[] = [];
@@ -440,7 +440,7 @@ export const generateLandCover = (
       { name: "Industrial Land", values: industrialValues },
       { name: "Housing Land", values: housingValues },
       { name: "Forest Area", values: forestValues },
-      { name: "Agriculture Area", values: agricultureValues },
+      { name: "Agriculture Area", values: agricultureValues},
       { name: "Other Land", values: otherValues },
       { name: "Available Land", values: availableValues },
     ],
@@ -603,7 +603,7 @@ const generateApArea = (
 };
 
 export const generateApAreaProjection = (
-  param: Params,
+  param: Omit<Params, "average" | "growth">,
   inputs: SiteSpecificState,
   startYear: number = 2010,
   finalYear: number = 2045,
@@ -648,7 +648,7 @@ export const generateApAreaProjection = (
 
 export const generatePvAreaProjection = (
   name: string,
-  inputs: SiteSpecificState,
+  inputs: SiteSpecificState | null,
   startYear: number = 2010,
   finalYear: number = 2045,
 ): number[] => {
