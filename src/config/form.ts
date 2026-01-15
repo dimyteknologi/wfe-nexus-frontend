@@ -416,16 +416,6 @@ export const siteSpecificInput: FormSection[] = [
           "Scenario for aquaculture area increase or decrease between 2025-2045 in %/year. The number is average value between 2010-2024.",
       },
       {
-        label: "Productivity target [ton/ha/year]",
-        min: 2,
-        max: 12,
-        periods: timePeriods,
-        withValidation: true,
-        id: "agriculture.productivityTarget",
-        information:
-          "Scenario for agriculture productivity for paddy production between 2025-2045 in ton/ha/year. The number is average value between 2010-2024.",
-      },
-      {
         label: "Paddy yield [ton/ha/year]",
         min: 2,
         max: 12,
