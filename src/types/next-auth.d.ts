@@ -10,9 +10,11 @@ declare module "next-auth" {
     cityId: string;
     role: string;
     permissions: string[];
+    error?: string;
   }
 
   interface Session {
+    error?: string;
     accessToken: string;
     user: {
       id: string;
@@ -32,5 +34,6 @@ declare module "next-auth/jwt" {
     cityId: string;
     role: string;
     permissions: string[];
+    error?: string;
   }
 }

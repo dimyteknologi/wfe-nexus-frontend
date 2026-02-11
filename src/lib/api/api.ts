@@ -15,7 +15,6 @@ export const apiClient = {
     const authHeader = await getAuthHeader();
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'ngrok-skip-browser-warning': 'true',
       ...authHeader
     };
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -38,7 +37,6 @@ export const apiClient = {
     const authHeader = await getAuthHeader();
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'ngrok-skip-browser-warning': 'true',
       ...authHeader
     };
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -63,7 +61,6 @@ export const apiClient = {
     const authHeader = await getAuthHeader();
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'ngrok-skip-browser-warning': 'true',
       ...authHeader
     };
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -87,7 +84,6 @@ export const apiClient = {
   async delete(endpoint: string) {
     const authHeader = await getAuthHeader();
     const headers: Record<string, string> = {
-      'ngrok-skip-browser-warning': 'true',
       ...authHeader
     };
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {

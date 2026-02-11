@@ -9,6 +9,7 @@ interface CustomJwtPayload extends JwtPayload {
   cityId: string;
   role: string;
   permissions: string[];
+  exp: number;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://103.63.24.47:4000";
@@ -80,7 +81,21 @@ const handler = NextAuth({
         token.cityId = user.cityId;
         token.role = user.role;
         token.permissions = user.permissions;
+        
+        // Decode to get expiration if not already present in user object
+        try {
+          const decoded = jwtDecode<CustomJwtPayload>(user.accessToken);
+          token.exp = decoded.exp;
+        } catch (e) {
+             // fallback or error handling
+        }
       }
+
+      // Check if token is expired
+      if (token.exp && Date.now() / 1000 > (token.exp as number)) {
+        return { ...token, error: "RefreshAccessTokenError" };
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -90,6 +105,11 @@ const handler = NextAuth({
       session.user.cityId = token.cityId as string;
       session.user.role = token.role as string;
       session.user.permissions = token.permissions as string[];
+      
+      if (token.error) {
+        session.error = token.error;
+      }
+      
       return session;
     },
   },

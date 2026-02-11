@@ -73,7 +73,10 @@ export const useLogin = () => {
         if (userRole === "Admin") {
           router.push("/admin");
         } else {
-          const dest = searchParams.get("callbackUrl") || "/";
+          const callbackUrl = searchParams.get("callbackUrl") || "/";
+          const dest = (callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")) 
+            ? callbackUrl 
+            : "/";
           router.push(dest);
         }
       }

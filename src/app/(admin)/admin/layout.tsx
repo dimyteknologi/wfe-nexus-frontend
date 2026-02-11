@@ -6,12 +6,24 @@ import { AdminHeader } from "@/components/admin/Header";
 import { AdminSidebar } from "@/components/admin/Sidebar";
 import ProviderComponent from "@/stores/provider";
 import Image from "next/image";
+import { Loading } from "@/components/loading/Loading";
+import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+      return <Loading className="h-screen" />; 
+  }
+
+  if (!session || session.user.role !== "Admin") {
+      redirect("/login");
+  }
   return (
      <ProviderComponent>
       <main className="relative min-h-screen bg-gray-50">

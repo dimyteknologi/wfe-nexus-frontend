@@ -19,4 +19,19 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response && error.response.status === 401) {
+      if (typeof window !== "undefined") {
+         // Import dynamically to avoid circular dependencies if any, 
+         // though standard import usually works for next-auth/react
+         const { signOut } = await import("next-auth/react");
+         signOut({ callbackUrl: "/api/auth/signin" });
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default axiosInstance;
