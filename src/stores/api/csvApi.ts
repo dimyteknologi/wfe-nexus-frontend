@@ -11,7 +11,7 @@ export const importApi = createApi({
         const formData = new FormData();
         formData.append("file", file);
         return {
-          url: "/import/validate",
+          url: `/import/validate?t=${new Date().getTime()}`,
           method: "POST",
           body: formData,
         };
@@ -24,7 +24,7 @@ export const importApi = createApi({
         formData.append("file", file);
 
         return {
-          url: "/import/csv",
+          url: `/import/csv?t=${new Date().getTime()}`,
           method: "POST",
           body: formData,
         };
