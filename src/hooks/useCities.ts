@@ -21,6 +21,20 @@ export function useCities() {
     }
   };
 
+  const getCityById = async (id: string) => {
+    try {
+      setLoading(true);
+      const data = await apiClient.get(`/kota/${id}`);
+      const city = data.data || data;
+      setError(null);
+      return city;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch city');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const createCity = async (cityData: CityFormData) => {
     try {
       const response = await apiClient.post('/kota', cityData);

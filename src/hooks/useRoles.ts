@@ -13,7 +13,6 @@ export function useRoles() {
       const response = await apiClient.get('/role');
       const rolesList = Array.isArray(response) ? response : (response.data || []);
       setRoles(rolesList);
-      console.log(rolesList);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch roles');

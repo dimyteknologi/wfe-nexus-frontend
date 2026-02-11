@@ -115,7 +115,7 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       const series = [];
       const colors = [];
 
-      const dynamicColors = ["#C4E1E6", "#8DBCC7", "#0065F8", "#71C0BB"];
+      const dynamicColors = ["#0004ffff", "#FF6C0C", "#FFE08F"];
       if (selectedMetricData.baseline?.length > 0) {
         series.push({ name: "Baseline", data: selectedMetricData.baseline });
         colors.push(dynamicColors[0]);
