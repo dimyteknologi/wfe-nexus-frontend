@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, ReactNode } from "react";
-import IconChevronRight from "../icon/ChevronRight";
+import { ChevronRight } from "lucide-react";
 
 interface iCollapsibleTitle {
   title?: string;
@@ -26,7 +26,7 @@ const CollapsibleTitle = ({ title, content, onClick }: iCollapsibleTitle) => {
             aria-disabled="true"
             className="transition-transform duration-300 cursor-not-allowed"
           >
-            <IconChevronRight className="text-xs" />
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
         <div className="flex-grow text-left">

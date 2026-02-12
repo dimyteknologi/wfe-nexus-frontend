@@ -1,7 +1,7 @@
 // app/admin/users/[id]/page.tsx
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { UserForm } from '@/components/admin/UserForm';
 import { UserFormData } from '@/lib/types/admin.types';
@@ -19,7 +19,7 @@ export default function EditUserPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
       setLoading(true);
       const data = await apiClient.get(`/user/${userId}`);
@@ -43,7 +43,7 @@ export default function EditUserPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
 
   const handleSubmit = async (formData: UserFormData) => {
     try {
@@ -59,7 +59,7 @@ export default function EditUserPage() {
     if (userId) {
       fetchUser();
     }
-  }, [userId]);
+  }, [userId, fetchUser]);
 
   if (loading) {
     return (

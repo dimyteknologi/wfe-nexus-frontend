@@ -27,7 +27,7 @@ import {
   setData as setDataPopulation,
   setBaseline as setBaselinePopulation,
 } from "@/stores/slicers/populationSlicer";
-import { populateInputsWithBaseline } from "@/stores/slicers/siteSpecificInputSlicer";
+import { populateInputsWithBaseline, SiteSpecific } from "@/stores/slicers/siteSpecificInputSlicer";
 import {
   extractAverageGrowthRates,
   generateApAreaHousing,
@@ -37,6 +37,8 @@ import {
   generateLandCover,
   generateLandPortion,
   generateAvailabilityFactor,
+  generateLahanPanenPadi,
+  transformPeriodInputs,
 } from "@/lib/utils/projections";
 import { IApiData, IBaselineData, Params } from "@/lib/types/response";
 import { INITIAL_DATA_CONSTANT } from "@/lib/constant/initialData.constant";
@@ -56,6 +58,7 @@ import {
   selectWaterDemandBaseline,
   selectLandPortionBaseline,
   selectEnergyDemandBaseline,
+  selectSiteSpecificBaseline,
 } from "@/stores/selectors/baseSelector";
 import {
   generateAgricultureEnergyDemand,
@@ -80,6 +83,7 @@ import {
   dynamicalInputs,
   RESOURCE_DEMAND_UNIT,
 } from "@/lib/constant/resourceDemandUnit.constant";
+import { IRootState } from "..";
 
 interface TransformationRule {
   sourceParamName: string[] | string;
@@ -258,6 +262,18 @@ const resourceConfig: ProcessingConfig = {
     },
   ],
 };
+
+// const agricultureLahanPanenPadiConfig: ProcessingConfig = {
+//   label: "Pertanian",
+//   unit: "ha/year",
+//   transformations: [
+//     {
+//       sourceParamName: "Agriculture Area",
+//       calculationFn: generateLahanPanenPadi,
+//       outputParamName: "Lahan Panen Padi"
+//     }
+//   ]
+// }
 
 const waterDemandConfig: ProcessingConfig = {
   label: "Water Demand",
@@ -444,6 +460,7 @@ const addResourceListener = () => {
       };
 
       const results = preprocessData(sourceDataForProcessing, resourceConfig);
+
       if (results?.parameters.length > 0) {
         listenerApi.dispatch(setResourceBaseline(results));
       }
@@ -513,9 +530,24 @@ const addPopulateFormListener = () => {
         ...(selectWaterDemandBaseline(state)?.parameters || []),
         ...(selectEnergyDemandBaseline(state)?.parameters || []),
       ];
+      const hardCodedBaselinePayload = {
+        "energy.solarPvAreaIndustrial": 0,
+        "energy.solarPvAreaHousing": 0,
+        "energy.industrialEnergy": 0,
+        "energy.domesticElectricity": 0,
+        "water.artificialPondIndustrial": 0,
+        "water.artificialPondHousing": 0,
+        "water.domesticWaterDemand": 125,
+        "water.industrialWater": 1.687,
+        "agriculture.area2010":   108695,
+        "agriculture.paddyYield": 6.55,
+        "agriculture.croppingIntensity": 1.95,
+        "agriculture.waterIntensity": 9380
+      };
       const completeBaselinePayload = {
         ...extractAverageGrowthRates(allParameters),
         ...dynamicalInputs,
+        ...hardCodedBaselinePayload
       };
       if (Object.keys(completeBaselinePayload).length > 0) {
         listenerApi.dispatch(
@@ -585,25 +617,31 @@ export function DssPageListener() {
   });
 
   listenerMiddleware.startListening({
-    actionCreator: setDataAgriculture,
+    actionCreator: setDataGdrp,
     effect: async (action, listenerApi) => {
-      const response = action.payload;
-      const baseline = generateBaseline(response.data);
-
-      if (baseline) {
-        listenerApi.dispatch(setAgricultureBaseline(baseline));
-      }
-
-      const landCoverData = generateLandCover(2010, 2045);
+      const state = listenerApi.getState() as IRootState;
+      const inputs = selectSiteSpecificBaseline(state);
+      const landCoverData = generateLandCover(2010, 2045, inputs);
       const landPortionData = generateLandPortion(landCoverData);
       listenerApi.dispatch(setLandCoverBaseline(landCoverData));
       listenerApi.dispatch(setLandPortionBaseline(landPortionData));
     },
   });
 
-  addPopulateFormListener();
+  listenerMiddleware.startListening({
+    actionCreator: setLandCoverBaseline,
+    effect: async (action, listenerApi) => {
+      const data = action.payload;
+      const baseline = generateLahanPanenPadi(data, SiteSpecific, 2045);
+      if (baseline) {
+        listenerApi.dispatch(setAgricultureBaseline(baseline));
+      }
+    },
+  });
+
   addFoodDemandListener();
   addWaterDemandListener();
   addEnergyDemandListener();
   addResourceListener();
+  addPopulateFormListener();
 }

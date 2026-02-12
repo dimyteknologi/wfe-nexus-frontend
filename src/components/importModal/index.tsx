@@ -6,7 +6,7 @@ import { useImportCsvMutation, useValidateFileMutation } from "@/stores/api/csvA
 import { useAppDispatch } from "@/stores/root-reducer";
 import { setData as setGdpData } from "@/stores/slicers/gdrpSlicer";
 import { setData as setLivestockData } from "@/stores/slicers/livestockSlicer";
-import { setData as setAgricultureData } from "@/stores/slicers/agricultureSlicer";
+// import { setData as setAgricultureData } from "@/stores/slicers/agricultureSlicer";
 import { setData as setPopulationData } from "@/stores/slicers/populationSlicer";
 import { setData as setFisheryData } from "@/stores/slicers/fisherySlicer";
 interface ImportModalProps {
@@ -43,36 +43,6 @@ const ImportModal: React.FC<ImportModalProps> = ({
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    if (e.dataTransfer.files.length > 1) {
-      setUploadStatus("error");
-      setUploadMessage("Hanya satu file yang dapat diupload");
-      return;
-    }
-
-    const file = e.dataTransfer.files[0];
-    processFile(file);
-  }, []);
-
-  const handleFileInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files.length > 0) {
-        if (e.target.files.length > 1) {
-          setUploadStatus("error");
-          setUploadMessage("Hanya satu file yang dapat diupload");
-          return;
-        }
-
-        const file = e.target.files[0];
-        processFile(file);
-      }
-    },
-    [],
-  );
-
   const processFile = useCallback(
     (file: File) => {
       // Check file size
@@ -103,6 +73,36 @@ const ImportModal: React.FC<ImportModalProps> = ({
       setUploadMessage("");
     },
     [maxSizeMB, acceptedFileTypes],
+  );
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files.length > 1) {
+      setUploadStatus("error");
+      setUploadMessage("Hanya satu file yang dapat diupload");
+      return;
+    }
+
+    const file = e.dataTransfer.files[0];
+    processFile(file);
+  }, [processFile]);
+
+  const handleFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files.length > 0) {
+        if (e.target.files.length > 1) {
+          setUploadStatus("error");
+          setUploadMessage("Hanya satu file yang dapat diupload");
+          return;
+        }
+
+        const file = e.target.files[0];
+        processFile(file);
+      }
+    },
+    [processFile],
   );
 
   const removeFile = useCallback(() => {
@@ -141,7 +141,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
       const {
         "get-gdp": gdp,
         "get-population": population,
-        "get-pertanian": agriculture,
+        // "get-pertanian": agriculture,
         "get-peternakan": livestock,
         "get-perikanan": perikanan
       } = imported.data;
@@ -149,7 +149,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
       dispatch(setGdpData(gdp));
       dispatch(setLivestockData(livestock));
       dispatch(setPopulationData(population));
-      dispatch(setAgricultureData(agriculture));
+      // dispatch(setAgricultureData(agriculture));
       dispatch(setFisheryData(perikanan));
 
       } else {
@@ -169,7 +169,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
       setUploadMessage("Terjadi kesalahan saat mengupload file");
       console.error("Upload error:", error);
     }
-  }, [selectedFile, onClose]);
+  }, [selectedFile, onClose, dispatch, validateFile, importCsv]);
 
   const formatFileSize = useCallback((bytes: number) => {
     if (bytes === 0) return "0 Bytes";

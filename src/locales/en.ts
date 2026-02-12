@@ -212,24 +212,20 @@ export const en = {
       title2: "Decision Support System",
       subtitle: "Transforming Water-Energy-Food Nexus thinking into actionable insights and policies for sustainable development.",
       cta: "Get Started",
-      joinText: "Join",
-      joinCount: "500+",
-      joinSuffix: "organizations using our platform",
       collaboration: "Collaboration Simulation",
       activeUser: "Active User",
-      collaboratedWith: "Collaborated with government leading organizations in piloting"
+      collaboratedWith: "Collaborated with government organizations in piloting development"
     },
     features: {
       badge: "Powerful Features",
       title: "Everything You Need for Informed Decisions",
-      subtitle: "Our platform provides comprehensive tools to analyze and optimize the Water-Energy-Food Nexus",
+      subtitle: "Our platform provides comprehensive tools to analyze and optimize the Water-Energy-Food Nexus allocation for site and context specific issues.",
       items: {
-         analytics: { title: "Advanced Analytics", desc: "Leverage context and site analytics to gain deep insights into nexus interdependencies and impacts." },
+         analytics: { title: "Comprehensive Analytics", desc: "Integrate socio-economy aspect in resources management of Water-Energy-Food interdependencies for analyzing regional and sustainable development." },
          modeling: { title: "Scenario Modeling", desc: "Create and compare multiple scenarios to evaluate policy decisions under different conditions." },
          simulation: { title: "Real-time Simulation", desc: "Simulation key indicators in real-time with dynamic visualization." },
-         collaboration: { title: "Stakeholder Collaboration", desc: "Enable seamless collaboration between multiple stakeholders with role-based access." },
-         reporting: { title: "Comprehensive Reporting", desc: "Generate detailed reports with visualizations in multiple formats for decision makers." },
-         security: { title: "Data Security", desc: "Enterprise-grade security with encryption and compliance with global data protection standards." }
+         collaboration: { title: "Stakeholder Collaboration", desc: "Developed through collaboration between multiple stakeholders based on role and responsibility." },
+         reporting: { title: "Ease of Customization", desc: "Equipped with customization function to simulate your data." }
       }
     },
     howItWorks: {
@@ -247,6 +243,92 @@ export const en = {
        title: "Ready to Transform Your Decision-Making?",
        subtitle: "Join hundreds of organizations using WEF Nexus to create sustainable policies and practices",
        button: "Get Started"
+    }
+  },
+  about: {
+    header: {
+      badge: "Government Initiative",
+      title: "About WEF Nexus DSS",
+      subtitle: "Innovative platform to support integrated decision-making in managing water, energy, and food resources"
+    },
+    tabs: {
+      nexus: "ABOUT WEF NEXUS",
+      dss: "ABOUT DSS TOOLS",
+      developers: "DEVELOPERS"
+    },
+    nexusTab: {
+      title: "Integrated WEF Nexus Approach",
+      intro: [
+        "The Water-Energy-Food (WEF) Nexus is an integrated approach to managing and understanding the interconnectedness between water, energy, and food systems. First discussed at the World Economic Forum (WEF) in 2008 to address future global challenges. managing and understanding the interconnectedness between water, energy, and food systems. First discussed at the World Economic Forum (WEF) in 2008 to address future global challenges.", 
+        "For Indonesia Context, The WEF Nexus defined as an integrated strategy that manages water, energy, and food resources in a coordinated manner, with the aim of balancing competing demands, protecting ecosystems, and promoting inclusive resilience in the context of rapid urbanization, industrialization, and climate change.",
+        "This definition positions the WEF Nexus not merely as a theoretical concept, but as a decision-support and governance framework—a tool for identifying, evaluating, and implementing interventions that deliver cross-sectoral co-benefits. Through this approach, the WEF Nexus becomes a foundation for achieving Indonesia’s long-term goals of ensuring resource security, climate resilience, and sustainable prosperity toward Indonesia Emas 2045.",
+      ],
+      implementationPrincipleTitle: "Implemented through 7 main principles including:",
+      implementationPrinciple: [
+        "Cross-sectoral and cross-scale integration",
+        "Resource efficiency and productivity",
+        "Equity and inclusiveness",
+        "Sustainability and ecosystem protection",
+        "Cross-cutting integration: land tenure, gender, and spatial planning",
+        "Resilience and adaptive management",
+        "Multi-stakeholder participation and governance coherence",
+      ],
+      implementationSecurityIntro: "and mainstreamed into several national development policies, including Long Term Plan (RPJP) Indonesia 2020-2045, Medium Term Plan (RPJP) Indonesia 2025-2029, sustainable Development Goals of 2030, and Second National Determined Contribution (2nd NDC) of Indonesia with Net Zero Emissions target in 2060, implemented through 3 main national priority programs, namely:",
+      waterSecurity: {
+        title: "Water Security",
+        description: "The capacity of a population to safeguard sustainable access to adequate quantities of acceptable quality water (UN-Water, 2013)"
+      },
+      energySecurity: {
+        title: "Energy Security",
+        description: "Uninterrupted availability of energy sources at an affordable price (IEA, 1974)"
+      },
+      foodSecurity: {
+        title: "Food Security",
+        description: "When all people at all times have physical and economic access to sufficient, safe and nutritious food (The WFS, 1996)"
+      },
+      indicatorsTitle: "Several key indicators for WEF Nexus included:",
+      indicators: [
+        "Water Security Index",
+        "Energy Security Index",
+        "Food Security Index",
+        "Renewable Energy share",
+        "Water Quality Index",
+        "Pipe Water and Sanitation Access",
+        "Electricity Access",
+        "Emissions Reduction",
+        "Environmental Quality Index"
+      ],
+      futherInformation:"For further information regarding Indonesia WEF Nexus roadmap can be refer to this link:",
+      futherInformationLink:"https://linktr.ee/WEFNexus"
+    },
+    dssTab: {
+      title: "Decision Support System Tools",
+      intro: "DSS Tools are developed to provide simulations of Water, Energy, and Food projection within an area under a certain timeframe under different social and economy development scenarios. Currently, DSS tools developed for:",
+      introList: [
+       "Site specific analysis, developed to simulate the impact of Water, Energy, and Food indicators in regency/municipality area under different of industrial, agriculture, and WEF resources scenarios; and",
+       "Context specific; developed to simulate the impact of development and utilization of geothermal power plant or solar PV based water pump to agriculture practice and productivity within a village or district area."
+      ],
+      introEnd: "It can be used especially by local government to assist in analytical process during planning process, to provide input for regional policy formulation. It can also expanded to other users, such as central government, academia, development partners, NGOs, and the public.",
+      systemsTitle: "Systems Approach",
+      systemsText: "Using a systems-based approach (Systems Thinking/System Dynamics), the WEF Nexus accommodates the interactions among the water, energy, and food/land sectors, along with various feedback loops formed within the WEF sectors and between socio-economic sectors, to accommodate the complexity of the WEF Nexus.",
+      benefitsTitle: "Key Benefits:",
+      benefits: [
+        "Explore various future development pathways",
+        "Illustrate potential synergies and trade-offs within WEF sectors",
+        "Provide input for regional policy formulation"
+      ],
+    },
+    developersTab: {
+      title: "Development Team",
+      intro: "Developed through a participatory process involving a diverse range of stakeholders—on the government side—including the Ministry of National Development Planning (Bappenas), the Ministry of Agriculture, the Ministry of Energy and Mineral Resources (ESDM), several representatives from local governments, and academics; all orchestrated by UNDP Indonesia.",
+      collaborativeTitle: "Collaborative Process",
+      collaborativeText: "The development of WEF Nexus DSS involves close collaboration between various institutions to ensure this tool can meet user needs and have a real impact on development planning.",
+      processItems: [
+        "Multi-Stakeholder Collaboration",
+        "Participatory Approach",
+        "Iterative Development"
+      ],
+      partnershipText: "In partnership with:"
     }
   },
   footer: {

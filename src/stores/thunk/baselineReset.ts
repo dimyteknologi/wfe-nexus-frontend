@@ -12,6 +12,7 @@ import {
 } from "../selectors/baseSelector";
 import { BaselinePayload } from "@/lib/constant/inputType.constant";
 import { extractAverageGrowthRates } from "@/lib/utils/projections";
+
 export const CONTEXT_BASELINE_PAYLOAD = {
   "food.populationInitial": 1300,
   "food.populationGrowth": 1.32,
@@ -23,16 +24,12 @@ export const CONTEXT_BASELINE_PAYLOAD = {
   "agriculture.baseYield": 5.5,
   "agriculture.croppingIntensity": 2,
   "agriculture.waterIntensity": 7800,
-
   "diesel.installedCapacity": 58,
   "diesel.headUnit": 30,
-
   "solarPV.installedCapacity": 63,
   "solarPV.fee": 150000,
-
   "fertilizer.percentageOfChemical": 30,
   "fertilizer.ratioOrganic": 17,
-
   "rainfall.annualRainfall": 710,
   "rainfall.areaSize": 100,
   "geothermal.installedUnit": 0,
@@ -53,7 +50,7 @@ export const resetToBaseline = createAsyncThunk(
       const agricultureData = selectAgricultureBaseline(state);
       const fisheryData = selectFisheryBaseline(state);
       const livestockData = selectLivestockBaseline(state);
-
+      
       const allParameters = [
         ...(gdrpData?.parameters || []),
         ...(populationData?.parameters || []),
@@ -71,6 +68,10 @@ export const resetToBaseline = createAsyncThunk(
         "water.artificialPondHousing": 0,
         "water.domesticWaterDemand": 125,
         "water.industrialWater": 1.687,
+        "agriculture.area2010":   108695,
+        "agriculture.paddyYield": 6.55,
+        "agriculture.croppingIntensity": 1.95,
+        "agriculture.waterIntensity": 9380
       };
 
       const completeBaselinePayload = extractAverageGrowthRates(allParameters);

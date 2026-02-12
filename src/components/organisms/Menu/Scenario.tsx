@@ -43,7 +43,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       setSimulationName(e.target.value);
     },
-    [simulationName],
+    [],
   );
 
   useEffect(() => {
@@ -74,7 +74,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
       }
       setSimulationName(e.target.value);
     },
-    [],
+    [category, dispatch],
   );
 
   const handleSaveSimulation = async () => {
@@ -190,7 +190,8 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
             <div className="group w-full sm:w-auto">
               <button
                 onClick={() => {
-                  (dispatch(resetToBaseline(category)), setSimulationName(""));
+                  dispatch(resetToBaseline(category));
+                  setSimulationName("");
                 }}
                 className={`w-full sm:w-auto p-2 sm:p-3 rounded-lg md:rounded-xl font-medium transition-all transform hover:scale-105 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-md hover:shadow-lg`}
                 aria-label="Save current simulation"

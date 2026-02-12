@@ -73,7 +73,7 @@ export const contextSpecificInput: FormSection[] = [
     ],
   },
   {
-    title: "Agriculture Production Demand",
+    title: "Agriculture Production",
     inputs: [
       {
         label: "Agriculture Land",
@@ -335,7 +335,7 @@ export const contextSpecificInput: FormSection[] = [
         withValidation: false,
         id: "geothermal.capacityPerUnit",
         information:
-          "The number of fee charged for farmer using solar PV",
+          "The potential capacity for electricity generation per unit plant (MW/Unit)",
       },
       {
         label: "Utilization of surface water for geothermal [ ]",
@@ -416,14 +416,44 @@ export const siteSpecificInput: FormSection[] = [
           "Scenario for aquaculture area increase or decrease between 2025-2045 in %/year. The number is average value between 2010-2024.",
       },
       {
-        label: "Productivity target [ton/ha/year]",
+        label: "Paddy yield [ton/ha/year]",
         min: 2,
         max: 12,
         periods: timePeriods,
         withValidation: true,
-        id: "agriculture.productivityTarget",
+        id: "agriculture.paddyYield",
         information:
-          "Scenario for agriculture productivity for paddy production between 2025-2045 in ton/ha/year. The number is average value between 2010-2024.",
+          "Scenario for paddy yield per season between 2025-2045 in ton/ha/ The number is average value between 2010-2024 Is around 6.55 with range between",
+      },
+      {
+        label: "Agriculture Area 2010 [ha]",
+        min: 0,
+        max: 200000,
+        periods: timePeriods,
+        withValidation: false,
+        id: "agriculture.area2010",
+        information:
+          "Regency Agriculture area (paddy) in starting time of simulation",
+      },
+      {
+        label: "Cropping Intensity [season/year]",
+        min: 0.5,
+        max: 4,
+        periods: timePeriods,
+        withValidation: false,
+        id: "agriculture.croppingIntensity",
+        information:
+          "Represent on how many plantings season of paddy within a year, will affect the water demand and food production, average for Indonesia around 1.43, the range are between 1 – 2.5",
+      },
+      {
+        label: "Water intensity for agriculture [m3/ha/season]",
+        min: 4500,
+        max: 15000,
+        periods: timePeriods,
+        withValidation: false,
+        id: "agriculture.waterIntensity",
+        information:
+          "Water demand per unit agriculture area per planting season, the range are between 6,200 – 11,000 m3/ha/season",
       },
     ],
   },

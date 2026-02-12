@@ -3,33 +3,33 @@
 import Alert from "@/components/alert";
 import { useRef, useState, useCallback } from "react";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
-import ChartWidget from "@/components/chart/widget";
-import SimulationForm from "@/components/form/simulation";
+import ChartWidget from "@/features/simulation/components/SimulationChart/widget";
+import SimulationForm from "@/features/simulation/components/SimulationForm";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
-import TableWidget from "@/components/table/widget";
-import Link from "next/link";
-import DSSConceptModal from "@/components/dssConceptModal";
+import TableWidget from "@/features/simulation/components/SimulationTable/widget";
 import ImportModal from "@/components/importModal";
+import DSSConceptModal from "@/components/dssConceptModal";
+
+import { contextSpecificInput } from "@/config/form";
+import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
 import {
   setDssConceptModal,
   setImportModal,
   setScenarioModal,
 } from "@/stores/slicers/dssModalSlicer";
-import { setPowerGeneration, PowerGenerationType } from "@/stores/slicers/powerGenerationSlicer";
-import { File, FileUp } from "lucide-react";
-import { contextSpecificInput } from "@/config/form";
-import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
+import {
+  setPowerGeneration,
+  setAllActiveInputs,
+} from "@/stores/slicers/contextSpecificInputSlicer";
 import { ALL_METRICS_CONTEXT_SPECIFICS } from "@/lib/constant/metrics";
 import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSelector";
 
-// import { useInitializeData } from "@/hooks/useInitDummy";
-
 const ContextSpecificPage = () => {
   // useInitializeData();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const [isPowerGenDropdownOpen, setIsPowerGenDropdownOpen] = useState(false);
-  const selectedPowerGen = useAppSelector((state) => state.powerGeneration.selectedType);
   const simulationState = useAppSelector((state) => state.contextSpecific);
+  const selectedPowerGen = simulationState.powerGeneration;
   const displayedMetrics = useAppSelector(selectDisplayedMetricsContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
@@ -41,7 +41,7 @@ const ContextSpecificPage = () => {
   const uniqueCategories = [
     ...new Set(ALL_METRICS_CONTEXT_SPECIFICS.map((metric) => metric.category)),
   ];
-
+  
   const handleOpenScenarioTab = useCallback(() => {
     dispatch(setScenarioModal(!isScenarioOpen));
   }, [dispatch, isScenarioOpen]);
@@ -54,10 +54,6 @@ const ContextSpecificPage = () => {
     dispatch(setImportModal(!isImportOpen));
   }, [dispatch, isImportOpen]);
 
-  const mouseHover = useCallback(() => {
-    setIsDropdownOpen((current) => !current);
-  }, []);
-
   const handlePreset = (category: string) => {
     dispatch(setChartsToCategoryPreset({ target: "context", category }));
   };
@@ -69,9 +65,68 @@ const ContextSpecificPage = () => {
     { value: "none" as const, label: "None" },
   ];
 
-  const handlePowerGenSelect = (option: PowerGenerationType) => {
+  const handlePowerGenSelect = (option: "solar" | "geothermal" | "both" | "none") => {
     dispatch(setPowerGeneration(option));
     setIsPowerGenDropdownOpen(false);
+    
+    // Update input values based on power generation selection
+    const updatedInputs = { ...simulationState.active };
+    
+    switch (option) {
+      case "both":
+        // Set defaults for both
+        updatedInputs.solarPV = {
+          installedCapacity: { "2025-2034": updatedInputs.solarPV.installedCapacity["2025-2034"] || 63 },
+          fee: { "2025-2034": 150000 },
+        };
+        updatedInputs.geothermal = {
+          installedUnit: { "2025-2034": updatedInputs.geothermal.installedUnit["2025-2034"] || 0 },
+          capacityPerUnit: { "2025-2034": 50 },
+          utilizationOfSurfaceWater: { "2025-2034": updatedInputs.geothermal.utilizationOfSurfaceWater["2025-2034"] || 0 },
+        };
+        break;
+      
+      case "solar":
+        // Enable Solar PV, disable Geothermal
+        updatedInputs.solarPV = {
+          installedCapacity: { "2025-2034": updatedInputs.solarPV.installedCapacity["2025-2034"] || 63 },
+          fee: { "2025-2034": 150000 },
+        };
+        updatedInputs.geothermal = {
+          installedUnit: { "2025-2034": 0 },
+          capacityPerUnit: { "2025-2034": 0 },
+          utilizationOfSurfaceWater: { "2025-2034": 0 },
+        };
+        break;
+      
+      case "geothermal":
+        // Enable Geothermal, disable Solar PV
+        updatedInputs.solarPV = {
+          installedCapacity: { "2025-2034": 0 },
+          fee: { "2025-2034": 0 },
+        };
+        updatedInputs.geothermal = {
+          installedUnit: { "2025-2034": updatedInputs.geothermal.installedUnit["2025-2034"] || 0 },
+          capacityPerUnit: { "2025-2034": 50 },
+          utilizationOfSurfaceWater: { "2025-2034": updatedInputs.geothermal.utilizationOfSurfaceWater["2025-2034"] || 0 },
+        };
+        break;
+      
+      case "none":
+        // Disable both
+        updatedInputs.solarPV = {
+          installedCapacity: { "2025-2034": 0 },
+          fee: { "2025-2034": 0 },
+        };
+        updatedInputs.geothermal = {
+          installedUnit: { "2025-2034": 0 },
+          capacityPerUnit: { "2025-2034": 0 },
+          utilizationOfSurfaceWater: { "2025-2034": 0 },
+        };
+        break;
+    }
+    
+    dispatch(setAllActiveInputs(updatedInputs));
   };
 
   return (

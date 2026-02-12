@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useMemo } from "react";
-import SelectCollapsible from "@/components/select/index";
-import ChartComponent from "@/components/chart/index";
+import ChartComponent from "./index";
+import SelectCollapsible from "../SimulationSelect/index";
 import { useAppSelector, useAppDispatch } from "@/stores/root-reducer";
 import { updateChartMetric } from "@/stores/slicers/dashboardSlicer";
 import {

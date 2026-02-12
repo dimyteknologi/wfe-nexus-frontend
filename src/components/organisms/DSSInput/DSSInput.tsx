@@ -1,7 +1,8 @@
-import InputGroup from "@/components/basic/input/InputGroup";
-import SectionCard from "@/components/card/SectionCard";
+import InputGroup from "@/features/simulation/components/basic/input/InputGroup";
+import SectionCard from "@/features/simulation/components/SectionCard";
 import { FormContainerProps } from "@/lib/types/dss-input.dummy.types.rtk";
 import React from "react";
+
 import { useAppSelector } from "@/stores/root-reducer";
 
 const FormContainer: React.FC<FormContainerProps> = ({
@@ -12,19 +13,21 @@ const FormContainer: React.FC<FormContainerProps> = ({
   sections,
   category,
 }) => {
-  const powerGenType = useAppSelector((state) => state.powerGeneration.selectedType);
-
-  // Determine which inputs should be disabled based on power generation selection
+  const powerGeneration = useAppSelector((state) => 
+    category === "contextSpecific" ? state.contextSpecific.powerGeneration : "both"
+  );
+  
+  // Determine if an input should be disabled based on power generation settings
   const isInputDisabled = (inputId: string): boolean => {
     if (category !== "contextSpecific") return false;
-
+    
     const isSolarPV = inputId.startsWith("solarPV");
     const isGeothermal = inputId.startsWith("geothermal");
-
-    if (powerGenType === "solar" && isGeothermal) return true;
-    if (powerGenType === "geothermal" && isSolarPV) return true;
-    if (powerGenType === "none" && (isSolarPV || isGeothermal)) return true;
-
+    
+    if (powerGeneration === "none") return isSolarPV || isGeothermal;
+    if (powerGeneration === "solar") return isGeothermal;
+    if (powerGeneration === "geothermal") return isSolarPV;
+    
     return false;
   };
   return (

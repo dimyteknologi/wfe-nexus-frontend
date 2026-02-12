@@ -22,7 +22,7 @@ const DEFAULT_CHARTS_BY_CATEGORY_SITE: Record<string, string[]> = {
     "localRenewableEnergy",
     "electricityPerCapita",
   ],
-  WATER: ["annualWaterSuply", "localWaterSuffiency", "waterAvailability"],
+  WATER: ["localWaterDemand","annualWaterSuply", "localWaterSuffiency", "waterAvailability"],
 };
 
 const DEFAULT_CHARTS_BY_CATEGORY_CONTEXT: Record<string, string[]> = {

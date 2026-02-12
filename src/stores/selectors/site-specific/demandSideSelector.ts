@@ -29,10 +29,14 @@ import {
   selectFisheryProjectionBaseline,
   selectFisheryProjectionA,
   selectFisheryProjectionB,
+  selectComparisonScenarioA,
+  selectComparisonScenarioB,
 } from "@/stores/selectors/site-specific/scenarioProjectionSelector";
 
 import { IBaselineData } from "@/lib/types/response";
 import { RESOURCE_DEMAND_UNIT } from "@/lib/constant/resourceDemandUnit.constant";
+import { selectSiteSpecificActive, selectSiteSpecificBaseline, selectSiteSpecificScenarioAName, selectSiteSpecificScenarioBName } from "../baseSelector";
+import { SiteSpecificState } from "@/stores/slicers/siteSpecificInputSlicer";
 
 export const calculateMultiplyArrays = (
   data: number[],
@@ -137,25 +141,40 @@ export const selectCropsLandWater = createSelector(
     selectAgricultureScenarioProjectionBaseline,
     selectAgricultureScenarioProjectionA,
     selectAgricultureScenarioProjectionB,
+    selectSiteSpecificActive,
+    selectSiteSpecificBaseline,
+    selectComparisonScenarioA,
+    selectComparisonScenarioB
   ],
-  (active, baseline, scenarioA, scenarioB) => {
+  (active, baseline, scenarioA, scenarioB, activeInput, baselineInput, scenarioAInput, scenarioBInput) =>  {
+    
+    const processScenario = (data: IBaselineData | null, input: SiteSpecificState | null) => {
+      if (!data || !input) return Array(36).fill(0);
+      const cropsInput = input?.agriculture?.waterIntensity;
+      if (!cropsInput) return Array(36).fill(0);
+      
+      const baseValue = cropsInput["2025-2030"] || 1;
+      const rawData = getParameters(data, "Lahan Panen Padi");
+      const result = constantMultiply(
+        rawData,
+        baseValue
+      );
+      return result.map((val, i) => {
+        if (i > 20 && i <= 30) {
+          return (val / baseValue) * (cropsInput["2031-2040"] || baseValue);
+        } 
+        if (i > 30) {
+          return (val / baseValue) * (cropsInput["2041-2045"] || baseValue);
+        }
+        return val;
+      });
+    };
+
     return {
-      active: constantMultiply(
-        getParameters(active, "Lahan Panen Padi"),
-        RESOURCE_DEMAND_UNIT.WATER.CROPS_LAND_DEMAND,
-      ),
-      baseline: constantMultiply(
-        getParameters(baseline, "Lahan Panen Padi"),
-        RESOURCE_DEMAND_UNIT.WATER.CROPS_LAND_DEMAND,
-      ),
-      scenarioA: constantMultiply(
-        getParameters(scenarioA, "Lahan Panen Padi"),
-        RESOURCE_DEMAND_UNIT.WATER.CROPS_LAND_DEMAND,
-      ),
-      scenarioB: constantMultiply(
-        getParameters(scenarioB, "Lahan Panen Padi"),
-        RESOURCE_DEMAND_UNIT.WATER.CROPS_LAND_DEMAND,
-      ),
+      active: processScenario(active, activeInput),
+      baseline: processScenario(baseline, baselineInput),
+      scenarioA: processScenario(scenarioA, scenarioAInput),
+      scenarioB: processScenario(scenarioB, scenarioBInput),
     };
   },
 );
@@ -300,6 +319,20 @@ export const selectTotalWaterDemand = createSelector(
         aquaculture.scenarioB,
         municipality.scenarioB,
       ),
+    };
+  },
+);
+
+export const selectTotalWaterDemandComparisson = createSelector(
+  [
+    selectTotalWaterDemand
+  ],
+  (totalWater) => {
+    return {
+      active: constantDevided(totalWater.active,1000000),
+      baseline: constantDevided(totalWater.baseline,1000000),
+      scenarioA: constantDevided(totalWater.scenarioA,1000000),
+      scenarioB: constantDevided(totalWater.scenarioB,1000000),
     };
   },
 );

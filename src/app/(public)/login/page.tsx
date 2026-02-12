@@ -1,15 +1,14 @@
 "use client";
 
 import { ArrowRight, Eye, EyeOff, Shield } from "lucide-react";
-import Link from "next/link";
 import { useLogin } from "@/hooks/useLogin";
 import Image from "next/image";
-
-import { useTranslation } from "@/hooks/useTranslation"; // Add import
+import Button from "@/components/atoms/Button";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const LoginPage = () => {
-    const { t } = useTranslation(); // Use hook
-    const { login } = t;
+  const { t } = useTranslation();
+  const { login } = t;
 
   const {
     showPassword,
@@ -25,9 +24,6 @@ const LoginPage = () => {
     onSubmit,
   } = useLogin();
 
-  console.log("errors", errors);
-  console.log("authError", authError);
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8 relative">
       <div className="absolute inset-0 opacity-10">
@@ -42,22 +38,13 @@ const LoginPage = () => {
       <div className="max-w-md w-full space-y-8 bg-white/90 backdrop-blur-sm p-10 mt-12 rounded-2xl shadow-xl border border-gray-100 z-10">
         <div className="mb-2">
           <div className="flex justify-center">
-            <div className="bg-gradient-to-r from-green-700 to-teal-700 p-3 rounded-full">
+            <div className="bg-gradient-to-r from-green-600 to-green-700 p-3 rounded-full shadow-md">
               <Shield className="h-8 w-8 text-white" />
             </div>
           </div>
           <h2 className="mt-6 text-center text-3xl font-bold text-gray-800">
             {login.title}
           </h2>
-          {/* <p className="mt-2 text-center text-sm text-gray-600">
-            Atau{" "}
-            <Link
-              href="#"
-              className="font-medium text-green-700 hover:text-green-600 transition-colors"
-            >
-              daftar akun baru
-            </Link>
-          </p> */}
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -138,51 +125,31 @@ const LoginPage = () => {
                   {login.rememberMe}
                 </label>
               </div>
-
-              
             </div>
           </div>
 
           {authError && (
-            <div className="text-red-500 text-sm text-center">{authError}</div>
+            <div className="text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-lg p-3">
+              {authError}
+            </div>
           )}
 
           <div>
-            <button
+            <Button
               type="submit"
+              variant="primary"
+              size="lg"
+              fullWidth
+              loading={isSubmitting}
               disabled={isSubmitting}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-lg font-medium rounded-lg text-white bg-gradient-to-r from-green-700 to-teal-700 hover:from-green-600 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-75 disabled:cursor-not-allowed"
+              icon={!isSubmitting ? <ArrowRight size={20} /> : undefined}
+              iconPosition="right"
             >
-              {isSubmitting ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  {login.processingButton}
-                </div>
-              ) : (
-                <div className="flex items-center">
-                  {login.submitButton}{" "}
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              )}
-            </button>
+              {isSubmitting ? login.processingButton : login.submitButton}
+            </Button>
           </div>
         </form>
-
       </div>
-
-      <style jsx>{`
-        @keyframes spin {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-        .animate-spin {
-          animation: spin 1s linear infinite;
-        }
-      `}</style>
     </div>
   );
 };

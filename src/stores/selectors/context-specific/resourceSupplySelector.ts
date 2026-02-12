@@ -29,6 +29,7 @@ import { RESOURCE_SUPPLY_INPUT } from "@/lib/constant/resourceSupplyInput.consta
 import { ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
 import { FOOD_AND_YIELD, GEOTHERMAL_INITIAL_DATA } from "@/lib/constant/initialDataContext.constans";
 import { getGeothermalPotentialGeneration, getRatioSteamToElecticityGeneraion } from "./geothermalImpactSelector";
+import { selectComparisonScenarioA } from "../site-specific/scenarioProjectionSelector";
 
 export const findResourceSupplyByTitle = (title: string) => {
   return RESOURCE_SUPPLY_INPUT.find((item) => item.title === title);
@@ -177,13 +178,31 @@ const applySigmoidToArray = (arr: number[]) => {
   return arr.map((v) => sigmoidImpact(v));
 };
 
-const getWaterPumpDiesel = (input?: ContextSpecificState) => {
-  if (!input) return Array(16).fill(0);
+const getWaterPumpDiesel = (
+  data: number[],
+  input?: ContextSpecificState
+): number[] => {
 
-  const installedCapacity = input.diesel?.installedCapacity?.["2015-2030"] ?? 0;
+  if (!input) return Array(data.length).fill(0);
 
-  return Array(16).fill(installedCapacity * 1000/(1000*9.81*30)*(60*6*3600));
-}
+  const result: number[] = [];
+
+  const installedCapacity =
+    input.diesel?.installedCapacity?.["2015-2030"] ?? 0;
+
+  const calculatedValue =
+    installedCapacity * 1000 / (1000 * 9.81 * 30) * (60 * 6 * 3600);
+
+  for (let i = 0; i < data.length; i++) {
+    if (data[i] <= 0) {
+      result.push(calculatedValue);
+    } else {
+      result.push(0);
+    }
+  }
+
+  return result;
+};
 
 const getRainfallDebit = (input?: ContextSpecificState) :number[] =>  {
   if (!input) return Array(16).fill(0);
@@ -386,9 +405,9 @@ export const selectSumWaterGroundWaterWithdrawal = createSelector(
 
 export const selectWaterGapPerScenario = createSelector(
   selectWaterDemandPerScenario,
-  selectWaterPumpDieselPerScenario,
+  // selectWaterPumpDieselPerScenario,
   selectWaterAvailableSurfacePerScenario,
-  (waterDemandForAgriculture,waterDiesel, waterSurface) => ({
+  (waterDemandForAgriculture, waterSurface) => ({
     active: minArrayData(waterDemandForAgriculture.active, waterSurface.active),
     scenarioA: minArrayData(waterDemandForAgriculture.scenarioA, waterSurface.scenarioA),
     scenarioB: minArrayData(waterDemandForAgriculture.scenarioB, waterSurface.scenarioB),
@@ -401,7 +420,6 @@ export const selectSolarWaterPumpPerScenario = createSelector(
   (solarPump, waterGap) => {
     const numeratorFactor = 6 * 365 * 3600;
     const denominatorFactor = 9.81 * 30;
-
     const calculate = (pump: number[], gap: number[]) =>
       minValueArrayData(
         constantDevided(constantMultiply(constantMultiply(pump,0.8), numeratorFactor),denominatorFactor),
@@ -432,8 +450,8 @@ export const selectSupplyWaterTotalPerScenario = createSelector(
     scenarioB: sumArrayData(
       solarWater.scenarioB, surfaceWater.scenarioB,
       waterDiesel.scenarioB,
-    ),
-  }),
+    )),
+  }},
 );
 
 export const selectRainfallAvailabilltyPerScenario = createSelector(
@@ -461,7 +479,8 @@ export const selectWaterAllocationForAgriPerScenario = createSelector(
     selectWaterDemandforGeothermalPerScenario,
     selectWaterDemandPerScenario,
   ],
-  (supplyWater, waterGeothermal, waterDemandAgri) => ({
+  (supplyWater, waterGeothermal, waterDemandAgri) => {
+    return {
     active: calculateWaterAllocationAgri(
       minArrayData(supplyWater.active, waterGeothermal.active),
       waterDemandAgri.active,
@@ -474,7 +493,7 @@ export const selectWaterAllocationForAgriPerScenario = createSelector(
       minArrayData(supplyWater.scenarioB, waterGeothermal.scenarioB),
       waterDemandAgri.scenarioB,
     ),
-  }),
+  }},
 );
 
 export const selectWaterAllocationForGeoPerScenario = createSelector(
@@ -504,7 +523,8 @@ export const selectWaterAllocationForGeoPerScenario = createSelector(
 
 export const selectImpactOfWaterAvailabilityForAgri = createSelector(
   [selectWaterAllocationForAgriPerScenario, selectWaterDemandPerScenario],
-  (allocationAgri, demandAgri) => ({
+  (allocationAgri, demandAgri) => {
+    return {
     active: calculateImpactWaterAgri(allocationAgri.active, demandAgri.active),
     scenarioA: calculateImpactWaterAgri(
       allocationAgri.scenarioA,
@@ -513,8 +533,8 @@ export const selectImpactOfWaterAvailabilityForAgri = createSelector(
     scenarioB: calculateImpactWaterAgri(
       allocationAgri.scenarioB,
       demandAgri.scenarioB,
-    ),
-  }),
+    ),}
+  }
 );
 
 export const selectImpactOfWaterAvailabilityForGeothermal = createSelector(
@@ -627,8 +647,9 @@ export const potentialDryingAgriAndFinalProcessing = createSelector(
 // circular dependency from sigmoid function
 export const selectAgricultureLandProductionPerScenario = createSelector(
   [agricultureLandPerScenario, selectImpactOfWaterAvailabilityForAgri],
-  (land, waterAgri) => ({
-    active: multiplyArrayData(
+  (land, waterAgri) => {
+   return {
+     active: multiplyArrayData(
       constantMultiply(
         waterAgri.active,
         FOOD_AND_YIELD.INPARI_32.POTENTIAL_PRODUCTIVITY,
@@ -650,7 +671,8 @@ export const selectAgricultureLandProductionPerScenario = createSelector(
       ),
       land.scenarioB,
     ),
-  }),
+   }
+  }
 );
 
 export const selectProductionTotalPerScenario = createSelector(

@@ -1,6 +1,9 @@
 import { createSelector } from "@reduxjs/toolkit";
 import {
   generateApAreaProjection,
+  generateLahanPanenPadi,
+  generateLandCover,
+  generateLandPortion,
   generatePvAreaProjection,
   generateScenarioProjection,
 } from "@/lib/utils/projections";
@@ -25,7 +28,7 @@ import {
 import { SiteSpecificState } from "@/stores/slicers/siteSpecificInputSlicer";
 import { ScenarioItem } from "@/stores/slicers/dssScenarioSlicer";
 import { IRootState } from "@/stores";
-import { IBaselineData } from "@/lib/types/response";
+import { IApiData, IBaselineData } from "@/lib/types/response";
 import { Selector } from "react-redux";
 
 const createProjectionSelector = (
@@ -37,8 +40,17 @@ const createProjectionSelector = (
     return generateScenarioProjection(baseData, inputs);
   });
 
+const createProjectionSelectorLahanPanenPadi = (
+  selectBaseline: Selector<IRootState, IApiData | null>,
+  selectInputs: Selector<IRootState, SiteSpecificState | null>,
+) =>
+  createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
+    if (!baseData || !inputs) return null;
+    return generateLahanPanenPadi(baseData, inputs, 2045);
+  });
+
 const createApAreaIndustrialProjectionSelector = (
-  selectBaseline: Selector<IRootState, IBaselineData | null>,
+  selectBaseline: Selector<IRootState, IApiData | null>,
   selectInputs: Selector<IRootState, SiteSpecificState | null>,
 ) =>
   createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
@@ -62,7 +74,7 @@ const createSolarPVAreaProjectionSelector = (
   });
 
 const createApAreaHousingProjectionSelector = (
-  selectBaseline: Selector<IRootState, IBaselineData | null>,
+  selectBaseline: Selector<IRootState, IApiData | null>,
   selectInputs: Selector<IRootState, SiteSpecificState | null>,
 ) =>
   createSelector([selectBaseline, selectInputs], (baseData, inputs) => {
@@ -74,6 +86,20 @@ const createApAreaHousingProjectionSelector = (
     if (!housingBaseline?.values) return Array(36).fill(0);
     return generateApAreaProjection(housingBaseline, inputs);
   });
+
+const createLandCoverProjectionSelector = (
+  selectInputs: Selector<IRootState, SiteSpecificState>
+) => createSelector([selectInputs], (inputs) => {
+    const landCover = generateLandCover(2010, 2025, inputs);
+    return generateScenarioProjection(landCover, inputs);
+});
+
+// const createLandPortionProjectionSelector = (
+//   selectBaseline: Selector<IRootState, IBaselineData | null>
+// ) => createSelector([selectBaseline], (baseline) => {
+//   if(!baseline) return null;
+//   return generateLandPortion(baseline);
+// });
 
 export const selectComparisonScenarioA = createSelector(
   [selectSavedSiteSpecificScenarios, selectSiteSpecificScenarioAName],
@@ -259,52 +285,48 @@ export const selectPopulationScenarioProjectionB = createProjectionSelector(
   selectComparisonScenarioB,
 );
 
+// agriculture selectors generate land conversion with activeInput
+export const selectLandCoverProjectionBaseline = createLandCoverProjectionSelector(
+  selectSiteSpecificBaseline
+);
+
+// agriculture selectors generate land conversion with activeInput
+export const selectLandCoverProjection = createLandCoverProjectionSelector(
+  selectActiveScenarioInput
+);
+
+// agriculture selectors generate land conversion with scenarioA
+export const selectLandCoverProjectionA = createLandCoverProjectionSelector(
+  selectComparisonScenarioA
+);
+
+// agriculture selectors generate land conversion with scenarioB
+export const selectLandCoverProjectionB = createLandCoverProjectionSelector(
+  selectComparisonScenarioB
+);
+
 // agriculture selectors generate agriculture with baselineInput
 export const selectAgricultureScenarioProjectionBaseline =
-  createProjectionSelector(
-    selectAgricultureBaseline,
+  createProjectionSelectorLahanPanenPadi(
+    selectLandCoverBaseline,
     selectSiteSpecificBaseline,
   );
 
 // agriculture selectors generate agriculture with activeInput
-export const selectAgricultureScenarioProjection = createProjectionSelector(
-  selectAgricultureBaseline,
+export const selectAgricultureScenarioProjection = createProjectionSelectorLahanPanenPadi(
+  selectLandCoverProjection,
   selectActiveScenarioInput,
 );
 
 // agriculture selectors generate agriculture with scenarioA
-export const selectAgricultureScenarioProjectionA = createProjectionSelector(
-  selectAgricultureBaseline,
+export const selectAgricultureScenarioProjectionA = createProjectionSelectorLahanPanenPadi(
+  selectLandCoverProjectionA,
   selectComparisonScenarioA,
 );
 
 // agriculture selectors generate agriculture with ScenarioB
-export const selectAgricultureScenarioProjectionB = createProjectionSelector(
-  selectAgricultureBaseline,
-  selectComparisonScenarioB,
-);
-
-// agriculture selectors generate land conversion with activeInput
-export const selectLandCoverProjectionBaseline = createProjectionSelector(
-  selectLandCoverBaseline,
-  selectSiteSpecificBaseline,
-);
-
-// agriculture selectors generate land conversion with activeInput
-export const selectLandCoverProjection = createProjectionSelector(
-  selectLandCoverBaseline,
-  selectActiveScenarioInput,
-);
-
-// agriculture selectors generate land conversion with scenarioA
-export const selectLandCoverProjectionA = createProjectionSelector(
-  selectLandCoverBaseline,
-  selectComparisonScenarioA,
-);
-
-// agriculture selectors generate land conversion with scenarioB
-export const selectLandCoverProjectionB = createProjectionSelector(
-  selectLandCoverBaseline,
+export const selectAgricultureScenarioProjectionB = createProjectionSelectorLahanPanenPadi(
+  selectLandCoverProjectionB,
   selectComparisonScenarioB,
 );
 
@@ -318,21 +340,21 @@ export const selectApAreaHousingProjectionBaseline =
 // resources housing selectors generate apArea with activeInput
 export const selectApAreaHousingProjection =
   createApAreaHousingProjectionSelector(
-    selectLandCoverBaseline,
+    selectLandCoverProjection,
     selectActiveScenarioInput,
   );
 
 // resources housing selectors generate apArea with scenarioA
 export const selectApAreaHousingProjectionA =
   createApAreaHousingProjectionSelector(
-    selectLandCoverBaseline,
+    selectLandCoverProjectionA,
     selectComparisonScenarioA,
   );
 
 // resources housing selectors generate apArea with scenarioB
 export const selectApAreaHousingProjectionB =
   createApAreaHousingProjectionSelector(
-    selectLandCoverBaseline,
+    selectLandCoverProjectionB,
     selectComparisonScenarioB,
   );
 
@@ -346,21 +368,21 @@ export const selectApAreaIndustrialProjectionBaseline =
 // resources industrial selectors generate apArea with activeInput
 export const selectApAreaIndustrialProjection =
   createApAreaIndustrialProjectionSelector(
-    selectLandCoverBaseline,
+    selectLandCoverProjection,
     selectActiveScenarioInput,
   );
 
 // resources industrial selectors generate apArea with scenarioA
 export const selectApAreaIndustrialProjectionA =
   createApAreaIndustrialProjectionSelector(
-    selectLandCoverBaseline,
+    selectLandCoverProjectionA,
     selectComparisonScenarioA,
   );
 
 // resources industrial selectors generate apArea with scenarioB
 export const selectApAreaIndustrialProjectionB =
   createApAreaIndustrialProjectionSelector(
-    selectLandCoverBaseline,
+    selectLandCoverProjectionB,
     selectComparisonScenarioB,
   );
 

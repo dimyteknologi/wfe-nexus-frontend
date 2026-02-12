@@ -212,17 +212,14 @@ export const id = {
       title2: "Sistem Pendukung Keputusan",
       subtitle: "Mengubah pemikiran Water-Energy-Food Nexus menjadi wawasan dan kebijakan yang dapat ditindaklanjuti untuk pembangunan berkelanjutan.",
       cta: "Mulai Sekarang",
-      joinText: "Bergabung dengan",
-      joinCount: "500+",
-      joinSuffix: "organisasi yang menggunakan platform kami",
       collaboration: "Simulasi Kolaborasi",
       activeUser: "Pengguna Aktif",
-      collaboratedWith: "Berkolaborasi dengan organisasi pemerintah dalam hal piloting"
+      collaboratedWith: "Berkolaborasi dengan organisasi pemerintah dalam merintis pembangunan."
     },
     features: {
       badge: "Fitur Canggih",
       title: "Segala yang Anda Butuhkan untuk Keputusan Terinformasi",
-      subtitle: "Platform kami menyediakan alat komprehensif untuk menganalisis dan mengoptimalkan Water-Energy-Food Nexus",
+      subtitle: "Platform kami menyediakan alat komprehensif untuk menganalisis dan mengoptimalkan alokasi Keterkaitan Air-Energi-Pangan (Water-Energy-Food Nexus) untuk masalah spesifik lokasi dan konteks.",
       items: {
          analytics: { title: "Analitik Tingkat Lanjut", desc: "Manfaatkan analitik konteks dan situs untuk mendapatkan wawasan mendalam tentang saling ketergantungan dan dampak nexus." },
          modeling: { title: "Pemodelan Skenario", desc: "Buat dan bandingkan beberapa skenario untuk mengevaluasi keputusan kebijakan dalam kondisi yang berbeda." },
@@ -247,6 +244,92 @@ export const id = {
        title: "Siap Mengubah Pengambilan Keputusan Anda?",
        subtitle: "Bergabunglah dengan ratusan organisasi yang menggunakan WEF Nexus untuk menciptakan kebijakan dan praktik berkelanjutan",
        button: "Mulai Sekarang"
+    }
+  },
+  about: {
+    header: {
+      badge: "Inisiatif Pemerintah",
+      title: "Tentang WEF Nexus DSS",
+      subtitle: "Platform inovatif untuk mendukung pengambilan keputusan terpadu dalam mengelola sumber daya air, energi, dan pangan"
+    },
+    tabs: {
+      nexus: "TENTANG WEF NEXUS",
+      dss: "TENTANG ALAT DSS",
+      developers: "PENGEMBANG"
+    },
+    nexusTab: {
+      title: "Pendekatan WEF Nexus Terpadu",
+      intro: [
+        "Water-Energy-Food (WEF) Nexus adalah pendekatan terpadu untuk mengelola dan memahami keterkaitan antara sistem air, energi, dan pangan. Pertama kali dibahas di World Economic Forum (WEF) pada tahun 2008 untuk mengatasi tantangan global di masa depan.", 
+        "Untuk Konteks Indonesia, WEF Nexus didefinisikan sebagai strategi terpadu yang mengelola sumber daya air, energi, dan pangan secara terkoordinasi, dengan tujuan menyeimbangkan permintaan yang bersaing, melindungi ekosistem, dan mempromosikan ketahanan inklusif dalam konteks urbanisasi yang cepat, industrialisasi, dan perubahan iklim.",
+        "Definisi ini menempatkan WEF Nexus bukan hanya sebagai konsep teoritis, tetapi sebagai kerangka pendukung keputusan dan tata kelola—sebuah alat untuk mengidentifikasi, mengevaluasi, dan mengimplementasikan intervensi yang memberikan manfaat lintas sektoral. Melalui pendekatan ini, WEF Nexus menjadi fondasi untuk mencapai tujuan jangka panjang Indonesia dalam memastikan keamanan sumber daya, ketahanan iklim, dan kemakmuran berkelanjutan menuju Indonesia Emas 2045.",
+      ],
+      implementationPrincipleTitle: "Diimplementasikan melalui 7 prinsip utama meliputi:",
+      implementationPrinciple: [
+        "Integrasi lintas sektor dan lintas skala",
+        "Efisiensi dan produktivitas sumber daya",
+        "Kesetaraan dan inklusivitas",
+        "Keberlanjutan dan perlindungan ekosistem",
+        "Integrasi lintas bidang: kepemilikan lahan, gender, dan perencanaan tata ruang",
+        "Ketahanan dan manajemen adaptif",
+        "Partisipasi multi-pemangku kepentingan dan koherensi tata kelola",
+      ],
+      implementationSecurityIntro: "dan disatukan ke dalam beberapa kebijakan pembangunan nasional, termasuk Rencana Jangka Panjang (RPJP) Indonesia 2020-2045, Rencana Jangka Menengah (RPJP) Indonesia 2025-2029, Tujuan Pembangunan Berkelanjutan (2030), dan Kedua Kebijakan Ditetapkan (2nd NDC) Indonesia dengan Target Net Zero Emissions pada tahun 2060, diimplementasikan melalui 3 program prioritas nasional utama, yaitu:",
+      waterSecurity: {
+        title: "Ketahanan Air",
+        description: "Kapasitas populasi untuk menjaga akses berkelanjutan terhadap kuantitas air berkualitas yang memadai (UN-Water, 2013)"
+      },
+      energySecurity: {
+        title: "Ketahanan Energi",
+        description: "Ketersediaan berkelanjutan sumber energi dengan harga terjangkau (IEA, 1974)"
+      },
+      foodSecurity: {
+        title: "Ketahanan Pangan",
+        description: "Ketika semua orang setiap saat memiliki akses fisik dan ekonomi terhadap pangan yang cukup, aman dan bergizi (The WFS, 1996)"
+      },
+      indicatorsTitle: "Beberapa indikator utama untuk WEF Nexus meliputi:",
+      indicators: [
+        "Indeks Ketahanan Air",
+        "Indeks Ketahanan Energi",
+        "Indeks Ketahanan Pangan",
+        "Pangsa Energi Terbarukan",
+        "Indeks Kualitas Air",
+        "Akses Air Pipa dan Sanitasi",
+        "Akses Listrik",
+        "Pengurangan Emisi",
+        "Indeks Kualitas Lingkungan"
+      ],
+      futherInformation:"Untuk informasi lebih lanjut mengenai peta jalan WEF Nexus Indonesia dapat merujuk ke tautan ini:",
+      futherInformationLink:"https://linktr.ee/WEFNexus"
+    },
+    dssTab: {
+      title: "Alat Sistem Pendukung Keputusan",
+      intro: "Alat DSS dikembangkan untuk menyediakan simulasi proyeksi Air, Energi, dan Pangan dalam suatu wilayah dalam kerangka waktu tertentu di bawah berbagai skenario pembangunan sosial dan ekonomi. Saat ini, alat DSS dikembangkan untuk:",
+      introList: [
+       "Analisis spesifik lokasi, dikembangkan untuk mensimulasikan dampak indikator Air, Energi, dan Pangan di wilayah kabupaten/kota di bawah berbagai skenario industri, pertanian, dan sumber daya WEF; dan",
+       "Spesifik konteks; dikembangkan untuk mensimulasikan dampak pengembangan dan pemanfaatan pembangkit listrik tenaga panas bumi atau pompa air berbasis PV surya terhadap praktik dan produktivitas pertanian dalam wilayah desa atau kecamatan."
+      ],
+      introEnd: "Dapat digunakan khususnya oleh pemerintah daerah untuk membantu proses analisis selama proses perencanaan, untuk memberikan masukan bagi perumusan kebijakan daerah. Juga dapat diperluas ke pengguna lain, seperti pemerintah pusat, akademisi, mitra pembangunan, LSM, dan masyarakat umum.",
+      systemsTitle: "Pendekatan Sistem",
+      systemsText: "Menggunakan pendekatan berbasis sistem (Systems Thinking/System Dynamics), WEF Nexus mengakomodasi interaksi antara sektor air, energi, dan pangan/lahan, bersama dengan berbagai putaran umpan balik yang terbentuk dalam sektor WEF dan antara sektor sosial-ekonomi, untuk mengakomodasi kompleksitas WEF Nexus.",
+      benefitsTitle: "Manfaat Utama:",
+      benefits: [
+        "Mengeksplorasi berbagai jalur pembangunan masa depan",
+        "Mengilustrasikan potensi sinergi dan trade-off dalam sektor WEF",
+        "Memberikan masukan untuk perumusan kebijakan regional"
+      ],
+    },
+    developersTab: {
+      title: "Tim Pengembang",
+      intro: "Dikembangkan melalui proses partisipatif yang melibatkan berbagai pemangku kepentingan—di sisi pemerintah—termasuk Kementerian Perencanaan Pembangunan Nasional (Bappenas), Kementerian Pertanian, Kementerian Energi dan Sumber Daya Mineral (ESDM), beberapa perwakilan dari pemerintah daerah, dan akademisi; semuanya diorkestrasikan oleh UNDP Indonesia.",
+      collaborativeTitle: "Proses Kolaboratif",
+      collaborativeText: "Pengembangan WEF Nexus DSS melibatkan kolaborasi erat antara berbagai institusi untuk memastikan alat ini dapat memenuhi kebutuhan pengguna dan memiliki dampak nyata pada perencanaan pembangunan.",
+      processItems: [
+        "Kolaborasi Multi-Pemangku Kepentingan",
+        "Pendekatan Partisipatif",
+        "Pengembangan Iteratif"
+      ],
+      partnershipText: "Bermitra dengan:"
     }
   },
   footer: {

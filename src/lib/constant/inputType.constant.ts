@@ -8,6 +8,10 @@ export interface AgricultureState {
   landConversion: TimePeriodData;
   aquacultureLandGrowth: TimePeriodData;
   productivityTarget: TimePeriodData;
+  paddyYield: TimePeriodData;
+  area2010: TimePeriodData;
+  croppingIntensity: TimePeriodData;
+  waterIntensity: TimePeriodData;
 }
 export interface LivestockState {
   cattleGrowth: TimePeriodData;

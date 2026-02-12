@@ -4,9 +4,9 @@
 import { useRef, useState, useCallback } from "react";
 import { FileUp, File } from "lucide-react";
 import { useInitializeData } from "@/hooks/useInitDummy";
-import SimulationForm from "@/components/form/simulation";
+import SimulationForm from "@/features/simulation/components/SimulationForm";
 import ScenarioMenu from "@/components/organisms/Menu/Scenario";
-import ChartWidget from "@/components/chart/widget";
+import ChartWidget from "@/features/simulation/components/SimulationChart/widget";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
 import { selectDisplayedMetrics } from "@/stores/selectors/dssDashboardSelector";
 import {
@@ -20,7 +20,7 @@ import DSSConceptModal from "@/components/dssConceptModal";
 import Alert from "@/components/alert";
 import { setChartsToCategoryPreset } from "@/stores/slicers/dashboardSlicer";
 import { ALL_METRICS_SITE_SPECIFICS } from "@/lib/constant/metrics";
-import TableWidget from "@/components/table/widget";
+import TableWidget from "@/features/simulation/components/SimulationTable/widget";
 import { siteSpecificInput } from "@/config/form";
 
 const DSSPage = () => {
@@ -40,6 +40,7 @@ const DSSPage = () => {
   const uniqueCategories = [
     ...new Set(ALL_METRICS_SITE_SPECIFICS.map((metric) => metric.category)),
   ];
+
   const handleOpenScenarioTab = useCallback(() => {
     dispatch(setScenarioModal(!isScenarioOpen));
   }, [dispatch, isScenarioOpen]);

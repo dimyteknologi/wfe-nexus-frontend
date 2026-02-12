@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import SelectTitle from "@/components/select/title";
+import SelectTitle from "./title";
 import { OptionType } from "@/lib/types/select.types";
 
 interface SelectCollapsibleProps {

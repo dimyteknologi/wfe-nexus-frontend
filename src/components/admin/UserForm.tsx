@@ -5,6 +5,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { UserFormData, Role, City, Organization } from "@/lib/types/admin.types";
 import { apiClient } from "@/lib/api/api";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import LoadingSpinner from "@/components/atoms/LoadingSpinner";
+import { UserPlus, ArrowLeft, Mail, Phone, Briefcase, Building, MapPin, Calendar, Shield, Info } from "lucide-react";
 
 interface UserFormProps {
   initialData?: UserFormData;
@@ -28,6 +32,7 @@ const defaultFormData: UserFormData = {
 export function UserForm({ initialData = defaultFormData, isEdit = false, onSubmit }: UserFormProps) {
   const [formData, setFormData] = useState<UserFormData>(initialData);
   const [errors, setErrors] = useState<Partial<UserFormData>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [roles, setRoles] = useState<Role[]>([]);
   const [cities, setCities] = useState<City[]>([]);
@@ -111,10 +116,15 @@ export function UserForm({ initialData = defaultFormData, isEdit = false, onSubm
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      onSubmit(formData);
+      setIsSubmitting(true);
+      try {
+        await onSubmit(formData);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -122,370 +132,424 @@ export function UserForm({ initialData = defaultFormData, isEdit = false, onSubm
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-4xl mx-auto"
+      className="max-w-5xl mx-auto"
     >
+      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-green-800 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {isEdit ? "Edit User" : "Add New User"}
           </h1>
           <p className="text-gray-600">
-            {isEdit ? "Update user information" : "Create a new user account"}
+            {isEdit ? "Update user information and access" : "Create a new user account with proper access"}
           </p>
         </div>
         <Link
           href="/admin/users"
-          className="flex items-center space-x-2 text-gray-600 hover:text-green-700 transition-colors"
+          className="flex items-center space-x-2 text-gray-600 hover:text-emerald-600 transition-colors group"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span>Back to Users</span>
+          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+          <span className="font-medium">Back</span>
         </Link>
       </div>
 
-      <motion.form
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        onSubmit={handleSubmit}
-        className="bg-white rounded-2xl shadow-lg p-8"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="md:col-span-2">
-            <h3 className="text-xl font-semibold text-green-800 mb-4 flex items-center">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+      {/* Loading State */}
+      {loadingOptions && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12"
+        >
+          <div className="flex flex-col items-center justify-center">
+            <LoadingSpinner size="lg" />
+            <p className="mt-4 text-gray-600">Loading form options...</p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Form Card */}
+      {!loadingOptions && (
+        <motion.form
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          onSubmit={handleSubmit}
+          className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 space-y-8"
+        >
+          {/* Personal Information Section */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-900 flex items-center mb-6">
+              <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center mr-3">
+                <UserPlus className="w-5 h-5 text-emerald-600" />
               </div>
               Personal Information
             </h3>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name *
-            </label>
-            <motion.input
-              whileFocus={{ scale: 1.02 }}
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
-                errors.name 
-                  ? "border-red-300 focus:ring-red-500" 
-                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
-              }`}
-              placeholder="Enter full name"
-            />
-            {errors.name && (
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 text-sm text-red-600"
-              >
-                {errors.name}
-              </motion.p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address *
-            </label>
-            <motion.input
-              whileFocus={{ scale: 1.02 }}
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
-                errors.email 
-                  ? "border-red-300 focus:ring-red-500" 
-                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
-              }`}
-              placeholder="Enter email address"
-            />
-            {errors.email && (
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 text-sm text-red-600"
-              >
-                {errors.email}
-              </motion.p>
-            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
+                <motion.input
+                  whileFocus={{ scale: 1.01 }}
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 transition-all ${
+                    errors.name 
+                      ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" 
+                      : "border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  }`}
+                  placeholder="Enter full name"
+                />
+                {errors.name && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-2 text-sm text-red-600 flex items-center"
+                  >
+                    <span className="w-1 h-1 bg-red-600 rounded-full mr-2"></span>
+                    {errors.name}
+                  </motion.p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  Email Address <span className="text-red-500 ml-1">*</span>
+                  <Mail className="w-4 h-4 ml-2 text-gray-400" />
+                </label>
+                <motion.input
+                  whileFocus={{ scale: 1.01 }}
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 transition-all ${
+                    errors.email 
+                      ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" 
+                      : "border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  }`}
+                  placeholder="user@example.com"
+                />
+                {errors.email && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-2 text-sm text-red-600 flex items-center"
+                  >
+                    <span className="w-1 h-1 bg-red-600 rounded-full mr-2"></span>
+                    {errors.email}
+                  </motion.p>
+                )}
+              </div>
+
+              {!isEdit && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Password <span className="text-red-500">*</span>
+                  </label>
+                  <motion.input
+                    whileFocus={{ scale: 1.01 }}
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 transition-all ${
+                      errors.password 
+                        ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" 
+                        : "border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                    }`}
+                    placeholder="Enter secure password"
+                  />
+                  {errors.password && (
+                    <motion.p 
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-2 text-sm text-red-600 flex items-center"
+                    >
+                      <span className="w-1 h-1 bg-red-600 rounded-full mr-2"></span>
+                      {errors.password}
+                    </motion.p>
+                  )}
+                  <p className="mt-2 text-xs text-gray-500">
+                    Password must be strong and secure
+                  </p>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  Phone Number <span className="text-red-500 ml-1">*</span>
+                  <Phone className="w-4 h-4 ml-2 text-gray-400" />
+                </label>
+                <motion.input
+                  whileFocus={{ scale: 1.01 }}
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 transition-all ${
+                    errors.phone 
+                      ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" 
+                      : "border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  }`}
+                  placeholder="+62 xxx-xxxx-xxxx"
+                />
+                {errors.phone && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-2 text-sm text-red-600 flex items-center"
+                  >
+                    <span className="w-1 h-1 bg-red-600 rounded-full mr-2"></span>
+                    {errors.phone}
+                  </motion.p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  Department <span className="text-red-500 ml-1">*</span>
+                  <Briefcase className="w-4 h-4 ml-2 text-gray-400" />
+                </label>
+                <motion.input
+                  whileFocus={{ scale: 1.01 }}
+                  type="text"
+                  name="department"
+                  value={formData.department}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 transition-all ${
+                    errors.department 
+                      ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" 
+                      : "border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  }`}
+                  placeholder="e.g., IT Department"
+                />
+                {errors.department && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-2 text-sm text-red-600 flex items-center"
+                  >
+                    <span className="w-1 h-1 bg-red-600 rounded-full mr-2"></span>
+                    {errors.department}
+                  </motion.p>
+                )}
+              </div>
+            </div>
           </div>
 
-          {!isEdit && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password *
-              </label>
-              <motion.input
-                whileFocus={{ scale: 1.02 }}
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
-                  errors.password 
-                    ? "border-red-300 focus:ring-red-500" 
-                    : "border-gray-300 focus:ring-green-500 focus:border-green-500"
-                }`}
-                placeholder="Enter password"
-              />
-              {errors.password && (
-                <motion.p 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-2 text-sm text-red-600"
+          {/* Account & Organization Section */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-900 flex items-center mb-6">
+              <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center mr-3">
+                <Shield className="w-5 h-5 text-teal-600" />
+              </div>
+              Account & Organization
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  User Role <span className="text-red-500">*</span>
+                </label>
+                <motion.select
+                  whileFocus={{ scale: 1.01 }}
+                  name="roleId"
+                  value={formData.roleId}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 transition-all ${
+                    errors.roleId 
+                      ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" 
+                      : "border-gray-200 focus:border-teal-500 focus:ring-teal-500/20"
+                  }`}
+                  disabled={loadingOptions}
                 >
-                  {errors.password}
-                </motion.p>
+                  <option value="">Select Role</option>
+                  {roles.map(role => (
+                    <option key={role.id} value={role.id}>{role.name}</option>
+                  ))}
+                </motion.select>
+                {errors.roleId && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-2 text-sm text-red-600 flex items-center"
+                  >
+                    <span className="w-1 h-1 bg-red-600 rounded-full mr-2"></span>
+                    {errors.roleId}
+                  </motion.p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  City <span className="text-red-500 ml-1">*</span>
+                  <MapPin className="w-4 h-4 ml-2 text-gray-400" />
+                </label>
+                <motion.select
+                  whileFocus={{ scale: 1.01 }}
+                  name="cityId"
+                  value={formData.cityId}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 transition-all ${
+                    errors.cityId 
+                      ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" 
+                      : "border-gray-200 focus:border-teal-500 focus:ring-teal-500/20"
+                  }`}
+                  disabled={loadingOptions}
+                >
+                  <option value="">Select City</option>
+                  {cities.map(city => (
+                    <option key={city.id} value={city.id}>{city.name}</option>
+                  ))}
+                </motion.select>
+                {errors.cityId && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-2 text-sm text-red-600 flex items-center"
+                  >
+                    <span className="w-1 h-1 bg-red-600 rounded-full mr-2"></span>
+                    {errors.cityId}
+                  </motion.p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                  Organization <span className="text-red-500 ml-1">*</span>
+                  <Building className="w-4 h-4 ml-2 text-gray-400" />
+                </label>
+                <motion.select
+                  whileFocus={{ scale: 1.01 }}
+                  name="institutionId"
+                  value={formData.institutionId}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 transition-all ${
+                    errors.institutionId 
+                      ? "border-red-300 focus:border-red-500 focus:ring-red-500/20" 
+                      : "border-gray-200 focus:border-teal-500 focus:ring-teal-500/20"
+                  }`}
+                  disabled={loadingOptions}
+                >
+                  <option value="">Select Organization</option>
+                  {organizations.map(org => (
+                    <option key={org.id} value={org.id}>{org.name}</option>
+                  ))}
+                </motion.select>
+                {errors.institutionId && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-2 text-sm text-red-600 flex items-center"
+                  >
+                    <span className="w-1 h-1 bg-red-600 rounded-full mr-2"></span>
+                    {errors.institutionId}
+                  </motion.p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Account Status <span className="text-red-500">*</span>
+                </label>
+                <motion.select
+                  whileFocus={{ scale: 1.01 }}
+                  name="status"
+                  value={formData.status}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 focus:outline-none transition-all"
+                >
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </motion.select>
+                <div className="mt-2">
+                  <Badge variant={formData.status === "Active" ? "success" : "default"}>
+                    {formData.status}
+                  </Badge>
+                </div>
+              </div>
+
+              {isEdit && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                    Join Date
+                    <Calendar className="w-4 h-4 ml-2 text-gray-400" />
+                  </label>
+                  <motion.input
+                    whileFocus={{ scale: 1.01 }}
+                    type="date"
+                    name="joinDate"
+                    value={formData.joinDate}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 focus:outline-none transition-all"
+                    disabled
+                  />
+                  <p className="mt-2 text-xs text-gray-500">
+                    Member since {formData.joinDate ? new Date(formData.joinDate).toLocaleDateString() : 'N/A'}
+                  </p>
+                </div>
               )}
             </div>
-          )}
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number *
-            </label>
-            <motion.input
-              whileFocus={{ scale: 1.02 }}
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
-                errors.phone 
-                  ? "border-red-300 focus:ring-red-500" 
-                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
-              }`}
-              placeholder="Enter phone number"
-            />
-            {errors.phone && (
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 text-sm text-red-600"
-              >
-                {errors.phone}
-              </motion.p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Department *
-            </label>
-            <motion.input
-              whileFocus={{ scale: 1.02 }}
-              type="text"
-              name="department"
-              value={formData.department}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
-                errors.department 
-                  ? "border-red-300 focus:ring-red-500" 
-                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
-              }`}
-              placeholder="Enter department"
-            />
-            {errors.department && (
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 text-sm text-red-600"
-              >
-                {errors.department}
-              </motion.p>
-            )}
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="md:col-span-2">
-            <h3 className="text-xl font-semibold text-green-800 mb-4 flex items-center">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              Account Settings
-            </h3>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              User Role *
-            </label>
-            <motion.select
-              whileFocus={{ scale: 1.02 }}
-              name="roleId"
-              value={formData.roleId}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
-                errors.roleId 
-                  ? "border-red-300 focus:ring-red-500" 
-                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
-              }`}
-              disabled={loadingOptions}
-            >
-              <option value="">Select Role</option>
-              {roles.map(role => (
-                <option key={role.id} value={role.id}>{role.name}</option>
-              ))}
-            </motion.select>
-            {errors.roleId && (
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 text-sm text-red-600"
-              >
-                {errors.roleId}
-              </motion.p>
-            )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              City *
-            </label>
-            <motion.select
-              whileFocus={{ scale: 1.02 }}
-              name="cityId"
-              value={formData.cityId}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
-                errors.cityId 
-                  ? "border-red-300 focus:ring-red-500" 
-                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
-              }`}
-              disabled={loadingOptions}
-            >
-              <option value="">Select City</option>
-              {cities.map(city => (
-                <option key={city.id} value={city.id}>{city.name}</option>
-              ))}
-            </motion.select>
-            {errors.cityId && (
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 text-sm text-red-600"
-              >
-                {errors.cityId}
-              </motion.p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Organization *
-            </label>
-            <motion.select
-              whileFocus={{ scale: 1.02 }}
-              name="institutionId"
-              value={formData.institutionId}
-              onChange={handleChange}
-              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
-                errors.institutionId 
-                  ? "border-red-300 focus:ring-red-500" 
-                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
-              }`}
-              disabled={loadingOptions}
-            >
-              <option value="">Select Organization</option>
-              {organizations.map(org => (
-                <option key={org.id} value={org.id}>{org.name}</option>
-              ))}
-            </motion.select>
-            {errors.institutionId && (
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 text-sm text-red-600"
-              >
-                {errors.institutionId}
-              </motion.p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Account Status *
-            </label>
-            <motion.select
-              whileFocus={{ scale: 1.02 }}
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-            >
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </motion.select>
-          </div>
-
-          {isEdit && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Join Date
-              </label>
-              <motion.input
-                whileFocus={{ scale: 1.02 }}
-                type="date"
-                name="joinDate"
-                value={formData.joinDate}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-                disabled
-              />
-            </div>
-          )}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200"
-        >
-          <Link
-            href="/admin/users"
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors"
+          {/* Info Box */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="bg-blue-50 rounded-xl p-6"
           >
-            Cancel
-          </Link>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            type="submit"
-            className="px-6 py-3 bg-green-800 text-white rounded-xl font-medium hover:bg-green-700 transition-colors"
-          >
-            {isEdit ? "Update User" : "Create User"}
-          </motion.button>
-        </motion.div>
-      </motion.form>
+            <h4 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
+              <Info className="w-5 h-5 mr-2" />
+              Quick Tips
+            </h4>
+            <ul className="text-sm text-blue-800 space-y-2">
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Ensure all required fields (marked with *) are properly filled</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Use a valid email address for account verification and notifications</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Select appropriate Role, City, and Organization for proper access control</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Set status to &quot;Inactive&quot; for temporary account suspension</span>
+              </li>
+            </ul>
+          </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="mt-8 bg-blue-50 rounded-2xl p-6"
-      >
-        <h4 className="text-lg font-semibold text-blue-800 mb-3 flex items-center">
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Quick Tips
-        </h4>
-        <ul className="text-sm text-blue-700 space-y-2">
-          <li>• Ensure all required fields (marked with *) are filled</li>
-          <li>• Use a valid email address for account verification</li>
-          <li>• Select the correct Role, City, and Organization</li>
-          <li>• Set status to  {"\"Inactive\""} for temporary account suspension</li>
-        </ul>
-      </motion.div>
+          {/* Actions */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200"
+          >
+            <Link href="/admin/users">
+              <Button variant="outline" size="lg">
+                Cancel
+              </Button>
+            </Link>
+            <Button 
+              type="submit" 
+              variant="primary" 
+              size="lg"
+              loading={isSubmitting}
+            >
+              {isEdit ? "Update User" : "Create User"}
+            </Button>
+          </motion.div>
+        </motion.form>
+      )}
     </motion.div>
   );
 }

@@ -164,7 +164,6 @@ export const calculateInput = (
 
   const pct = Math.abs(percentage) > 1 ? percentage / 100 : percentage;
   const multiplier = 1 - pct;
-
   result[0] = initial;
 
   for (let i = 1; i < length; i++) {
