@@ -25,8 +25,6 @@ const AuthHydration = () => {
         })
       );
       dispatch(setAccessToken(session.accessToken));
-    } else {
-        dispatch(logout()); 
     }
   }, [session, status, dispatch]);
 
