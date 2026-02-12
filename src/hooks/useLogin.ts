@@ -6,8 +6,10 @@ import { useSession, signIn } from "next-auth/react";
 import { clearError, setError, setRememberMe, setUser } from "@/stores/slicers/auth/AuthSlice";
 import { useAppDispatch, useAppSelector } from "@/stores/root-reducer";
 import { LoginFormValues, loginSchema } from "@/lib/schema/loginSchema";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const useLogin = () => {
+  const { t } = useTranslation();
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -82,8 +84,13 @@ export const useLogin = () => {
       }
     } catch (error: unknown) {
         console.error("Login error:", error);
-        const errorMessage =
-          error instanceof Error ? error?.message : "Login failed. Please try again.";
+        let errorMessage =
+          error instanceof Error ? error?.message : t.login.authError;
+        
+        if (errorMessage === "CredentialsSignin") {
+            errorMessage = t.login.invalidCredentials;
+        }
+
         dispatch(setError(errorMessage));
         form.setError("password", { type: "manual", message: errorMessage });
     }

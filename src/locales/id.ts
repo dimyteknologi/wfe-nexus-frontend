@@ -205,6 +205,7 @@ export const id = {
     submitButton: "Masuk",
     processingButton: "Memproses...",
     authError: "Otentikasi gagal",
+    invalidCredentials: "email dan password tidak sesuai",
   },
   landing: {
     hero: {

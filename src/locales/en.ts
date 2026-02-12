@@ -205,6 +205,7 @@ export const en = {
     submitButton: "Sign In",
     processingButton: "Processing...",
     authError: "Authentication failed",
+    invalidCredentials: "Email and password do not match",
   },
   landing: {
     hero: {

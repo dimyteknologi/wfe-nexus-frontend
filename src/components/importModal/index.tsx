@@ -26,7 +26,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
   const [validateFile] = useValidateFileMutation();
   const [importCsv] = useImportCsvMutation();
   const [uploadStatus, setUploadStatus] = useState<
-    "idle" | "success" | "error"
+    "idle" | "success" | "error" | "loading"
   >("idle");
   const [uploadMessage, setUploadMessage] = useState("");
 
@@ -120,7 +120,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
     }
 
     try {
-      setUploadStatus("idle");
+      setUploadStatus("loading");
       setUploadMessage("Mengupload file...");
 
       // Simulasi proses upload
@@ -167,7 +167,17 @@ const ImportModal: React.FC<ImportModalProps> = ({
     } catch (error) {
       setUploadStatus("error");
       setUploadMessage("Terjadi kesalahan saat mengupload file");
-      console.error("Upload error:", error);
+      console.error("Upload error:", JSON.stringify(error, null, 2));
+      if ('status' in (error as any)) {
+          const status = (error as any).status;
+          if (status === 429) {
+             setUploadMessage("Terlalu banyak permintaan. Mohon tunggu beberapa saat sebelum mencoba lagi.");
+          } else {
+             setUploadMessage(`Upload failed: Status ${status}`);
+          }
+      } else {
+          setUploadMessage("Terjadi kesalahan saat mengupload file");
+      }
     }
   }, [selectedFile, onClose, dispatch, validateFile, importCsv]);
 
@@ -299,7 +309,7 @@ const ImportModal: React.FC<ImportModalProps> = ({
           </button>
           <button
             onClick={handleUpload}
-            disabled={!selectedFile || uploadStatus === "success"}
+            disabled={!selectedFile || uploadStatus === "success" || uploadStatus === "loading"}
             className="px-4 py-2 rounded-lg text-sm text-white font-medium bg-green-700 hover:bg-green-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Upload
