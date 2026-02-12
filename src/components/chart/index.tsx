@@ -42,7 +42,11 @@ const ChartComponent: React.FC<ChartProps> = ({
         labels: {
           offsetX: 0,
           formatter: (val: number) =>
-            new Intl.NumberFormat("id-ID").format(val),
+            // new Intl.NumberFormat("id-ID").format(val),
+          new Intl.NumberFormat("id-ID", {
+            minimumFractionDigits: 5,
+            maximumFractionDigits: 5,
+          }).format(val),
         },
       },
       colors,

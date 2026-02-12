@@ -8,24 +8,25 @@ import {
   sumData,
 } from "@/lib/utils/formulas";
 import {
-  BaselinePayload,
-  SimulationState,
-  TimePeriod,
-} from "@/stores/slicers/dssInputSlicer";
+  // BaselinePayload,
+  SiteSpecificState,
+  // TimePeriod,
+} from "@/stores/slicers/siteSpecificInputSlicer";
+import { TimePeriod, BaselinePayload } from "../constant/inputType.constant";
 import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
 import { RESOURCE_DEMAND_UNIT } from "../constant/resourceDemandUnit.constant";
 import { getApAreaGrowth, getPinPoint } from "./processingData";
 
 export const nameToStatePathMap: Record<string, string> = {
   // parameter name : input id
-  "A.Pertanian, Kehutanan, dan Perikanan": "agriculture.growthScenario",
-  "C.Industri Pengolahan": "industry.growth",
+  "a.pertanian, kehutanan, dan perikanan": "agriculture.growthScenario",
+  "c.industri pengolahan": "industry.growth",
   "Lahan Panen Padi": "agriculture.landConversion",
   "area perikanan": "agriculture.aquacultureLandGrowth",
   "Total Populasi": "demography.populationGrowth",
-  "ternak sapi": "livestock.cattleGrowth",
-  "ternak kambing": "livestock.goatGrowth",
-  "ternak ayam": "livestock.poultryGrowth",
+  "sapi": "livestock.cattleGrowth",
+  "kambing": "livestock.goatGrowth",
+  "ayam": "livestock.poultryGrowth",
   // "AP Area Industrial": "water.artificialPondIndustrial",
   // "AP Area Housing": "water.artificialPondHousing",
   // "Housing Land": "water.artificialPondIndustrial",
@@ -60,11 +61,11 @@ export const extractAverageGrowthRates = (
   return payload;
 };
 
-const getInputsByName = (name: string, simulationState: SimulationState) => {
+const getInputsByName = (name: string, simulationState: SiteSpecificState) => {
   switch (name) {
-    case "A.Pertanian, Kehutanan, dan Perikanan":
+    case "a.pertanian, kehutanan, dan perikanan":
       return simulationState.agriculture.growthScenario;
-    case "C.Industri Pengolahan":
+    case "c.industri pengolahan":
       return simulationState.industry.growth;
     case "Lahan Panen Padi":
       return simulationState.agriculture.landConversion;
@@ -195,7 +196,7 @@ const convertInput = (
 
 export const generateScenarioProjection = (
   historicalData: IApiData,
-  simulationState: SimulationState,
+  simulationState: SiteSpecificState,
   finalYear = 2045,
 ): IBaselineData | null => {
   if (
@@ -218,7 +219,7 @@ export const generateScenarioProjection = (
 
     const averageGrowth = average(growthRate(cleanDataSeries));
     const scenarioInputs = getInputsByName(name, simulationState);
-
+    
     let finalProjectedData: number[];
     if (scenarioInputs) {
       const projectionStage1 = Computation.projection({
@@ -461,14 +462,13 @@ export const generateBaseline = (
   for (const param of baseData.parameters) {
     const cleanDataSeries = param.values.map((val) => val ?? 0);
     const growthRates = growthRate(cleanDataSeries);
+    
     const averageGrowth = average(growthRates);
-
     const projectedData = Computation.projection({
       data: cleanDataSeries,
       growth: averageGrowth,
       finalYear: finalYear,
     });
-
     // push result to baseline parameters data
     projectedParameters.push({
       name: param.name,
@@ -483,7 +483,6 @@ export const generateBaseline = (
     finalYear: finalYear,
     initialYear: initialYear,
   });
-
   // return baseline data
   return {
     label: `${baseData.label} (${checkType(baseData.label)} Baseline)`,
@@ -500,7 +499,7 @@ export const generateAllProjectionsForScenario = (
     agriculture: IBaselineData;
     landCover: IBaselineData;
   },
-  inputs: SimulationState,
+  inputs: SiteSpecificState,
 ) => {
   return {
     gdrp: generateScenarioProjection(allBaselines.gdp, inputs),
@@ -541,7 +540,7 @@ const generateApArea = (
 
 export const generateApAreaProjection = (
   param: Params,
-  inputs: SimulationState,
+  inputs: SiteSpecificState,
   startYear: number = 2010,
   finalYear: number = 2045,
 ): number[] => {
@@ -585,7 +584,7 @@ export const generateApAreaProjection = (
 
 export const generatePvAreaProjection = (
   name: string,
-  inputs: SimulationState,
+  inputs: SiteSpecificState,
   startYear: number = 2010,
   finalYear: number = 2045,
 ): number[] => {

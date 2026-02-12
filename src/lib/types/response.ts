@@ -2,6 +2,13 @@ export interface IBaseResponse<T> {
   data: T;
 }
 
+export interface IApiResponse<T> {
+  data: T;
+  message?: string;
+  error?: string;
+  statusCode?: number;
+}
+
 export interface IBaseData<TParams = Record<string, unknown>> {
   label: string;
   unit: string;
@@ -62,9 +69,9 @@ export interface IAgricultureParameters {
 export type IAgricultureResData = IBaseData<IAgricultureParameters>;
 
 export interface ILivestockParameters {
-  "ternak sapi": (number | null)[];
-  "ternak kambing": (number | null)[];
-  "ternak ayam": (number | null)[];
+  "sapi": (number | null)[];
+  "kambing": (number | null)[];
+  "ayam": (number | null)[];
 }
 
 export type ILivestockResData = IBaseData<ILivestockParameters>;

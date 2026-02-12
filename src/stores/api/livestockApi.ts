@@ -9,7 +9,7 @@ export const livestockApi = createApi({
   endpoints: (builder) => ({
     getLiveStocks: builder.query<ILivestockResData, void>({
       query: () => ({
-        url: "/get-peternakan",
+        url: "/base-data/get-peternakan",
         method: "GET",
       }),
       providesTags: ["livestockService"],

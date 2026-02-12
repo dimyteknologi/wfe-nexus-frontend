@@ -1,0 +1,182 @@
+"use client";
+
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { PermissionFormData } from "@/lib/types/admin.types";
+
+interface PermissionFormProps {
+  initialData?: PermissionFormData;
+  isEdit?: boolean;
+  onSubmit: (data: PermissionFormData) => void;
+}
+
+const defaultFormData: PermissionFormData = {
+  permissionName: "",
+  permissionCode: "",
+};
+
+export function PermissionForm({ initialData = defaultFormData, isEdit = false, onSubmit }: PermissionFormProps) {
+  const [formData, setFormData] = useState<PermissionFormData>(initialData);
+  const [errors, setErrors] = useState<Partial<Record<keyof PermissionFormData, string>>>({});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    if (errors[name as keyof PermissionFormData]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<Record<keyof PermissionFormData, string>> = {};
+
+    if (!formData.permissionName?.trim()) {
+      newErrors.permissionName = "Permission Name is required";
+    }
+
+    if (!formData.permissionCode?.trim()) {
+      newErrors.permissionCode = "Permission Code is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validateForm()) {
+      onSubmit(formData);
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-4xl mx-auto"
+    >
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-green-800 mb-2">
+            {isEdit ? "Edit Permission" : "Add New Permission"}
+          </h1>
+          <p className="text-gray-600">
+            {isEdit ? "Update permission information" : "Create a new permission"}
+          </p>
+        </div>
+        <Link
+          href="/admin/permission"
+          className="flex items-center space-x-2 text-gray-600 hover:text-green-700 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>Back to Permissions</span>
+        </Link>
+      </div>
+
+      <motion.form
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        onSubmit={handleSubmit}
+        className="bg-white rounded-2xl shadow-lg p-8"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="md:col-span-2">
+            <h3 className="text-xl font-semibold text-green-800 mb-4 flex items-center">
+              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                <span className="text-lg">🔐</span>
+              </div>
+              Permission Information
+            </h3>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Permission Name *
+            </label>
+            <motion.input
+              whileFocus={{ scale: 1.02 }}
+              type="text"
+              name="permissionName"
+              value={formData.permissionName}
+              onChange={handleChange}
+              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
+                errors.permissionName 
+                  ? "border-red-300 focus:ring-red-500" 
+                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
+              }`}
+              placeholder="e.g., Manage Products"
+            />
+            {errors.permissionName && (
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-2 text-sm text-red-600"
+              >
+                {errors.permissionName}
+              </motion.p>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Permission Code *
+            </label>
+            <motion.input
+              whileFocus={{ scale: 1.02 }}
+              type="text"
+              name="permissionCode"
+              value={formData.permissionCode}
+              onChange={handleChange}
+              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all ${
+                errors.permissionCode 
+                  ? "border-red-300 focus:ring-red-500" 
+                  : "border-gray-300 focus:ring-green-500 focus:border-green-500"
+              }`}
+              placeholder="e.g., manage:products"
+            />
+            {errors.permissionCode && (
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-2 text-sm text-red-600"
+              >
+                {errors.permissionCode}
+              </motion.p>
+            )}
+          </div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200"
+        >
+          <Link
+            href="/admin/permission"
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </Link>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+            className="px-6 py-3 bg-green-800 text-white rounded-xl font-medium hover:bg-green-700 transition-colors"
+          >
+            {isEdit ? "Update Permission" : "Create Permission"}
+          </motion.button>
+        </motion.div>
+      </motion.form>
+    </motion.div>
+  );
+}

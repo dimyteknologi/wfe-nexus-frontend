@@ -1,0 +1,62 @@
+import { motion } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
+
+export default function ContentRelatedAssumption() {
+  const { t } = useTranslation();
+  const { relatedAssumption } = t.dssModal;
+
+  return (
+    <div className="bg-white rounded-2xl p-8">
+      <motion.h2
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-3xl font-bold text-green-800 mb-6 pb-2 border-b border-green-100"
+      >
+        {relatedAssumption.title}
+      </motion.h2>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="text-lg text-gray-700 mb-2 leading-relaxed"
+      >
+        {relatedAssumption.intro}
+      </motion.p>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
+      >
+        {relatedAssumption.items.map((item, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 * index }}
+            className="bg-green-50 p-4 rounded-lg border border-green-100 hover:shadow-md transition-shadow duration-300 flex items-start"
+          >
+            <div className="bg-green-100 p-2 rounded-full mr-3 flex-shrink-0">
+              <svg
+                className="w-5 h-5 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <span className="text-green-800">{item}</span>
+          </motion.div>
+        ))}
+      </motion.div>
+    </div>
+  );
+}

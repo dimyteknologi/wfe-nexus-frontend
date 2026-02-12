@@ -8,6 +8,7 @@ export interface Metric {
   additionalSeries?: {
     name: string;
     data: number[];
+    type: "area" | "line" | "bar" | "pie" | "donut" | "radialBar";
     color?: string;
   }[];
 }
@@ -19,7 +20,227 @@ const noStressData = new Array(36).fill(1700);
 const stressData = new Array(36).fill(1000);
 const scarcityData = new Array(36).fill(500);
 
-export const ALL_METRICS: Metric[] = [
+export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
+  {
+    category: "PRODUCTION",
+    id: "productionTotal",
+    title: "Production Total [ton/year]-GKG",
+    unit: "[ton/year]-GKG",
+    type: "bar",
+    content: "Number of productions for Gabah kering giling (GKG) in a year",
+  },
+  {
+    category: "PRODUCTION",
+    id: "productionAverage",
+    title: "Average Productivity [ton/ha/year]",
+    unit: " [ton/ha/year]",
+    type: "bar",
+    content: "",
+  },
+  {
+    category: "PRODUCTION",
+    id: "productionRice",
+    title: "Rice Production [ton/year]-rice",
+    unit: "[ton/year]-rice",
+    type: "bar",
+    content: "Number of production rice in a year",
+  },
+  {
+    category: "PRODUCTION",
+    id: "actualCi",
+    title: "Cropping Intensity Actual",
+    unit: "",
+    type: "line",
+    content: "Cropping intensity actual for agriculture area; determined by water sufficiency from all sources"
+  },
+
+    // "waterTransported",
+    // "potentialExcess",
+  {
+    category: "RESOURCE",
+    id: "waterTransported",
+    title: "Water Transported [m3/year]",
+    unit: "[m3/year]",
+    type: "bar",
+    content: "The volume of water transported from surface (lake, dam, river) into the agriculture area using water pump that could be from diesel pump or solar PV based",
+  },
+  {
+    category: "RESOURCE",
+    id: "potentialExcess",
+    title: "Potential excess steam for drying agriculture product",
+    unit: "[equivalent with ton/year rice]",
+    type: "bar",
+    content: "The number of paddy production that can be dried using excess steam from geothermal operation after harvesting, equivalent in ton/year unit",
+  },
+  {
+    category: "RESOURCE",
+    id: "waterConsumption",
+    title: "Water Consumption [m3/year]",
+    unit: "[m3/year]",
+    type: "bar",
+    content: "Water consumption for all agriculture area in a year from all sources (surface water—river, dam; rain, and transported water from other sources)",
+  },
+  {
+    category: "RESOURCE",
+    id: "fuelConsumption",
+    title: "Fuel Consumption [KL/year]",
+    unit: "[KL/year]",
+    type: "bar",
+    content: "Fuel consumption for all agriculture process in a year, used for land preparation, planting, fertilizing, harvesting and post-harvest",
+  },
+  // {
+  //   category: "RESOURCE",
+  //   id: "chemicalFertilizerConsumption",
+  //   title: "Chemical Fertilizer [ton/year]",
+  //   unit: "[KWh/year]",
+  //   type: "bar",
+  //   content: "Chemical fertilizer consumption for all agriculture area in a year",
+  // },
+  {
+    category: "RESOURCE",
+    id: "renewableConsumption",
+    title: "Renewable Consumption [KWh/year]",
+    unit: "[KWh/year]",
+    type: "bar",
+    content: "Electricity production from solar PV in the area",
+  },
+  // {
+  //   category: "RESOURCE",
+  //   id: "organicFertilizereConsumption",
+  //   title: "Organic Fertilize [ton/year]",
+  //   unit: "[ton/year]",
+  //   type: "bar",
+  //   content: "",
+  // },
+  {
+    category: "IMPACT",
+    id: "totalemissionImpact",
+    title: "Total Emissions [ton CO2 equivalent/year]",
+    unit: "[ton CO2 equivalent/year]",
+    type: "bar",
+    content: "Number of emissions from agriculture practices, most comes from energy and fertilizer",
+    additionalSeries: [
+      {
+        name: "Emissions from Energy Baseline [ton CO2 equivalent/year]",
+        type: "bar",
+        data: [
+          282.72791607519, 358.825655571352, 358.825655571352,
+          358.825655571352, 358.825655571352, 358.825655571352,
+          358.825655571352, 358.825655571352, 358.825655571352,
+          358.825655571352
+        ],
+      },
+    ],
+  },
+  {
+    category: "IMPACT",
+    id: "foodSuffiencyImpact",
+    title: "Food Sufficiency []",
+    unit: "[]",
+    type: "line",
+    content: "Ratio between rice supply and demand",
+    additionalSeries: [
+      {
+        name: "Food Sufficiency Baseline []",
+        type: "line",
+        data: [
+          3.37415232893188, 3.37370699960793, 3.3732617290597,
+          3.37281651727942, 3.37237136425933, 3.37192626999169,
+          3.37148123446874, 3.37103625768273, 3.3705913396259,
+          3.3701464802905,
+        ],
+      },
+    ],
+  },
+  {
+    category: "IMPACT",
+    id: "emissionIntensityProductionImpact",
+    title: "Emissions Intensity from production [kg/ton]",
+    unit: "[kg/ton]",
+    type: "line",
+    content: "Number of emissions produce per rice production",
+    additionalSeries: [
+      {
+        name: "Emissions Intensity from production Baseline [kg/ton]",
+        type: "line",
+        data: [
+          813.833331510312, 1032.88095055793, 1032.88095055793,
+          1032.88095055793, 1032.88095055793, 1032.88095055793,
+          1032.88095055793, 1032.88095055793, 1032.88095055793,
+          1032.88095055793,
+        ],
+      },
+    ],
+  },
+  {
+    category: "IMPACT",
+    id: "emissionReductionImpact",
+    title: "Emissions Reduction",
+    unit: "%",
+    type: "line",
+    content: "Percentage of emissions reduction once solar PV and geothermal installed and operated",
+  },
+  // {
+  //   category: "IMPACT",
+  //   id: "waterIntensityImpact",
+  //   title: "Water Intensity [m3/ha/year]",
+  //   unit: "[m3/ha/year]",
+  //   type: "line",
+  //   content: "Water intensity average for agriculture area in a year",
+  //   additionalSeries: [
+  //     {
+  //       name: "Water Intensity baseline [m3/ha/year]",
+  //       type: "line",
+  //       data: [
+  //         7808.12844036697, 7808.12844036697, 7808.12844036697,
+  //         7808.12844036697, 7808.12844036697, 7808.12844036697,
+  //         7808.12844036697, 7808.12844036697, 7808.12844036697, 7808.12844036697,
+  //       ],
+  //     },
+  //   ],
+  // },
+  {
+    category: "IMPACT",
+    id: "productionSolar",
+    title: "Solar Panel Pump Financial performance",
+    unit: "",
+    type: "line",
+    content: "Calculation of cumulative solar pump cost (for investment and monthly operational and maintenance cost) and cumulative revenue of operation from solar PV fee from farmers",
+    additionalSeries: [
+      {
+        name: "Total Cumulative Cost",
+        type: "line",
+        data: [],
+      },
+    ],
+  },
+  {
+    category: "IMPACT",
+    id: "fuelIntensityImpact",
+    title: "Fuel intensity [L/ha/tear]",
+    unit: "[L/ha/tear]",
+    type: "line",
+    content: "Fuel intensity average for agriculture area in a year; determine by seed type, and cropping intensity",
+    additionalSeries: [
+      {
+        name: "Fuel intensity Baseline [L/ha/tear]",
+        type: "line",
+        // data: [
+        //   73.5906477010821, 73.5906477010821, 73.5906477010821, 73.5906477010821,
+        //   73.5906477010821, 73.5906477010821, 73.5906477010821, 73.5906477010821,
+        //   73.5906477010821, 73.5906477010821
+        // ],
+        data: [
+          73.590647701, 73.590647701, 73.590647701, 73.590647701,
+          73.590647701, 73.590647701, 73.590647701, 73.590647701,
+          73.590647701, 73.590647701
+        ],
+      },
+    ],
+  },
+];
+
+export const ALL_METRICS_SITE_SPECIFICS: Metric[] = [
   {
     category: "SE",
     id: "gdrp",
@@ -141,6 +362,7 @@ export const ALL_METRICS: Metric[] = [
     additionalSeries: [
       {
         name: "Electricity per Capita National [KWh/cap/year]",
+        type: "line",
         data: nationalThresholdData,
       },
     ],
@@ -171,16 +393,19 @@ export const ALL_METRICS: Metric[] = [
     additionalSeries: [
       {
         name: "Falkenmark: No stress",
+        type: "line",
         data: noStressData,
         color: "#2E8B57",
       },
       {
         name: "Falkenmark: Stress",
+        type: "line",
         data: stressData,
         color: "#FFD700",
       },
       {
         name: "Falkenmark: Scarcity",
+        type: "line",
         data: scarcityData,
         color: "#DC143C",
       },

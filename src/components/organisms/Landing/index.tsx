@@ -2,7 +2,6 @@
 
 import TiltCard from "@/components/card/tiltCard";
 import {
-  Play,
   ArrowRight,
   BarChart3,
   Globe,
@@ -14,108 +13,101 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-
-const features = [
-  {
-    icon: <BarChart3 className="w-6 h-6" />,
-    title: "Advanced Analytics",
-    description:
-      "Leverage context and site analytics to gain deep insights into nexus interdependencies and impacts.",
-    image: "./assets/analytics-demo.svg",
-    color: "from-blue-500 to-cyan-500",
-  },
-  {
-    icon: <Globe className="w-6 h-6" />,
-    title: "Scenario Modeling",
-    description:
-      "Create and compare multiple scenarios to evaluate policy decisions under different conditions.",
-    image: "./assets/modeling-demo.svg",
-    color: "from-green-500 to-emerald-500",
-  },
-  {
-    icon: <Zap className="w-6 h-6" />,
-    title: "Real-time Simulation",
-    description:
-      "Simulation key indicators in real-time with dynamic visualization.",
-    image: "./assets/simulation-demo.svg",
-    color: "from-amber-500 to-orange-500",
-  },
-  {
-    icon: <Users className="w-6 h-6" />,
-    title: "Stakeholder Collaboration",
-    description:
-      "Enable seamless collaboration between multiple stakeholders with role-based access.",
-    image: "./assets/collaboration-demo.svg",
-    color: "from-purple-500 to-pink-500",
-  },
-  {
-    icon: <FileText className="w-6 h-6" />,
-    title: "Comprehensive Reporting",
-    description:
-      "Generate detailed reports with visualizations in multiple formats for decision makers.",
-    image: "./assets/reporting-demo.svg",
-    color: "from-indigo-500 to-blue-500",
-  },
-  {
-    icon: <Shield className="w-6 h-6" />,
-    title: "Data Security",
-    description:
-      "Enterprise-grade security with encryption and compliance with global data protection standards.",
-    image: "./assets/security-demo.svg",
-    color: "from-red-500 to-rose-500",
-  },
-];
+import { useTranslation } from "@/hooks/useTranslation";
 
 const organization = [
   {
     id: 1,
-    name: "Kementrian PPN/Bappenas",
+    name: "Kementerian PPN/Bappenas",
     imgSrc: "./assets/logo-bappenas.svg",
   },
-  { id: 2, name: "Kementrian ESDM", imgSrc: "./assets/logo-esdm.svg" },
+  { id: 2, name: "Kementerian ESDM", imgSrc: "./assets/logo-esdm.svg" },
   {
     id: 3,
-    name: "Karawang",
+    name: "Pemerintah Kabupaten Karawang",
     imgSrc: "./assets/logo-karawang.svg",
   },
-  { id: 4, name: "Samosir", imgSrc: "./assets/logo-samosir.svg" },
-  { id: 5, name: "Tanggamus", imgSrc: "./assets/logo-tanggamus.svg" },
-];
-
-const flowProcess = [
-  {
-    step: "1",
-    title: "Data Integration",
-    description:
-      "Connect your data sources or use our sample datasets to get started quickly.",
-    icon: <Database className="w-8 h-8" />,
-  },
-  {
-    step: "2",
-    title: "Model Configuration",
-    description:
-      "Configure models based on your specific context and policy questions.",
-    icon: <BarChart3 className="w-8 h-8" />,
-  },
-  {
-    step: "3",
-    title: "Analysis & Simulation",
-    description:
-      "Run simulations and analyze results through interactive visualizations.",
-    icon: <Globe className="w-8 h-8" />,
-  },
-  {
-    step: "4",
-    title: "Implementation",
-    description:
-      "Implement evidence-based policies with confidence and monitoring.",
-    icon: <Zap className="w-8 h-8" />,
-  },
+  { id: 4, name: "Pemerintah Kabupaten Samosir", imgSrc: "./assets/logo-samosir.svg" },
+  { id: 5, name: "Pemerintah Kabupaten Tanggamus", imgSrc: "./assets/logo-tanggamus.svg" },
 ];
 
 const LandingPage = () => {
+    const { t } = useTranslation();
+    const { landing } = t;
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef(null);
+
+  const features = [
+    {
+      icon: <BarChart3 className="w-6 h-6" />,
+      title: landing.features.items.analytics.title,
+      description: landing.features.items.analytics.desc,
+      image: "./assets/analytics-demo.svg",
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      icon: <Globe className="w-6 h-6" />,
+      title: landing.features.items.modeling.title,
+      description: landing.features.items.modeling.desc,
+      image: "./assets/modeling-demo.svg",
+      color: "from-green-500 to-emerald-500",
+    },
+    {
+      icon: <Zap className="w-6 h-6" />,
+      title: landing.features.items.simulation.title,
+      description: landing.features.items.simulation.desc,
+      image: "./assets/simulation-demo.svg",
+      color: "from-amber-500 to-orange-500",
+    },
+    {
+      icon: <Users className="w-6 h-6" />,
+      title: landing.features.items.collaboration.title,
+      description: landing.features.items.collaboration.desc,
+      image: "./assets/collaboration-demo.svg",
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      icon: <FileText className="w-6 h-6" />,
+      title: landing.features.items.reporting.title,
+      description: landing.features.items.reporting.desc,
+      image: "./assets/reporting-demo.svg",
+      color: "from-indigo-500 to-blue-500",
+    },
+    {
+      icon: <Shield className="w-6 h-6" />,
+      title: landing.features.items.security.title,
+      description: landing.features.items.security.desc,
+      image: "./assets/security-demo.svg",
+      color: "from-red-500 to-rose-500",
+    },
+  ];
+
+  const flowProcess = [
+    {
+      step: "1",
+      title: landing.howItWorks.steps.step1.title,
+      description: landing.howItWorks.steps.step1.desc,
+      icon: <Database className="w-8 h-8" />,
+    },
+    {
+      step: "2",
+      title: landing.howItWorks.steps.step2.title,
+      description: landing.howItWorks.steps.step2.desc,
+      icon: <BarChart3 className="w-8 h-8" />,
+    },
+    {
+      step: "3",
+      title: landing.howItWorks.steps.step3.title,
+      description: landing.howItWorks.steps.step3.desc,
+      icon: <Globe className="w-8 h-8" />,
+    },
+    {
+      step: "4",
+      title: landing.howItWorks.steps.step4.title,
+      description: landing.howItWorks.steps.step4.desc,
+      icon: <Zap className="w-8 h-8" />,
+    },
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -144,22 +136,19 @@ const LandingPage = () => {
         <div className="container mx-auto p-4 flex flex-col md:flex-row items-center gap-8 justify-between relative z-10">
           <div className="md:w-1/2 mb-10 md:mb-0">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
-              WEF NEXUS{" "}
-              <span className="text-green-600">Decision Support System</span>
+              {landing.hero.title1}
+            </h1>
+            <h1 className="text-5xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight text-green-600">
+                {landing.hero.title2}
             </h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Transforming Water-Energy-Food Nexus thinking into actionable
-              insights and policies for sustainable development.
+              {landing.hero.subtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <button className="bg-gradient-to-r from-green-700 to-teal-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                <Link href={"./dss-interface"} className="flex items-center">
-                  Get Started <ArrowRight className="h-5 ml-1" />
+                <Link href={"./site-specific"} className="flex items-center">
+                  {landing.hero.cta} <ArrowRight className="h-5 ml-1" />
                 </Link>
-              </button>
-              <button className="border-2 bg-white border-green-700 text-green-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-green-50 transition-all duration-300 flex items-center justify-center gap-2 group">
-                <Play className="h-5 transition-transform group-hover:scale-110" />
-                <span>Watch Demo</span>
               </button>
             </div>
             <div className="mt-8 flex items-center">
@@ -178,8 +167,8 @@ const LandingPage = () => {
                 ))}
               </div>
               <p className="ml-4 text-gray-600">
-                Join <span className="font-semibold text-green-700">500+</span>{" "}
-                organizations using our platform
+                {landing.hero.joinText} <span className="font-semibold text-green-700">{landing.hero.joinCount}</span>{" "}
+                {landing.hero.joinSuffix}
               </p>
             </div>
           </div>
@@ -201,7 +190,7 @@ const LandingPage = () => {
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
                 <span className="text-sm font-medium">
-                  Colaboration Simulation
+                  {landing.hero.collaboration}
                 </span>
               </div>
             </div>
@@ -209,7 +198,7 @@ const LandingPage = () => {
             <div className="absolute -top-6 -right-6 bg-white p-4 rounded-xl shadow-lg z-10 animate-float animation-delay-2000">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-700">98%</div>
-                <div className="text-xs text-gray-500">Active User</div>
+                <div className="text-xs text-gray-500">{landing.hero.activeUser}</div>
               </div>
             </div>
           </div>
@@ -218,7 +207,7 @@ const LandingPage = () => {
         <div className="mx-auto px-6 mt-24 relative z-10">
           <div className="flex flex-col items-center justify-items-center bg-white/70 backdrop-blur-sm p-8 rounded-2xl shadow-md">
             <p className="text-center text-gray-500 mb-10 font-bold text-xl">
-              Collaborated with government leading organizations
+              {landing.hero.collaboratedWith}
             </p>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-8 ">
               {organization.map((company) => (
@@ -252,14 +241,13 @@ const LandingPage = () => {
         <div className="container mx-auto py-20">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-block bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
-              Powerful Features
+              {landing.features.badge}
             </div>
             <h2 className="text-4xl font-bold text-gray-800 mb-6">
-              Everything You Need for Informed Decisions
+              {landing.features.title}
             </h2>
             <p className="text-xl text-gray-600">
-              Our platform provides comprehensive tools to analyze and optimize
-              the Water-Energy-Food Nexus
+              {landing.features.subtitle}
             </p>
           </div>
 
@@ -287,14 +275,13 @@ const LandingPage = () => {
             <div className="text-center max-w-3xl mx-auto mb-16">
               <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
                 <Globe className="w-4 h-4 mr-2" />
-                How It Works
+                {landing.howItWorks.badge}
               </div>
               <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                From Data to Decisions in Four Steps
+                {landing.howItWorks.title}
               </h2>
               <p className="text-xl text-gray-700">
-                A streamlined process to transform complex data into actionable
-                insights
+                {landing.howItWorks.subtitle}
               </p>
             </div>
 
@@ -330,20 +317,17 @@ const LandingPage = () => {
 
         <div className="container py-20 mx-auto text-center max-w-4xl">
           <h2 className="text-4xl font-bold text-gray-800 mb-6">
-            Ready to Transform Your Decision-Making?
+            {landing.cta.title}
           </h2>
           <p className="text-xl text-gray-600 mb-10">
-            Join hundreds of organizations using WEF Nexus to create sustainable
-            policies and practices
+            {landing.cta.subtitle}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button className="bg-white text-green-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 group">
-              Get Started{" "}
-              <ArrowRight className="h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button className="bg-green-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-green-600 transition-colors shadow-lg">
-              Contact us
+              <Link href={"./site-specific"} className="flex items-center">
+                {landing.cta.button} <ArrowRight className="h-5 ml-1" />
+              </Link>
             </button>
           </div>
         </div>

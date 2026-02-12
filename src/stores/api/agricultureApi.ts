@@ -9,7 +9,7 @@ export const agricultureApi = createApi({
   endpoints: (builder) => ({
     getAgricultures: builder.query<IAgricultureResData, void>({
       query: () => ({
-        url: "/get-pertanian",
+        url: "/base-data/get-pertanian",
         method: "GET",
       }),
       providesTags: ["agricultureService"],

@@ -1,71 +1,36 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { ALL_METRICS, Metric } from "@/lib/constant/metrics";
-import { selectDisplayedIds } from "./baseSelector";
+import {
+  ALL_METRICS_CONTEXT_SPECIFICS,
+  ALL_METRICS_SITE_SPECIFICS,
+  Metric as MetricInterface,
+} from "@/lib/constant/metrics";
+import { selectDisplayedContextIds, selectDisplayedIds } from "./baseSelector";
+import { IRootState } from "..";
 
-// export const selectDisplayedMetrics = createSelector(
-//   [selectDisplayedIds], // input array string ['population', 'gdrp']
-//   (displayedIds) => {
-//     // filters
-//     const filtered = ALL_METRICS.filter((metric) =>
-//       displayedIds.includes(metric.id),
-//     );
+type IdSelector = (state: IRootState) => string[];
 
-//     // sort
-//     const sorted = filtered.sort((a, b) => {
-//       const indexA = displayedIds.indexOf(a.id);
-//       const indexB = displayedIds.indexOf(b.id);
-//       return indexA - indexB;
-//     });
+const makeSelectDisplayedMetrics = (
+  allMetrics: MetricInterface[],
+  idSelector: IdSelector,
+) =>
+  createSelector([idSelector], (displayedIds) => {
+    const map = new Map(displayedIds.map((id, index) => [id, index]));
 
-//     return sorted;
-//   },
-// );
+    const filtered = allMetrics.filter((m) => map.has(m.id));
 
-// export const selectAvailableMetrics = createSelector(
-//   [selectDisplayedIds],
-//   (displayedIds) => {
-//     const displayedIdSet = new Set(displayedIds);
-//     return ALL_METRICS.filter((metric) => !displayedIdSet.has(metric.id));
-//   },
-// );
+    return filtered.sort((a, b) => map.get(a.id)! - map.get(b.id)!);
+  });
 
-export const selectDisplayedMetrics = createSelector(
-  [selectDisplayedIds],
-  (displayedIds) => {
-    const displayedMap = new Map(
-      displayedIds.map((id: string, index: number) => [id, index]),
-    );
-    const filtered = ALL_METRICS.filter((metric) =>
-      displayedMap.has(metric.id),
-    );
-    const sorted = filtered.sort((a, b) => {
-      const indexA = displayedIds.indexOf(a.id);
-      const indexB = displayedIds.indexOf(b.id);
-      return indexA - indexB;
-    });
-    return sorted;
-  },
-);
+const makeSelectAvailableMetricsGrouped = (
+  allMetrics: MetricInterface[],
+  idSelector: IdSelector,
+) =>
+  createSelector([idSelector], (displayedIds) => {
+    const set = new Set(displayedIds);
 
-// export const selectAvailableMetrics = createSelector(
-//   [selectDisplayedIds, selectActiveCategory],
-//   (displayedIds, activeCategory) => {
-//     const displayedIdSet = new Set(displayedIds);
-//     return ALL_METRICS.filter(metric =>
-//         metric.category === activeCategory &&
-//         !displayedIdSet.has(metric.id)
-//     );
-//   }
-// );
+    const available = allMetrics.filter((m) => !set.has(m.id));
 
-export const selectAvailableMetricsGrouped = createSelector(
-  [selectDisplayedIds],
-  (displayedIds) => {
-    const displayedIdSet = new Set(displayedIds);
-    const available = ALL_METRICS.filter(
-      (metric) => !displayedIdSet.has(metric.id),
-    );
-    const grouped = available.reduce(
+    return available.reduce(
       (acc, metric) => {
         let group = acc.find((g) => g.category === metric.category);
         if (!group) {
@@ -75,9 +40,29 @@ export const selectAvailableMetricsGrouped = createSelector(
         group.options.push(metric);
         return acc;
       },
-      [] as { category: string; options: Metric[] }[],
+      [] as { category: string; options: MetricInterface[] }[],
     );
+  });
 
-    return grouped;
-  },
+/* ==== SITE ==== */
+export const selectDisplayedMetrics = makeSelectDisplayedMetrics(
+  ALL_METRICS_SITE_SPECIFICS,
+  selectDisplayedIds,
 );
+
+export const selectAvailableMetricsGrouped = makeSelectAvailableMetricsGrouped(
+  ALL_METRICS_SITE_SPECIFICS,
+  selectDisplayedIds,
+);
+
+/* ==== CONTEXT ==== */
+export const selectDisplayedMetricsContext = makeSelectDisplayedMetrics(
+  ALL_METRICS_CONTEXT_SPECIFICS,
+  selectDisplayedContextIds,
+);
+
+export const selectAvailableMetricsGroupedContext =
+  makeSelectAvailableMetricsGrouped(
+    ALL_METRICS_CONTEXT_SPECIFICS,
+    selectDisplayedContextIds,
+  );

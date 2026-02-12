@@ -2,7 +2,7 @@ export class Computation {
   public static readonly ARRAY_OPERATION_TYPES = {
     ADD: "ADD",
     MULTIPLY: "MULTIPLY",
-    DEVIDED: "DEVIDED",
+    DIVIDED: "DIVIDED",
   } as const;
 
   private constructor() {}
@@ -84,7 +84,7 @@ export class Computation {
           case Computation.ARRAY_OPERATION_TYPES.MULTIPLY:
             result[i] *= arr[i];
             break;
-          case Computation.ARRAY_OPERATION_TYPES.DEVIDED:
+          case Computation.ARRAY_OPERATION_TYPES.DIVIDED:
             result[i] /= arr[i];
           default:
             throw new Error("Invalid computation type");
@@ -212,5 +212,23 @@ export const constantAdd = (data: number[], constant: number) => {
 };
 
 export const resultConverter = (data: number[]) => {
-  return data.map((d) => parseFloat(d.toFixed(2)));
+  return data.map((d) => parseFloat(d.toFixed(8)));
+};
+
+export const sumArrays = (...arrays: number[][]) => {
+  if (arrays.length === 0) return [];
+
+  const length = arrays[0].length;
+  if (!arrays.every((arr) => arr.length === length)) {
+    throw new Error("Semua array harus memiliki panjang yang sama");
+  }
+
+  const result: number[] = [];
+  for (let i = 0; i < length; i++) {
+    result.push(
+      Math.round(arrays.reduce((sum, arr) => sum + arr[i], 0) * 100) / 100,
+    );
+  }
+
+  return result;
 };

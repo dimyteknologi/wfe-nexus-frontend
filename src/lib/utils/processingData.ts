@@ -133,7 +133,7 @@ const generateAgriculturetArea = (data: number[], finalYear: number) => {
 //  LAND PORTION
 const generateLandPortion = (data: number[], availableLand: number[]) => {
   return Computation.computeArrays(
-    Computation.ARRAY_OPERATION_TYPES.DEVIDED,
+    Computation.ARRAY_OPERATION_TYPES.DIVIDED,
     data,
     availableLand,
   );
