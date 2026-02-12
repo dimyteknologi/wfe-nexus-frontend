@@ -450,8 +450,8 @@ export const selectSupplyWaterTotalPerScenario = createSelector(
     scenarioB: sumArrayData(
       solarWater.scenarioB, surfaceWater.scenarioB,
       waterDiesel.scenarioB,
-    )),
-  }},
+    ),
+  }),
 );
 
 export const selectRainfallAvailabilltyPerScenario = createSelector(
