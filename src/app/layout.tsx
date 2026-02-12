@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "WFE Nexus",
+  title: "WEF Nexus",
   description: "Water-Food-Energy Nexus Decision Support System",
   icons: {
     icon: "/assets/favicon.ico",
