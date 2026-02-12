@@ -11,6 +11,7 @@ import LanguageToggle from "@/components/atoms/LanguageToggle";
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
 import AuthButtons from "./AuthButtons";
+import { useAppSelector } from "@/stores/root-reducer";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
@@ -18,8 +19,11 @@ const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const { status } = useSession();
+  const { status: sessionStatus } = useSession();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
+
+  const status = sessionStatus === "authenticated" || isAuthenticated ? "authenticated" : "unauthenticated";
 
   const navItems: NavItem[] = [
     { href: "/", label: t.navigation.home },
