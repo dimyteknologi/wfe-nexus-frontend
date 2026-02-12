@@ -23,7 +23,10 @@ const Navigation = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
 
-  const status = sessionStatus === "loading" ? "loading" : (sessionStatus === "authenticated" || isAuthenticated ? "authenticated" : "unauthenticated");
+  const status =
+    isAuthenticated || sessionStatus === "authenticated"
+      ? "authenticated"
+      : sessionStatus;
 
   const navItems: NavItem[] = [
     { href: "/", label: t.navigation.home },
@@ -86,11 +89,10 @@ const Navigation = () => {
   return (
     <>
       <nav
-        className={`fixed w-full z-50 transition-all duration-500 ${
-          isScrolled
+        className={`fixed w-full z-50 transition-all duration-500 ${isScrolled
             ? "bg-white/90 backdrop-blur-md shadow-sm py-3"
             : "bg-gradient-to-r from-green-50 to-blue-50 py-5"
-        }`}
+          }`}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-2">

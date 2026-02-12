@@ -90,7 +90,7 @@ export const appReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["scenarios"],
+  whitelist: ["scenarios", "auth"],
 };
 
 export const store = configureStore({
