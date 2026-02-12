@@ -71,13 +71,13 @@ export const useLogin = () => {
         const userRole = session?.user?.role;
         
         if (userRole === "Admin") {
-          router.push("/admin");
+          window.location.href = "/admin";
         } else {
           const callbackUrl = searchParams.get("callbackUrl") || "/";
           const dest = (callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")) 
             ? callbackUrl 
             : "/";
-          router.push(dest);
+          window.location.href = dest;
         }
       }
     } catch (error: unknown) {
