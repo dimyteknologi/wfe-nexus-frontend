@@ -23,7 +23,7 @@ const Navigation = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
 
-  const status = sessionStatus === "authenticated" || isAuthenticated ? "authenticated" : "unauthenticated";
+  const status = sessionStatus === "loading" ? "loading" : (sessionStatus === "authenticated" || isAuthenticated ? "authenticated" : "unauthenticated");
 
   const navItems: NavItem[] = [
     { href: "/", label: t.navigation.home },
