@@ -12,8 +12,10 @@ import {
 } from "@/stores/selectors/site-specific/scenarioProjectionSelector";
 import { IBaselineData } from "@/lib/types/response";
 
+const EMPTY_ARRAY: number[] = [];
+
 const calculateGdrpTotal = (projection: IBaselineData | null): number[] => {
-  if (!projection) return [];
+  if (!projection) return EMPTY_ARRAY;
   const { parameters, years } = projection;
   const aggregateKeysToExclude = new Set([
     "Produk Domestik Regional Bruto",
@@ -35,14 +37,14 @@ const calculateGdrpTotal = (projection: IBaselineData | null): number[] => {
 const calculatePopulationTotal = (
   projection: IBaselineData | null,
 ): number[] => {
-  if (!projection) return [];
+  if (!projection) return EMPTY_ARRAY;
   const totalPopulationParam = projection.parameters.find(
     (param) => param.name === "Total Populasi",
   );
-  if (!totalPopulationParam?.values) return [];
-  const safeValues = totalPopulationParam.values.map((val) => val ?? 0);
+  if (!totalPopulationParam?.values) return EMPTY_ARRAY;
+  const safeValues = totalPopulationParam.values.map((val) => val || 0);
 
-  return safeValues.length > 1 ? safeValues : [];
+  return safeValues.length > 1 ? safeValues : EMPTY_ARRAY;
 };
 
 export const selectGdrpPerCapitaComparison = createSelector(
@@ -72,7 +74,7 @@ export const selectGdrpPerCapitaComparison = createSelector(
     ) => {
       const gdrpTotal = calculateGdrpTotal(gdpProj);
       const population = calculatePopulationTotal(popProj);
-      if (gdrpTotal.length !== population.length) return [];
+      if (gdrpTotal.length !== population.length) return EMPTY_ARRAY;
       return gdrpTotal.map((gdrp, index) => {
         const pop = population[index];
         return pop ? parseFloat((gdrp / pop).toFixed(2)) : 0;

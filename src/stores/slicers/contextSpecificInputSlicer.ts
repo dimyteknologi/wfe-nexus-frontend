@@ -31,13 +31,15 @@ export const ContextSpecific: ContextSpecificState = {
     riceDemandPerPerson: { "2015-2030": 79.2 },
     convertionFactorToRice: { "2015-2030": 0.63 },
     convertionFactoTOGkg: { "2015-2030": 0.85 },
+    // convertionFactorToRice: { "2015-2030": 0 },
+    // convertionFactoTOGkg: { "2015-2030": 0 },
   },
   agriculture: {
     landProduction: { "2015-2030": 100 },
     conversionLandProduction: { "2015-2030": 0 },
     baseYield: { "2015-2030": 5.5 },
-    croppingIntensity: { "2015-2030": 2 },
-    waterIntensity: {"2015-2030": 7800}
+    croppingIntensity: { "2015-2030": 3 },
+    waterIntensity: { "2015-2030": 1200 }
     // areaCiherang: { "2015-2030": 25000 },
     // conversionCiherang: { "2015-2030": 0.88 },
     // areaMekongga: { "2015-2030": 32000 },
@@ -47,7 +49,7 @@ export const ContextSpecific: ContextSpecificState = {
     // areaLokal: { "2015-2030": 7500 },
     // conversionLokal: { "2015-2030": 2.1 },
   },
-  diesel:{
+  diesel: {
     installedCapacity: { "2015-2030": 58 },
     headUnit: { "2015-2030": 30 }
   },
@@ -72,7 +74,7 @@ export const ContextSpecific: ContextSpecificState = {
 
 export interface DssContextSpecificState {
   active: ContextSpecificState;
-  // baseline: ContextSpecificState;
+  baseline: ContextSpecificState;
   scenario_a: string | null;
   scenario_b: string | null;
   powerGeneration: "solar" | "geothermal" | "both" | "none";
@@ -80,7 +82,7 @@ export interface DssContextSpecificState {
 
 const initialState: DssContextSpecificState = {
   active: ContextSpecific,
-  // baseline: ContextSpecific,
+  baseline: ContextSpecific,
   scenario_a: null,
   scenario_b: null,
   powerGeneration: "both",
@@ -123,16 +125,15 @@ const DssContextSpecific = createSlice({
         const pathParts = path.split(".");
         try {
           let activeTarget: IRootState = state.active;
-          // let baselineTarget: IRootState = state.baseline;
+          let baselineTarget: IRootState = state.baseline;
           for (let i = 0; i < pathParts.length; i++) {
             activeTarget = activeTarget[pathParts[i]];
-            // baselineTarget = baselineTarget[pathParts[i]];
+            baselineTarget = baselineTarget[pathParts[i]];
           }
-          // if (activeTarget && baselineTarget) {
-          if (activeTarget) {
+          if (activeTarget && baselineTarget) {
             for (const period in activeTarget) {
               activeTarget[period] = value;
-              // baselineTarget[period] = value;
+              baselineTarget[period] = value;
             }
           }
         } catch (e) {

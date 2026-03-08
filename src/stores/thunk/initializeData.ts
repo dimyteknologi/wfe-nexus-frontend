@@ -30,12 +30,17 @@ export const initializeData = createAsyncThunk(
         populationPromise.unwrap(),
       ]);
 
+      // dispatch(setGdpData(gdp as unknown as IApiRes));
+      // dispatch(setAgricultureData(agriculture as unknown as IApiRes));
+      // dispatch(setFisheryData(fishery as unknown as IApiRes));
+      // dispatch(setLivestockData(livestock as unknown as IApiRes));
+      // dispatch(setPopulationData(population as unknown as IApiRes));
       dispatch(setGdpData({ data: gdp } as unknown as IApiRes));
       dispatch(setAgricultureData({ data: agriculture } as unknown as IApiRes));
       dispatch(setFisheryData({ data: fishery } as unknown as IApiRes));
       dispatch(setLivestockData({ data: livestock } as unknown as IApiRes));
       dispatch(setPopulationData({ data: population } as unknown as IApiRes));
-      
+
       return { success: true };
     } catch (error) {
       console.warn("Failed to initialize data from API. The application will continue with default/empty data.", error);

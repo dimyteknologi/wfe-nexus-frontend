@@ -1,15 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryApi } from "@/stores/api/baseApi";
-import { ILivestockResData } from "@/lib/types/response";
+import { ILivestockResponse } from "@/lib/types/response";
 
 export const livestockApi = createApi({
   reducerPath: "livestockService",
   baseQuery: baseQueryApi,
   tagTypes: ["livestockService"],
   endpoints: (builder) => ({
-    getLiveStocks: builder.query<ILivestockResData, void>({
+    getLiveStocks: builder.query<ILivestockResponse, void>({
       query: () => ({
         url: "/base-data/get-peternakan",
+        // url: "/get-peternakan",
         method: "GET",
       }),
       providesTags: ["livestockService"],

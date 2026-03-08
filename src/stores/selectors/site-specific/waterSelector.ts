@@ -20,8 +20,10 @@ import { IBaselineData } from "@/lib/types/response";
 import { constantAdd, resultConverter, sumData } from "@/lib/utils/formulas";
 import { selectTotalWaterDemand } from "./demandSideSelector";
 
+const EMPTY_ARRAY: number[] = [];
+
 const calculateApWater = (projection: number[] | null) => {
-  if (!projection) return [];
+  if (!projection) return EMPTY_ARRAY;
   return projection.map((item) => item * 1500 * 2);
 };
 
@@ -30,15 +32,15 @@ const calculateTotalSupply = (
   ApWaterHousing: number[],
   ResourceBaseline: IBaselineData | null,
 ) => {
-  if (!ResourceBaseline) return [];
+  if (!ResourceBaseline) return EMPTY_ARRAY;
 
   const potentialWaterSupply = ResourceBaseline.parameters.find(
     (param) => param.name === "Potential Water Supply",
   );
-  if (!potentialWaterSupply) return [];
-  if (!potentialWaterSupply.values) return [];
+  if (!potentialWaterSupply) return EMPTY_ARRAY;
+  if (!potentialWaterSupply.values) return EMPTY_ARRAY;
 
-  const safeValues = potentialWaterSupply.values.map((val) => val ?? 0);
+  const safeValues = potentialWaterSupply.values.map((val) => val || 0);
 
   return safeValues.map((val, i) => {
     return (
@@ -48,7 +50,7 @@ const calculateTotalSupply = (
 };
 
 const calculateAnnualWaterSupply = (totalWaterSupply: number[]) => {
-  if (!Array.isArray(totalWaterSupply)) return Array(36).fill(0);
+  if (!Array.isArray(totalWaterSupply)) return EMPTY_ARRAY;
 
   const safeValues = totalWaterSupply.map((val) => (val ? val / 1000000 : 0));
   return resultConverter(safeValues);
@@ -58,9 +60,9 @@ const calculateLocalWaterSuffiency = (
   projection: number[],
   waterDemand: number[],
 ): number[] => {
-  if (!projection && !waterDemand) return [];
+  if (!projection && !waterDemand) return EMPTY_ARRAY;
 
-  const safeValues = waterDemand.map((val) => val ?? 0);
+  const safeValues = waterDemand.map((val) => val || 0);
 
   return resultConverter(
     safeValues.map((val, i) => {
@@ -74,9 +76,9 @@ const calculateWaterAvailability = (
   projection: number[],
   population: number[],
 ): number[] => {
-  if (!projection) return [];
+  if (!projection) return EMPTY_ARRAY;
 
-  const safeValues = projection.map((val) => val ?? 0);
+  const safeValues = projection.map((val) => val || 0);
 
   return resultConverter(
     safeValues.map((val, i) => {

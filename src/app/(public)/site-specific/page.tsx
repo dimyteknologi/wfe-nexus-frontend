@@ -27,7 +27,6 @@ const DSSPage = () => {
   // init data
   useInitializeData();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const dssModalState = useAppSelector((state) => state.dssModal);
@@ -160,8 +159,8 @@ const DSSPage = () => {
         <div
           id="scenario-menu"
           className={`${isScenarioOpen
-              ? "w-full lg:w-1/3 bg-white border border-gray-200"
-              : "w-0 border-none -translate-x-full"
+            ? "w-full lg:w-1/3 bg-white border border-gray-200"
+            : "w-0 border-none -translate-x-full"
             } rounded-lg lg:rounded-2xl py-2 md:py-4 transition-all duration-200 overflow-hidden h-[70dvh] flex flex-col items-center`}
         >
           <ScenarioMenu
@@ -182,8 +181,8 @@ const DSSPage = () => {
         >
           <div
             className={`w-full p-2 overflow-auto lg:overflow-visible ${isScenarioOpen
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
-                : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
+              : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 grid-flow-row"
               } gap-2 sm:gap-3 md:gap-4 lg:gap-6`}
           >
             {displayedMetrics.map((metric, index) => (

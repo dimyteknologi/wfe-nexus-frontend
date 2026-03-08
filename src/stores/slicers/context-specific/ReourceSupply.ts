@@ -45,11 +45,11 @@ const generateData = (): IApiRes => {
         },
         {
           name: "Ground Water Debit",
-          values: Array.from({ length: 10 }, (_, i) => 0),
+          values: Array(10).fill(0),
         },
         {
           name: "Ground Water Supply",
-          values: Array.from({ length: 10 }, (_, i) => 0),
+          values: Array(10).fill(0),
         },
       ],
     },

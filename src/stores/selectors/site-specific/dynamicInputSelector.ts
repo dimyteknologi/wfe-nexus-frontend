@@ -7,12 +7,12 @@ import {
   selectComparisonScenarioB,
 } from "@/stores/selectors/site-specific/scenarioProjectionSelector";
 import { createSelector } from "@reduxjs/toolkit";
-// import { generateDynamicalSeries } from "@/lib/utils/projections";
 import { RESOURCE_DEMAND_UNIT } from "@/lib/constant/resourceDemandUnit.constant";
 import { resultConverter } from "@/lib/utils/formulas";
+import { TimePeriodData } from "@/lib/constant/inputType.constant";
 
 const transformPeriodInputs = (
-  periods: { [key: string]: number },
+  periods: TimePeriodData,
   avg: number,
 ) => {
   const p2030 = periods?.["2025-2030"] ?? avg;
@@ -100,7 +100,7 @@ const generateResourceDynamicInput = (
     result.push(nextValue);
     lastValue = nextValue;
   }
-  return resultConverter(result.map((item) => item ?? 0));
+  return resultConverter(result.map((item) => item || 0));
 };
 
 const isAdd = (category: string, value: number) => {
@@ -237,19 +237,19 @@ const selectInputProductivityTarget = createSelector(
   (activeInputs, baselineInputs, inputsA, inputsB) => {
     return {
       active: transformPeriodInputs(
-        activeInputs.agriculture.productivityTarget,
+        activeInputs.agriculture.paddyYield,
         RESOURCE_DEMAND_UNIT.FOOD.PRODUCTIVTY_PADDY_YEAR,
       ),
       baseline: transformPeriodInputs(
-        baselineInputs.agriculture.productivityTarget,
+        baselineInputs.agriculture.paddyYield,
         RESOURCE_DEMAND_UNIT.FOOD.PRODUCTIVTY_PADDY_YEAR,
       ),
       scenarioA: transformPeriodInputs(
-        inputsA?.agriculture?.productivityTarget,
+        inputsA?.agriculture?.paddYield,
         RESOURCE_DEMAND_UNIT.FOOD.PRODUCTIVTY_PADDY_YEAR,
       ),
       scenarioB: transformPeriodInputs(
-        inputsB?.agriculture?.productivityTarget,
+        inputsB?.agriculture?.paddYield,
         RESOURCE_DEMAND_UNIT.FOOD.PRODUCTIVTY_PADDY_YEAR,
       ),
     };

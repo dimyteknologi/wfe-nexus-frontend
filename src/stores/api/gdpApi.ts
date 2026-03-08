@@ -1,15 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryApi } from "@/stores/api/baseApi";
-import { IGDPResData } from "@/lib/types/response";
+import { IGDPResponse } from "@/lib/types/response";
 
 export const gdpApi = createApi({
   reducerPath: "gdpService",
   baseQuery: baseQueryApi,
   tagTypes: ["gdpService"],
   endpoints: (builder) => ({
-    getGdps: builder.query<IGDPResData, void>({
+    getGdps: builder.query<IGDPResponse, void>({
       query: () => ({
         url: "/base-data/get-gdp",
+        // url: "/get-gdp",
         method: "GET",
       }),
       providesTags: ["gdpService"],

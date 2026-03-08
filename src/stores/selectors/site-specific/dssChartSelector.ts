@@ -43,80 +43,91 @@ import { selectTotalWaterDemand, selectTotalWaterDemandComparisson } from "./dem
 type ScenarioKey = "active" | "baseline" | "scenarioA" | "scenarioB";
 type ComparisonData = Record<ScenarioKey, number[]>;
 
-export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
-  createSelector(
-    [
-      selectGdrpInBillionsComparison,
-      selectEconomicGrowthComparison,
-      selectGdrpPerCapitaComparison,
-      selectPopulationDataComparison,
-      selectAgricultureLandComparison,
-      selectAvailabilityPerPersonComparison,
-      selectLocalFoodProductionComparison,
-      selectLocalFoodSuffiencyComparison,
-      selectProductionSurplusComparison,
-      selectElectricityPerCapitaComparison,
-      selectElectrityImportComparison,
-      selectLocalEnergyProductionComparison,
-      selectLocalEnergySuffiencyComparison,
-      selectLocalRenewableEnergyContributionComparison,
-      AnnualWaterSupplyComparison,
-      LocalWaterSuffiencyComparison,
-      WaterAvailabilityPerPerson,
-      selectTotalWaterDemandComparisson,
-      selectSiteSpecificScenarioAName,
-      selectSiteSpecificScenarioBName,
-      // selectSiteSpecificBaseline,
-    ],
-    (
-      gdrpInBillions,
-      economicGrowth,
-      gdrpPerCapita,
-      population,
-      agricultureLand,
-      availabilityPerson,
-      localFoodProduction,
-      localFoodSuffiency,
-      productionSurplus,
-      electricityPerCapita,
-      electricityImport,
-      localEnergyProduction,
-      localEnergySuffiency,
-      localRenewableEnergy,
+export const selectAllMetricsDataMap = createSelector(
+  [
+    selectGdrpInBillionsComparison,
+    selectEconomicGrowthComparison,
+    selectGdrpPerCapitaComparison,
+    selectPopulationDataComparison,
+    selectAgricultureLandComparison,
+    selectAvailabilityPerPersonComparison,
+    selectLocalFoodProductionComparison,
+    selectLocalFoodSuffiencyComparison,
+    selectProductionSurplusComparison,
+    selectElectricityPerCapitaComparison,
+    selectElectrityImportComparison,
+    selectLocalEnergyProductionComparison,
+    selectLocalEnergySuffiencyComparison,
+    selectLocalRenewableEnergyContributionComparison,
+    AnnualWaterSupplyComparison,
+    LocalWaterSuffiencyComparison,
+    WaterAvailabilityPerPerson,
+    selectTotalWaterDemandComparisson,
+  ],
+  (
+    gdrpInBillions,
+    economicGrowth,
+    gdrpPerCapita,
+    population,
+    agricultureLand,
+    availabilityPerson,
+    localFoodProduction,
+    localFoodSuffiency,
+    productionSurplus,
+    electricityPerCapita,
+    electricityImport,
+    localEnergyProduction,
+    localEnergySuffiency,
+    localRenewableEnergy,
+    annualWaterSuply,
+    localWaterSuffiency,
+    waterAvailability,
+    waterSupply
+  ) => {
+    const metricsMap: Record<string, ComparisonData> = {
+      gdrp: gdrpInBillions,
+      economicGrowth: economicGrowth,
+      gdrpPerCapita: gdrpPerCapita,
+      population: population,
+      agricultureLand: agricultureLand,
+      availabilityPerson: availabilityPerson,
+      localFoodProduction: localFoodProduction,
+      localFoodSuffiency: localFoodSuffiency,
+      productionSurplus: productionSurplus,
+      electricityPerCapita: electricityPerCapita,
+      electricityImport: electricityImport,
+      localEnergyProduction: localEnergyProduction,
+      localEnergySuffiency: localEnergySuffiency,
+      localRenewableEnergy: localRenewableEnergy,
       annualWaterSuply,
       localWaterSuffiency,
       waterAvailability,
-      waterSupply,
+      localWaterDemand: waterSupply,
+    };
+
+    return metricsMap;
+  }
+);
+
+const EMPTY_SERIES_RESULT = { series: [], colors: [], type: "bar" as const };
+
+export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
+  createSelector(
+    [
+      selectAllMetricsDataMap,
+      selectSiteSpecificScenarioAName,
+      selectSiteSpecificScenarioBName,
+    ],
+    (
+      metricsMap,
       siteNameA,
       siteNameB,
-      // siteBaseline,
     ) => {
-      const metricsMap: Record<string, ComparisonData> = {
-        gdrp: gdrpInBillions,
-        economicGrowth: economicGrowth,
-        gdrpPerCapita: gdrpPerCapita,
-        population: population,
-        agricultureLand: agricultureLand,
-        availabilityPerson: availabilityPerson,
-        localFoodProduction: localFoodProduction,
-        localFoodSuffiency: localFoodSuffiency,
-        productionSurplus: productionSurplus,
-        electricityPerCapita: electricityPerCapita,
-        electricityImport: electricityImport,
-        localEnergyProduction: localEnergyProduction,
-        localEnergySuffiency: localEnergySuffiency,
-        localRenewableEnergy: localRenewableEnergy,
-        annualWaterSuply,
-        localWaterSuffiency,
-        waterAvailability,
-        localWaterDemand:waterSupply
-      };
-      
       const metricConfig = ALL_METRICS_SITE_SPECIFICS.find(
         (m) => m.id === metricId,
       );
       const selectedMetricData = metricsMap[metricId];
-      if (!selectedMetricData) return { series: [], colors: [] };
+      if (!selectedMetricData) return EMPTY_SERIES_RESULT;
       const series = [];
       const colors = [];
 
@@ -146,69 +157,3 @@ export const makeSelectComparisonSeriesForMetric = (metricId: string) =>
       return { series, colors, type: metricConfig?.type ?? "line" };
     },
   );
-
-export const selectAllMetricsDataMap = createSelector(
-  [
-    selectGdrpInBillionsComparison,
-    selectEconomicGrowthComparison,
-    selectGdrpPerCapitaComparison,
-    selectPopulationDataComparison,
-    selectAgricultureLandComparison,
-    selectAvailabilityPerPersonComparison,
-    selectLocalFoodProductionComparison,
-    selectLocalFoodSuffiencyComparison,
-    selectProductionSurplusComparison,
-    selectElectricityPerCapitaComparison,
-    selectElectrityImportComparison,
-    selectLocalEnergyProductionComparison,
-    selectLocalEnergySuffiencyComparison,
-    selectLocalRenewableEnergyContributionComparison,
-    AnnualWaterSupplyComparison,
-    LocalWaterSuffiencyComparison,
-    WaterAvailabilityPerPerson,
-    selectSiteSpecificScenarioAName,
-    selectSiteSpecificScenarioBName,
-    selectSiteSpecificBaseline,
-  ],
-  (
-    gdrpInBillions,
-    economicGrowth,
-    gdrpPerCapita,
-    population,
-    agricultureLand,
-    availabilityPerson,
-    localFoodProduction,
-    localFoodSuffiency,
-    productionSurplus,
-    electricityPerCapita,
-    electricityImport,
-    localEnergyProduction,
-    localEnergySuffiency,
-    localRenewableEnergy,
-    annualWaterSuply,
-    localWaterSuffiency,
-    waterAvailability,
-  ) => {
-    const metricsMap: Record<string, ComparisonData> = {
-      gdrp: gdrpInBillions,
-      economicGrowth: economicGrowth,
-      gdrpPerCapita: gdrpPerCapita,
-      population: population,
-      agricultureLand: agricultureLand,
-      availabilityPerson: availabilityPerson,
-      localFoodProduction: localFoodProduction,
-      localFoodSuffiency: localFoodSuffiency,
-      productionSurplus: productionSurplus,
-      electricityPerCapita: electricityPerCapita,
-      electricityImport: electricityImport,
-      localEnergyProduction: localEnergyProduction,
-      localEnergySuffiency: localEnergySuffiency,
-      localRenewableEnergy: localRenewableEnergy,
-      annualWaterSuply,
-      localWaterSuffiency,
-      waterAvailability,
-    };
-
-    return metricsMap;
-  },
-);

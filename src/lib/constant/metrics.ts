@@ -54,8 +54,8 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     content: "Cropping intensity actual for agriculture area; determined by water sufficiency from all sources"
   },
 
-    // "waterTransported",
-    // "potentialExcess",
+  // "waterTransported",
+  // "potentialExcess",
   {
     category: "RESOURCE",
     id: "waterTransported",
@@ -100,7 +100,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     category: "RESOURCE",
     id: "renewableConsumption",
     title: "Renewable Consumption [KWh/year]",
-    unit: "[KWh/year]",
+    unit: "[GWh/year]",
     type: "bar",
     content: "Electricity production from solar PV in the area",
   },
@@ -119,18 +119,18 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     unit: "[ton CO2 equivalent/year]",
     type: "bar",
     content: "Number of emissions from agriculture practices, most comes from energy and fertilizer",
-    additionalSeries: [
-      {
-        name: "Emissions from Energy Baseline [ton CO2 equivalent/year]",
-        type: "bar",
-        data: [
-          282.72791607519, 358.825655571352, 358.825655571352,
-          358.825655571352, 358.825655571352, 358.825655571352,
-          358.825655571352, 358.825655571352, 358.825655571352,
-          358.825655571352
-        ],
-      },
-    ],
+    // additionalSeries: [
+    //   {
+    //     name: "Emissions from Energy Baseline [ton CO2 equivalent/year]",
+    //     type: "bar",
+    //     data: [
+    //       282.72791607519, 358.825655571352, 358.825655571352,
+    //       358.825655571352, 358.825655571352, 358.825655571352,
+    //       358.825655571352, 358.825655571352, 358.825655571352,
+    //       358.825655571352
+    //     ],
+    //   },
+    // ],
   },
   {
     category: "IMPACT",
@@ -156,7 +156,7 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     category: "IMPACT",
     id: "emissionIntensityProductionImpact",
     title: "Emissions Intensity from production [kg/ton]",
-    unit: "[kg/ton]",
+    unit: "[kg CO₂e·ton⁻¹ rice]",
     type: "line",
     content: "Number of emissions produce per rice production",
     additionalSeries: [
@@ -180,25 +180,25 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     type: "line",
     content: "Percentage of emissions reduction once solar PV and geothermal installed and operated",
   },
-  // {
-  //   category: "IMPACT",
-  //   id: "waterIntensityImpact",
-  //   title: "Water Intensity [m3/ha/year]",
-  //   unit: "[m3/ha/year]",
-  //   type: "line",
-  //   content: "Water intensity average for agriculture area in a year",
-  //   additionalSeries: [
-  //     {
-  //       name: "Water Intensity baseline [m3/ha/year]",
-  //       type: "line",
-  //       data: [
-  //         7808.12844036697, 7808.12844036697, 7808.12844036697,
-  //         7808.12844036697, 7808.12844036697, 7808.12844036697,
-  //         7808.12844036697, 7808.12844036697, 7808.12844036697, 7808.12844036697,
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    category: "IMPACT",
+    id: "waterIntensityImpact",
+    title: "Water Intensity [m3/ha/year]",
+    unit: "[m3/ha/year]",
+    type: "line",
+    content: "Water intensity average for agriculture area in a year",
+    additionalSeries: [
+      {
+        name: "Water Intensity baseline [m3/ha/year]",
+        type: "line",
+        data: [
+          7808.12844036697, 7808.12844036697, 7808.12844036697,
+          7808.12844036697, 7808.12844036697, 7808.12844036697,
+          7808.12844036697, 7808.12844036697, 7808.12844036697, 7808.12844036697,
+        ],
+      },
+    ],
+  },
   {
     category: "IMPACT",
     id: "productionSolar",
@@ -221,17 +221,17 @@ export const ALL_METRICS_CONTEXT_SPECIFICS: Metric[] = [
     unit: "[L/ha/tear]",
     type: "line",
     content: "Fuel intensity average for agriculture area in a year; determine by seed type, and cropping intensity",
-    additionalSeries: [
-      {
-        name: "Fuel intensity Baseline [L/ha/tear]",
-        type: "line",
-        data: [
-          73.5906477010821, 73.5906477010821, 73.5906477010821, 73.5906477010821,
-          73.5906477010821, 73.5906477010821, 73.5906477010821, 73.5906477010821,
-          73.5906477010821, 73.5906477010821
-        ],
-      },
-    ],
+    // additionalSeries: [
+    //   {
+    //     name: "Fuel intensity Baseline [L/ha/tear]",
+    //     type: "line",
+    //     data: [
+    //       73.5906477010821, 73.5906477010821, 73.5906477010821, 73.5906477010821,
+    //       73.5906477010821, 73.5906477010821, 73.5906477010821, 73.5906477010821,
+    //       73.5906477010821, 73.5906477010821
+    //     ],
+    //   },
+    // ],
   },
 ];
 

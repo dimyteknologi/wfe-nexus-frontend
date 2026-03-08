@@ -35,44 +35,56 @@ import {
 
 import { IBaselineData } from "@/lib/types/response";
 import { RESOURCE_DEMAND_UNIT } from "@/lib/constant/resourceDemandUnit.constant";
-import { selectSiteSpecificActive, selectSiteSpecificBaseline, selectSiteSpecificScenarioAName, selectSiteSpecificScenarioBName } from "../baseSelector";
+import { selectSiteSpecificActive, selectSiteSpecificBaseline } from "../baseSelector";
 import { SiteSpecificState } from "@/stores/slicers/siteSpecificInputSlicer";
+
+const ZERO_ARRAY: number[] = Array(36).fill(0);
 
 export const calculateMultiplyArrays = (
   data: number[],
   dynamicInput: number[],
 ) => {
   if (!Array.isArray(data) && !Array.isArray(dynamicInput))
-    return Array(36).fill(0);
+    return ZERO_ARRAY;
 
   const result = data.map((val, i) => {
-    const denominator = dynamicInput[i] ?? 0;
-    return denominator !== 0 ? val * denominator : 0;
+    const denominator = dynamicInput[i] || 0;
+    const value = val || 0;
+    return denominator !== 0 ? value * denominator : 0;
   });
 
   return resultConverter(result);
 };
 
 export const getParameters = (baseData: IBaselineData | null, key: string) => {
-  if (!baseData && !key) return Array(36).fill(0);
+
+  if (!baseData && !key) return ZERO_ARRAY;
 
   const data = baseData?.parameters.find((param) => param.name.toLowerCase() === key.toLowerCase());
-  if (!data) return Array(36).fill(0);
 
-  return data.values.map((val) => val ?? 0);
+  if (!data) return ZERO_ARRAY;
+
+  return data.values.map((val) => {
+    const num = val || 0;
+    return isNaN(num) ? 0 : num;
+  });
 };
 
 const sumArrayData = (...arrays: number[][]): number[] => {
-  if (arrays.length === 0) return Array(36).fill(0);
+  if (arrays.length === 0) return ZERO_ARRAY;
   const result: number[] = new Array(36).fill(0);
 
   for (const arr of arrays) {
     for (let i = 0; i < 36; i++) {
-      result[i] += arr[i];
+      const val = arr[i] || 0;
+      result[i] += val;
     }
   }
 
-  return result.map((num) => parseFloat(((num * 100) / 100).toFixed(2)));
+  return result.map((num) => {
+    if (isNaN(num)) return 0;
+    return parseFloat(((num * 100) / 100).toFixed(2));
+  });
 };
 
 export const selectDomesticWaterDemand = createSelector(
@@ -81,19 +93,19 @@ export const selectDomesticWaterDemand = createSelector(
     return {
       active: calculateMultiplyArrays(
         dataPopulation.active,
-        inputWaterDemand.active.map((item) => (item * 365) / 1000),
+        inputWaterDemand.active.map((item) => ((item || 0) * 365) / 1000),
       ),
       baseline: calculateMultiplyArrays(
         dataPopulation.baseline,
-        inputWaterDemand.baseline.map((item) => (item * 365) / 1000),
+        inputWaterDemand.baseline.map((item) => ((item || 0) * 365) / 1000),
       ),
       scenarioA: calculateMultiplyArrays(
         dataPopulation.scenarioA,
-        inputWaterDemand.scenarioA.map((item) => (item * 365) / 1000),
+        inputWaterDemand.scenarioA.map((item) => ((item || 0) * 365) / 1000),
       ),
       scenarioB: calculateMultiplyArrays(
         dataPopulation.scenarioB,
-        inputWaterDemand.scenarioB.map((item) => (item * 365) / 1000),
+        inputWaterDemand.scenarioB.map((item) => ((item || 0) * 365) / 1000),
       ),
     };
   },
@@ -146,27 +158,33 @@ export const selectCropsLandWater = createSelector(
     selectComparisonScenarioA,
     selectComparisonScenarioB
   ],
-  (active, baseline, scenarioA, scenarioB, activeInput, baselineInput, scenarioAInput, scenarioBInput) =>  {
-    
+  (active, baseline, scenarioA, scenarioB, activeInput, baselineInput, scenarioAInput, scenarioBInput) => {
+
     const processScenario = (data: IBaselineData | null, input: SiteSpecificState | null) => {
-      if (!data || !input) return Array(36).fill(0);
-      const cropsInput = input?.agriculture?.waterIntensity;
-      if (!cropsInput) return Array(36).fill(0);
-      
+      if (!data || !input) return ZERO_ARRAY;
+      const cropsInput = input?.agriculture?.croppingIntensity;
+      if (!cropsInput) return ZERO_ARRAY;
+
       const baseValue = cropsInput["2025-2030"] || 1;
       const rawData = getParameters(data, "Lahan Panen Padi");
+
       const result = constantMultiply(
         rawData,
         baseValue
       );
       return result.map((val, i) => {
+        const safeVal = val || 0;
+        const valDivide = baseValue === 0 ? 0 : safeVal / baseValue;
+
         if (i > 20 && i <= 30) {
-          return (val / baseValue) * (cropsInput["2031-2040"] || baseValue);
-        } 
-        if (i > 30) {
-          return (val / baseValue) * (cropsInput["2041-2045"] || baseValue);
+          const finalVal = valDivide * (cropsInput["2031-2040"] || baseValue);
+          return isNaN(finalVal) ? 0 : finalVal;
         }
-        return val;
+        if (i > 30) {
+          const finalVal = valDivide * (cropsInput["2041-2045"] || baseValue);
+          return isNaN(finalVal) ? 0 : finalVal;
+        }
+        return isNaN(safeVal) ? 0 : safeVal;
       });
     };
 
@@ -188,10 +206,10 @@ export const selectLivestock = createSelector(
   ],
   (baseline, active, scenarioA, scenarioB) => {
     const calculateLivestockData = (baseData: IBaselineData | null) => {
-      const dataCattle = getParameters(baseData, "sapi");
-      const dataGoat = getParameters(baseData, "kambing");
-      const dataPoultry = getParameters(baseData, "ayam");
-      
+      const dataCattle = getParameters(baseData, "ternak sapi");
+      const dataGoat = getParameters(baseData, "ternak kambing");
+      const dataPoultry = getParameters(baseData, "ternak ayam");
+
       const constantLargeCattle = RESOURCE_DEMAND_UNIT.WATER.LARGE_CATTLE;
       const constantSmallCattle = RESOURCE_DEMAND_UNIT.WATER.SMALL_CATTLE;
       const constantPoultry = RESOURCE_DEMAND_UNIT.WATER.POULTRY;
@@ -329,10 +347,10 @@ export const selectTotalWaterDemandComparisson = createSelector(
   ],
   (totalWater) => {
     return {
-      active: constantDevided(totalWater.active,1000000),
-      baseline: constantDevided(totalWater.baseline,1000000),
-      scenarioA: constantDevided(totalWater.scenarioA,1000000),
-      scenarioB: constantDevided(totalWater.scenarioB,1000000),
+      active: constantDevided(totalWater.active, 1000000),
+      baseline: constantDevided(totalWater.baseline, 1000000),
+      scenarioA: constantDevided(totalWater.scenarioA, 1000000),
+      scenarioB: constantDevided(totalWater.scenarioB, 1000000),
     };
   },
 );

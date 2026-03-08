@@ -26,7 +26,6 @@ import { selectDisplayedMetricsContext } from "@/stores/selectors/dssDashboardSe
 
 const ContextSpecificPage = () => {
   // useInitializeData();
-
   const [isPowerGenDropdownOpen, setIsPowerGenDropdownOpen] = useState(false);
   const simulationState = useAppSelector((state) => state.contextSpecific);
   const selectedPowerGen = simulationState.powerGeneration;
@@ -41,7 +40,7 @@ const ContextSpecificPage = () => {
   const uniqueCategories = [
     ...new Set(ALL_METRICS_CONTEXT_SPECIFICS.map((metric) => metric.category)),
   ];
-  
+
   const handleOpenScenarioTab = useCallback(() => {
     dispatch(setScenarioModal(!isScenarioOpen));
   }, [dispatch, isScenarioOpen]);
@@ -68,10 +67,10 @@ const ContextSpecificPage = () => {
   const handlePowerGenSelect = (option: "solar" | "geothermal" | "both" | "none") => {
     dispatch(setPowerGeneration(option));
     setIsPowerGenDropdownOpen(false);
-    
+
     // Update input values based on power generation selection
     const updatedInputs = { ...simulationState.active };
-    
+
     switch (option) {
       case "both":
         // Set defaults for both
@@ -85,7 +84,7 @@ const ContextSpecificPage = () => {
           utilizationOfSurfaceWater: { "2025-2034": updatedInputs.geothermal.utilizationOfSurfaceWater["2025-2034"] || 0 },
         };
         break;
-      
+
       case "solar":
         // Enable Solar PV, disable Geothermal
         updatedInputs.solarPV = {
@@ -98,7 +97,7 @@ const ContextSpecificPage = () => {
           utilizationOfSurfaceWater: { "2025-2034": 0 },
         };
         break;
-      
+
       case "geothermal":
         // Enable Geothermal, disable Solar PV
         updatedInputs.solarPV = {
@@ -111,7 +110,7 @@ const ContextSpecificPage = () => {
           utilizationOfSurfaceWater: { "2025-2034": updatedInputs.geothermal.utilizationOfSurfaceWater["2025-2034"] || 0 },
         };
         break;
-      
+
       case "none":
         // Disable both
         updatedInputs.solarPV = {
@@ -125,7 +124,7 @@ const ContextSpecificPage = () => {
         };
         break;
     }
-    
+
     dispatch(setAllActiveInputs(updatedInputs));
   };
 
@@ -176,11 +175,10 @@ const ContextSpecificPage = () => {
                   <button
                     key={option.value}
                     onClick={() => handlePowerGenSelect(option.value)}
-                    className={`w-full text-left px-4 py-3 text-sm hover:bg-blue-50 transition-colors ${
-                      selectedPowerGen === option.value
-                        ? "bg-blue-100 text-blue-700 font-semibold"
-                        : "text-gray-700"
-                    }`}
+                    className={`w-full text-left px-4 py-3 text-sm hover:bg-blue-50 transition-colors ${selectedPowerGen === option.value
+                      ? "bg-blue-100 text-blue-700 font-semibold"
+                      : "text-gray-700"
+                      }`}
                   >
                     {option.label}
                     {selectedPowerGen === option.value && (

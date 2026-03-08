@@ -14,8 +14,10 @@ import {
 import { createSelector } from "@reduxjs/toolkit";
 import { resultConverter } from "@/lib/utils/formulas";
 import { selectTotalEnergy } from "./demandSideSelector";
+const EMPTY_ARRAY: number[] = [];
+
 const calculatePvAreaPercentage = (data: number[]): number[] => {
-  if (!Array.isArray(data)) return Array(36).fill(0);
+  if (!Array.isArray(data)) return EMPTY_ARRAY;
   return resultConverter(data);
 };
 
@@ -24,15 +26,15 @@ const calculatePvAreaInAreaIndustrial = (
   LandCover: IBaselineData | null,
   landCoverName: string,
 ) => {
-  if (!Array.isArray(data) && !LandCover) return Array(36).fill(0);
+  if (!Array.isArray(data) && !LandCover) return EMPTY_ARRAY;
   const industrialLand = LandCover?.parameters.find(
     (param) => param.name.toLowerCase() === landCoverName.toLowerCase(),
   );
 
-  if (!industrialLand) return [];
-  if (!industrialLand?.values) return [];
+  if (!industrialLand) return EMPTY_ARRAY;
+  if (!industrialLand?.values) return EMPTY_ARRAY;
 
-  const safeValues = industrialLand.values.map((val) => val ?? 0);
+  const safeValues = industrialLand.values.map((val) => val || 0);
 
   const result = resultConverter(
     safeValues.map((val, i) => {
@@ -49,15 +51,15 @@ const calculatePvAreaInAreaHousing = (
   LandCover: IBaselineData | null,
   landCoverName: string,
 ) => {
-  if (!Array.isArray(data) && !LandCover) return Array(36).fill(0);
+  if (!Array.isArray(data) && !LandCover) return EMPTY_ARRAY;
   const industrialLand = LandCover?.parameters.find(
     (param) => param.name.toLowerCase() === landCoverName.toLowerCase(),
   );
 
-  if (!industrialLand) return [];
-  if (!industrialLand?.values) return [];
+  if (!industrialLand) return EMPTY_ARRAY;
+  if (!industrialLand?.values) return EMPTY_ARRAY;
 
-  const safeValues = industrialLand.values.map((val) => val ?? 0);
+  const safeValues = industrialLand.values.map((val) => val || 0);
 
   const result = resultConverter(
     safeValues.map((val, i) => {
@@ -70,9 +72,9 @@ const calculatePvAreaInAreaHousing = (
 };
 
 const calculateEnergyProductionSolar = (data: number[]) => {
-  if (!Array.isArray(data)) return Array(36).fill(0);
+  if (!Array.isArray(data)) return EMPTY_ARRAY;
 
-  const safeValues = data.map((val) => val ?? 0);
+  const safeValues = data.map((val) => val || 0);
   const result = resultConverter(
     safeValues.map((val, i) => {
       return (332.60625 * val) / 1000000 / 100;
@@ -87,8 +89,8 @@ const calculateLocalEnergyProduction = (
   industrial: number[],
 ) => {
   if (!Array.isArray(industrial) || !Array.isArray(housing))
-    return Array(36).fill(0);
-  const safeValues = industrial.map((val) => val ?? 0);
+    return EMPTY_ARRAY;
+  const safeValues = industrial.map((val) => val || 0);
   return resultConverter(
     safeValues.map((val, i) => {
       const denominator = housing[i] ?? 0;
@@ -102,9 +104,9 @@ const calculateLocalEnergySuffiency = (
   totalWaterEnergyGeneration: number[],
 ) => {
   if (!Array.isArray(localEnergyProduction) && !totalWaterEnergyGeneration)
-    return Array(36).fill(0);
+    return EMPTY_ARRAY;
 
-  const safeValues = totalWaterEnergyGeneration.map((val) => val ?? 0);
+  const safeValues = totalWaterEnergyGeneration.map((val) => val || 0);
 
   return resultConverter(
     safeValues.map((val, i) => {
@@ -119,9 +121,9 @@ const calculateElectricityImport = (
   totalWaterEnergyGeneration: number[],
 ): number[] => {
   if (!Array.isArray(localEnergyProduction) && !totalWaterEnergyGeneration)
-    return Array(36).fill(0);
+    return EMPTY_ARRAY;
 
-  const safeValues = totalWaterEnergyGeneration.map((val) => val ?? 0);
+  const safeValues = totalWaterEnergyGeneration.map((val) => val || 0);
   if (!localEnergyProduction || localEnergyProduction.length === 0) {
     return safeValues;
   }
@@ -140,9 +142,9 @@ const calculateElectricityPerCapita = (
   totalWaterEnergyGeneration: number[],
   population: number[],
 ): number[] => {
-  if (!totalWaterEnergyGeneration) return Array(36).fill(0);
+  if (!totalWaterEnergyGeneration) return EMPTY_ARRAY;
 
-  const safeValues = totalWaterEnergyGeneration.map((val) => val ?? 0);
+  const safeValues = totalWaterEnergyGeneration.map((val) => val || 0);
 
   return resultConverter(
     safeValues.map((val, idx) => {

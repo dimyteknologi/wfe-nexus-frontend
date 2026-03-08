@@ -38,7 +38,6 @@ import {
   generateLandPortion,
   generateAvailabilityFactor,
   generateLahanPanenPadi,
-  transformPeriodInputs,
 } from "@/lib/utils/projections";
 import { IApiData, IBaselineData, Params } from "@/lib/types/response";
 import { INITIAL_DATA_CONSTANT } from "@/lib/constant/initialData.constant";
@@ -81,7 +80,6 @@ import {
 import { setDataApArea } from "../slicers/intermediateOuput/apAreaSlicer";
 import {
   dynamicalInputs,
-  RESOURCE_DEMAND_UNIT,
 } from "@/lib/constant/resourceDemandUnit.constant";
 import { IRootState } from "..";
 
@@ -295,7 +293,7 @@ const waterDemandConfig: ProcessingConfig = {
       outputParamName: "Crops Land",
     },
     {
-      sourceParamName: ["sapi", "kambing", "ayam"],
+      sourceParamName: ["ternak sapi", "ternak kambing", "ternak ayam"],
       calculationFn: generateLivestockWaterDemandProcess,
       outputParamName: "Livestock",
     },
@@ -329,9 +327,9 @@ const FISHERY_MAP: Record<string, number> = {
 };
 
 const LIVESTOCK_MAP: Record<string, number> = {
-  "sapi": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_SAPI,
-  "kambing": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_KAMBING,
-  "ayam": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_AYAM,
+  "ternak sapi": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_SAPI,
+  "ternak kambing": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_KAMBING,
+  "ternak ayam": INITIAL_DATA_CONSTANT.PETERNAKAN.POPULASI_TERNAK_AYAM,
 };
 
 const preprocessFisheryData = (data: IApiData): IApiData => ({
@@ -539,7 +537,7 @@ const addPopulateFormListener = () => {
         "water.artificialPondHousing": 0,
         "water.domesticWaterDemand": 125,
         "water.industrialWater": 1.687,
-        "agriculture.area2010":   108695,
+        "agriculture.area2010": 108695,
         "agriculture.paddyYield": 6.55,
         "agriculture.croppingIntensity": 1.95,
         "agriculture.waterIntensity": 9380
@@ -565,7 +563,6 @@ export function DssPageListener() {
     effect: async (action, listenerApi) => {
       const response = action.payload;
       const baseline = generateBaseline(response.data);
-
       if (baseline) {
         listenerApi.dispatch(setGdrpBaseline(baseline));
       }
@@ -580,7 +577,7 @@ export function DssPageListener() {
         data = preprocessFisheryData(data);
       }
       const baseline = generateBaseline(data);
-      
+
       if (baseline) {
         listenerApi.dispatch(setFisheryBaseline(baseline));
       }
