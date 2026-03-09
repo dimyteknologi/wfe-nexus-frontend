@@ -1,8 +1,17 @@
 import { siteSpecificInput, contextSpecificInput } from "@/config/form";
 import { IRootState } from "@/stores";
-import { createSelector } from "@reduxjs/toolkit";
+import { createSelector, createSelectorCreator, lruMemoize } from "@reduxjs/toolkit";
+import { isEqual } from "lodash";
 import { SiteSpecificState } from "../slicers/siteSpecificInputSlicer";
+
+export const createDeepEqualSelector = createSelectorCreator({
+  memoize: lruMemoize,
+  memoizeOptions: { equalityCheck: isEqual },
+});
 import { ContextSpecificState } from "../slicers/contextSpecificInputSlicer";
+import { scenarioApi } from "../api/scenarioApi";
+
+const selectScenariosResult = scenarioApi.endpoints.getScenarios.select(undefined);
 
 // SITE SPECIFIC ACTIVE INPUT
 export const selectSiteSpecificActive = (state: IRootState) =>
@@ -17,8 +26,8 @@ export const selectSiteSpecificScenarioBName = (state: IRootState) =>
 // CONTEXT SPECIFIC ACTIVE INPUT
 export const selectContextSpecificActive = (state: IRootState) =>
   state.contextSpecific.active;
-// export const selectContextSpecificBaseline = (state: IRootState) =>
-//   state.contextSpecific.baseline;
+export const selectContextSpecificBaseline = (state: IRootState) =>
+  state.contextSpecific.baseline;
 export const selectContextSpecificAName = (state: IRootState) =>
   state.contextSpecific.scenario_a;
 export const selectContextSpecificBName = (state: IRootState) =>
@@ -49,7 +58,7 @@ export const selectFoodDemandBaseline = (state: IRootState) =>
 
 // Saved Scenarios
 export const selectSavedSiteSpecificScenarios = (state: IRootState) =>
-  state.scenarios.data.siteSpecific;
+  selectScenariosResult(state)?.data?.data || [];
 export const selectSavedContextSpecificScenarios = (state: IRootState) =>
   state.scenarios.data.contextSpecific;
 

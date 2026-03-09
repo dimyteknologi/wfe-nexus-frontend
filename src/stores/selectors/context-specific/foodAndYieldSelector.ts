@@ -1,6 +1,9 @@
-import { createSelector } from "@reduxjs/toolkit";
+import { createDeepEqualSelector } from "../baseSelector";
 import { FOOD_AND_YIELD } from "@/lib/constant/initialDataContext.constans";
 import { agricultureLandPaddyPerscenario } from "./foodAndSupplyInputDemandSelector";
+import { selectContextSpecificActive, selectContextSpecificBaseline } from "../baseSelector";
+import { selectedContextSpecificA, selectedContextSpecificB } from "./scenarioProjectionSelector";
+import { ContextSpecificState } from "@/stores/slicers/contextSpecificInputSlicer";
 
 export const PLANTING_SESSIONS = {
   INPARI32: FOOD_AND_YIELD.INPARI_32.PLANTING_SESSION_PER_YEAR,
@@ -12,46 +15,44 @@ export const PLANTING_SESSIONS = {
 
 
 const calculateAveragePlantingSession = (
-  // shares: Record<string, number[]>,
   shares: number[],
-  plantingSessions: Record<string, number>,
+  intensity: number,
 ) => {
   const years = shares.length;
   const result = Array(years).fill(0);
 
   for (let i = 0; i < years; i++) {
-    // const inpari32 = shares.Inpari32[i] / 100;
-    // const ciherang = shares.Ciherang[i] / 100;
-    // const mekongga = shares.Mekongga[i] / 100;
-    // const hipa = shares.HipaSeries[i] / 100;
-    // const lokal = shares.Lokal[i] / 100;
-
-    result[i] = Number(
-      (
-       (plantingSessions.INPARI32 +
-       plantingSessions.CIHERANG +
-       plantingSessions.MEKONGGA +
-       plantingSessions.HIPASERRIES + plantingSessions.LOKAL)/5
-      ).toFixed(10),
-    );
+    result[i] = intensity;
   }
   return result;
 };
 
-export const selectAveragePlantingSessions = createSelector(
-  [agricultureLandPaddyPerscenario],
-  (comparison) => ({
-    active: calculateAveragePlantingSession(
-      comparison.active,
-      PLANTING_SESSIONS,
-    ),
-    scenarioA: calculateAveragePlantingSession(
-      comparison.scenarioA,
-      PLANTING_SESSIONS,
-    ),
-    scenarioB: calculateAveragePlantingSession(
-      comparison.scenarioB,
-      PLANTING_SESSIONS,
-    ),
-  }),
+export const selectAveragePlantingSessions = createDeepEqualSelector(
+  [agricultureLandPaddyPerscenario,
+    selectContextSpecificActive, selectContextSpecificBaseline,
+    selectedContextSpecificA, selectedContextSpecificB
+  ],
+  (comparison, active, baseline, scenarioA, scenarioB) => {
+    const getInput = (scenario: ContextSpecificState) => {
+      return scenario?.agriculture?.croppingIntensity?.["2015-2030"] ?? 0;
+    };
+    return {
+      active: calculateAveragePlantingSession(
+        comparison.active,
+        getInput(active),
+      ),
+      baseline: calculateAveragePlantingSession(
+        comparison.baseline ?? comparison.active,
+        getInput(baseline ?? active),
+      ),
+      scenarioA: calculateAveragePlantingSession(
+        comparison.scenarioA,
+        getInput(scenarioA),
+      ),
+      scenarioB: calculateAveragePlantingSession(
+        comparison.scenarioB,
+        getInput(scenarioB),
+      ),
+    }
+  },
 );

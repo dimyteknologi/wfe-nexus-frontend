@@ -5,7 +5,8 @@ import { ApexOptions } from "apexcharts";
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 interface ChartProps {
   type?: "line" | "bar" | "area" | "pie" | "donut" | "radialBar";
-  series: ApexAxisChartSeries | ApexNonAxisChartSeries;
+  // series: ApexAxisChartSeries | ApexNonAxisChartSeries;
+  series: NonNullable<ApexOptions["series"]>;
   categories?: number[];
   height?: number | string;
   colors?: string[];
@@ -43,10 +44,10 @@ const ChartComponent: React.FC<ChartProps> = ({
           offsetX: 0,
           formatter: (val: number) =>
             // new Intl.NumberFormat("id-ID").format(val),
-          new Intl.NumberFormat("id-ID", {
-            minimumFractionDigits: 5,
-            maximumFractionDigits: 5,
-          }).format(val),
+            new Intl.NumberFormat("id-ID", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 3,
+            }).format(val),
         },
       },
       colors,

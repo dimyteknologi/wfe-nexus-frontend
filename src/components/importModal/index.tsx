@@ -138,19 +138,19 @@ const ImportModal: React.FC<ImportModalProps> = ({
         setUploadStatus("success");
         setUploadMessage("Berhasil import CSV!");
 
-      const {
-        "get-gdp": gdp,
-        "get-population": population,
-        // "get-pertanian": agriculture,
-        "get-peternakan": livestock,
-        "get-perikanan": perikanan
-      } = imported.data;
-      
-      dispatch(setGdpData(gdp));
-      dispatch(setLivestockData(livestock));
-      dispatch(setPopulationData(population));
-      // dispatch(setAgricultureData(agriculture));
-      dispatch(setFisheryData(perikanan));
+        const {
+          "get-gdp": gdp,
+          "get-population": population,
+          // "get-pertanian": agriculture,
+          "get-peternakan": livestock,
+          "get-perikanan": perikanan
+        } = imported.data;
+
+        dispatch(setGdpData(gdp));
+        dispatch(setLivestockData(livestock));
+        dispatch(setPopulationData(population));
+        // dispatch(setAgricultureData(agriculture));
+        dispatch(setFisheryData(perikanan));
 
       } else {
         setUploadStatus("error");
@@ -169,14 +169,14 @@ const ImportModal: React.FC<ImportModalProps> = ({
       setUploadMessage("Terjadi kesalahan saat mengupload file");
       console.error("Upload error:", JSON.stringify(error, null, 2));
       if ('status' in (error as any)) {
-          const status = (error as any).status;
-          if (status === 429) {
-             setUploadMessage("Terlalu banyak permintaan. Mohon tunggu beberapa saat sebelum mencoba lagi.");
-          } else {
-             setUploadMessage(`Upload failed: Status ${status}`);
-          }
+        const status = (error as any).status;
+        if (status === 429) {
+          setUploadMessage("Terlalu banyak permintaan. Mohon tunggu beberapa saat sebelum mencoba lagi.");
+        } else {
+          setUploadMessage(`Upload failed: Status ${status}`);
+        }
       } else {
-          setUploadMessage("Terjadi kesalahan saat mengupload file");
+        setUploadMessage("Terjadi kesalahan saat mengupload file");
       }
     }
   }, [selectedFile, onClose, dispatch, validateFile, importCsv]);
@@ -214,11 +214,10 @@ const ImportModal: React.FC<ImportModalProps> = ({
 
         {/* Area upload dengan drag and drop */}
         <div
-          className={`w-full h-64 rounded-2xl flex flex-col justify-center items-center p-4 border-2 border-dashed ${
-            isDragging
-              ? "border-green-500 bg-green-50"
-              : "border-gray-300 bg-gray-100"
-          } transition-colors cursor-pointer`}
+          className={`w-full h-64 rounded-2xl flex flex-col justify-center items-center p-4 border-2 border-dashed ${isDragging
+            ? "border-green-500 bg-green-50"
+            : "border-gray-300 bg-gray-100"
+            } transition-colors cursor-pointer`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -287,13 +286,12 @@ const ImportModal: React.FC<ImportModalProps> = ({
         {/* Status notifikasi */}
         {uploadMessage && (
           <div
-            className={`mt-4 p-3 rounded-md text-sm ${
-              uploadStatus === "success"
-                ? "bg-green-100 text-green-800"
-                : uploadStatus === "error"
-                  ? "bg-red-100 text-red-800"
-                  : "bg-blue-100 text-blue-800"
-            }`}
+            className={`mt-4 p-3 rounded-md text-sm ${uploadStatus === "success"
+              ? "bg-green-100 text-green-800"
+              : uploadStatus === "error"
+                ? "bg-red-100 text-red-800"
+                : "bg-blue-100 text-blue-800"
+              }`}
           >
             {uploadMessage}
           </div>

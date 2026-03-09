@@ -1,21 +1,33 @@
-import { createSelector } from "@reduxjs/toolkit";
+import { createDeepEqualSelector } from "../baseSelector";
 import { selectSocialDataComparison } from "./socialSelector";
-import { constantDevided, constantMultiply } from "@/lib/utils/formulas";
 
-export const selectFoodDemandRicePerScenario = createSelector(
+const EMPTY_ARRAY = Array(16).fill(0);
+
+const calculateFoodDemand = (socialData: number[], multiplier: number) => {
+  if (!socialData || socialData.length === 0) return EMPTY_ARRAY;
+  const result = new Array(16);
+  for (let i = 0; i < 16; i++) {
+    result[i] = ((socialData[i] ?? 0) * multiplier) / 1000;
+  }
+  return result;
+};
+
+export const selectFoodDemandRicePerScenario = createDeepEqualSelector(
   [selectSocialDataComparison],
   (social) => ({
-    active: constantDevided(constantMultiply(social.active, 79.2), 1000),
-    scenarioA: constantDevided(constantMultiply(social.scenarioA, 79.2), 1000),
-    scenarioB: constantDevided(constantMultiply(social.scenarioB, 79.2), 1000),
+    active: calculateFoodDemand(social.active, 79.2),
+    baseline: calculateFoodDemand(social.baseline ?? social.active, 79.2),
+    scenarioA: calculateFoodDemand(social.scenarioA, 79.2),
+    scenarioB: calculateFoodDemand(social.scenarioB, 79.2),
   }),
 );
 
-export const selectFoodDemandMeizePerScenario = createSelector(
+export const selectFoodDemandMeizePerScenario = createDeepEqualSelector(
   [selectSocialDataComparison],
   (social) => ({
-    active: constantDevided(constantMultiply(social.active, 20), 1000),
-    scenarioA: constantDevided(constantMultiply(social.scenarioA, 20), 1000),
-    scenarioB: constantDevided(constantMultiply(social.scenarioB, 20), 1000),
+    active: calculateFoodDemand(social.active, 20),
+    baseline: calculateFoodDemand(social.baseline ?? social.active, 20),
+    scenarioA: calculateFoodDemand(social.scenarioA, 20),
+    scenarioB: calculateFoodDemand(social.scenarioB, 20),
   }),
 );

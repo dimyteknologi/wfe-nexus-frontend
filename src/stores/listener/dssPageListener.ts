@@ -539,7 +539,7 @@ const addPopulateFormListener = () => {
         "water.artificialPondHousing": 0,
         "water.domesticWaterDemand": 125,
         "water.industrialWater": 1.687,
-        "agriculture.area2010":   108695,
+        "agriculture.area2010": 108695,
         "agriculture.paddyYield": 6.55,
         "agriculture.croppingIntensity": 1.95,
         "agriculture.waterIntensity": 9380
@@ -580,7 +580,7 @@ export function DssPageListener() {
         data = preprocessFisheryData(data);
       }
       const baseline = generateBaseline(data);
-      
+
       if (baseline) {
         listenerApi.dispatch(setFisheryBaseline(baseline));
       }

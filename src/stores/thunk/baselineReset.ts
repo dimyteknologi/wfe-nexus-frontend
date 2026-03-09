@@ -19,22 +19,24 @@ export const CONTEXT_BASELINE_PAYLOAD = {
   "food.riceDemandPerPerson": 79.2,
   "food.convertionFactorToRice": 0.63,
   "food.convertionFactoTOGkg": 0.85,
+  // "food.convertionFactorToRice": 0,
+  // "food.convertionFactoTOGkg": 0,
   "agriculture.landProduction": 100,
   "agriculture.conversionLandProduction": 0,
   "agriculture.baseYield": 5.5,
-  "agriculture.croppingIntensity": 2,
-  "agriculture.waterIntensity": 7800,
+  "agriculture.croppingIntensity": 3,
+  "agriculture.waterIntensity": 1200,
   "diesel.installedCapacity": 58,
   "diesel.headUnit": 30,
-  "solarPV.installedCapacity": 63,
-  "solarPV.fee": 150000,
-  "fertilizer.percentageOfChemical": 30,
-  "fertilizer.ratioOrganic": 17,
   "rainfall.annualRainfall": 710,
   "rainfall.areaSize": 100,
+  "solarPV.installedCapacity": 0,
+  "solarPV.fee": 150000,
   "geothermal.installedUnit": 0,
   "geothermal.capacityPerUnit": 50,
-  "geothermal.utilizationOfSurfaceWater": 1
+  "geothermal.utilizationOfSurfaceWater": 0,
+  "fertilizer.percentageOfChemical": 30,
+  "fertilizer.ratioOrganic": 17
 };
 type ResetCategory = "siteSpecific" | "contextSpecific";
 
@@ -50,7 +52,7 @@ export const resetToBaseline = createAsyncThunk(
       const agricultureData = selectAgricultureBaseline(state);
       const fisheryData = selectFisheryBaseline(state);
       const livestockData = selectLivestockBaseline(state);
-      
+
       const allParameters = [
         ...(gdrpData?.parameters || []),
         ...(populationData?.parameters || []),
@@ -68,7 +70,7 @@ export const resetToBaseline = createAsyncThunk(
         "water.artificialPondHousing": 0,
         "water.domesticWaterDemand": 125,
         "water.industrialWater": 1.687,
-        "agriculture.area2010":   108695,
+        "agriculture.area2010": 108695,
         "agriculture.paddyYield": 6.55,
         "agriculture.croppingIntensity": 1.95,
         "agriculture.waterIntensity": 9380

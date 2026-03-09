@@ -31,7 +31,7 @@ export const SiteSpecific: SiteSpecificState = {
     productivityTarget: { ...initialTimePeriodData },
     paddyYield: { ...initialTimePeriodData },
     area2010: { ...initialTimePeriodData },
-    croppingIntensity: { "2025-2030": 1.95, "2031-2040": 1.95, "2041-2045": 1.95 },
+    croppingIntensity: { ...initialTimePeriodData },
     waterIntensity: { ...initialTimePeriodData },
   },
   livestock: {

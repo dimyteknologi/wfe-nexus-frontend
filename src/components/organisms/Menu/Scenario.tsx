@@ -36,7 +36,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
   const [simulationName, setSimulationName] = useState("");
   const { contextSpecific } = useAppSelector((state) => state.scenarios.data);
   const [createScenario] = useCreateScenarioMutation();
-  const { data: siteScenarios = [] } = useGetScenariosQuery({});
+  const { data: siteScenarios = [] } = useGetScenariosQuery(undefined);
   const [isHover, setIsHover] = useState(false);
   const mouseHover = useCallback(() => setIsHover((current) => !current), []);
   const handleSimulationName = useCallback(
@@ -55,26 +55,63 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
     dispatch(loadScenarios());
   }, [dispatch]);
 
+  const scenarioOptions = useMemo(() => {
+    let data: SiteSpecificState[] | ContextSpecificState[] = [];
+
+    if (category === "siteSpecific") {
+      data = siteScenarios.data ?? [];
+    } else {
+      data = contextSpecific ?? [];
+    }
+
+    return data.filter(
+      (s, index, arr) =>
+        index === arr.findIndex((t) => t.simulationName === s.simulationName)
+    );
+  }, [category, siteScenarios, contextSpecific]);
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const selectedName = e.target.value;
+
+      if (selectedName) {
+        const selectedObj = scenarioOptions.find(
+          (s) => s.simulationName === selectedName
+        );
+        if (selectedObj && category === "siteSpecific") {
+          const configKeys = ["agriculture", "energy", "industry", "water", "demography", "livestock"];
+          const hasConfig = configKeys.some(key => key in selectedObj);
+
+          if (!hasConfig) {
+            dispatch(
+              setAlert({
+                message: "Invalid Scenario: The selected scenario has invalid input.",
+                type: "error",
+              })
+            );
+            return; // Abort selection
+          }
+        }
+      }
+
       if (category === "siteSpecific") {
         dispatch(
           updateSimulationSelectSiteSpecific({
             name: e.target.name,
-            value: e.target.value,
+            value: selectedName,
           }),
         );
       } else {
         dispatch(
           updateSimulationSelectContextSpecific({
             name: e.target.name,
-            value: e.target.value,
+            value: selectedName,
           }),
         );
       }
-      setSimulationName(e.target.value);
+      setSimulationName(selectedName);
     },
-    [category, dispatch],
+    [category, dispatch, scenarioOptions],
   );
 
   const handleSaveSimulation = async () => {
@@ -84,7 +121,7 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
 
       if (category === "siteSpecific") {
         await createScenario(
-          {...simulationState.active, simulationName},
+          { ...simulationState.active, simulationName },
         ).unwrap();
       } else {
         dispatch(
@@ -115,22 +152,6 @@ const ScenarioMenu: React.FC<ScenarioMenuProps> = ({
       );
     }
   };
-
-  const scenarioOptions = useMemo(() => {
-    let data: SiteSpecificState[] | ContextSpecificState[] = [];
-
-    if (category === "siteSpecific") {
-      data = siteScenarios.data ?? [];
-    } else {
-      data = contextSpecific ?? [];
-    }
-    
-    return data.filter(
-      (s, index, arr) =>
-        index === arr.findIndex((t) => t.simulationName === s.simulationName)
-    );
-  }, [category, siteScenarios, contextSpecific]);
-
 
   return (
     <div className="w-full sticky top-0 z-10 backdrop-blur-lg bg-white/80 supports-[backdrop-filter]:bg-white/60 border-b border-gray-300 pb-2 md:pb-4 px-2 sm:px-4 md:px-6">

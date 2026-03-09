@@ -1,10 +1,9 @@
 import { createSelector } from "@reduxjs/toolkit";
 import {
-  generateApAreaProjection,
+  generateAreaProjection,
   generateLahanPanenPadi,
   generateLandCover,
   generateLandPortion,
-  generatePvAreaProjection,
   generateScenarioProjection,
 } from "@/lib/utils/projections";
 import {
@@ -61,7 +60,7 @@ const createApAreaIndustrialProjectionSelector = (
     );
     if (!industrialBaseline) return Array(36).fill(0);
     if (!industrialBaseline?.values) return Array(36).fill(0);
-    return generateApAreaProjection(industrialBaseline, inputs);
+    return generateAreaProjection(industrialBaseline.name, inputs, industrialBaseline.values);
   });
 
 const createSolarPVAreaProjectionSelector = (
@@ -70,7 +69,7 @@ const createSolarPVAreaProjectionSelector = (
 ) =>
   createSelector([selectInputs], (inputs) => {
     if (!name || !inputs) return Array(36).fill(0);
-    return generatePvAreaProjection(name, inputs);
+    return generateAreaProjection(name, inputs);
   });
 
 const createApAreaHousingProjectionSelector = (
@@ -84,14 +83,14 @@ const createApAreaHousingProjectionSelector = (
     );
     if (!housingBaseline) return Array(36).fill(0);
     if (!housingBaseline?.values) return Array(36).fill(0);
-    return generateApAreaProjection(housingBaseline, inputs);
+    return generateAreaProjection(housingBaseline.name, inputs, housingBaseline.values);
   });
 
 const createLandCoverProjectionSelector = (
   selectInputs: Selector<IRootState, SiteSpecificState>
 ) => createSelector([selectInputs], (inputs) => {
-    const landCover = generateLandCover(2010, 2025, inputs);
-    return generateScenarioProjection(landCover, inputs);
+  const landCover = generateLandCover(2010, 2025, inputs);
+  return generateScenarioProjection(landCover, inputs);
 });
 
 // const createLandPortionProjectionSelector = (
@@ -105,7 +104,7 @@ export const selectComparisonScenarioA = createSelector(
   [selectSavedSiteSpecificScenarios, selectSiteSpecificScenarioAName],
   (saved, name) => {
     if (!saved) return null;
-    return saved.find((s: ScenarioItem) => s.simulationName === name)?.data || null;
+    return saved.find((s: SiteSpecificState) => s.simulationName === name) || null;
   },
 );
 
@@ -113,7 +112,7 @@ export const selectComparisonScenarioB = createSelector(
   [selectSavedSiteSpecificScenarios, selectSiteSpecificScenarioBName],
   (saved, name) => {
     if (!saved) return null;
-    return saved.find((s: ScenarioItem) => s.simulationName === name)?.data || null;
+    return saved.find((s: SiteSpecificState) => s.simulationName === name) || null;
   },
 );
 
@@ -122,7 +121,6 @@ export const selectLivestockProjection = createProjectionSelector(
   selectLivestockBaseline,
   selectActiveScenarioInput,
 );
-
 // resources livestock selectors generate livestockData with baseline
 export const selectLivestockProjectionBaseline = createProjectionSelector(
   selectLivestockBaseline,

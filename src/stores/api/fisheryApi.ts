@@ -10,6 +10,7 @@ export const fisheryApi = createApi({
     getFisheries: builder.query<IFisheriesResData, void>({
       query: () => ({
         url: "/base-data/get-perikanan",
+        // url: "/get-perikanan",
         method: "GET",
       }),
       providesTags: ["fisheryService"],

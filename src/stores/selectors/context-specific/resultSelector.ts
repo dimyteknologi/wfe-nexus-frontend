@@ -1,14 +1,16 @@
-import { createSelector } from "@reduxjs/toolkit";
+
 import {
   selectProductionTotalPerScenario,
   selectSolarWaterPumpPerScenario,
   selectWaterAllocationForAgriPerScenario,
   selectWaterPumpDieselPerScenario,
 } from "./resourceSupplySelector";
-import { selectContextSpecificActive } from "../baseSelector";
+import { selectContextSpecificActive, selectContextSpecificBaseline } from "../baseSelector";
+import { createDeepEqualSelector } from "../baseSelector";
+const EMPTY_ARRAY = Array(16).fill(0);
 import {
   selectedContextSpecificA,
-  selectedContextSpecificB,
+  selectedContextSpecificB
 } from "./scenarioProjectionSelector";
 import {
   constantDevided,
@@ -37,20 +39,21 @@ import {
 import { selectFoodDemandRicePerScenario } from "./foodDemandSelector";
 import { selectBiayaBbmDieselPerScenario, selectCollectedFeePerScenario, selectCumulativeDepresiasi, selectCumulativeOfInstallmentCost } from "./solarPumpEconomicSelector";
 
-export const selectRiceProductionPerScenario = createSelector(
+export const selectRiceProductionPerScenario = createDeepEqualSelector(
   [
     selectContextSpecificActive,
+    selectContextSpecificBaseline,
     selectedContextSpecificA,
     selectedContextSpecificB,
     selectProductionTotalPerScenario,
   ],
-  (active, scenarioA, scenarioB, productionTotal) => {
+  (active, baseline, scenarioA, scenarioB, productionTotal) => {
     const getInputs = (scenario: ContextSpecificState) => {
       return scenario?.food?.convertionFactorToRice?.["2015-2030"] ?? 0;
     };
-
     return {
       active: constantMultiply(productionTotal.active, getInputs(active)),
+      baseline: constantMultiply(productionTotal.baseline ?? productionTotal.active, getInputs(baseline)),
       scenarioA: constantMultiply(
         productionTotal.scenarioA,
         getInputs(scenarioA),
@@ -63,11 +66,15 @@ export const selectRiceProductionPerScenario = createSelector(
   },
 );
 
-export const selectAverageProductivityPerScenario = createSelector(
+export const selectAverageProductivityPerScenario = createDeepEqualSelector(
   [selectProductionTotalPerScenario, agricultureLandPerScenario],
   (productionTotal, paddyYield) => ({
     active: constantDevided(
       calculateDevidedArrays(productionTotal.active, paddyYield.active),
+      100,
+    ),
+    baseline: constantDevided(
+      calculateDevidedArrays(productionTotal.baseline ?? productionTotal.active, paddyYield.baseline ?? paddyYield.active),
       100,
     ),
     scenarioA: constantDevided(
@@ -81,7 +88,7 @@ export const selectAverageProductivityPerScenario = createSelector(
   }),
 );
 
-export const selectWaterConsumptionPerScenario = createSelector(
+export const selectWaterConsumptionPerScenario = createDeepEqualSelector(
   [selectWaterDemandPerScenario, selectSupplyWaterTotalPerScenario],
   (waterDemand, supplyWater) => {
     const minArray = (a: number[], b: number[]) =>
@@ -89,68 +96,77 @@ export const selectWaterConsumptionPerScenario = createSelector(
 
     return {
       active: minArray(waterDemand.active, supplyWater.active),
+      baseline: minArray(waterDemand.baseline ?? waterDemand.active, supplyWater.baseline ?? supplyWater.active),
       scenarioA: minArray(waterDemand.scenarioA, supplyWater.scenarioA),
       scenarioB: minArray(waterDemand.scenarioB, supplyWater.scenarioB),
     };
   },
 );
 
-export const selectFuelConsumptionPerScenario = createSelector(
+export const selectFuelConsumptionPerScenario = createDeepEqualSelector(
   [selectDieselDemandPerScenario, selectDieselSupplyPerScenario],
   (demand, supply) => {
     const minArray = (a: number[], b: number[]) =>
       a.map((val, i) => Math.min(val, b[i]));
     return {
       active: minArray(demand.active, supply.active),
+      baseline: minArray(demand.baseline ?? demand.active, supply.baseline ?? supply.active),
       scenarioA: minArray(demand.scenarioA, supply.scenarioA),
       scenarioB: minArray(demand.scenarioB, supply.scenarioB),
     };
   },
 );
 
-export const selectRenewableConsumptionPerScenario = createSelector(
+export const selectRenewableConsumptionPerScenario = createDeepEqualSelector(
   [
     selectSolarPumpElectricityPerGenerationPerScenario,
     selectElectricityFromHuskPerScenario,
   ],
   (solarPump, electricityFromHusk) => ({
     active: sumArrayData(solarPump.active, electricityFromHusk.active),
+    baseline: sumArrayData(solarPump.baseline ?? solarPump.active, electricityFromHusk.baseline ?? electricityFromHusk.active),
     scenarioA: sumArrayData(solarPump.scenarioA, electricityFromHusk.scenarioA),
     scenarioB: sumArrayData(solarPump.scenarioB, electricityFromHusk.scenarioB),
   }),
 );
 
-export const selectChemicalFertillizerPerScenario = createSelector(
+export const selectChemicalFertillizerPerScenario = createDeepEqualSelector(
   [selectChemicalDemandPerScenario, selectChemicalFertillizerSupplyPerScenario],
   (demand, supply) => {
     const minArray = (a: number[], b: number[]) =>
       a.map((val, i) => Math.min(val, b[i]));
     return {
       active: minArray(demand.active, supply.active),
+      baseline: minArray(demand.baseline ?? demand.active, supply.baseline ?? supply.active),
       scenarioA: minArray(demand.scenarioA, supply.scenarioA),
       scenarioB: minArray(demand.scenarioB, supply.scenarioB),
     };
   },
 );
 
-export const selectOrganicFertillizerPerScenario = createSelector(
+export const selectOrganicFertillizerPerScenario = createDeepEqualSelector(
   [selectOrganicDemandPerScenario, selectOrganicFertillizerSupplyPerScenario],
   (demand, supply) => {
     const minArray = (a: number[], b: number[]) =>
       a.map((val, i) => Math.min(val, b[i]));
     return {
       active: minArray(demand.active, supply.active),
+      baseline: minArray(demand.baseline ?? demand.active, supply.baseline ?? supply.active),
       scenarioA: minArray(demand.scenarioA, supply.scenarioA),
       scenarioB: minArray(demand.scenarioB, supply.scenarioB),
     };
   },
 );
 
-export const selectEnergyEmissionsPerScenario = createSelector(
+export const selectEnergyEmissionsPerScenario = createDeepEqualSelector(
   [selectFuelConsumptionPerScenario],
   (fuelConsumption) => ({
     active: constantDevided(
       constantMultiply(fuelConsumption.active, 1000 * 2.61),
+      1000,
+    ),
+    baseline: constantDevided(
+      constantMultiply(fuelConsumption.baseline ?? fuelConsumption.active, 1000 * 2.61),
       1000,
     ),
     scenarioA: constantDevided(
@@ -164,7 +180,7 @@ export const selectEnergyEmissionsPerScenario = createSelector(
   }),
 );
 
-export const selectWaterTransportedPerScenario = createSelector(
+export const selectWaterTransportedPerScenario = createDeepEqualSelector(
   [
     selectSolarWaterPumpPerScenario,
     selectWaterPumpDieselPerScenario
@@ -172,13 +188,14 @@ export const selectWaterTransportedPerScenario = createSelector(
   (solarWater, dieselWater) => {
     return {
       active: sumArrayData(solarWater.active, dieselWater.active),
+      baseline: sumArrayData(solarWater.baseline ?? solarWater.active, dieselWater.baseline ?? dieselWater.active),
       scenarioA: sumArrayData(solarWater.scenarioA, dieselWater.scenarioA),
       scenarioB: sumArrayData(solarWater.scenarioB, dieselWater.scenarioB),
     }
   }
 )
 
-export const selectTotalEmissionPerScenario = createSelector(
+export const selectTotalEmissionPerScenario = createDeepEqualSelector(
   [
     selectEnergyEmissionsPerScenario,
     selectEmisiSekamPerScenario,
@@ -186,6 +203,7 @@ export const selectTotalEmissionPerScenario = createSelector(
   ],
   (energy, sekam, fertilizer) => ({
     active: sumArrayData(energy.active, sekam.active, fertilizer.active),
+    baseline: sumArrayData(energy.baseline ?? energy.active, sekam.baseline ?? sekam.active, fertilizer.baseline ?? fertilizer.active),
     scenarioA: sumArrayData(
       energy.scenarioA,
       sekam.scenarioA,
@@ -199,11 +217,15 @@ export const selectTotalEmissionPerScenario = createSelector(
   }),
 );
 
-export const selectFoodSuffiencyPerScenario = createSelector(
+export const selectFoodSuffiencyPerScenario = createDeepEqualSelector(
   [selectRiceProductionPerScenario, selectFoodDemandRicePerScenario],
   (riceProd, foodRiceDemand) => ({
     active: constantDevided(
       calculateDevidedArrays(riceProd.active, foodRiceDemand.active),
+      100,
+    ),
+    baseline: constantDevided(
+      calculateDevidedArrays(riceProd.baseline ?? riceProd.active, foodRiceDemand.baseline ?? foodRiceDemand.active),
       100,
     ),
     scenarioA: constantDevided(
@@ -217,11 +239,15 @@ export const selectFoodSuffiencyPerScenario = createSelector(
   }),
 );
 
-export const selectEmissionIntensityPerScenario = createSelector(
+export const selectEmissionIntensityPerScenario = createDeepEqualSelector(
   [selectRiceProductionPerScenario, selectTotalEmissionPerScenario],
   (riceProd, totalEmision) => ({
     active: constantMultiply(
-      calculateDevidedArrays(totalEmision.active,riceProd.active),
+      calculateDevidedArrays(totalEmision.active, riceProd.active),
+      10,
+    ),
+    baseline: constantMultiply(
+      calculateDevidedArrays(totalEmision.baseline ?? totalEmision.active, riceProd.baseline ?? riceProd.active),
       10,
     ),
     scenarioA: constantMultiply(
@@ -235,7 +261,7 @@ export const selectEmissionIntensityPerScenario = createSelector(
   }),
 );
 
-export const selectEmissionReductionPerScenario = createSelector(
+export const selectEmissionReductionPerScenario = createDeepEqualSelector(
   [selectTotalEmissionPerScenario],
   (total) => {
     const baseline = [
@@ -250,17 +276,22 @@ export const selectEmissionReductionPerScenario = createSelector(
 
     return {
       active: calculateEmissions(total.active),
+      baseline: calculateEmissions(total.baseline ?? total.active),
       scenarioA: calculateEmissions(total.scenarioA),
       scenarioB: calculateEmissions(total.scenarioB),
     };
   },
 );
 
-export const selectWaterIntensityPerScenario = createSelector(
+export const selectWaterIntensityPerScenario = createDeepEqualSelector(
   [selectWaterAllocationForAgriPerScenario, agricultureLandPerScenario],
   (waterAgri, landPaddy) => ({
     active: constantDevided(
       calculateDevidedArrays(waterAgri.active, landPaddy.active),
+      100,
+    ),
+    baseline: constantDevided(
+      calculateDevidedArrays(waterAgri.baseline ?? waterAgri.active, landPaddy.baseline ?? landPaddy.active),
       100,
     ),
     scenarioA: constantDevided(
@@ -274,11 +305,15 @@ export const selectWaterIntensityPerScenario = createSelector(
   }),
 );
 
-export const selectFuelIntensityPerScenario = createSelector(
+export const selectFuelIntensityPerScenario = createDeepEqualSelector(
   [selectFuelConsumptionPerScenario, agricultureLandPerScenario],
   (fuelConsump, landPaddy) => ({
     active: constantMultiply(
       calculateDevidedArrays(fuelConsump.active, landPaddy.active),
+      10,
+    ),
+    baseline: constantMultiply(
+      calculateDevidedArrays(fuelConsump.baseline ?? fuelConsump.active, landPaddy.baseline ?? landPaddy.active),
       10,
     ),
     scenarioA: constantMultiply(
@@ -292,18 +327,19 @@ export const selectFuelIntensityPerScenario = createSelector(
   }),
 );
 
-export const selectTotalCumulativeCostPerScenario = createSelector(
+export const selectTotalCumulativeCostPerScenario = createDeepEqualSelector(
   [selectCumulativeOfInstallmentCost, selectCumulativeDepresiasi],
   (installment, depresiasi) => {
-  // () => {
+    // () => {
 
     // return {
     //   active: Array(16).fill(0),
     //   scenarioA: Array(16).fill(0),
     //   scenarioB: Array(16).fill(0),
     // }
-  return {
+    return {
       active: sumArrayData(installment.active, depresiasi.active),
+      baseline: sumArrayData(installment.baseline ?? installment.active, depresiasi.baseline ?? depresiasi.active),
       scenarioA: sumArrayData(installment.scenarioA, depresiasi.scenarioA),
       scenarioB: sumArrayData(installment.scenarioB, depresiasi.scenarioB)
     }
@@ -314,23 +350,22 @@ const calculateTotalRevenue = (
   bbmDiesel: number[],
   collectedFee: number[],
 ): number[] => {
-  const sum = sumArrayData(bbmDiesel, collectedFee);
-
-  const arr = sum.reduce<number[]>((acc, value, index) => {
-    if (index === 0) acc.push(value);
-    else acc.push(acc[index - 1] + value);
-    return acc;
-  }, []);
-
-  return arr;
+  if (!bbmDiesel || !collectedFee) return EMPTY_ARRAY;
+  const result = new Array(16);
+  for (let i = 0; i < 16; i++) {
+    const sumAtI = (bbmDiesel[i] ?? 0) + (collectedFee[i] ?? 0);
+    if (i === 0) result[i] = sumAtI;
+    else result[i] = result[i - 1] + sumAtI;
+  }
+  return result;
 };
 
-export const selectTotalCumulativeRevenuePerScenario = createSelector(
+export const selectTotalCumulativeRevenuePerScenario = createDeepEqualSelector(
   [selectBiayaBbmDieselPerScenario, selectCollectedFeePerScenario],
   (bbmDiesel, collectedFee) => {
-
     return {
       active: calculateTotalRevenue(bbmDiesel.active, collectedFee.active),
+      baseline: calculateTotalRevenue(bbmDiesel.baseline ?? bbmDiesel.active, collectedFee.baseline ?? collectedFee.active),
       scenarioA: calculateTotalRevenue(
         bbmDiesel.scenarioA,
         collectedFee.scenarioA,

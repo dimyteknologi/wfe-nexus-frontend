@@ -5,7 +5,7 @@ export class Computation {
     DIVIDED: "DIVIDED",
   } as const;
 
-  private constructor() {}
+  private constructor() { }
 
   private static calculateProjection({
     before,
@@ -66,10 +66,7 @@ export class Computation {
   ): number[] {
     if (arrays.length === 0) return [];
 
-    const length = arrays[0].length;
-    if (!arrays.every((arr) => arr.length === length)) {
-      throw new Error("All arrays must have the same length");
-    }
+    const length = Math.max(...arrays.map((arr) => arr.length));
 
     const result: number[] = new Array(length).fill(
       type === Computation.ARRAY_OPERATION_TYPES.MULTIPLY ? 1 : 0,
@@ -77,22 +74,31 @@ export class Computation {
 
     for (const arr of arrays) {
       for (let i = 0; i < length; i++) {
+        const val = arr[i] || 0;
         switch (type) {
           case Computation.ARRAY_OPERATION_TYPES.ADD:
-            result[i] += arr[i];
+            result[i] += val;
             break;
           case Computation.ARRAY_OPERATION_TYPES.MULTIPLY:
-            result[i] *= arr[i];
+            result[i] *= val;
             break;
           case Computation.ARRAY_OPERATION_TYPES.DIVIDED:
-            result[i] /= arr[i];
+            if (val !== 0 && result[i] !== 0) {
+              result[i] /= val;
+            } else if (val === 0) {
+              result[i] = 0; // Prevent divide by zero resulting in Infinity/NaN
+            }
+            break;
           default:
             throw new Error("Invalid computation type");
         }
       }
     }
 
-    return result.map((num) => parseFloat(((num * 100) / 100).toFixed(2)));
+    return result.map((num) => {
+      if (isNaN(num)) return 0;
+      return parseFloat(((num * 100) / 100).toFixed(2));
+    });
   }
 
   private static calculateGrowthRate({
@@ -200,34 +206,45 @@ export const growthDataByvalue = (data: number, growthArr: number[]) => {
 };
 
 export const constantMultiply = (data: number[], constant: number) => {
-  return data.map((d) => d * constant);
+  return data.map((d) => {
+    const val = d || 0;
+    return val * constant;
+  });
 };
 
 export const constantDevided = (data: number[], constant: number) => {
-  return data.map((d) => d / constant);
+  return data.map((d) => {
+    const val = d || 0;
+    return constant === 0 ? 0 : val / constant;
+  });
 };
 
 export const constantAdd = (data: number[], constant: number) => {
-  return data.map((d) => d + constant);
+  return data.map((d) => {
+    const val = d || 0;
+    return val + constant;
+  });
 };
 
 export const resultConverter = (data: number[]) => {
-  return data.map((d) => parseFloat(d.toFixed(8)));
+  return data.map((d) => {
+    if (isNaN(d) || d === null || d === undefined) return 0;
+    return parseFloat(d.toFixed(2));
+  });
 };
 
 export const sumArrays = (...arrays: number[][]) => {
   if (arrays.length === 0) return [];
 
-  const length = arrays[0].length;
-  if (!arrays.every((arr) => arr.length === length)) {
-    throw new Error("Semua array harus memiliki panjang yang sama");
-  }
+  const length = Math.max(...arrays.map((arr) => arr.length));
 
   const result: number[] = [];
   for (let i = 0; i < length; i++) {
-    result.push(
-      Math.round(arrays.reduce((sum, arr) => sum + arr[i], 0) * 100) / 100,
-    );
+    const sum = arrays.reduce((acc, arr) => {
+      const val = arr[i] || 0;
+      return acc + val;
+    }, 0);
+    result.push(Math.round(sum * 100) / 100);
   }
 
   return result;

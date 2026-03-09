@@ -211,7 +211,6 @@ const SimulationForm: React.FC<SimulationFormProps> = ({
 
       // update clamp value
       let finalValue = numericValue;
-      console.log(finalValue, config);
       if (config && config.min !== undefined && config.max !== undefined) {
         finalValue = Math.max(config.min, Math.min(numericValue, config.max));
       }

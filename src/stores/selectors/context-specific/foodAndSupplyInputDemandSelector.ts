@@ -1,6 +1,8 @@
 import { createSelector } from "@reduxjs/toolkit";
 import {
   selectContextSpecificActive,
+  selectContextSpecificBaseline,
+  createDeepEqualSelector
 } from "../baseSelector";
 import {
   selectedContextSpecificA,
@@ -67,7 +69,8 @@ const additionalCompute = (
 ) => {
   switch (key) {
     case "WATER_CONSUMPTION_UNIT":
-      return value;
+      const waterIntensity = extraKey?.agriculture?.waterIntensity?.["2015-2030"] ?? value;
+      return waterIntensity;
     case "CHEMICAL_FERTILIZER_DEMAND":
       return (
         (value *
@@ -80,7 +83,7 @@ const additionalCompute = (
           DEMAND_INPUT[extraVariety]["CHEMICAL_FERTILIZER_DEMAND"] *
           (1 -
             (extraKey?.fertilizer?.percentageOfChemical?.["2015-2030"] ?? 1) /
-              100) *
+            100) *
           (extraKey?.fertilizer?.ratioOrganic?.["2015-2030"] ?? 0)
         );
     default:
@@ -88,8 +91,10 @@ const additionalCompute = (
   }
 };
 
+const EMPTY_ARRAY = Array(16).fill(0);
+
 export const sumArrayData = (...arrays: number[][]): number[] => {
-  if (arrays.length === 0) return Array(16).fill(0);
+  if (arrays.length === 0) return EMPTY_ARRAY;
   const result: number[] = new Array(16).fill(0);
 
   for (const arr of arrays) {
@@ -125,25 +130,10 @@ export const multiplyArrayData = (...arrays: number[][]): number[] =>
     arrays.reduce((acc, arr) => acc * (arr[i] ?? 1), 1),
   );
 
-const calculatePaddyPeryieldPerseed = (
-  value: number,
-  conversionRate: number,
-) => {
-  const years = Array.from({ length: 16 });
-  const values: number[] = [];
 
-  const rate = conversionRate / 100;
-
-  for (let i = 0; i < years.length; i++) {
-    values.push(Number(value.toFixed(10)));
-    value = value * (1 - rate);
-  }
-
-  return values;
-};
 
 export const calculateDevidedArrays = (arr1: number[], arr2: number[]) => {
-  if (!Array.isArray(arr1) && !Array.isArray(arr2)) return Array(16).fill(0);
+  if (!Array.isArray(arr1) && !Array.isArray(arr2)) return EMPTY_ARRAY;
 
   const result = arr1.map((val, i) => {
     const denominator = arr2[i] ?? 0;
@@ -199,20 +189,23 @@ const calculateEnergyDemand = (
 export const agricultureLandPerScenario = createSelector(
   [
     selectContextSpecificActive,
+    selectContextSpecificBaseline,
     selectedContextSpecificA,
     selectedContextSpecificB
   ],
-  (activeState, scenarioAState, scenarioBState) => ({
+  (activeState, baselineState, scenarioAState, scenarioBState) => ({
     active: calculateInput(
       activeState.agriculture.landProduction["2015-2030"],
       activeState.agriculture.conversionLandProduction["2015-2030"]
     ),
-
+    baseline: calculateInput(
+      baselineState?.agriculture?.landProduction["2015-2030"] ?? activeState.agriculture.landProduction["2015-2030"],
+      baselineState?.agriculture?.conversionLandProduction["2015-2030"] ?? activeState.agriculture.conversionLandProduction["2015-2030"]
+    ),
     scenarioA: calculateInput(
       scenarioAState?.agriculture?.landProduction["2015-2030"],
       scenarioAState?.agriculture?.conversionLandProduction["2015-2030"]
     ),
-
     scenarioB: calculateInput(
       scenarioBState?.agriculture?.landProduction["2015-2030"],
       scenarioBState?.agriculture?.conversionLandProduction["2015-2030"]
@@ -224,6 +217,7 @@ export const agricultureLandPaddyPerscenario = createSelector(
   [agricultureLandPerScenario],
   (agriculture) => ({
     active: agriculture.active,
+    baseline: agriculture.baseline,
     scenarioA: agriculture.scenarioA,
     scenarioB: agriculture.scenarioB,
   })
@@ -232,32 +226,41 @@ export const agricultureLandPaddyPerscenario = createSelector(
 export const selectWaterDemandAveragePerScenario = createSelector(
   [agricultureLandPaddyPerscenario,
     selectContextSpecificActive,
+    selectContextSpecificBaseline,
     selectedContextSpecificA,
     selectedContextSpecificB],
-  (shares, active, scenarioA, scenarioB) => {
+  (shares, active, baseline, scenarioA, scenarioB) => {
     const getInputValue = (scenario: ContextSpecificState) =>
-    (scenario?.agriculture?.croppingIntensity?.["2015-2030"] ?? 0);
+      (scenario?.agriculture?.croppingIntensity?.["2015-2030"] ?? 0);
 
     return {
-    active: constantMultiply(calculateDemand(shares.active, "WATER_CONSUMPTION_UNIT"), getInputValue(active)),
-    scenarioA: constantMultiply(calculateDemand(shares.scenarioA, "WATER_CONSUMPTION_UNIT"), getInputValue(scenarioA)),
-    scenarioB: constantMultiply(calculateDemand(shares.scenarioB, "WATER_CONSUMPTION_UNIT"), getInputValue(scenarioB)),
-  }},
+      active: constantMultiply(calculateDemand(shares.active, "WATER_CONSUMPTION_UNIT", active), getInputValue(active)),
+      baseline: constantMultiply(calculateDemand(shares.baseline ?? shares.active, "WATER_CONSUMPTION_UNIT", baseline), getInputValue(baseline ?? active)),
+      scenarioA: constantMultiply(calculateDemand(shares.scenarioA, "WATER_CONSUMPTION_UNIT", scenarioA), getInputValue(scenarioA)),
+      scenarioB: constantMultiply(calculateDemand(shares.scenarioB, "WATER_CONSUMPTION_UNIT", scenarioB), getInputValue(scenarioB)),
+    }
+  },
 );
 
 export const selectChemicalDemandAveragePerScenario = createSelector(
   [
     agricultureLandPaddyPerscenario,
     selectContextSpecificActive,
+    selectContextSpecificBaseline,
     selectedContextSpecificA,
     selectedContextSpecificB,
   ],
-  (shares, active, scenarioA, scenarioB) => {
+  (shares, active, baseline, scenarioA, scenarioB) => {
     return {
       active: calculateDemand(
         shares.active,
         "CHEMICAL_FERTILIZER_DEMAND",
         active,
+      ),
+      baseline: calculateDemand(
+        shares.baseline ?? shares.active,
+        "CHEMICAL_FERTILIZER_DEMAND",
+        baseline ?? active,
       ),
       scenarioA: calculateDemand(
         shares.scenarioA,
@@ -277,15 +280,21 @@ export const selectOrganicDemandAveragePerScenario = createSelector(
   [
     agricultureLandPaddyPerscenario,
     selectContextSpecificActive,
+    selectContextSpecificBaseline,
     selectedContextSpecificA,
     selectedContextSpecificB,
   ],
-  (shares, active, scenarioA, scenarioB) => {
+  (shares, active, baseline, scenarioA, scenarioB) => {
     return {
       active: calculateDemand(
         shares.active,
         "ORGANIC_FERTILIZER_DEMAND",
         active,
+      ),
+      baseline: calculateDemand(
+        shares.baseline ?? shares.active,
+        "ORGANIC_FERTILIZER_DEMAND",
+        baseline ?? active,
       ),
       scenarioA: calculateDemand(
         shares.scenarioA,
@@ -304,6 +313,7 @@ export const selectOrganicDemandAveragePerScenario = createSelector(
 export const selectEnergyLandProcessingDemandAveragePerScenario =
   createSelector([agricultureLandPaddyPerscenario], (shares) => ({
     active: calculateEnergyDemand(shares.active, "LAND_PROCESSING"),
+    baseline: calculateEnergyDemand(shares.baseline ?? shares.active, "LAND_PROCESSING"),
     scenarioA: calculateEnergyDemand(shares.scenarioA, "LAND_PROCESSING"),
     scenarioB: calculateEnergyDemand(shares.scenarioB, "LAND_PROCESSING"),
   }));
@@ -311,6 +321,7 @@ export const selectEnergyLandProcessingDemandAveragePerScenario =
 export const selectEnergyPlantingAndMaintenanceDemandAveragePerScenario =
   createSelector([agricultureLandPaddyPerscenario], (shares) => ({
     active: calculateEnergyDemand(shares.active, "PLANTING_AND_MAINTENANCE"),
+    baseline: calculateEnergyDemand(shares.baseline ?? shares.active, "PLANTING_AND_MAINTENANCE"),
     scenarioA: calculateEnergyDemand(
       shares.scenarioA,
       "PLANTING_AND_MAINTENANCE",
@@ -325,6 +336,7 @@ export const selectEnergyIrrigationDemandAveragePerScenario = createSelector(
   [agricultureLandPaddyPerscenario],
   (shares) => ({
     active: calculateEnergyDemand(shares.active, "IRRIGATION"),
+    baseline: calculateEnergyDemand(shares.baseline ?? shares.active, "IRRIGATION"),
     scenarioA: calculateEnergyDemand(shares.scenarioA, "IRRIGATION"),
     scenarioB: calculateEnergyDemand(shares.scenarioB, "IRRIGATION"),
   }),
@@ -333,11 +345,12 @@ export const selectEnergyIrrigationDemandAveragePerScenario = createSelector(
 export const selectEnergyHarvestAndTransportDemandAveragePerScenario =
   createSelector([agricultureLandPaddyPerscenario], (shares) => ({
     active: calculateEnergyDemand(shares.active, "HARVEST_AND_TRANSPORT"),
+    baseline: calculateEnergyDemand(shares.baseline ?? shares.active, "HARVEST_AND_TRANSPORT"),
     scenarioA: calculateEnergyDemand(shares.scenarioA, "HARVEST_AND_TRANSPORT"),
     scenarioB: calculateEnergyDemand(shares.scenarioB, "HARVEST_AND_TRANSPORT"),
   }));
 
-export const selectTotalEnergyDemandAveragePerScenario = createSelector(
+export const selectTotalEnergyDemandAveragePerScenario = createDeepEqualSelector(
   [
     selectEnergyLandProcessingDemandAveragePerScenario,
     selectEnergyPlantingAndMaintenanceDemandAveragePerScenario,
@@ -349,26 +362,41 @@ export const selectTotalEnergyDemandAveragePerScenario = createSelector(
     plantingAndMaintenance,
     irrigation,
     harvestAndTransport,
-  ) => ({
-    active: sumArrayData(
-      landProcessing.active,
-      plantingAndMaintenance.active,
-      irrigation.active,
-      harvestAndTransport.active,
-    ),
-    scenarioA: sumArrayData(
-      landProcessing.scenarioA,
-      plantingAndMaintenance.scenarioA,
-      irrigation.scenarioA,
-      harvestAndTransport.scenarioA,
-    ),
-    scenarioB: sumArrayData(
-      landProcessing.scenarioB,
-      plantingAndMaintenance.scenarioB,
-      irrigation.scenarioB,
-      harvestAndTransport.scenarioB,
-    ),
-  }),
+  ) => {
+    const fastSum4 = (a: number[], b: number[], c: number[], d: number[]) => {
+      const result = new Array(16);
+      for (let i = 0; i < 16; i++) {
+        result[i] = (a[i] ?? 0) + (b[i] ?? 0) + (c[i] ?? 0) + (d[i] ?? 0);
+      }
+      return result;
+    }
+    return {
+      active: fastSum4(
+        landProcessing.active,
+        plantingAndMaintenance.active,
+        irrigation.active,
+        harvestAndTransport.active,
+      ),
+      baseline: fastSum4(
+        landProcessing.baseline ?? landProcessing.active,
+        plantingAndMaintenance.baseline ?? plantingAndMaintenance.active,
+        irrigation.baseline ?? irrigation.active,
+        harvestAndTransport.baseline ?? harvestAndTransport.active,
+      ),
+      scenarioA: fastSum4(
+        landProcessing.scenarioA,
+        plantingAndMaintenance.scenarioA,
+        irrigation.scenarioA,
+        harvestAndTransport.scenarioA,
+      ),
+      scenarioB: fastSum4(
+        landProcessing.scenarioB,
+        plantingAndMaintenance.scenarioB,
+        irrigation.scenarioB,
+        harvestAndTransport.scenarioB,
+      ),
+    };
+  },
 );
 
 export const selectLandPaddyFieldPerScenario = createSelector(
@@ -377,6 +405,7 @@ export const selectLandPaddyFieldPerScenario = createSelector(
   ],
   (land) => ({
     active: land.active,
+    baseline: land.baseline,
     scenarioA: land.scenarioA,
     scenarioB: land.scenarioB
   }),
@@ -387,6 +416,7 @@ export const selectWaterDemandPerScenario = createSelector(
   [selectWaterDemandAveragePerScenario, agricultureLandPerScenario],
   (waterDemand, paddyField) => ({
     active: multiplyArrayData(waterDemand.active, paddyField.active),
+    baseline: multiplyArrayData(waterDemand.baseline ?? waterDemand.active, paddyField.baseline ?? paddyField.active),
     scenarioA: multiplyArrayData(waterDemand.scenarioA, paddyField.scenarioA),
     scenarioB: multiplyArrayData(waterDemand.scenarioB, paddyField.scenarioB),
   }),
@@ -397,6 +427,10 @@ export const selectChemicalDemandPerScenario = createSelector(
   (chemicalDemand, paddyField) => ({
     active: constantDevided(
       multiplyArrayData(chemicalDemand.active, paddyField.active),
+      1000,
+    ),
+    baseline: constantDevided(
+      multiplyArrayData(chemicalDemand.baseline ?? chemicalDemand.active, paddyField.baseline ?? paddyField.active),
       1000,
     ),
     scenarioA: constantDevided(
@@ -417,6 +451,10 @@ export const selectOrganicDemandPerScenario = createSelector(
       multiplyArrayData(organicDemand.active, paddyField.active),
       1000,
     ),
+    baseline: constantDevided(
+      multiplyArrayData(organicDemand.baseline ?? organicDemand.active, paddyField.baseline ?? paddyField.active),
+      1000,
+    ),
     scenarioA: constantDevided(
       multiplyArrayData(organicDemand.scenarioA, paddyField.scenarioA),
       1000,
@@ -435,6 +473,7 @@ export const selectEnergyLandProcessingDemandTotalPerScenario = createSelector(
   ],
   (landProcessing, paddyField) => ({
     active: multiplyArrayData(landProcessing.active, paddyField.active),
+    baseline: multiplyArrayData(landProcessing.baseline ?? landProcessing.active, paddyField.baseline ?? paddyField.active),
     scenarioA: multiplyArrayData(
       landProcessing.scenarioA,
       paddyField.scenarioA,
@@ -457,6 +496,10 @@ export const selectEnergyPlantingAndMaintenanceDemandTotalPerScenario =
         plantingAndMaintenance.active,
         paddyField.active,
       ),
+      baseline: multiplyArrayData(
+        plantingAndMaintenance.baseline ?? plantingAndMaintenance.active,
+        paddyField.baseline ?? paddyField.active,
+      ),
       scenarioA: multiplyArrayData(
         plantingAndMaintenance.scenarioA,
         paddyField.scenarioA,
@@ -475,6 +518,7 @@ export const selectEnergyIrrigationDemandTotalPerScenario = createSelector(
   ],
   (irrigation, paddyField) => ({
     active: multiplyArrayData(irrigation.active, paddyField.active),
+    baseline: multiplyArrayData(irrigation.baseline ?? irrigation.active, paddyField.baseline ?? paddyField.active),
     scenarioA: multiplyArrayData(irrigation.scenarioA, paddyField.scenarioA),
     scenarioB: multiplyArrayData(irrigation.scenarioB, paddyField.scenarioB),
   }),
@@ -488,6 +532,7 @@ export const selectEnergyHarvestAndTransportDemandTotalPerScenario =
     ],
     (harvestAndTransport, paddyField) => ({
       active: multiplyArrayData(harvestAndTransport.active, paddyField.active),
+      baseline: multiplyArrayData(harvestAndTransport.baseline ?? harvestAndTransport.active, paddyField.baseline ?? paddyField.active),
       scenarioA: multiplyArrayData(
         harvestAndTransport.scenarioA,
         paddyField.scenarioA,
@@ -499,7 +544,7 @@ export const selectEnergyHarvestAndTransportDemandTotalPerScenario =
     }),
   );
 
-export const selectTotalEnergyDemandPerScenario = createSelector(
+export const selectTotalEnergyDemandPerScenario = createDeepEqualSelector(
   [
     selectEnergyLandProcessingDemandTotalPerScenario,
     selectEnergyPlantingAndMaintenanceDemandTotalPerScenario,
@@ -511,35 +556,48 @@ export const selectTotalEnergyDemandPerScenario = createSelector(
     plantingAndMaintenance,
     irrigation,
     harvestAndTransport,
-  ) => ({
-    active:
-      constantDevided(sumArrayData(
+  ) => {
+    const sumAndDivide = (a: number[], b: number[], c: number[], d: number[]) => {
+      const result = new Array(16);
+      for (let i = 0; i < 16; i++) {
+        result[i] = ((a[i] ?? 0) + (b[i] ?? 0) + (c[i] ?? 0) + (d[i] ?? 0)) / 1000;
+      }
+      return result;
+    }
+    return {
+      active: sumAndDivide(
         landProcessing.active,
         plantingAndMaintenance.active,
         irrigation.active,
         harvestAndTransport.active,
-      ),1000),
-    scenarioA:
-      constantDevided(sumArrayData(
+      ),
+      baseline: sumAndDivide(
+        landProcessing.baseline ?? landProcessing.active,
+        plantingAndMaintenance.baseline ?? plantingAndMaintenance.active,
+        irrigation.baseline ?? irrigation.active,
+        harvestAndTransport.baseline ?? harvestAndTransport.active,
+      ),
+      scenarioA: sumAndDivide(
         landProcessing.scenarioA,
         plantingAndMaintenance.scenarioA,
         irrigation.scenarioA,
         harvestAndTransport.scenarioA,
-      ),1000),
-    scenarioB:
-      constantDevided(sumArrayData(
+      ),
+      scenarioB: sumAndDivide(
         landProcessing.scenarioB,
         plantingAndMaintenance.scenarioB,
         irrigation.scenarioB,
         harvestAndTransport.scenarioB,
-      ),1000),
-  }),
+      ),
+    }
+  },
 );
 
 export const selectNpkApplicationPerScenario = createSelector(
   [selectChemicalDemandPerScenario],
   (chemicalDemand) => ({
     active: constantMultiply(chemicalDemand.active, 0.3),
+    baseline: constantMultiply(chemicalDemand.baseline ?? chemicalDemand.active, 0.3),
     scenarioA: constantMultiply(chemicalDemand.scenarioA, 0.3),
     scenarioB: constantMultiply(chemicalDemand.scenarioB, 0.3),
   }),

@@ -37,17 +37,12 @@ export const useLogin = () => {
     dispatch(clearError());
 
     try {
-      console.log("Attempting NextAuth signIn...");
-
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
         callbackUrl: "/",
       });
-
-      console.log("Result:", result);
-
       if (result?.error) {
         throw new Error(result.error);
       }
@@ -55,9 +50,7 @@ export const useLogin = () => {
       if (result?.ok) {
         const { getSession } = await import("next-auth/react");
         const session = await getSession();
-        
-        console.log("Session after login:", session);
-      
+
         if (session?.user) {
           dispatch(setUser({
             id: session.user.id,
@@ -69,30 +62,30 @@ export const useLogin = () => {
             access_token: session.accessToken
           }));
         }
-        
+
         const userRole = session?.user?.role;
-        
+
         if (userRole === "Admin") {
           window.location.href = "/admin";
         } else {
           const callbackUrl = searchParams.get("callbackUrl") || "/";
-          const dest = (callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")) 
-            ? callbackUrl 
+          const dest = (callbackUrl.startsWith("/") && !callbackUrl.startsWith("//"))
+            ? callbackUrl
             : "/";
           window.location.href = dest;
         }
       }
     } catch (error: unknown) {
-        console.error("Login error:", error);
-        let errorMessage =
-          error instanceof Error ? error?.message : t.login.authError;
-        
-        if (errorMessage === "CredentialsSignin") {
-            errorMessage = t.login.invalidCredentials;
-        }
+      console.error("Login error:", error);
+      let errorMessage =
+        error instanceof Error ? error?.message : t.login.authError;
 
-        dispatch(setError(errorMessage));
-        form.setError("password", { type: "manual", message: errorMessage });
+      if (errorMessage === "CredentialsSignin") {
+        errorMessage = t.login.invalidCredentials;
+      }
+
+      dispatch(setError(errorMessage));
+      form.setError("password", { type: "manual", message: errorMessage });
     }
 
   };

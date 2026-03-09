@@ -10,6 +10,7 @@ export const populationApi = createApi({
     getPopulations: builder.query<IPopResData, void>({
       query: () => ({
         url: "/base-data/get-population",
+        // url: "/get-population",
         method: "GET",
       }),
       providesTags: ["populationService"],

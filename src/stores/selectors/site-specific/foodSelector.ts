@@ -24,18 +24,20 @@ import { constantMultiply, resultConverter } from "@/lib/utils/formulas";
 import { calculateMultiplyArrays, getParameters } from "./demandSideSelector";
 import { RESOURCE_DEMAND_UNIT } from "@/lib/constant/resourceDemandUnit.constant";
 
+const EMPTY_ARRAY: number[] = [];
+
 const calculateProductionSurplus = (
   projection: IBaselineData | null,
   localFoodProduction: number[],
 ): number[] => {
-  if (!projection) return [];
+  if (!projection) return EMPTY_ARRAY;
   const foodDemand = projection.parameters.find(
     (param) => param.name === "Food Demand Population",
   );
-  if (!foodDemand) return [];
-  if (!foodDemand?.values) return [];
+  if (!foodDemand) return EMPTY_ARRAY;
+  if (!foodDemand?.values) return EMPTY_ARRAY;
 
-  const safeValues = foodDemand.values.map((val) => val ?? 0);
+  const safeValues = foodDemand.values.map((val) => val || 0);
 
   return resultConverter(
     safeValues.map((val, i) => {
@@ -49,14 +51,14 @@ const calculateFoodSuffiency = (
   projection: IBaselineData | null,
   localFoodProduction: number[],
 ): number[] => {
-  if (!projection) return [];
+  if (!projection) return EMPTY_ARRAY;
   const foodDemand = projection.parameters.find(
     (param) => param.name === "Food Demand",
   );
-  if (!foodDemand) return [];
-  if (!foodDemand?.values) return [];
+  if (!foodDemand) return EMPTY_ARRAY;
+  if (!foodDemand?.values) return EMPTY_ARRAY;
 
-  const safeValues = foodDemand.values.map((val) => val ?? 0);
+  const safeValues = foodDemand.values.map((val) => val || 0);
 
   return resultConverter(
     safeValues.map((val, i) => {
@@ -69,18 +71,18 @@ const calculateFoodSuffiency = (
 const calculateAgricultureLand = (
   projection: IBaselineData | null,
 ): number[] => {
-  if (!projection) return [];
-  
+  if (!projection) return EMPTY_ARRAY;
+
   const agricultureLand = projection.parameters.find(
     (param) =>
       param.name === "Agriculture Area" || param.name === "Agriculture Area",
   );
-  
-  if (!agricultureLand) return [];
-  if (!agricultureLand?.values) return [];
-  const safeValues = agricultureLand.values.map((val) => val ?? 0);
 
-  return safeValues.length > 1 ? safeValues : [];
+  if (!agricultureLand) return EMPTY_ARRAY;
+  if (!agricultureLand?.values) return EMPTY_ARRAY;
+  const safeValues = agricultureLand.values.map((val) => val || 0);
+
+  return safeValues.length > 1 ? safeValues : EMPTY_ARRAY;
 };
 
 export const selectAgricultureLandComparison = createSelector(
@@ -194,7 +196,7 @@ export const selectAvailabilityPerPersonComparison = createSelector(
   [selectLocalFoodProductionComparison, selectPopulationDataComparison],
   (foodProduction, population) => {
     const calculateAvailability = (food: number[], pop: number[]) => {
-      if (!food || !pop || food.length !== pop.length) return [];
+      if (!food || !pop || food.length !== pop.length) return EMPTY_ARRAY;
       const data = generateAvailabillityPerPerson(pop, food);
       return data;
     };

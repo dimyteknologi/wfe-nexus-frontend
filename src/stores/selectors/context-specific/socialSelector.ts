@@ -1,7 +1,7 @@
-import { createSelector } from "@reduxjs/toolkit";
+import { createDeepEqualSelector } from "../baseSelector";
 import {
   selectContextSpecificActive,
-  // selectContextSpecificBaseline,
+  selectContextSpecificBaseline,
 } from "../baseSelector";
 
 import {
@@ -25,17 +25,23 @@ const calculateSocial = (value: number, growthPercent: number) => {
   return values;
 };
 
-export const selectSocialDataComparison = createSelector(
+export const selectSocialDataComparison = createDeepEqualSelector(
   [
     selectContextSpecificActive,
+    selectContextSpecificBaseline,
     selectedContextSpecificA,
     selectedContextSpecificB,
   ],
-  (activeState, scenarioA, scenarioB) => {
+  (activeState, baseline, scenarioA, scenarioB) => {
     return {
       active: calculateSocial(
         activeState.food.populationInitial["2015-2030"],
         activeState.food.populationGrowth["2015-2030"],
+      ),
+
+      baseline: calculateSocial(
+        baseline?.food?.populationInitial["2015-2030"] ?? activeState.food.populationInitial["2015-2030"],
+        baseline?.food?.populationGrowth["2015-2030"] ?? activeState.food.populationGrowth["2015-2030"],
       ),
 
       scenarioA: calculateSocial(

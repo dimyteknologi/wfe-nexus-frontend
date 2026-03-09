@@ -12,7 +12,7 @@ import {
   SiteSpecificState,
   // TimePeriod,
 } from "@/stores/slicers/siteSpecificInputSlicer";
-import { TimePeriod, BaselinePayload } from "../constant/inputType.constant";
+import { BaselinePayload } from "../constant/inputType.constant";
 import { INITIAL_DATA_CONSTANT } from "../constant/initialData.constant";
 import { RESOURCE_DEMAND_UNIT } from "../constant/resourceDemandUnit.constant";
 import { getApAreaGrowth, getPinPoint } from "./processingData";
@@ -24,9 +24,9 @@ export const nameToStatePathMap: Record<string, string> = {
   "Agriculture Area": "agriculture.landConversion",
   "area perikanan": "agriculture.aquacultureLandGrowth",
   "Total Populasi": "demography.populationGrowth",
-  "sapi": "livestock.cattleGrowth",
-  "kambing": "livestock.goatGrowth",
-  "ayam": "livestock.poultryGrowth",
+  "ternak sapi": "livestock.cattleGrowth",
+  "ternak kambing": "livestock.goatGrowth",
+  "ternak ayam": "livestock.poultryGrowth",
   // "AP Area Industrial": "water.artificialPondIndustrial",
   // "AP Area Housing": "water.artificialPondHousing",
   // "Housing Land": "water.artificialPondIndustrial",
@@ -64,23 +64,23 @@ export const extractAverageGrowthRates = (
 const getInputsByName = (name: string, simulationState: SiteSpecificState) => {
   switch (name) {
     case "a.pertanian, kehutanan, dan perikanan":
-      return simulationState.agriculture.growthScenario;
+      return simulationState.agriculture?.growthScenario;
     case "c.industri pengolahan":
-      return simulationState.industry.growth;
+      return simulationState.industry?.growth;
     case "Agriculture Area":
-      return simulationState.agriculture.landConversion;
+      return simulationState.agriculture?.landConversion;
     // case "Agriculture Area":
-    //   return simulationState.agriculture.area2010;
+    //   return simulationState.agriculture?.area2010;
     case "Total Populasi":
-      return simulationState.demography.populationGrowth;
+      return simulationState.demography?.populationGrowth;
     case "Industrial Land":
-      return simulationState.water.artificialPondIndustrial;
+      return simulationState.water?.artificialPondIndustrial;
     case "Housing Land":
-      return simulationState.water.artificialPondHousing;
+      return simulationState.water?.artificialPondHousing;
     case "Solar Pv Area on Industrial":
-      return simulationState.energy.solarPvAreaIndustrial;
+      return simulationState.energy?.solarPvAreaIndustrial;
     case "Solar PV Area Percentage on Housing":
-      return simulationState.energy.solarPvAreaHousing;
+      return simulationState.energy?.solarPvAreaHousing;
     default:
       return null;
   }
@@ -104,86 +104,44 @@ const checkType = (label: string) => {
   }
 };
 
-// export const generateFoodDemandWithInput = (
-//   foodDemand: number[],
-
-// );
-
-export const generateApAreaIndustrial = () => {
-  return Array.from({ length: 36 }, () => 0);
-};
-
-export const generateApAreaHousing = () => {
-  return Array.from({ length: 36 }, () => 0);
-};
-
-export const generateAvailabilityFactor = () => {
-  return Array.from({ length: 36 }, () => 1);
-};
+export const generateApAreaIndustrial = () => Array(36).fill(0);
+export const generateApAreaHousing = () => Array(36).fill(0);
+export const generateAvailabilityFactor = () => Array(36).fill(1);
 
 export const generateAvailabillityPerPerson = (
   populations: number[],
   localFoods: number[],
 ): number[] => {
-  if (
-    !Array.isArray(populations) ||
-    !Array.isArray(localFoods) ||
-    populations.length !== localFoods.length
-  ) {
+  if (!Array.isArray(populations) || !Array.isArray(localFoods) || populations.length !== localFoods.length) {
     return [];
   }
 
-  const availabilityPerPerson: number[] = [];
-
-  for (let i = 0; i < populations.length; i++) {
-    const population = populations[i];
+  return populations.map((population, i) => {
     const localFood = localFoods[i];
-
-    if (
-      typeof population === "number" &&
-      typeof localFood === "number" &&
-      population > 0
-    ) {
-      const availability = (localFood / population) * 1000;
-      availabilityPerPerson.push(availability);
-    } else {
-      availabilityPerPerson.push(0);
+    if (typeof population === "number" && typeof localFood === "number" && population > 0) {
+      return (localFood / population) * 1000;
     }
-  }
-
-  return availabilityPerPerson;
+    return 0;
+  });
 };
 
 export const generateLocalFoodProductionYear = (
   lahanPanenPadi: Params,
-): number[] | [] => {
+): number[] => {
   if (!lahanPanenPadi || !Array.isArray(lahanPanenPadi.values)) {
     return [];
   }
 
-  const productionValues: number[] = [];
-  const years: number[] = [];
-
-  const startYear = 2010;
-
-  for (let i = 0; i < lahanPanenPadi.values.length; i++) {
-    const historicalValue = lahanPanenPadi.values[i];
-
+  return lahanPanenPadi.values.map((historicalValue) => {
     if (typeof historicalValue === "number") {
-      const production =
+      return (
         historicalValue *
         RESOURCE_DEMAND_UNIT.FOOD.PRODUCTIVTY_PADDY_YEAR *
-        RESOURCE_DEMAND_UNIT.FOOD.RASIO_SUSUT_BERAS;
-      productionValues.push(production);
-
-      years.push(startYear + i);
-    } else {
-      productionValues.push(0);
-      years.push(startYear + i);
+        RESOURCE_DEMAND_UNIT.FOOD.RASIO_SUSUT_BERAS
+      );
     }
-  }
-
-  return productionValues ?? [];
+    return 0;
+  });
 };
 
 const convertInput = (
@@ -191,9 +149,44 @@ const convertInput = (
   val: number | null,
   averageGrowth: number,
 ) => {
-  if (name === "Lahan Panen Padi") return val ? val * -1 : averageGrowth;
-  if (val) return val;
+  // If user inputs 5% (0.05) Agricultural Land Conversion,
+  // Agriculture area needs to shrink by 5% each year.
+  if (name === "Agriculture Area") {
+    return val !== null ? -Math.abs(val) : averageGrowth;
+  }
+  if (val !== null) return val;
   return averageGrowth;
+};
+
+const buildProjectionStages = (
+  name: string,
+  initialData: number[],
+  averageGrowth: number,
+  scenarioInputs: Record<string, number | null>
+): number[] => {
+  const pStage1 = Computation.projection({
+    data: initialData,
+    growth: convertInput(name, null, averageGrowth),
+    finalYear: 2024,
+  });
+
+  const pStage2 = Computation.projection({
+    data: pStage1,
+    growth: convertInput(name, scenarioInputs?.["2025-2030"] ?? null, averageGrowth),
+    finalYear: 2030,
+  });
+
+  const pStage3 = Computation.projection({
+    data: pStage2,
+    growth: convertInput(name, scenarioInputs?.["2031-2040"] ?? null, averageGrowth),
+    finalYear: 2040,
+  });
+
+  return Computation.projection({
+    data: pStage3,
+    growth: convertInput(name, scenarioInputs?.["2041-2045"] ?? null, averageGrowth),
+    finalYear: 2045,
+  });
 };
 
 export const generateCValue = (
@@ -231,49 +224,6 @@ export const generateCValue = (
     constantIndustrial,
     constantHousting,
   );
-};
-
-const generateDynamicInput = (
-  growthScenario: { [key: string]: number | null},
-  constantValue: number,
-  startYear: number,
-  endYear: number
-): number[] => {
-  const result: number[] = [];
-  const historicalEndYear = 2025;
-
-  for (let year = startYear; year <= historicalEndYear; year++) {
-    result.push(constantValue);
-  }
-
-  let lastValue = result.length > 0 ? result[result.length - 1] : constantValue;
-  for (let year = historicalEndYear + 1; year <= endYear; year++) {
-    let growthValue = lastValue;
-    let nextValue = growthValue;
-
-    if (growthScenario) {
-      if (year >= 2025 && year <= 2030 && growthScenario["2025-2030"] != null) {
-        growthValue = growthScenario["2025-2030"];
-      } else if (
-        year >= 2031 &&
-        year <= 2040 &&
-        growthScenario["2031-2040"] != null
-      ) {
-        growthValue = growthScenario["2031-2040"];
-      } else if (
-        year >= 2041 &&
-        year <= 2045 &&
-        growthScenario["2041-2045"] != null
-      ) {
-        growthValue = growthScenario["2041-2045"];
-      }
-    }
-
-    nextValue = lastValue * growthValue;
-    result.push(nextValue);
-    lastValue = nextValue;
-  }
-  return result;
 };
 
 export const transformPeriodInputs = (
@@ -320,60 +270,49 @@ export const generateLahanPanenPadi = (
   const cleanDataSeries = agricultureArea
     .map((val) => val ?? 0);
 
-    const averageGrowth = average(growthRate(cleanDataSeries)) * -1;
-    const scenarioInputs = simulationState?.agriculture?.croppingIntensity || 1.95;
-    const averageInputs = transformPeriodInputs(simulationState?.agriculture?.croppingIntensity, 1.95) || 1.95;
-    let finalProjectedData: number[];
-    if (scenarioInputs) {
-      const agricultureCalculated = cleanDataSeries.map((item: number) => item * averageInputs);
-      const projectionStage1 = Computation.projection({
-        data: agricultureCalculated,
-        growth: convertInput('Agriculture Area', null, averageGrowth),
-        finalYear: 2024,
-      });
-      const projectionStage2 = Computation.projection({
-        data: projectionStage1,
-        growth: convertInput(
-          'Agriculture Area',
-          scenarioInputs["2025-2030"],
-          averageGrowth,
-        ),
-        finalYear: 2030,
-      });
+  const averageGrowth = average(growthRate(cleanDataSeries)) * -1;
+  const finalProjectedData: number[] = [];
 
-      const projectionStage3 = Computation.projection({
-        data: projectionStage2,
-        growth: convertInput(
-          'Agriculture Area',
-          scenarioInputs["2031-2040"],
-          averageGrowth,
-        ),
-        finalYear: 2040,
-      });
-      finalProjectedData = Computation.projection({
-        data: projectionStage3,
-        growth: convertInput(
-          "Agriculture Area",
-          scenarioInputs["2041-2045"],
-          averageGrowth,
-        ),
-        finalYear: 2045,
-      });
-    } else {
-      finalProjectedData = Computation.projection({
-        data: cleanDataSeries,
-        growth: averageGrowth,
-        finalYear,
-      });
+  // Lahan Panen Padi depends on Agriculture Area
+  // Step 1: Project Agricultural Area
+  const landConversionInput = simulationState?.agriculture?.landConversion;
+  const finalAgricultureArea = buildProjectionStages(
+    "Agriculture Area",
+    cleanDataSeries,
+    averageGrowth,
+    landConversionInput
+  );
+
+  // Step 2: Multiply by Cropping Intensity per period
+  const defaultIntensity = 1.95;
+  const intensityInputs = simulationState?.agriculture?.croppingIntensity;
+
+  for (let i = 0; i < finalAgricultureArea.length; i++) {
+    const year = 2010 + i;
+    const area = finalAgricultureArea[i];
+
+    let intensity = defaultIntensity;
+
+    if (intensityInputs) {
+      if (year >= 2025 && year <= 2030 && intensityInputs["2025-2030"] !== null) {
+        intensity = intensityInputs["2025-2030"];
+      } else if (year >= 2031 && year <= 2040 && intensityInputs["2031-2040"] !== null) {
+        intensity = intensityInputs["2031-2040"];
+      } else if (year >= 2041 && year <= 2045 && intensityInputs["2041-2045"] !== null) {
+        intensity = intensityInputs["2041-2045"];
+      }
     }
 
-    projectedParameters.push({
-      name: 'Lahan Panen Padi',
-      average: averageGrowth,
-      growth: growthRate(cleanDataSeries),
-      values: finalProjectedData,
-    });
-    
+    finalProjectedData.push(area * intensity);
+  }
+
+  projectedParameters.push({
+    name: 'Lahan Panen Padi',
+    average: averageGrowth,
+    growth: growthRate(cleanDataSeries),
+    values: finalProjectedData,
+  });
+
   const projectedYears = Computation.adjustTimeFrame({
     dataYear: data.years,
     finalYear: finalYear,
@@ -393,20 +332,18 @@ export const generateLandCover = (
   endYear: number,
   inputs: SiteSpecificState | null,
 ): IApiData => {
-  const {
-    INDUSTRIAL_LAND,
-    HOUSING_LAND,
-    FOREST_AREA,
-    AGRICULTURE_AREA,
-    AVAILABLE_LAND,
-  } = INITIAL_DATA_CONSTANT.LAND_COVER;
+  const { INDUSTRIAL_LAND, HOUSING_LAND, FOREST_AREA, AVAILABLE_LAND, AGRICULTURE_AREA } =
+    INITIAL_DATA_CONSTANT.LAND_COVER;
 
   const { LAND_COVER_CHANGES } = RESOURCE_DEMAND_UNIT;
 
   let industrial = INDUSTRIAL_LAND;
   let housing = HOUSING_LAND;
   let forest = FOREST_AREA;
-  let agriculture = Number(inputs?.agriculture.area2010["2025-2030"] || 0);
+  let agriculture = Number(inputs?.agriculture?.area2010?.["2025-2030"] || AGRICULTURE_AREA);
+
+  const length = endYear - startYear + 1;
+
   const industrialValues: number[] = [];
   const housingValues: number[] = [];
   const forestValues: number[] = [];
@@ -415,9 +352,9 @@ export const generateLandCover = (
   const availableValues: number[] = [];
   const years: number[] = [];
 
-  for (let year = startYear; year <= endYear; year++) {
-    const other =
-      AVAILABLE_LAND - (industrial + housing + forest + agriculture);
+  for (let i = 0; i < length; i++) {
+    const year = startYear + i;
+    const other = AVAILABLE_LAND - (industrial + housing + forest + agriculture);
 
     industrialValues.push(Math.round(industrial));
     housingValues.push(Math.round(housing));
@@ -426,6 +363,7 @@ export const generateLandCover = (
     otherValues.push(Math.round(other));
     availableValues.push(Math.round(AVAILABLE_LAND));
     years.push(year);
+
     industrial *= 1 + LAND_COVER_CHANGES.INDUSTRIAL_LAND;
     housing *= 1 + LAND_COVER_CHANGES.HOUSING_LAND;
     forest *= 1 + LAND_COVER_CHANGES.FOREST_LAND;
@@ -435,12 +373,12 @@ export const generateLandCover = (
   return {
     label: "Land Cover",
     unit: "[ha]",
-    years: years,
+    years,
     parameters: [
       { name: "Industrial Land", values: industrialValues },
       { name: "Housing Land", values: housingValues },
       { name: "Forest Area", values: forestValues },
-      { name: "Agriculture Area", values: agricultureValues},
+      { name: "Agriculture Area", values: agricultureValues },
       { name: "Other Land", values: otherValues },
       { name: "Available Land", values: availableValues },
     ],
@@ -526,7 +464,7 @@ export const generateBaseline = (
   for (const param of baseData.parameters) {
     const cleanDataSeries = param.values.map((val) => val ?? 0);
     const growthRates = growthRate(cleanDataSeries);
-    
+
     const averageGrowth = average(growthRates);
     const projectedData = Computation.projection({
       data: cleanDataSeries,
@@ -602,53 +540,10 @@ const generateApArea = (
   return result;
 };
 
-export const generateApAreaProjection = (
-  param: Omit<Params, "average" | "growth">,
-  inputs: SiteSpecificState,
-  startYear: number = 2010,
-  finalYear: number = 2045,
-): number[] => {
-  if (!param || !inputs) return [];
-
-  const { name, values } = param;
-  const scenarioInputs = getInputsByName(name, inputs);
-
-  if (!scenarioInputs) return Array(36).fill(0);
-
-  const rawPinpoints: { year: number; key: keyof typeof scenarioInputs }[] = [
-    { year: 2030, key: "2025-2030" },
-    { year: 2040, key: "2031-2040" },
-    { year: 2045, key: "2041-2045" },
-  ];
-
-  const pinpoints = rawPinpoints
-    .map(({ year, key }) => ({
-      year,
-      value: Number(scenarioInputs[key] ?? 0),
-    }))
-    .filter((p) => Number.isFinite(p.value));
-
-  if (pinpoints.length === 0) return Array(36).fill(0);
-
-  const computedPinpoints = pinpoints.map((p) =>
-    getPinPoint(p.year, p.value, values),
-  );
-
-  const growths = getApAreaGrowth(computedPinpoints);
-
-  const projections = generateApArea(
-    Array(15).fill(0),
-    growths,
-    startYear,
-    finalYear,
-  );
-
-  return resultConverter(projections);
-};
-
-export const generatePvAreaProjection = (
+export const generateAreaProjection = (
   name: string,
   inputs: SiteSpecificState | null,
+  values?: (number | null)[],
   startYear: number = 2010,
   finalYear: number = 2045,
 ): number[] => {
@@ -673,7 +568,7 @@ export const generatePvAreaProjection = (
 
   if (pinpoints.length === 0) return Array(36).fill(0);
 
-  const computedPinpoints = pinpoints.map((p) => getPinPoint(p.year, p.value));
+  const computedPinpoints = pinpoints.map((p) => getPinPoint(p.year, p.value, values));
 
   const growths = getApAreaGrowth(computedPinpoints);
 
@@ -686,7 +581,6 @@ export const generatePvAreaProjection = (
 
   return resultConverter(projections);
 };
-
 
 export const generateScenarioProjection = (
   historicalData: IApiData,
@@ -706,75 +600,36 @@ export const generateScenarioProjection = (
 
   for (const param of historicalData.parameters) {
     const { name, values: originalDataSeries } = param;
-    // let cleanDataSeries: number[];
-    // let averageGrowth: number;
-    // if(name == 'Agriculture Area'){
-    //   cleanDataSeries = generateLandCover(2010, 2045, transformPeriodInputs(simulationState.agriculture.area2010, 108695))
-    //                           .parameters?.find((item) => item.name == 'Agriculture Area')?.values.slice(0,15) ?? Array(16).fill(0);
-    //   console.log(simulationState.agriculture.area2010);
-    //   console.log(cleanDataSeries);
-    //   averageGrowth = average(growthRate(cleanDataSeries));
-    // }else{
-      const cleanDataSeries = originalDataSeries
-        .map((val) => val ?? 0)
-        .slice(0, 15);
+    const cleanDataSeries = originalDataSeries
+      .map((val) => val ?? 0)
+      .slice(0, 15);
 
-      const averageGrowth = average(growthRate(cleanDataSeries));
-    // }
-     const scenarioInputs = getInputsByName(name, simulationState);
-      
-      let finalProjectedData: number[];
-      if (scenarioInputs) {
-        const projectionStage1 = Computation.projection({
-          data: cleanDataSeries,
-          growth: convertInput(param.name, null, averageGrowth),
-          finalYear: 2024,
-        });
+    const averageGrowth = average(growthRate(cleanDataSeries));
+    const scenarioInputs = getInputsByName(name, simulationState);
 
-        const projectionStage2 = Computation.projection({
-          data: projectionStage1,
-          growth: convertInput(
-            param.name,
-            scenarioInputs["2025-2030"],
-            averageGrowth,
-          ),
-          finalYear: 2030,
-        });
-
-        const projectionStage3 = Computation.projection({
-          data: projectionStage2,
-          growth: convertInput(
-            param.name,
-            scenarioInputs["2031-2040"],
-            averageGrowth,
-          ),
-          finalYear: 2040,
-        });
-
-        finalProjectedData = Computation.projection({
-          data: projectionStage3,
-          growth: convertInput(
-            param.name,
-            scenarioInputs["2041-2045"],
-            averageGrowth,
-          ),
-          finalYear: 2045,
-        });
-      } else {
-        finalProjectedData = Computation.projection({
-          data: cleanDataSeries,
-          growth: averageGrowth,
-          finalYear,
-        });
-      }
-
-      projectedParameters.push({
-        name,
-        average: averageGrowth,
-        growth: growthRate(cleanDataSeries),
-        values: finalProjectedData,
+    let finalProjectedData: number[];
+    if (scenarioInputs) {
+      finalProjectedData = buildProjectionStages(
+        param.name,
+        cleanDataSeries,
+        averageGrowth,
+        scenarioInputs
+      );
+    } else {
+      finalProjectedData = Computation.projection({
+        data: cleanDataSeries,
+        growth: averageGrowth,
+        finalYear,
       });
     }
+
+    projectedParameters.push({
+      name,
+      average: averageGrowth,
+      growth: growthRate(cleanDataSeries),
+      values: finalProjectedData,
+    });
+  }
 
   const projectedYears = Computation.adjustTimeFrame({
     dataYear: historicalData.years,
