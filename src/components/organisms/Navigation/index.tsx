@@ -11,7 +11,8 @@ import LanguageToggle from "@/components/atoms/LanguageToggle";
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
 import AuthButtons from "./AuthButtons";
-import { useAppSelector } from "@/stores/root-reducer";
+import { useAppSelector, useAppDispatch } from "@/stores/root-reducer";
+import { logout } from "@/stores/slicers/auth/AuthSlice";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
@@ -82,7 +83,10 @@ const Navigation = () => {
     setMobileMenuOpen(false);
   };
 
+  const dispatch = useAppDispatch();
+
   const handleLogout = async () => {
+    dispatch(logout());
     await signOut({ callbackUrl: window.location.origin });
   };
 
