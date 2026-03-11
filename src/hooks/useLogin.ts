@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +25,33 @@ export const useLogin = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  // Guard: redirect authenticated users away from login page
+  useEffect(() => {
+    if (status === "loading") {
+      return;
+    }
+
+    if (status === "authenticated" && session?.user) {
+      const userPermissions = session.user.permissions || [];
+      const hasDashboard = Array.isArray(userPermissions)
+        ? userPermissions.some((p: any) =>
+            typeof p === "string"
+              ? p === "read:dashboard"
+              : p.permissionCode === "read:dashboard"
+          )
+        : false;
+
+      if (hasDashboard) {
+        window.location.href = "/admin";
+      } else {
+        window.location.href = "/";
+      }
+      return;
+    }
+
+    setIsCheckingAuth(false);
+  }, [status, session]);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -49,44 +76,57 @@ export const useLogin = () => {
       console.log("Result:", result);
 
       if (result?.error) {
-        throw new Error(result.error);
+        throw result.error;
       }
 
       if (result?.ok) {
         const { getSession } = await import("next-auth/react");
-        const session = await getSession();
-        
-        console.log("Session after login:", session);
-      
-        if (session?.user) {
+        const freshSession = await getSession();
+
+        console.log("Session after login:", freshSession);
+
+        if (freshSession?.user) {
           dispatch(setUser({
-            id: session.user.id,
-            email: session.user.email || "",
-            username: session.user.username,
-            role: session.user.role,
-            permissions: session.user.permissions,
-            cityId: session.user.cityId,
-            access_token: session.accessToken
+            id: freshSession.user.id,
+            email: freshSession.user.email || "",
+            username: freshSession.user.username,
+            role: freshSession.user.role,
+            permissions: freshSession.user.permissions,
+            cityId: freshSession.user.cityId,
+            access_token: freshSession.accessToken
           }));
         }
-        
-        const userRole = session?.user?.role;
-        
-        if (userRole === "Admin") {
+
+        const userPermissions = freshSession?.user?.permissions || [];
+        const hasDashboardPermission = Array.isArray(userPermissions)
+          ? userPermissions.some((p: any) =>
+              typeof p === "string"
+                ? p === "read:dashboard"
+                : p.permissionCode === "read:dashboard"
+            )
+          : false;
+
+        // Use window.location.href for reliable full-page redirect
+        // This ensures the browser sends the new session cookie and all
+        // layouts/middleware evaluate the fresh authenticated state
+        if (hasDashboardPermission) {
           window.location.href = "/admin";
         } else {
-          const callbackUrl = searchParams.get("callbackUrl") || "/";
-          const dest = (callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")) 
-            ? callbackUrl 
-            : "/";
-          window.location.href = dest;
+          window.location.href = "/";
         }
       }
     } catch (error: unknown) {
-        console.error("Login error:", error);
-        let errorMessage =
-          error instanceof Error ? error?.message : t.login.authError;
-        
+        console.warn("Login error:", error);
+
+        let errorMessage = "An error occurred during login.";
+        if (typeof error === "string") {
+          errorMessage = error;
+        } else if (error instanceof Error) {
+          errorMessage = error.message;
+        } else {
+          errorMessage = t.login.authError;
+        }
+
         if (errorMessage === "CredentialsSignin") {
             errorMessage = t.login.invalidCredentials;
         }

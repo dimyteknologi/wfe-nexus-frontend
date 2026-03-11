@@ -56,14 +56,30 @@ const handler = NextAuth({
           return userObject;
         } catch (error) {
           console.error("=== Login Error ===");
-          if (axios.isAxiosError(error)) {
-            // Log status and message, but avoid logging full data chunks that might contain sensitive info
-            console.error("Axios error status:", error.response?.status);
-            console.error("Axios error message:", error.message);
-          } else {
-            console.error("Non-Axios error:", error);
+          let errorMessage = "An error occurred during login.";
+          
+          if (axios.isAxiosError(error) && error.response) {
+            // Extract the message from backend DTO Exception / Error response
+            const resData = error.response.data;
+            if (resData && typeof resData === 'object') {
+              // Could be { message: "Account disabled" } or { error: "Something", message: ["error1", "error2"] }
+              if (Array.isArray(resData.message)) {
+                errorMessage = resData.message.join(", ");
+              } else if (resData.message) {
+                errorMessage = resData.message;
+              } else if (resData.error) {
+                 errorMessage = resData.error;
+              }
+            } else {
+               errorMessage = `API Error ${error.response.status}`;
+            }
+            console.error("Axios error message:", errorMessage);
+          } else if (error instanceof Error) {
+            errorMessage = error.message;
+            console.error("Non-Axios error:", errorMessage);
           }
-          return null;
+          
+          throw new Error(errorMessage);
         }
       },
     }),

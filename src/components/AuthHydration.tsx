@@ -25,7 +25,7 @@ const AuthHydration = () => {
         })
       );
       dispatch(setAccessToken(session.accessToken));
-    } else {
+    } else if (status === "unauthenticated") {
       // Clear Redux state when NextAuth session is gone
       dispatch(logout());
     }
