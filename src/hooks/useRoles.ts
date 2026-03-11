@@ -41,7 +41,19 @@ export function useRoles() {
 
   const updateRole = async (id: string, roleData: Partial<Role>) => {
     try {
-      const response = await apiClient.put(`/role/${id}`, roleData);
+      // Strip extraneous properties that backend DTO rejects
+      const { 
+        id: _id, 
+        createdAt, 
+        updatedAt, 
+        deletedAt, 
+        updatedBy, 
+        permissions,
+        description,
+        ...allowedData 
+      } = roleData as any;
+
+      const response = await apiClient.patch(`/role/${id}`, allowedData);
       const updatedRole = response.data || response;
       setRoles(prev => prev.map(role => role.id === id ? updatedRole : role));
       return updatedRole;
@@ -59,6 +71,19 @@ export function useRoles() {
     }
   };
 
+  const getRoleById = async (id: string) => {
+    try {
+      const response = await apiClient.get(`/role/${id}`);
+      console.log(`[DEBUG] API Response for /role/${id}:`, response);
+      if (!response) return { permissionIds: [], permissions: [] };
+      // Handle standard nested backend response { data: { ...roleData } } 
+      // or direct object response if API wraps it differently
+      return response.data && typeof response.data === 'object' ? response.data : response;
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'Failed to fetch role details');
+    }
+  };
+
   useEffect(() => {
     fetchRoles();
   }, []);
@@ -71,5 +96,6 @@ export function useRoles() {
     createRole,
     updateRole,
     deleteRole,
+    getRoleById,
   };
 }

@@ -33,7 +33,9 @@ export function usePermissions() {
 
   const updatePermission = async (id: string, permissionData: Partial<PermissionFormData>) => {
     try {
-      const updatedPermission = await apiClient.put(`/permissions/${id}`, permissionData);
+      const { permissionName, permissionCode } = permissionData;
+      const allowedData = { permissionName, permissionCode };
+      const updatedPermission = await apiClient.patch(`/permissions/${id}`, allowedData);
       setPermissions(prev => prev.map(permission => permission.id === id ? updatedPermission : permission));
       return updatedPermission;
     } catch (err) {

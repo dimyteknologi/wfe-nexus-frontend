@@ -26,6 +26,9 @@ export const apiClient = {
       throw new Error(text || `Failed to fetch data: ${response.status}`);
     }
     try {
+      if (!text || text.trim() === '') {
+        return null;
+      }
       return JSON.parse(text);
     } catch (_e) {
       console.error(`JSON Parse Error for ${endpoint}:`, text);
@@ -77,6 +80,28 @@ export const apiClient = {
       return JSON.parse(text);
     } catch (_e) {
       // console.error(`JSON Parse Error for ${endpoint}:`, text);
+      throw new Error('Invalid JSON response from server');
+    }
+  },
+
+  async patch(endpoint: string, data: unknown) {
+    const authHeader = await getAuthHeader();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...authHeader
+    };
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify(data),
+    });
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(text || `Failed to update data: ${response.status}`);
+    }
+    try {
+      return JSON.parse(text);
+    } catch (_e) {
       throw new Error('Invalid JSON response from server');
     }
   },

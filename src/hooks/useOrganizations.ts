@@ -36,7 +36,8 @@ export function useOrganizations() {
 
   const updateOrganization = async (id: string, orgData: Partial<OrganizationFormData>) => {
     try {
-      const response = await apiClient.put(`/institusi/${id}`, orgData);
+      const allowedData = { name: orgData.name };
+      const response = await apiClient.patch(`/institusi/${id}`, allowedData);
       const updatedOrg = response.data || response;
       setOrganizations(prev => prev.map(org => org.id === id ? updatedOrg : org));
       return updatedOrg;

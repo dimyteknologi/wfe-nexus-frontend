@@ -34,7 +34,8 @@ export function useCities() {
 
   const updateCity = async (id: string, cityData: Partial<CityFormData>) => {
     try {
-      const response = await apiClient.put(`/kota/${id}`, cityData);
+      const allowedData = { name: cityData.name };
+      const response = await apiClient.patch(`/kota/${id}`, allowedData);
       const updatedCity = response.data || response;
       setCities(prev => prev.map(city => city.id === id ? updatedCity : city));
       return updatedCity;

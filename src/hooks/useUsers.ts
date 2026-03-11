@@ -42,7 +42,17 @@ export function useUsers() {
 
   const updateUser = async (id: string, userData: Partial<UserFormData>) => {
     try {
-      const updatedUser = await apiClient.put(`/user/${id}`, userData);
+      // Create stripped down object matching DTO
+      const allowedData: any = {};
+      
+      if (userData.name) allowedData.name = userData.name;
+      if (userData.email) allowedData.email = userData.email;
+      if (userData.password) allowedData.password = userData.password;
+      if (userData.roleId) allowedData.roleId = userData.roleId;
+      if (userData.cityId) allowedData.cityId = userData.cityId;
+      if (userData.institutionId) allowedData.institutionId = userData.institutionId;
+
+      const updatedUser = await apiClient.patch(`/user/${id}`, allowedData);
       setUsers(prev => prev.map(user => user.id === id ? updatedUser : user));
       return updatedUser;
     } catch (err) {

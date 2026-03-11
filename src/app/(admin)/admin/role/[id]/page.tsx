@@ -19,11 +19,24 @@ export default function EditRolePage() {
     if (roles.length > 0) {
       const role = roles.find(r => r.id === roleId);
       if (role) {
-        setRoleData(role);
+        // Map permissions structure from GET /role to permissionIds array
+        let permissionIds: string[] = [];
+        if (role.permissions && Array.isArray(role.permissions)) {
+          // The GET /role data struct brings permissions like: 
+          // { permissionId: '...', permission: { id: '...', permissionCode: '...' } }
+          permissionIds = role.permissions.map((p: any) => p.permissionId || p.id);
+        } else if (role.permissionIds && Array.isArray(role.permissionIds)) {
+          permissionIds = role.permissionIds;
+        }
+
+        setRoleData({
+          ...role,
+          permissionIds
+        });
       }
       setLoading(false);
     } else if (!rolesLoading) {
-        setLoading(false);
+      setLoading(false);
     }
   }, [roleId, roles, rolesLoading]);
 
@@ -37,7 +50,7 @@ export default function EditRolePage() {
     }
   };
 
-  if (loading || rolesLoading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-lg text-gray-600">Loading role data...</div>
